@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="apple-design.css">
+    <title>Chefs de Fracciones | RakinMath</title>
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            height: 100dvh;
+            overflow: hidden;
+        }
+
+        .top-bar {
+            padding: 8px 16px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .top-bar h1 { font-size: 1rem; font-weight: 700; }
+
+        .score-pill {
+            padding: 4px 14px;
+            border-radius: var(--radius-pill);
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            font-weight: 700;
+            font-size: 0.875rem;
+        }
+
+        .game-layout {
+            flex: 1;
+            display: grid;
+            grid-template-columns: 220px 1fr 180px;
+            gap: 14px;
+            padding: 0 16px 16px;
+            align-items: center;
+            max-width: 1100px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        /* Ticket card */
+        .ticket {
+            background: var(--bg-card-solid);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-lg);
+            padding: 20px;
+            text-align: center;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .ticket-label {
+            font-size: 0.6875rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            color: var(--text-tertiary);
+            margin-bottom: 4px;
+        }
+
+        .ticket-food {
+            font-size: 1rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            margin-bottom: 12px;
+            color: var(--text);
+        }
+
+        /* Fraction display — large, clear */
+        .frac {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0;
+            margin: 12px 0;
+        }
+
+        .frac-num, .frac-den {
+            font-size: 3rem;
+            font-weight: 800;
+            line-height: 1;
+            color: var(--text);
+            font-variant-numeric: tabular-nums;
+        }
+
+        .frac-line {
+            width: 80px;
+            height: 5px;
+            background: var(--text);
+            border-radius: 3px;
+            margin: 6px 0;
+        }
+
+        .ticket-hint {
+            font-size: 0.75rem;
+            color: var(--text-tertiary);
+        }
+
+        /* Kitchen */
+        .kitchen {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .cuts-bar {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-pill);
+            padding: 4px 6px;
+        }
+
+        .cuts-btn {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            border: none;
+            background: rgba(0,0,0,0.04);
+            font-size: 1.125rem;
+            font-weight: 700;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: transform 0.1s ease, background 0.15s ease;
+            font-family: var(--font-sans);
+            color: var(--text);
+        }
+        .cuts-btn:active { transform: scale(0.9); }
+        .cuts-btn:hover { background: rgba(0,0,0,0.07); }
+
+        .cuts-label {
+            font-size: 0.875rem;
+            font-weight: 700;
+            min-width: 80px;
+            text-align: center;
+        }
+
+        .food-svg {
+            width: 320px;
+            height: 320px;
+        }
+
+        /* SVG slices — high contrast strokes */
+        .slice {
+            stroke: #1d1d1f;
+            stroke-width: 3;
+            stroke-linejoin: round;
+            cursor: pointer;
+            transition: fill 0.15s ease, transform 0.15s ease;
+            transform-origin: center;
+        }
+
+        .slice:hover { transform: scale(1.03); }
+
+        .slice-empty { fill: #f0f0f2; }
+        .slice-selected { fill: #ff3b30; opacity: 0.85; }
+        .choco-selected { fill: #6d4c2e; opacity: 0.9; }
+
+        /* Deliver button */
+        .action-zone {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .deliver-btn {
+            width: 140px;
+            height: 140px;
+            border-radius: 50%;
+            border: none;
+            background: var(--green);
+            color: white;
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 4px;
+            font-family: var(--font-sans);
+            font-size: 0.9375rem;
+            font-weight: 700;
+            letter-spacing: -0.01em;
+            box-shadow: 0 6px 0 #28a745;
+            transition: transform 0.1s ease, box-shadow 0.1s ease;
+        }
+
+        .deliver-btn:active {
+            transform: translateY(5px);
+            box-shadow: 0 1px 0 #28a745;
+        }
+
+        .deliver-btn .icon { font-size: 2rem; }
+
+        .toast {
+            position: fixed;
+            bottom: 24px;
+            left: 50%;
+            transform: translateX(-50%) translateY(16px);
+            padding: 10px 24px;
+            border-radius: var(--radius-pill);
+            font-weight: 600;
+            font-size: 0.875rem;
+            color: white;
+            z-index: 1000;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.2s ease, transform 0.2s ease;
+            box-shadow: var(--shadow-md);
+        }
+
+        .toast.show {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+        }
+
+        @media (max-width: 860px) {
+            .game-layout {
+                grid-template-columns: 1fr;
+                grid-template-rows: auto auto auto;
+                padding: 0 12px 12px;
+                gap: 10px;
+                align-items: start;
+            }
+            .ticket { padding: 14px; }
+            .frac-num, .frac-den { font-size: 2.25rem; }
+            .frac-line { width: 60px; height: 4px; }
+            .kitchen { order: -1; }
+            .food-svg { width: 200px; height: 200px; }
+            .action-zone { order: 0; padding: 4px 0 8px; }
+            .deliver-btn { width: 110px; height: 110px; font-size: 0.8125rem; }
+            .deliver-btn .icon { font-size: 1.5rem; }
+            .top-bar { padding: var(--space-3) var(--space-4); }
+            .top-bar h1 { font-size: 0.9375rem; }
+        }
+
+        @media (max-width: 480px) {
+            .game-layout { padding: 0 8px 8px; gap: 8px; }
+            .food-svg { width: 160px; height: 160px; }
+            .frac-num, .frac-den { font-size: 1.75rem; }
+            .frac-line { width: 48px; height: 3px; margin: 4px 0; }
+            .ticket { padding: 10px; }
+            .ticket-food { font-size: 0.875rem; margin-bottom: 8px; }
+            .cuts-label { font-size: 0.8125rem; min-width: 60px; }
+            .cuts-btn { width: 32px; height: 32px; font-size: 1rem; }
+            .deliver-btn { width: 96px; height: 96px; font-size: 0.75rem; box-shadow: 0 4px 0 #28a745; }
+            .deliver-btn .icon { font-size: 1.25rem; }
+        }
+    </style>
+</head>
+<body>
+
+<nav class="nav">
+    <a href="menu.html" class="nav-title">
+        <div class="nav-logo-icon">
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M3 10V4h2l2.5 3.5L10 4h2v6h-1.5V6.5L8 10.5H7.5L5 6.5V10H3z" fill="white"/></svg>
+        </div>
+        <span>Chefs de Fracciones | Rakin<span class="brand">Math</span></span>
+    </a>
+    <a href="menu.html" class="exit-btn">Salir</a>
+</nav>
+
+<div class="top-bar">
+    <h1>👩‍🍳 Academia de Chefs</h1>
+    <div class="score-pill">⭐ <span id="score">0</span></div>
+</div>
+
+<div class="game-layout">
+    <div class="ticket">
+        <div class="ticket-label">Pedido</div>
+        <div class="ticket-food" id="food-name">PIZZA</div>
+        <div class="frac">
+            <span class="frac-num" id="target-n">?</span>
+            <div class="frac-line"></div>
+            <span class="frac-den" id="target-d">?</span>
+        </div>
+        <div class="ticket-hint">Haz una fracción equivalente</div>
+    </div>
+
+    <div class="kitchen">
+        <div class="cuts-bar">
+            <button class="cuts-btn" onclick="changeCuts(-1)">−</button>
+            <span class="cuts-label" id="cut-display">2 partes</span>
+            <button class="cuts-btn" onclick="changeCuts(1)">+</button>
+        </div>
+        <svg id="food-svg" class="food-svg" viewBox="0 0 200 200"></svg>
+    </div>
+
+    <div class="action-zone">
+        <button class="deliver-btn" onclick="verify()">
+            <span class="icon">🛎️</span>
+            ¡Entregar!
+        </button>
+    </div>
+</div>
+
+<div id="toast" class="toast"></div>
+
+<script>
+    let nObj=0, dObj=0, score=0, currentCuts=2, currentFood='pizza';
+    const dens = [2,3,4,5,6,7,8,9,10,11,12,15];
+
+    function init() {
+        dObj = dens[~~(Math.random()*6)];
+        nObj = ~~(Math.random()*(dObj-1))+1;
+        document.getElementById('target-n').textContent = nObj;
+        document.getElementById('target-d').textContent = dObj;
+        const foods = ['pizza','chocolate','torta'];
+        currentFood = foods[~~(Math.random()*3)];
+        document.getElementById('food-name').textContent = currentFood.toUpperCase();
+        currentCuts = 2;
+        updateCuts();
+        draw();
+    }
+
+    function changeCuts(v) {
+        let i = dens.indexOf(currentCuts) + v;
+        if (i >= 0 && i < dens.length) { currentCuts = dens[i]; updateCuts(); draw(); }
+    }
+
+    function updateCuts() {
+        document.getElementById('cut-display').textContent = currentCuts + ' partes';
+    }
+
+    function draw() {
+        const svg = document.getElementById('food-svg');
+        svg.innerHTML = '';
+        if (currentFood === 'chocolate') {
+            let rows = currentCuts > 6 ? 3 : currentCuts > 3 ? 2 : 1;
+            let cols = Math.ceil(currentCuts / rows);
+            let w = 180/cols, h = 130/rows;
+            for (let i = 0; i < currentCuts; i++) {
+                let r = ~~(i/cols), c = i%cols;
+                addRect(svg, 10+c*w, 35+r*h, w, h);
+            }
+        } else {
+            for (let i = 0; i < currentCuts; i++) addPie(svg, 100, 100, 90, i, currentCuts);
+        }
+    }
+
+    function addPie(svg, cx, cy, r, i, total) {
+        const ang = 360/total;
+        const s = i*ang - 90, e = (i+1)*ang - 90;
+        const x1 = cx + r*Math.cos(Math.PI*s/180), y1 = cy + r*Math.sin(Math.PI*s/180);
+        const x2 = cx + r*Math.cos(Math.PI*e/180), y2 = cy + r*Math.sin(Math.PI*e/180);
+        const p = document.createElementNS('http://www.w3.org/2000/svg','path');
+        p.setAttribute('d', `M${cx} ${cy}L${x1} ${y1}A${r} ${r} 0 0 1 ${x2} ${y2}Z`);
+        p.setAttribute('class','slice slice-empty');
+        p.onclick = () => { p.classList.toggle('slice-empty'); p.classList.toggle(currentFood==='chocolate'?'choco-selected':'slice-selected'); };
+        svg.appendChild(p);
+    }
+
+    function addRect(svg, x, y, w, h) {
+        const r = document.createElementNS('http://www.w3.org/2000/svg','rect');
+        r.setAttribute('x',x); r.setAttribute('y',y);
+        r.setAttribute('width',w-2); r.setAttribute('height',h-2);
+        r.setAttribute('rx','3');
+        r.setAttribute('class','slice slice-empty');
+        r.onclick = () => { r.classList.toggle('slice-empty'); r.classList.toggle('choco-selected'); };
+        svg.appendChild(r);
+    }
+
+    function verify() {
+        const sel = document.querySelectorAll('.slice-selected, .choco-selected').length;
+        if ((nObj*currentCuts) === (sel*dObj)) {
+            score += 10;
+            document.getElementById('score').textContent = score;
+            notify('¡Excelente! Fracción correcta ✨', 'var(--green)');
+            setTimeout(init, 1200);
+        } else {
+            let ideal = nObj*currentCuts/dObj;
+            let m = 'Casi! Elegiste '+sel+'/'+currentCuts+'.';
+            if (Number.isInteger(ideal)) m += ' Debes marcar '+ideal+'.';
+            notify(m, 'var(--red)');
+        }
+    }
+
+    function notify(txt, col) {
+        const t = document.getElementById('toast');
+        t.textContent = txt;
+        t.style.backgroundColor = col;
+        t.classList.add('show');
+        setTimeout(() => t.classList.remove('show'), 2500);
+    }
+
+    init();
+</script>
+</body>
+</html>
