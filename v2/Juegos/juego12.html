@@ -1,0 +1,529 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../Juegos/apple-design.css">
+<script src="../auth.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
+<script src="firebase-config.js"></script>
+<script src="../stats/rk-stats.js"></script>
+<script src="rk-feedback.js"></script>
+<title>Geometrix Builder | RakinMath</title>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0}
+body{font-family:var(--font-sans);height:100dvh;overflow:hidden;background:var(--bg);color:var(--text);-webkit-tap-highlight-color:transparent;user-select:none}
+
+.screen{display:none;flex-direction:column;height:100dvh;overflow:hidden;position:relative}
+.screen.active{display:flex}
+
+/* ═══ MENU ═══ */
+.menu-inner{flex:1;overflow-y:auto;padding:16px;display:flex;flex-direction:column;align-items:center;gap:14px}
+.menu-header{text-align:center}
+.menu-header .emoji{font-size:3rem;animation:popIn .6s var(--spring-default) both}
+.menu-header h1{font-size:1.5rem;font-weight:800;letter-spacing:-.03em;margin-top:8px}
+.menu-header p{font-size:.8125rem;color:var(--text-secondary);margin-top:4px;max-width:340px}
+.diff-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;width:100%;max-width:360px}
+.diff-card{background:var(--bg-card-solid);border:2px solid var(--border-strong);border-radius:var(--radius-sm);padding:16px 8px;text-align:center;cursor:pointer;transition:all .12s}
+.diff-card:active{transform:scale(.95)}
+.diff-card.sel{border-color:var(--accent);background:rgba(0,122,255,.04)}
+.diff-card .de{font-size:1.75rem;display:block;margin-bottom:4px}
+.diff-card h3{font-size:.875rem;font-weight:700}
+.diff-card p{font-size:.625rem;color:var(--text-tertiary);margin-top:2px}
+.play-btn{width:100%;max-width:360px;font-family:var(--font-sans);font-size:1rem;font-weight:700;padding:14px;border-radius:var(--radius-pill);border:none;background:var(--accent);color:#fff;cursor:pointer;box-shadow:0 4px 16px rgba(0,122,255,.3);transition:all .15s}
+.play-btn:active{transform:scale(.97)}
+
+/* ═══ GAME ═══ */
+.game-top{padding:10px 14px 0;display:flex;flex-direction:column;gap:6px}
+.gt-row{display:flex;align-items:center;justify-content:space-between;gap:6px;flex-wrap:wrap}
+.gt-pill{display:flex;align-items:center;gap:4px;font-size:.75rem;font-weight:700;background:var(--bg-card-solid);border:1px solid var(--border);border-radius:var(--radius-pill);padding:4px 12px}
+.gt-pill .v{color:var(--accent)}
+.timer-bar{width:100%;height:4px;border-radius:2px;background:var(--border);overflow:hidden}
+.timer-fill{height:100%;background:var(--green);transition:width .3s linear;border-radius:2px}
+.timer-fill.warn{background:var(--orange)}
+.timer-fill.danger{background:var(--red)}
+
+/* Challenge */
+.challenge-bar{padding:10px 14px;background:var(--bg-card-solid);border-bottom:1px solid var(--border);text-align:center}
+.challenge-bar .cb-title{font-size:.6875rem;font-weight:600;color:var(--text-secondary);text-transform:uppercase;letter-spacing:.04em}
+.challenge-bar .cb-val{font-size:1.125rem;font-weight:800;margin-top:2px}
+
+/* Canvas */
+.canvas-area{flex:1;display:flex;align-items:center;justify-content:center;padding:12px;position:relative}
+.grid-canvas{border:2px solid var(--border-strong);border-radius:var(--radius-md);background:var(--bg-card-solid);touch-action:none}
+.grid-canvas .grid-line{stroke:var(--border);stroke-width:.5}
+.grid-canvas .grid-line-major{stroke:var(--border-strong);stroke-width:1}
+.grid-canvas .shape-fill{fill:rgba(0,122,255,.15);stroke:var(--accent);stroke-width:2;stroke-linejoin:round}
+.grid-canvas .shape-dim{font-size:11px;font-weight:700;fill:var(--accent)}
+.grid-canvas .shape-guide{stroke:rgba(0,122,255,.2);stroke-width:1;stroke-dasharray:4 4;fill:none}
+.grid-canvas .grid-dot{fill:var(--accent);opacity:0;transition:opacity .15s;cursor:pointer}
+.grid-canvas .grid-dot:hover,.grid-canvas .grid-dot.hover{opacity:1}
+.grid-canvas .grid-dot.placed{opacity:1;fill:var(--accent)}
+.grid-canvas .grid-dot.active{opacity:1;fill:var(--green)}
+
+/* Controls */
+.ctrl-bar{padding:10px 14px;display:flex;gap:8px;align-items:center;flex-wrap:wrap;border-top:1px solid var(--border)}
+.ctrl-bar .ctrl-label{font-size:.6875rem;font-weight:700;color:var(--text-tertiary);text-transform:uppercase;letter-spacing:.04em;flex:1}
+.ctrl-btn{font-family:var(--font-sans);font-size:.8125rem;font-weight:700;padding:8px 14px;border-radius:var(--radius-pill);border:1.5px solid var(--border-strong);background:var(--bg-card-solid);color:var(--text);cursor:pointer;transition:all .12s}
+.ctrl-btn:active{transform:scale(.95)}
+.ctrl-btn.danger{border-color:var(--red);color:var(--red)}
+.ctrl-btn.danger:active{background:var(--red);color:#fff}
+
+/* Answer */
+.answer-bar{padding:10px 14px;display:flex;gap:8px;align-items:center;border-top:1px solid var(--border);background:var(--bg-card-solid)}
+.ans-group{display:flex;align-items:center;gap:6px}
+.ans-group label{font-size:.6875rem;font-weight:700;color:var(--text-secondary);white-space:nowrap}
+.ans-input{width:70px;font-family:var(--font-sans);font-size:1rem;font-weight:700;padding:8px 10px;border-radius:var(--radius-sm);border:2px solid var(--border-strong);background:var(--bg);color:var(--text);text-align:center;outline:none}
+.ans-input:focus{border-color:var(--accent)}
+.submit-btn{font-family:var(--font-sans);font-size:.9375rem;font-weight:700;padding:10px 20px;border-radius:var(--radius-pill);border:none;background:var(--green);color:#fff;cursor:pointer;transition:all .12s;box-shadow:0 2px 8px rgba(52,199,89,.3);margin-left:auto}
+.submit-btn:active{transform:scale(.95)}
+.submit-btn:disabled{opacity:.4;cursor:not-allowed}
+
+/* ═══ RESULTS ═══ */
+.res-inner{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;padding:20px;text-align:center}
+.res-emoji{font-size:3.5rem;animation:popIn .5s var(--spring-default) both}
+.res-title{font-size:1.5rem;font-weight:800;letter-spacing:-.03em}
+.res-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;width:100%;max-width:300px}
+.rc{background:var(--bg-card-solid);border:1px solid var(--border);border-radius:var(--radius-sm);padding:14px 8px;text-align:center}
+.rc .rv{font-size:1.375rem;font-weight:800}
+.rc .rl{font-size:.625rem;font-weight:600;color:var(--text-tertiary);text-transform:uppercase;margin-top:2px}
+.rc.g .rv{color:var(--green)}.rc.b .rv{color:var(--accent)}.rc.o .rv{color:var(--orange)}
+.res-btns{display:flex;gap:8px;margin-top:8px;flex-wrap:wrap;justify-content:center}
+.res-btns .play-btn{max-width:200px;font-size:.875rem;padding:11px 20px}
+.res-btns .btn-end{font-family:var(--font-sans);font-size:.875rem;font-weight:700;padding:11px 20px;border-radius:var(--radius-pill);border:1.5px solid var(--border-strong);background:var(--bg-card-solid);color:var(--text);cursor:pointer;transition:all .12s}
+
+@keyframes popIn{0%{opacity:0;transform:scale(.5)}100%{opacity:1;transform:scale(1)}}
+</style>
+</head>
+<body>
+
+<!-- ═══════ MENU ═══════ -->
+<div class="screen active" id="scr-menu">
+<button class="exit-btn" onclick="window.location.href='menu.html'" style="position:absolute;top:12px;right:12px;z-index:10">Salir</button>
+<div class="menu-inner">
+<div class="menu-header">
+<div class="emoji">📐</div>
+<h1>Geometrix Builder</h1>
+<p>Construye figuras geométricas en una grilla. Calcula perímetro y área como un verdadero arquitecto.</p>
+</div>
+
+<div class="sec" style="width:100%;max-width:360px">
+<div class="sec-title">Modo de juego</div>
+<div class="diff-grid" id="diffGrid">
+<div class="diff-card sel" data-d="construir" onclick="setDiff(this)">
+<span class="de">🏗️</span><h3>Construir</h3><p>Dibuja la figura que se pide en la grilla</p>
+</div>
+<div class="diff-card" data-d="perimetro" onclick="setDiff(this)">
+<span class="de">📏</span><h3>Perímetro</h3><p>Calcula el perímetro de la figura</p>
+</div>
+<div class="diff-card" data-d="area" onclick="setDiff(this)">
+<span class="de">📐</span><h3>Área</h3><p>Cuenta los cuadritos para el área</p>
+</div>
+<div class="diff-card" data-d="ambos" onclick="setDiff(this)">
+<span class="de">🧩</span><h3>Perímetro + Área</h3><p>Calcula ambos valores</p>
+</div>
+</div>
+</div>
+
+<button class="play-btn" onclick="goGame()">Construir 🏗️</button>
+</div>
+</div>
+
+<!-- ═══════ GAME ═══════ -->
+<div class="screen" id="scr-game">
+<div class="game-top">
+<div class="gt-row">
+<div class="gt-pill"><span>🏆</span><span class="v" id="g-score">0</span> pts</div>
+<div class="gt-pill"><span>📋</span><span class="v" id="g-round">1</span>/8</div>
+<div class="gt-pill"><span>⏱️</span><span class="v" id="g-time">2:00</span></div>
+</div>
+<div class="timer-bar"><div class="timer-fill" id="t-fill" style="width:100%"></div></div>
+</div>
+
+<div class="challenge-bar">
+<div class="cb-title" id="cb-title">Tu reto:</div>
+<div class="cb-val" id="cb-val">—</div>
+</div>
+
+<div class="canvas-area">
+<canvas class="grid-canvas" id="gridCanvas"></canvas>
+</div>
+
+<div class="ctrl-bar">
+<span class="ctrl-label" id="ctrl-info">Toca la grilla para dibujar</span>
+<button class="ctrl-btn danger" onclick="clearCanvas()">Borrar todo</button>
+<button class="ctrl-btn" onclick="undoLast()">Deshacer</button>
+</div>
+
+<div class="answer-bar" id="answer-bar">
+<div class="ans-group">
+<label for="ans-p">Perímetro:</label>
+<input class="ans-input" type="number" id="ans-p" min="0" max="100" placeholder="?">
+</div>
+<div class="ans-group">
+<label for="ans-a">Área:</label>
+<input class="ans-input" type="number" id="ans-a" min="0" max="100" placeholder="?">
+</div>
+<button class="submit-btn" id="submit-btn" onclick="checkAnswer()">Verificar ✓</button>
+</div>
+</div>
+
+<!-- ═══════ RESULTS ═══════ -->
+<div class="screen" id="scr-res">
+<div class="res-inner">
+<div class="res-emoji" id="r-em">🎉</div>
+<div class="res-title" id="r-ti">¡Arquitecto genial!</div>
+<div class="res-grid">
+<div class="rc g"><div class="rv" id="r-correct">0</div><div class="rl">Correctas</div></div>
+<div class="rc b"><div class="rv" id="r-streak">0</div><div class="rl">Racha</div></div>
+<div class="rc o"><div class="rv" id="r-acc">0%</div><div class="rl">Precisión</div></div>
+<div class="rc"><div class="rv" id="r-score">0</div><div class="rl">Puntaje</div></div>
+</div>
+<div class="res-btns">
+<button class="play-btn" onclick="goGame()">Construir otra vez</button>
+<button class="btn-end" onclick="goMenu()">Cambiar modo</button>
+</div>
+</div>
+</div>
+
+<script>
+/* ═══ STATE ═══ */
+var diff='construir',tL=120,tmr=null;
+var score=0,roundNum=0,maxRounds=8;
+var correct=0,streak=0,bestStreak=0;
+var currentQ=null,answered=false;
+var gridSize=10,cellSize=32;
+var dots=[];// placed dots [{x,y}]
+var canvas,ctx;
+
+/* ═══ DIFFICULTY ═══ */
+function setDiff(el){
+document.querySelectorAll('.diff-card').forEach(function(c){c.classList.remove('sel')});
+el.classList.add('sel');diff=el.dataset.d;
+if(diff==='construir'){tL=120;maxRounds=8}
+else{tL=100;maxRounds=8}
+}
+
+/* ═══ SCREENS ═══ */
+function showScr(id){document.querySelectorAll('.screen').forEach(function(s){s.classList.remove('active')});document.getElementById(id).classList.add('active')}
+function goMenu(){showScr('scr-menu')}
+function goGame(){
+score=0;roundNum=0;correct=0;streak=0;bestStreak=0;answered=false;
+RK.Feedback.reset();
+showScr('scr-game');
+canvas=document.getElementById('gridCanvas');
+ctx=canvas.getContext('2d');
+setupCanvas();
+updateHUD();
+startTimer();
+nextRound();
+}
+function goRes(){
+clearInterval(tmr);
+var acc=roundNum>0?Math.round(correct/roundNum*100):0;
+document.getElementById('r-correct').textContent=correct;
+document.getElementById('r-streak').textContent=bestStreak;
+document.getElementById('r-acc').textContent=acc+'%';
+document.getElementById('r-score').textContent=score;
+document.getElementById('r-em').textContent=acc>=80?'🎉':acc>=50?'👍':'💪';
+document.getElementById('r-ti').textContent=acc>=80?'¡Arquitecto genial!':acc>=50?'¡Buen diseño!':'Sigue construyendo';
+try{if(typeof RK!=='undefined'&&RK.Stats)RK.Stats.saveGameResult('juego12',{score:score,rounds:roundNum,totalTime:(diff==='construir'?120:100)-tL,correct:correct,wrong:roundNum-correct,errors:['geometria']})}catch(e){}
+showScr('scr-res');
+}
+
+/* ═══ TIMER ═══ */
+function startTimer(){
+uTime();
+tmr=setInterval(function(){tL-=1;if(tL<=0){tL=0;clearInterval(tmr);goRes();return}uTime()},1000);
+}
+function uTime(){
+var m=Math.floor(tL/60),s=tL%60;
+document.getElementById('g-time').textContent=m+':'+(s<10?'0':'')+s;
+var pct=tL/(diff==='construir'?120:100)*100;
+var f=document.getElementById('t-fill');
+f.style.width=pct+'%';
+f.className='timer-fill'+(tL<=10?' danger':tL<=20?' warn':'');
+}
+
+/* ═══ HUD ═══ */
+function updateHUD(){
+document.getElementById('g-score').textContent=score;
+document.getElementById('g-round').textContent=Math.min(roundNum+1,maxRounds);
+}
+
+/* ═══ CANVAS SETUP ═══ */
+function setupCanvas(){
+var wrap=document.querySelector('.canvas-area');
+var maxW=Math.min(wrap.clientWidth-24,gridSize*cellSize+4);
+cellSize=Math.floor((maxW-4)/gridSize);
+var sz=gridSize*cellSize+4;
+canvas.width=sz;canvas.height=sz;
+canvas.style.width=sz+'px';canvas.style.height=sz+'px';
+dots=[];
+drawGrid();
+canvas.onclick=function(e){
+if(answered)return;
+var rect=canvas.getBoundingClientRect();
+var x=Math.round((e.clientX-rect.left-2)/cellSize);
+var y=Math.round((e.clientY-rect.top-2)/cellSize);
+if(x<0||x>=gridSize||y<0||y>=gridSize)return;
+// Toggle dot
+var idx=-1;
+for(var i=0;i<dots.length;i++){if(dots[i].x===x&&dots[i].y===y){idx=i;break}}
+if(idx>=0){dots.splice(idx,1)}else{dots.push({x:x,y:y})}
+drawGrid();
+};
+canvas.ontouchstart=function(e){
+e.preventDefault();
+if(answered)return;
+var touch=e.touches[0];
+var rect=canvas.getBoundingClientRect();
+var x=Math.round((touch.clientX-rect.left-2)/cellSize);
+var y=Math.round((touch.clientY-rect.top-2)/cellSize);
+if(x<0||x>=gridSize||y<0||y>=gridSize)return;
+var idx=-1;
+for(var i=0;i<dots.length;i++){if(dots[i].x===x&&dots[i].y===y){idx=i;break}}
+if(idx>=0){dots.splice(idx,1)}else{dots.push({x:x,y:y})}
+drawGrid();
+};
+}
+
+function drawGrid(){
+ctx.clearRect(0,0,canvas.width,canvas.height);
+var cs=getComputedStyle(document.documentElement);
+var border=cs.getPropertyValue('--border').trim()||'#e5e5ea';
+var borderStrong=cs.getPropertyValue('--border-strong').trim()||'#c7c7cc';
+var accent=cs.getPropertyValue('--accent').trim()||'#007aff';
+// Grid lines
+ctx.strokeStyle=border;
+ctx.lineWidth=0.5;
+for(var i=0;i<=gridSize;i++){
+ctx.beginPath();ctx.moveTo(i*cellSize+2,2);ctx.lineTo(i*cellSize+2,gridSize*cellSize+2);ctx.stroke();
+ctx.beginPath();ctx.moveTo(2,i*cellSize+2);ctx.lineTo(gridSize*cellSize+2,i*cellSize+2);ctx.stroke();
+}
+// Major lines every 5
+ctx.strokeStyle=borderStrong;
+ctx.lineWidth=1;
+for(var j=0;j<=gridSize;j+=5){
+ctx.beginPath();ctx.moveTo(j*cellSize+2,2);ctx.lineTo(j*cellSize+2,gridSize*cellSize+2);ctx.stroke();
+ctx.beginPath();ctx.moveTo(2,j*cellSize+2);ctx.lineTo(gridSize*cellSize+2,j*cellSize+2);ctx.stroke();
+}
+// Dots
+dots.forEach(function(d){
+ctx.fillStyle='rgba(0,122,255,0.25)';
+ctx.fillRect(d.x*cellSize+2,d.y*cellSize+2,cellSize,cellSize);
+ctx.strokeStyle=accent;
+ctx.lineWidth=2;
+ctx.strokeRect(d.x*cellSize+2,d.y*cellSize+2,cellSize,cellSize);
+});
+// Guide shape if present
+if(currentQ&&currentQ.guide){
+ctx.strokeStyle='rgba(0,122,255,0.2)';
+ctx.lineWidth=1;
+ctx.setLineDash([4,4]);
+currentQ.guide.forEach(function(s){
+ctx.strokeRect(s.x*cellSize+2+2,s.y*cellSize+2+2,cellSize-4,cellSize-4);
+});
+ctx.setLineDash([]);
+}
+}
+
+function clearCanvas(){dots=[];drawGrid()}
+function undoLast(){if(dots.length>0){dots.pop();drawGrid()}}
+
+/* ═══ SHAPE GENERATORS ═══ */
+function genRect(){
+var w=Math.floor(Math.random()*5)+2;
+var h=Math.floor(Math.random()*5)+2;
+var ox=Math.floor(Math.random()*(gridSize-w));
+var oy=Math.floor(Math.random()*(gridSize-h));
+var pts=[];
+for(var x=ox;x<ox+w;x++)for(var y=oy;y<oy+h;y++)pts.push({x:x,y:y});
+return{type:'rect',w:w,h:h,perim:2*(w+h),area:w*h,guide:pts};
+}
+
+function genLShape(){
+var w=Math.floor(Math.random()*3)+3;
+var h=Math.floor(Math.random()*3)+3;
+var cutW=Math.floor(Math.random()*2)+1;
+var cutH=Math.floor(Math.random()*2)+1;
+var ox=Math.floor(Math.random()*(gridSize-w));
+var oy=Math.floor(Math.random()*(gridSize-h));
+var pts=[];
+for(var x=ox;x<ox+w;x++)for(var y=oy;y<oy+h;y++){
+// cut out top-right corner
+if(x>=ox+w-cutW&&y<oy+cutH)continue;
+pts.push({x:x,y:y});
+}
+// Calculate actual perimeter by tracing edges
+var perim=calcPerimeter(pts);
+var area=pts.length;
+return{type:'L',perim:perim,area:area,guide:pts};
+}
+
+function genTShape(){
+var baseW=Math.floor(Math.random()*3)+3;
+var baseH=2;
+var topW=Math.floor(Math.random()*2)+2;
+var topH=2;
+var ox=Math.floor(Math.random()*(gridSize-Math.max(baseW,topW)));
+var oy=Math.floor(Math.random()*(gridSize-baseH-topH));
+var pts=[];
+var topOx=ox+Math.floor((baseW-topW)/2);
+// Base
+for(var x=ox;x<ox+baseW;x++)for(var y=oy+topH;y<oy+topH+baseH;y++)pts.push({x:x,y:y});
+// Top centered
+for(var c=topOx;c<topOx+topW;c++)for(var d=oy;d<oy+topH;d++)pts.push({x:c,y:d});
+var perim=calcPerimeter(pts);
+var area=pts.length;
+return{type:'T',perim:perim,area:area,guide:pts};
+}
+
+function genStairs(){
+var steps=Math.floor(Math.random()*3)+3;
+var ox=Math.floor(Math.random()*(gridSize-steps));
+var oy=Math.floor(Math.random()*(gridSize-steps));
+var pts=[];
+for(var s=0;s<steps;s++){
+for(var x=ox;x<=ox+s;x++)pts.push({x:x,y:oy+steps-1-s});
+}
+var perim=calcPerimeter(pts);
+var area=pts.length;
+return{type:'escalera',perim:perim,area:area,guide:pts};
+}
+
+function calcPerimeter(pts){
+// Create a set for quick lookup
+var set={};
+pts.forEach(function(p){set[p.x+','+p.y]=true});
+var edges=0;
+pts.forEach(function(p){
+// Check 4 sides
+if(!set[(p.x-1)+','+p.y])edges++;
+if(!set[(p.x+1)+','+p.y])edges++;
+if(!set[p.x+','+(p.y-1)])edges++;
+if(!set[p.x+','+(p.y+1)])edges++;
+});
+return edges;
+}
+
+/* ═══ NEXT ROUND ═══ */
+function nextRound(){
+if(roundNum>=maxRounds){goRes();return}
+answered=false;
+dots=[];
+document.getElementById('ans-p').value='';
+document.getElementById('ans-a').value='';
+document.getElementById('submit-btn').disabled=false;
+document.getElementById('submit-btn').textContent='Verificar ✓';
+
+// Generate shape
+var shapes=[genRect,genLShape,genTShape,genStairs];
+var gen=shapes[Math.floor(Math.random()*shapes.length)];
+currentQ=gen();
+
+var shapeNames={rect:'Rectángulo',L:'Figura en L',T:'Figura en T',escalera:'Escalera'};
+
+if(diff==='construir'){
+document.getElementById('cb-title').textContent='Construye esta figura:';
+document.getElementById('cb-val').textContent=shapeNames[currentQ.type]+' ('+currentQ.area+' cuadritos)';
+document.getElementById('ans-p').style.display='none';
+document.getElementById('ans-a').style.display='none';
+document.querySelector('.ans-group label[for="ans-p"]').style.display='none';
+document.querySelector('.ans-group label[for="ans-a"]').style.display='none';
+document.getElementById('ctrl-info').textContent='Dibuja la figura en la grilla';
+}else if(diff==='perimetro'){
+document.getElementById('cb-title').textContent='¿Cuál es el perímetro?';
+document.getElementById('cb-val').textContent=shapeNames[currentQ.type]+' (lados de 1 unidad)';
+document.getElementById('ans-p').style.display='';
+document.getElementById('ans-a').style.display='none';
+document.querySelector('.ans-group label[for="ans-p"]').style.display='';
+document.querySelector('.ans-group label[for="ans-a"]').style.display='none';
+document.getElementById('ctrl-info').textContent='Cuenta los lados expuestos';
+}else if(diff==='area'){
+document.getElementById('cb-title').textContent='¿Cuál es el área?';
+document.getElementById('cb-val').textContent=shapeNames[currentQ.type]+' (cuenta los cuadritos)';
+document.getElementById('ans-p').style.display='none';
+document.getElementById('ans-a').style.display='';
+document.querySelector('.ans-group label[for="ans-p"]').style.display='none';
+document.querySelector('.ans-group label[for="ans-a"]').style.display='';
+document.getElementById('ctrl-info').textContent='Cuenta los cuadritos dentro';
+}else{
+document.getElementById('cb-title').textContent='Perímetro y área:';
+document.getElementById('cb-val').textContent=shapeNames[currentQ.type]+' (lados y cuadritos)';
+document.getElementById('ans-p').style.display='';
+document.getElementById('ans-a').style.display='';
+document.querySelector('.ans-group label[for="ans-p"]').style.display='';
+document.querySelector('.ans-group label[for="ans-a"]').style.display='';
+document.getElementById('ctrl-info').textContent='Calcula perímetro y área';
+}
+
+drawGrid();
+updateHUD();
+}
+
+/* ═══ CHECK ANSWER ═══ */
+function checkAnswer(){
+if(answered)return;
+
+if(diff==='construir'){
+// Check if user drew the same shape
+var userSet={};
+dots.forEach(function(d){userSet[d.x+','+d.y]=true});
+var guideSet={};
+currentQ.guide.forEach(function(d){guideSet[d.x+','+d.y]=true});
+var match=true;
+if(dots.length!==currentQ.guide.length){match=false}
+else{
+for(var k in guideSet){if(!userSet[k]){match=false;break}}
+}
+answered=true;
+if(match){correct++;streak++;bestStreak=Math.max(bestStreak,streak);score+=10+streak*2}
+else{streak=0;score=Math.max(0,score-3)}
+roundNum++;
+RK.Feedback.show(match?'success':'error',match?null:'No coincide');
+setTimeout(function(){nextRound()},1200);
+return;
+}
+
+var pVal=parseInt(document.getElementById('ans-p').value);
+var aVal=parseInt(document.getElementById('ans-a').value);
+if(diff==='perimetro'&&isNaN(pVal))return;
+if(diff==='area'&&isNaN(aVal))return;
+if(diff==='ambos'&&(isNaN(pVal)||isNaN(aVal)))return;
+
+answered=true;
+var isCorrect=false;
+if(diff==='perimetro'){isCorrect=pVal===currentQ.perim}
+else if(diff==='area'){isCorrect=aVal===currentQ.area}
+else{isCorrect=pVal===currentQ.perim&&aVal===currentQ.area}
+
+if(isCorrect){correct++;streak++;bestStreak=Math.max(bestStreak,streak);score+=10+streak*2}
+else{streak=0;score=Math.max(0,score-3)}
+roundNum++;
+var hint='';
+if(!isCorrect){
+if(diff==='perimetro')hint='Perímetro: '+currentQ.perim;
+else if(diff==='area')hint='Área: '+currentQ.area;
+else hint='P: '+currentQ.perim+'  A: '+currentQ.area;
+}
+RK.Feedback.show(isCorrect?'success':'error',isCorrect?null:hint);
+setTimeout(function(){nextRound()},1400);
+}
+
+/* ═══ KEYBOARD ═══ */
+document.addEventListener('keydown',function(e){
+if(e.key==='Enter'){
+var el=document.getElementById('submit-btn');
+if(el&&el.offsetParent!==null&&!el.disabled)el.click();
+}
+});
+
+/* ═══ INIT ═══ */
+</script>
+</body>
+</html>

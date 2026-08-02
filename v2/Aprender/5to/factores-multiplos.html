@@ -1,0 +1,273 @@
+<?<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RakinMath " Factores y Múltiplos</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../apple-design.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"></script>
+<script defer src="../rk-utils.js"></script>
+<style>
+body{display:flex;flex-direction:column;min-height:100vh}
+.content{flex:1;max-width:820px;width:100%;margin:0 auto;padding:24px}
+.back-link{display:inline-flex;align-items:center;gap:6px;font-size:.875rem;font-weight:600;color:var(--text-secondary);text-decoration:none;padding:8px 16px;border-radius:980px;background:var(--bg-card);border:1px solid var(--border-strong);transition:transform .15s;margin-bottom:24px}
+.back-link:active{transform:scale(.95)}
+.section{margin-bottom:44px;opacity:0;animation:slideUp .5s var(--spring-default) both}
+.section:nth-child(2){animation-delay:80ms}.section:nth-child(3){animation-delay:160ms}.section:nth-child(4){animation-delay:240ms}.section:nth-child(5){animation-delay:320ms}
+.section-title{font-size:1.5rem;font-weight:700;letter-spacing:-.03em;margin-bottom:8px}
+.section-subtitle{font-size:1rem;color:var(--text-secondary);margin-bottom:20px;line-height:1.6}
+.concept-box{border-radius:var(--radius-md);padding:24px;margin-bottom:20px}
+.concept-box.green{background:linear-gradient(135deg,rgba(52,199,89,.06),rgba(52,199,89,.02));border:1px solid rgba(52,199,89,.15)}
+.concept-box h3{font-size:1.125rem;font-weight:700;margin-bottom:8px}
+.concept-box p{font-size:.9375rem;color:var(--text-secondary);line-height:1.7}
+.tip-box{background:linear-gradient(135deg,rgba(175,82,222,.06),rgba(175,82,222,.02));border:1px solid rgba(175,82,222,.15);border-radius:var(--radius-md);padding:20px;margin:16px 0}
+.tip-box h4{font-size:.9375rem;font-weight:700;color:var(--purple);margin-bottom:6px}
+.tip-box p{font-size:.875rem;color:var(--text-secondary);line-height:1.6}
+.card{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-lg);padding:28px 24px 24px;margin-bottom:20px}
+.card h3{font-size:1.125rem;font-weight:700;margin-bottom:16px}
+.quiz-box{background:linear-gradient(135deg,rgba(0,122,255,.06),rgba(0,122,255,.02));border:1px solid rgba(0,122,255,.15);border-radius:var(--radius-md);padding:24px}
+.quiz-box h4{font-size:1rem;font-weight:700;margin-bottom:12px}
+.quiz-problem{font-size:1.5rem;font-weight:700;text-align:center;margin:16px 0 4px;line-height:1.5}
+.quiz-row{display:flex;align-items:center;gap:12px;justify-content:center;flex-wrap:wrap;margin-top:12px}
+.quiz-input{width:100px;padding:10px;border-radius:var(--radius-sm);border:2px solid var(--border-strong);background:var(--bg-card-solid);font-family:var(--font-sans);font-size:1.125rem;font-weight:700;text-align:center;color:var(--text);outline:none}
+.quiz-input:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(0,122,255,.1)}
+.feedback{font-size:.875rem;font-weight:600;margin-top:10px;min-height:20px;text-align:center}
+.feedback.correct{color:var(--green)}.feedback.wrong{color:var(--red)}
+.btn{font-family:var(--font-sans);font-size:.875rem;font-weight:600;padding:8px 18px;border-radius:980px;border:none;cursor:pointer;transition:transform .12s,opacity .12s}
+.btn:active{transform:scale(.95)}
+.btn:disabled{opacity:.4;cursor:not-allowed;transform:none}
+.btn-primary{background:var(--accent);color:white}
+.btn-ghost{background:var(--bg-card-solid);color:var(--text);border:1px solid var(--border-strong)}
+.math-inputs{display:flex;gap:10px;align-items:center;justify-content:center;margin-bottom:20px;flex-wrap:wrap}
+.math-input{width:80px;text-align:center;font-size:1.25rem;font-weight:700;padding:8px 10px;border-radius:var(--radius-sm);border:2px solid var(--border-strong);background:var(--bg-card-solid);color:var(--text);outline:none;font-family:var(--font-sans);transition:border-color .2s,box-shadow .2s}
+.math-input:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(0,122,255,.1)}
+.result-box{font-size:1rem;font-weight:600;text-align:center;padding:16px;border-radius:var(--radius-md);background:rgba(52,199,89,.06);border:1px solid rgba(52,199,89,.15);margin-top:12px;line-height:1.8}
+.tabs{display:flex;gap:8px;margin-bottom:16px;justify-content:center}
+.tab{font-family:var(--font-sans);font-size:.875rem;font-weight:600;padding:8px 18px;border-radius:980px;border:none;cursor:pointer;transition:all .15s;background:var(--bg-card-solid);color:var(--text-secondary);border:1px solid var(--border-strong)}
+.tab.active{background:var(--accent);color:white;border-color:var(--accent)}
+.math-display{background:rgba(0,122,255,.04);border:1px solid rgba(0,122,255,.12);border-radius:var(--radius-md);padding:16px 20px;margin:16px 0;text-align:center;font-size:1.1rem}
+@keyframes slideUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+@media(max-width:640px){.content{padding:16px}.math-input{width:64px;font-size:1.1rem;padding:6px}.card{padding:20px 16px 16px}}
+</style>
+</head>
+<body>
+<nav class="nav"><a href="menu.html" class="nav-title"><img src="../../Recursos/LogoRakinMath.png" alt="RakinMath" style="height:24px;width:auto"></a><a href="menu.html" class="exit-btn">Volver</a></nav>
+<div class="content">
+<a href="menu.html" class="back-link">? Volver a Menú</a>
+
+<div class="section">
+<div class="section-title">🔍 Factores y Múltiplos</div>
+<div class="section-subtitle">Los múltiplos son el resultado de multiplicar un número por 1, 2, 3... Los factores son los números que dividen exactamente a otro número.</div>
+<div class="concept-box green">
+<h3>📌 ¿Qué son los múltiplos?</h3>
+<p>Los múltiplos de un número son los resultados que obtienes cuando lo multiplicas por $1, 2, 3, 4, 5, \dots$</p>
+<div class="math-display">
+$$\text{Múltiplos de } 4: \quad 4 \times 1=4, \; 4 \times 2=8, \; 4 \times 3=12, \; 4 \times 4=16, \; 4 \times 5=20, \dots$$
+</div>
+<p>$\rightarrow 4, 8, 12, 16, 20, 24, 28, 32, 36, 40, \dots$</p>
+<p style="margin-top:8px"><strong>💡 Dato:</strong> ¡El $0$ es múltiplo de cualquier número! Y un número siempre es múltiplo de sí mismo.</p>
+</div>
+
+<div class="concept-box green">
+<h3>📌 ¿Qué son los factores?</h3>
+<p>Los factores de un número son todos los números que lo dividen exacto (sin residuo).</p>
+<p style="margin-top:8px"><strong>Factores de $12$:</strong></p>
+<p>$12 \div 1 = 12$ ✓ $\rightarrow 1$ es factor</p>
+<p>$12 \div 2 = 6$ ✓ $\rightarrow 2$ es factor</p>
+<p>$12 \div 3 = 4$ ✓ $\rightarrow 3$ es factor</p>
+<p>$12 \div 4 = 3$ ✓ $\rightarrow 4$ es factor</p>
+<p>$12 \div 5 = 2{,}4$ ✗ $\rightarrow 5$ no es factor</p>
+<div class="math-display">
+$$\text{Factores de } 12: \quad \{1, 2, 3, 4, 6, 12\}$$
+</div>
+</div>
+
+<div class="concept-box green">
+<h3>🇨🇱 Ejemplo chileno</h3>
+<p>Tienes <strong>24 estudiantes</strong> y quieres formar equipos. ¿De cuántos pueden ser los equipos para que no sobre nadie?</p>
+<p style="margin-top:8px">Los factores de $24$ te dan las opciones: $1, 2, 3, 4, 6, 8, 12, 24$</p>
+<p>$\rightarrow$ Equipos de $2, 3, 4, 6, 8, 12$ o $24$ estudiantes</p>
+</div>
+
+<div class="tip-box">
+<h4>💡 Tip del profesor</h4>
+<p>Los múltiplos <strong>crecen</strong> ($4, 8, 12, 16, \dots$) mientras que los factores son <strong>menores o iguales</strong> al número. Para encontrar factores, prueba a dividir el número por cada número del $1$ hasta él mismo.</p>
+</div>
+</div>
+
+<div class="section">
+<div class="section-title">🔢 Prueba interactiva</div>
+<div class="card">
+<div class="tabs">
+<button class="tab active" id="tabMult" onclick="showTab('mult')">Múltiplos</button>
+<button class="tab" id="tabFact" onclick="showTab('fact')">Factores</button>
+</div>
+<div id="multPanel">
+<h3 style="text-align:center;margin-bottom:12px">Múltiplos de un número</h3>
+<div class="math-inputs">
+<input class="math-input" type="number" min="1" max="100" value="4" id="multNum" oninput="showMult()">
+<span class="math-op">→</span>
+<span style="font-size:.875rem;color:var(--text-secondary)">Primeros 10 múltiplos</span>
+</div>
+<div class="result-box" id="multResult"></div>
+</div>
+<div id="factPanel" style="display:none">
+<h3 style="text-align:center;margin-bottom:12px">Factores de un número</h3>
+<div class="math-inputs">
+<input class="math-input" type="number" min="1" max="1000" value="24" id="factNum" oninput="showFact()">
+<span class="math-op">→</span>
+<span style="font-size:.875rem;color:var(--text-secondary)">Todos los factores</span>
+</div>
+<div class="result-box" id="factResult"></div>
+</div>
+</div>
+</div>
+
+<div class="section">
+<div class="quiz-box">
+<h4>📝 Resuelve sin ayuda</h4>
+<p style="color:var(--text-secondary);margin-bottom:4px;font-size:.9375rem" id="qInstruction"></p>
+<div class="quiz-problem" id="qProblem"></div>
+<div class="quiz-row">
+<input class="quiz-input" type="text" id="qAnswer" placeholder="?" style="width:200px" onkeydown="if(event.key==='Enter')checkQuiz()">
+<button class="btn btn-primary" onclick="checkQuiz()">Comprobar</button>
+</div>
+<div class="feedback" id="qFeedback"></div>
+<div style="margin-top:14px;text-align:center"><button class="btn btn-ghost" onclick="newQuiz()">Nueva pregunta</button></div>
+</div>
+</div>
+
+<div class="section">
+<div class="videos-box">
+<h4>🎬 Videos de apoyo</h4>
+<p style="color:var(--text-secondary);margin-bottom:14px;font-size:.875rem">Agrega links de YouTube para reforzar lo aprendido:</p>
+<div id="videosContainer">
+<div class="video-placeholder" onclick="addVideoSlot()">
+<span style="font-size:1.5rem;display:block;margin-bottom:6px">▶️</span>
+Haz clic aquí para agregar un video de YouTube
+</div>
+</div>
+</div>
+</div>
+
+</div>
+
+<script>
+function showTab(t){
+if(t==='mult'){
+document.getElementById('multPanel').style.display='';
+document.getElementById('factPanel').style.display='none';
+document.getElementById('tabMult').className='tab active';
+document.getElementById('tabFact').className='tab';
+}else{
+document.getElementById('multPanel').style.display='none';
+document.getElementById('factPanel').style.display='';
+document.getElementById('tabMult').className='tab';
+document.getElementById('tabFact').className='tab active';
+}
+}
+
+function showMult(){
+var n=parseInt(document.getElementById('multNum').value);
+if(isNaN(n)||n<=0){document.getElementById('multResult').textContent='"';return;}
+var res='';
+for(var i=1;i<=10;i++){
+res+=n+' × '+i+' = <strong>'+(n*i)+'</strong>';
+if(i<10)res+=' &nbsp;·&nbsp ';
+}
+document.getElementById('multResult').innerHTML=res;
+}
+
+function showFact(){
+var n=parseInt(document.getElementById('factNum').value);
+if(isNaN(n)||n<=0){document.getElementById('factResult').textContent='"';return;}
+var factors=[];
+for(var i=1;i<=Math.sqrt(n);i++){
+if(n%i===0){
+factors.push(i);
+if(i!==n/i)factors.push(n/i);
+}
+}
+factors.sort(function(a,b){return a-b});
+var res='<strong>Factores de '+n+':</strong> '+factors.join(', ');
+res+='<br><strong>Cantidad:</strong> '+factors.length+' factores';
+document.getElementById('factResult').innerHTML=res;
+}
+
+var qType,qNum,qAnswer;
+function newQuiz(){
+var isMult=Math.random()>0.5;
+if(isMult){
+qType='mult';
+qNum=Math.floor(Math.random()*12)+2;
+var which=Math.floor(Math.random()*10)+1;
+qAnswer=qNum*which;
+document.getElementById('qInstruction').textContent='¿Cuál es el múltiplo #'+which+' de...?';
+document.getElementById('qProblem').textContent=qNum+' × '+which+' = ?';
+}else{
+qType='fact';
+qNum=Math.floor(Math.random()*96)+4;
+var fs=[];
+for(var i=1;i<=Math.sqrt(qNum);i++){
+if(qNum%i===0){
+fs.push(i);
+if(i!==qNum/i)fs.push(qNum/i);
+}
+}
+fs.sort(function(a,b){return a-b});
+qAnswer=fs.join(',');
+document.getElementById('qInstruction').textContent='Escribe los factores separados por coma';
+document.getElementById('qProblem').textContent='Factores de '+qNum;
+}
+document.getElementById('qAnswer').value='';
+document.getElementById('qFeedback').textContent='';
+document.getElementById('qFeedback').className='feedback';
+}
+
+function checkQuiz(){
+var ans=document.getElementById('qAnswer').value.trim().replace(/\s/g,'');
+var fb=document.getElementById('qFeedback');
+var correct=String(qAnswer).replace(/\s/g,'');
+if(ans===correct){
+fb.textContent='¡Correcto! La respuesta es: '+qAnswer;
+fb.className='feedback correct';
+setTimeout(newQuiz,2000);
+}else if(!ans){
+fb.textContent='Escribe tu respuesta';
+fb.className='feedback wrong';
+}else{
+fb.textContent=qType==='mult'?'No es correcto. Recuerda multiplicar '+qNum+' por el número indicado.':'No es correcto. Revisa qué números dividen exacto a '+qNum+'.';
+fb.className='feedback wrong';
+}
+}
+
+function addVideoSlot(){
+var c=document.getElementById('videosContainer');
+var ph=c.querySelector('.video-placeholder');
+if(ph)ph.remove();
+var slot=document.createElement('div');
+slot.className='video-slot';
+slot.innerHTML='<input type="text" placeholder="Pega el link de YouTube aquí..."><button class="remove-btn" onclick="this.parentElement.remove();if(!document.querySelector(\'#videosContainer .video-slot\'))resetVideos()">✕</button>';
+c.appendChild(slot);
+var addBtn=document.createElement('div');
+addBtn.className='add-video-btn';
+addBtn.textContent='+ Agregar otro video';
+addBtn.onclick=addVideoSlot;
+c.appendChild(addBtn);
+}
+
+function resetVideos(){
+document.getElementById('videosContainer').innerHTML='<div class="video-placeholder" onclick="addVideoSlot()"><span style="font-size:1.5rem;display:block;margin-bottom:6px">▶️</span>Haz clic aquí para agregar un video de YouTube</div>';
+}
+
+showMult();
+showFact();
+newQuiz();
+</script>
+</body>
+</html>

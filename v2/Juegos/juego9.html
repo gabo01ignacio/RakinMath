@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="apple-design.css">
+<script src="../auth.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
+<script src="firebase-config.js"></script>
+<script src="../stats/rk-stats.js"></script>
+<title>Laboratorio de Pociones | RakinMath</title>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0}
+body{font-family:var(--font-sans);height:100dvh;overflow:hidden;background:var(--bg);color:var(--text);-webkit-tap-highlight-color:transparent;user-select:none}
+
+/* ═══ SCREENS ═══ */
+.screen{display:none;flex-direction:column;height:100dvh;overflow:hidden;position:relative}
+.screen.active{display:flex}
+
+/* ═══ NAV ═══ */
+.nav{padding:10px 16px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--border);flex-shrink:0}
+.nav-title{display:flex;align-items:center;gap:8px;font-size:1rem;font-weight:700;color:var(--text);text-decoration:none}
+.exit-btn{font-family:var(--font-sans);font-size:.8125rem;font-weight:600;padding:6px 14px;border-radius:980px;border:1.5px solid var(--red);background:rgba(255,59,48,.06);color:var(--red);cursor:pointer;display:flex;align-items:center;gap:4px;transition:all .12s;text-decoration:none}
+.exit-btn:active{transform:scale(.95);background:rgba(255,59,48,.12)}
+
+/* ═══ MENU ═══ */
+.menu-inner{flex:1;overflow-y:auto;padding:16px;display:flex;flex-direction:column;align-items:center;gap:12px}
+.menu-header{text-align:center;margin-bottom:4px}
+.menu-header .emoji{font-size:2.5rem}
+.menu-header h1{font-size:1.375rem;font-weight:800;letter-spacing:-.03em;margin-top:4px}
+.menu-header p{font-size:.8125rem;color:var(--text-secondary);margin-top:2px}
+.sec{width:100%;max-width:400px}
+.sec-title{font-size:.6875rem;font-weight:700;color:var(--text-tertiary);text-transform:uppercase;letter-spacing:.06em;margin-bottom:6px}
+.mode-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+.mode-card{background:var(--bg-card-solid);border:2px solid var(--border-strong);border-radius:var(--radius-sm);padding:14px 10px;text-align:center;cursor:pointer;transition:all .12s}
+.mode-card:active{transform:scale(.95)}
+.mode-card.sel{border-color:var(--accent);background:rgba(0,122,255,.04)}
+.mode-card .me{font-size:1.5rem;display:block}
+.mode-card h3{font-size:.8125rem;font-weight:700;margin-top:2px}
+.mode-card p{font-size:.625rem;color:var(--text-tertiary);line-height:1.2}
+.time-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px}
+.play-btn{width:100%;max-width:320px;font-family:var(--font-sans);font-size:1rem;font-weight:700;padding:14px;border-radius:var(--radius-pill);border:none;background:var(--accent);color:#fff;cursor:pointer;box-shadow:0 4px 16px rgba(0,122,255,.3);transition:all .15s;margin-top:4px}
+.play-btn:active{transform:scale(.97)}
+
+/* ═══ GAME ═══ */
+.game-top{padding:10px 14px 0;display:flex;flex-direction:column;gap:6px}
+.gt-row{display:flex;align-items:center;justify-content:space-between}
+.gt-left,.gt-right{display:flex;align-items:center;gap:6px}
+.gt-pill{display:flex;align-items:center;gap:4px;font-size:.75rem;font-weight:700;background:var(--bg-card-solid);border:1px solid var(--border);border-radius:var(--radius-pill);padding:4px 10px}
+.gt-pill .v{color:var(--accent)}
+.gt-pill.s .v{color:var(--orange)}
+.gt-timer{font-size:1.25rem;font-weight:800;font-variant-numeric:tabular-nums;transition:color .3s}
+.gt-timer.warn{color:var(--orange)}
+.gt-timer.danger{color:var(--red);animation:pulse .5s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.5}}
+.timer-track{width:100%;height:5px;border-radius:3px;background:var(--border);overflow:hidden}
+.timer-fill{height:100%;border-radius:3px;background:var(--accent);transition:width .1s linear}
+.timer-fill.low{background:var(--red)}
+
+/* Problem area */
+.game-body{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:0 16px;gap:12px;min-height:0}
+.potion-emoji{font-size:2.5rem;margin-bottom:4px}
+.equation{display:flex;align-items:center;justify-content:center;gap:10px;flex-wrap:wrap}
+.frac{display:inline-flex;flex-direction:column;align-items:center;min-width:50px}
+.frac .num,.frac .den{font-size:2rem;font-weight:800;line-height:1.1}
+.frac .num{border-bottom:3px solid var(--text);padding-bottom:3px;margin-bottom:3px}
+.op-sym{font-size:1.75rem;font-weight:800;color:var(--accent)}
+.eq-sym{font-size:1.75rem;font-weight:800;color:var(--text-tertiary)}
+
+/* Answer input */
+.ans-frac{display:inline-flex;flex-direction:column;align-items:center;background:var(--bg-card-solid);border:2px solid var(--border-strong);border-radius:var(--radius-sm);padding:4px 6px;transition:border-color .15s,box-shadow .15s}
+.ans-frac:focus-within{border-color:var(--accent);box-shadow:0 0 0 3px rgba(0,122,255,.12)}
+.ans-frac input{width:56px;height:40px;text-align:center;font-family:var(--font-sans);font-size:1.5rem;font-weight:800;background:transparent;border:none;color:var(--text);outline:none}
+.ans-frac input::placeholder{color:var(--text-tertiary)}
+.ans-frac .frac-line{width:100%;height:3px;background:var(--text);border-radius:2px}
+
+/* Buttons */
+.game-actions{display:flex;gap:6px;width:100%;max-width:360px}
+.btn-go{flex:1;font-family:var(--font-sans);font-size:.875rem;font-weight:700;padding:12px;border-radius:var(--radius-sm);border:none;background:var(--green);color:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:4px;transition:all .12s}
+.btn-go:active{transform:scale(.96)}
+.btn-skip{font-family:var(--font-sans);font-size:.875rem;font-weight:600;padding:12px 16px;border-radius:var(--radius-sm);border:1.5px solid rgba(255,149,0,.25);background:rgba(255,149,0,.08);color:var(--orange);cursor:pointer;transition:all .12s}
+.btn-skip:active{transform:scale(.96)}
+.btn-end{font-family:var(--font-sans);font-size:.875rem;font-weight:600;padding:12px 16px;border-radius:var(--radius-sm);border:1.5px solid rgba(255,59,48,.2);background:rgba(255,59,48,.06);color:var(--red);cursor:pointer;transition:all .12s}
+.btn-end:active{transform:scale(.96)}
+
+/* Feedback */
+.fb{font-size:.8125rem;font-weight:700;min-height:18px;text-align:center}
+.fb.ok{color:var(--green)}
+.fb.no{color:var(--red)}
+
+/* Streak */
+.streak-pill{position:absolute;top:60px;right:14px;padding:4px 10px;border-radius:var(--radius-pill);background:var(--orange);color:#fff;font-size:.6875rem;font-weight:700;display:none;z-index:5}
+.streak-pill.on{display:block;animation:popIn .3s var(--spring-default) both}
+
+/* Combo */
+.combo-fx{position:fixed;top:35%;left:50%;transform:translate(-50%,-50%);font-size:1.75rem;font-weight:800;color:var(--accent);text-shadow:0 4px 20px rgba(255,183,3,.5);pointer-events:none;opacity:0;z-index:50}
+.combo-fx.go{animation:cFx .8s var(--spring-default) both}
+@keyframes cFx{0%{opacity:0;transform:translate(-50%,-50%) scale(.3)}25%{opacity:1;transform:translate(-50%,-50%) scale(1.1)}100%{opacity:0;transform:translate(-50%,-80%) scale(1)}}
+@keyframes popIn{0%{opacity:0;transform:scale(.5)}100%{opacity:1;transform:scale(1)}}
+
+/* ═══ RESULTS ═══ */
+.res-inner{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;padding:16px;text-align:center}
+.res-emoji{font-size:3rem;animation:popIn .4s var(--spring-default) both}
+.res-title{font-size:1.375rem;font-weight:800;letter-spacing:-.03em}
+.res-score{font-size:2.5rem;font-weight:800;color:var(--accent)}
+.res-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;width:100%;max-width:360px}
+.rc{background:var(--bg-card-solid);border:1px solid var(--border);border-radius:var(--radius-sm);padding:10px 4px;text-align:center}
+.rc .rv{font-size:1.25rem;font-weight:800}
+.rc .rl{font-size:.5625rem;font-weight:600;color:var(--text-tertiary);text-transform:uppercase;letter-spacing:.03em;margin-top:2px}
+.rc.g .rv{color:var(--green)}.rc.o .rv{color:var(--orange)}.rc.b .rv{color:var(--accent)}
+.res-btns{display:flex;gap:8px;margin-top:8px;flex-wrap:wrap;justify-content:center}
+.res-btns .play-btn{max-width:200px;font-size:.875rem;padding:11px 20px}
+.res-btns .btn-end{font-size:.8125rem;padding:10px 18px}
+
+/* Confetti */
+.confetti{position:fixed;width:8px;height:8px;border-radius:2px;animation:cFall linear forwards;z-index:100;pointer-events:none}
+@keyframes cFall{0%{transform:translateY(-20vh) rotate(0);opacity:1}100%{transform:translateY(110vh) rotate(720deg);opacity:0}}
+
+@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-4px)}75%{transform:translateX(4px)}}
+.shake{animation:shake .35s ease}
+@keyframes cpop{0%{transform:scale(1)}50%{transform:scale(1.06)}100%{transform:scale(1)}}
+.cpop{animation:cpop .3s ease}
+
+@media(max-width:480px){
+  .frac .num,.frac .den{font-size:1.5rem}
+  .op-sym,.eq-sym{font-size:1.375rem}
+  .ans-frac input{width:48px;height:36px;font-size:1.25rem}
+  .gt-pill .v{font-size:.875rem}
+}
+</style>
+</head>
+<body>
+
+<!-- ═══ MENU SCREEN ═══ -->
+<div class="screen active" id="sMenu">
+<nav class="nav">
+  <a href="menu.html" class="nav-title">
+    <img src="../Recursos/LogoRakinMath.png" alt="RakinMath" style="height:24px;width:auto">
+  </a>
+  <a href="menu.html" class="exit-btn">&#x1F6AA; Salir</a>
+</nav>
+
+<div class="menu-inner">
+  <div class="menu-header">
+    <div class="emoji">&#x1F9EA;</div>
+    <h1>Laboratorio de Pociones</h1>
+    <p>Mezcla ingredientes mágicos resolviendo fracciones</p>
+  </div>
+
+  <div class="sec">
+    <div class="sec-title">Elige el modo</div>
+    <div class="mode-grid">
+      <div class="mode-card sel" data-m="suma" onclick="pickMode(this)">
+        <span class="me">&#x2795;</span>
+        <h3>Suma</h3>
+        <p>Mismo denominador, suma numeradores</p>
+      </div>
+      <div class="mode-card" data-m="resta" onclick="pickMode(this)">
+        <span class="me">&#x2796;</span>
+        <h3>Resta</h3>
+        <p>Mismo denominador, resta numeradores</p>
+      </div>
+      <div class="mode-card" data-m="distinto" onclick="pickMode(this)">
+        <span class="me">&#x1F504;</span>
+        <h3>Distinto Den.</h3>
+        <p>Busca el mcm y opera</p>
+      </div>
+      <div class="mode-card" data-m="mixto" onclick="pickMode(this)">
+        <span class="me">&#x1F3AF;</span>
+        <h3>Mixto</h3>
+        <p>Suma y resta aleatoria</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="sec">
+    <div class="sec-title">Duración</div>
+    <div class="time-grid">
+      <div class="mode-card" data-t="45" onclick="pickTime(this)">
+        <span class="me">&#x23F1;</span>
+        <h3>45s</h3>
+      </div>
+      <div class="mode-card sel" data-t="60" onclick="pickTime(this)">
+        <span class="me">&#x23F0;</span>
+        <h3>60s</h3>
+      </div>
+      <div class="mode-card" data-t="90" onclick="pickTime(this)">
+        <span class="me">&#x231B;</span>
+        <h3>90s</h3>
+      </div>
+    </div>
+  </div>
+
+  <button class="play-btn" onclick="start()">&#x1F680; ¡Empezar!</button>
+</div>
+</div>
+
+<!-- ═══ GAME SCREEN ═══ -->
+<div class="screen" id="sGame">
+<nav class="nav">
+  <a href="menu.html" class="nav-title">
+    <img src="../Recursos/LogoRakinMath.png" alt="RakinMath" style="height:24px;width:auto">
+  </a>
+  <a href="menu.html" class="exit-btn" onclick="quit()">&#x1F6AA; Salir</a>
+</nav>
+
+<div class="streak-pill" id="streakPill">&#x1F525; x1</div>
+<div class="combo-fx" id="comboFx"></div>
+
+<div class="game-top">
+  <div class="gt-row">
+    <div class="gt-left">
+      <div class="gt-pill"><span>&#x2B50;</span><span class="v" id="gScore">0</span></div>
+      <div class="gt-pill s"><span>&#x1F525;</span><span class="v" id="gStreak">0</span></div>
+    </div>
+    <div class="gt-right">
+      <div class="gt-pill"><span>&#x1F4E6;</span><span class="v" id="gLevel">1</span></div>
+      <div class="gt-timer" id="gTime">60</div>
+    </div>
+  </div>
+  <div class="timer-track"><div class="timer-fill" id="timerFill"></div></div>
+</div>
+
+<div class="game-body">
+  <div class="potion-emoji" id="pIcon">&#x1F9EA;</div>
+
+  <div class="equation" id="eqRow">
+    <div class="frac">
+      <span class="num" id="n1">1</span>
+      <span class="den" id="d1">2</span>
+    </div>
+    <span class="op-sym" id="opSym">+</span>
+    <div class="frac">
+      <span class="num" id="n2">1</span>
+      <span class="den" id="d2">3</span>
+    </div>
+    <span class="eq-sym">=</span>
+    <div class="ans-frac">
+      <input type="number" id="aNum" placeholder="?" inputmode="numeric" autocomplete="off">
+      <div class="frac-line"></div>
+      <input type="number" id="aDen" placeholder="?" inputmode="numeric" autocomplete="off">
+    </div>
+  </div>
+
+  <div class="fb" id="fb"></div>
+
+  <div class="game-actions">
+    <button class="btn-go" onclick="check()">&#x2714; Mezclar</button>
+    <button class="btn-skip" onclick="skip()">&#x23ED; Saltar</button>
+    <button class="btn-end" onclick="quit()">&#x23F9; Terminar</button>
+  </div>
+</div>
+</div>
+
+<!-- ═══ RESULTS SCREEN ═══ -->
+<div class="screen" id="sOver">
+<nav class="nav">
+  <a href="menu.html" class="nav-title">
+    <img src="../Recursos/LogoRakinMath.png" alt="RakinMath" style="height:24px;width:auto">
+  </a>
+  <a href="menu.html" class="exit-btn">&#x1F6AA; Salir</a>
+</nav>
+
+<div class="res-inner">
+  <div class="res-emoji" id="oIcon">&#x1F389;</div>
+  <div class="res-title" id="oTitle">¡Poción perfecta!</div>
+  <div class="res-score" id="oScore">0 pts</div>
+  <div class="res-grid">
+    <div class="rc g"><div class="rv" id="oOk">0</div><div class="rl">Correctas</div></div>
+    <div class="rc o"><div class="rv" id="oAcc">0%</div><div class="rl">Precisión</div></div>
+    <div class="rc b"><div class="rv" id="oBest">0</div><div class="rl">Mejor racha</div></div>
+  </div>
+  <div class="res-btns">
+    <button class="play-btn" onclick="start()">&#x1F504; Otra vez</button>
+    <button class="btn-end" onclick="toMenu()">&#x1F3E0; Menú</button>
+  </div>
+</div>
+</div>
+
+<script>
+/* ════════════════════════════════════════════
+   LABORATORIO DE POCIONES – Fracciones
+   RakinMath · 4°–5° Básico
+   ════════════════════════════════════════════ */
+
+var mode='suma',dur=60,tLeft=60,tRef=null;
+var pts=0,streak=0,best=0,ok=0,tot=0,lvl=1;
+var cN1,cD1,cN2,cD2,aN,aD,active=false;
+var potions=['&#x1F9EA;','&#x2697;&#xFE0F;','&#x1F52E;','&#x2B50;','&#x1F30B;','&#x1F9C9;'];
+
+function $(id){return document.getElementById(id)}
+function ri(a,b){return Math.floor(Math.random()*(b-a+1))+a}
+function gcd(a,b){a=Math.abs(a);b=Math.abs(b);while(b){var t=b;b=a%b;a=t}return a}
+function lcm(a,b){return Math.abs(a*b)/gcd(a,b)}
+function simp(n,d){if(!d)return{n:1,d:1};var g=gcd(n,d);return{n:n/g,d:d/g}}
+
+// Theme
+function initTheme(){var t=localStorage.getItem('rakin-theme')||'light';document.documentElement.setAttribute('data-theme',t)}
+initTheme();
+
+// Screens
+function show(s){['sMenu','sGame','sOver'].forEach(function(x){$(x).classList.remove('active')});$(s).classList.add('active')}
+
+// Menu
+function pickMode(el){document.querySelectorAll('.mode-grid:first-of-type .mode-card').forEach(function(b){b.classList.remove('sel')});el.classList.add('sel');mode=el.dataset.m}
+function pickTime(el){el.parentElement.querySelectorAll('.mode-card').forEach(function(b){b.classList.remove('sel')});el.classList.add('sel');dur=parseInt(el.dataset.t)}
+function toMenu(){show('sMenu')}
+
+// Generate
+function gen(){
+  var doSub=mode==='resta'||(mode==='mixto'&&Math.random()>.4);
+
+  if(mode==='distinto'||(mode==='mixto'&&Math.random()>.5)){
+    cD1=ri(2,8);cD2=ri(2,8);while(cD2===cD1)cD2=ri(2,8);
+    cN1=ri(1,cD1-1);cN2=ri(1,cD2-1);
+    var lcd=lcm(cD1,cD2);
+    if(doSub){
+      var v1=cN1*(lcd/cD1),v2=cN2*(lcd/cD2);
+      if(v1<v2){var t=v1;v1=v2;v2=t}
+      aN=v1-v2;aD=lcd;
+    }else{
+      aN=cN1*(lcd/cD1)+cN2*(lcd/cD2);aD=lcd;
+    }
+  }else{
+    cD1=ri(2,12);cD2=cD1;
+    cN1=ri(1,cD1-1);cN2=ri(1,cD2-1);
+    if(doSub&&cN2>cN1){var t2=cN1;cN1=cN2;cN2=t2}
+    if(doSub){aN=cN1-cN2;aD=cD1}
+    else{aN=cN1+cN2;aD=cD1}
+  }
+
+  var s=simp(aN,aD);aN=s.n;aD=s.d;
+
+  if(lvl>2){cN1=Math.min(cN1+1,12);cN2=Math.min(cN2+1,12)}
+  if(lvl>4){cD1=Math.min(cD1+2,12);cD2=cD1}
+
+  $('n1').textContent=cN1;$('d1').textContent=cD1;
+  $('n2').textContent=cN2;$('d2').textContent=cD2;
+  $('opSym').textContent=doSub?'-':'+';
+  $('aNum').value='';$('aDen').value='';
+  $('fb').textContent='';$('fb').className='fb';
+  $('pIcon').innerHTML=potions[ri(0,potions.length-1)];
+  $('aNum').focus();
+}
+
+// Start
+function start(){
+  pts=0;streak=0;best=0;ok=0;tot=0;lvl=1;tLeft=dur;active=true;
+  $('gScore').textContent='0';$('gStreak').textContent='0';$('gLevel').textContent='1';
+  $('gTime').textContent=tLeft;$('gTime').className='gt-timer';
+  $('timerFill').style.width='100%';$('timerFill').className='timer-fill';
+  $('streakPill').classList.remove('on');
+  show('sGame');gen();startTimer();
+}
+
+function startTimer(){
+  clearInterval(tRef);
+  tRef=setInterval(function(){
+    if(!active)return;
+    tLeft--;
+    $('gTime').textContent=tLeft;
+    $('timerFill').style.width=(tLeft/dur*100)+'%';
+    if(tLeft<=10){$('gTime').className='gt-timer danger';$('timerFill').classList.add('low')}
+    else if(tLeft<=20){$('gTime').className='gt-timer warn'}
+    if(tLeft<=0)end();
+  },1000);
+}
+
+// Check
+function check(){
+  if(!active)return;
+  var uN=parseInt($('aNum').value),uD=parseInt($('aDen').value);
+  if(isNaN(uN)||isNaN(uD)||uD===0){
+    fb('Ingresa una fracción válida','no');
+    $('eqRow').classList.add('shake');setTimeout(function(){$('eqRow').classList.remove('shake')},350);
+    return;
+  }
+  tot++;
+  if(uN*aD===aN*uD){
+    ok++;streak++;
+    if(streak>best)best=streak;
+    if(ok%5===0){lvl++;$('gLevel').textContent=lvl}
+    pts+=10+Math.min(streak*2,20);
+    $('gScore').textContent=pts;$('gStreak').textContent=streak;
+    if(streak>=3){$('streakPill').textContent='\u{1F525} x'+streak;$('streakPill').classList.add('on')}
+    if(streak===5)combo('\u{1F525} ¡COMBO x5!');
+    if(streak===10)combo('\u{2B50} ¡INCREÍBLE!');
+    if(streak===15)combo('\u{1F4AB} ¡LEGENDARIO!');
+    fb(rMsg(),'ok');
+    $('eqRow').classList.add('cpop');setTimeout(function(){$('eqRow').classList.remove('cpop')},300);
+    setTimeout(gen,600);
+  }else{
+    streak=0;$('gStreak').textContent='0';$('streakPill').classList.remove('on');
+    fb('\u{1F4A5} Era: '+aN+'/'+aD,'no');
+    $('eqRow').classList.add('shake');setTimeout(function(){$('eqRow').classList.remove('shake')},350);
+  }
+}
+
+function skip(){
+  if(!active)return;
+  streak=0;$('gStreak').textContent='0';$('streakPill').classList.remove('on');
+  tot++;gen();
+}
+
+function fb(m,c){var f=$('fb');f.textContent=m;f.className='fb '+c}
+function combo(m){var e=$('comboFx');e.textContent=m;e.classList.remove('go');void e.offsetWidth;e.classList.add('go');setTimeout(function(){e.classList.remove('go')},900)}
+var msgs=['\u{2728} ¡Genial!','\u{1F31F} ¡Perfecto!','\u{1F680} ¡Fantástico!','\u{1F3C6} ¡Campeón!','\u{2705} ¡Correcto!','\u{1F9EA} ¡Poción!','\u{1F52E} ¡Mágico!'];
+function rMsg(){return msgs[ri(0,msgs.length-1)]}
+
+// End
+function end(){
+  active=false;clearInterval(tRef);
+  var acc=tot?Math.round(ok/tot*100):0;
+  $('oScore').textContent=pts+' pts';$('oOk').textContent=ok;$('oAcc').textContent=acc+'%';$('oBest').textContent=best;
+  if(pts>=200){$('oIcon').innerHTML='\u{1F389}';$('oTitle').textContent='¡Poción legendaria!'}
+  else if(pts>=100){$('oIcon').innerHTML='\u{1F3C6}';$('oTitle').textContent='¡Gran alquimista!'}
+  else if(pts>=50){$('oIcon').innerHTML='\u{2B50}';$('oTitle').textContent='¡Buen trabajo!'}
+  else{$('oIcon').innerHTML='\u{1F9EA}';$('oTitle').textContent='¡Sigue practicando!'}
+  show('sOver');
+  if(pts>=50)confetti();
+  // Firebase
+  try{
+    var s=localStorage.getItem('rakin_session');
+    var u=s?JSON.parse(s):null;
+    if(u&&u.user&&typeof LeaderboardDB!=='undefined'){
+      LeaderboardDB.sendScore({name:u.user,score:pts,correct:ok,time:dur,category:'pociones',date:Date.now()});
+    }
+  }catch(e){}
+}
+function quit(){end()}
+function confetti(){
+  var cols=['#007aff','#34c759','#ff9500','#af52de','#ff2d55','#5ac8fa'];
+  for(var i=0;i<50;i++){(function(i){setTimeout(function(){var e=document.createElement('div');e.className='confetti';e.style.cssText='left:'+ri(0,100)+'vw;background:'+cols[i%cols.length]+';animation-duration:'+(ri(20,40)/10)+'s;width:'+ri(6,10)+'px;height:'+ri(6,10)+'px;border-radius:'+(Math.random()>.5?'50%':'2px');document.body.appendChild(e);setTimeout(function(){e.remove()},4000)},i*25)})(i)}
+}
+
+// Keys
+$('aNum').addEventListener('keydown',function(e){if(e.key==='Enter')$('aDen').focus()});
+$('aDen').addEventListener('keydown',function(e){if(e.key==='Enter')check()});
+</script>
+</body>
+</html>

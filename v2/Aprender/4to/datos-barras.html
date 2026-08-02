@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RakinMath – Gráfico de Barras</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../apple-design.css">
+<script src="../../stats/rk-stats.js"></script>
+<style>
+body{display:flex;flex-direction:column;min-height:100vh}
+.content{flex:1;max-width:800px;width:100%;margin:0 auto;padding:24px}
+/* Back button */
+.back-link{display:inline-flex;align-items:center;gap:6px;font-family:var(--font-sans);font-size:.875rem;font-weight:600;color:var(--text-secondary);text-decoration:none;padding:8px 16px;border-radius:980px;background:var(--bg-card);border:1px solid var(--border-strong);transition:transform .15s,background .15s;margin-bottom:24px}
+.back-link:active{transform:scale(.95)}
+.back-link:hover{background:var(--bg-card-solid);color:var(--text)}
+/* Section */
+.section{margin-bottom:40px;opacity:0;animation:slideUp .5s var(--spring-default) both}
+.section:nth-child(2){animation-delay:100ms}
+.section:nth-child(3){animation-delay:200ms}
+.section:nth-child(4){animation-delay:300ms}
+.section-title{font-size:1.5rem;font-weight:700;letter-spacing:-.03em;margin-bottom:8px}
+.section-subtitle{font-size:1rem;color:var(--text-secondary);margin-bottom:20px;line-height:1.5}
+/* Concept box */
+.concept-box{background:linear-gradient(135deg,rgba(255,45,85,.06),rgba(255,45,85,.02));border:1px solid rgba(255,45,85,.15);border-radius:20px;padding:24px;margin-bottom:24px}
+.concept-box h3{font-size:1.125rem;font-weight:700;margin-bottom:8px;color:var(--text)}
+.concept-box p{font-size:.9375rem;color:var(--text-secondary);line-height:1.6}
+/* Demo chart */
+.demo-chart{background:var(--bg-card);border:1px solid var(--border);border-radius:24px;padding:24px;margin-bottom:24px}
+.demo-title{font-size:.8125rem;font-weight:600;color:var(--text-tertiary);text-transform:uppercase;letter-spacing:.04em;margin-bottom:16px}
+.chart-area{position:relative;height:200px;display:flex;align-items:flex-end;gap:16px;padding:0 40px 30px 0}
+.chart-y-axis{position:absolute;left:0;top:0;bottom:30px;width:36px;display:flex;flex-direction:column;justify-content:space-between;align-items:flex-end;padding-right:8px}
+.chart-y-label{font-size:.6875rem;font-weight:600;color:var(--text-tertiary)}
+.chart-bars{display:flex;align-items:flex-end;gap:16px;flex:1;height:100%;padding-left:40px}
+.bar-col{display:flex;flex-direction:column;align-items:center;gap:6px;flex:1}
+.bar{width:100%;max-width:60px;border-radius:10px 10px 4px 4px;transition:height .8s cubic-bezier(.2,.9,.3,1.2);position:relative}
+.bar-value{position:absolute;top:-22px;left:50%;transform:translateX(-50%);font-size:.75rem;font-weight:700;color:var(--text);white-space:nowrap}
+.bar-label{font-size:.75rem;font-weight:600;color:var(--text-secondary);text-align:center}
+.bar-col:nth-child(1) .bar{background:linear-gradient(180deg,#ff3b30,#ff6b6b)}
+.bar-col:nth-child(2) .bar{background:linear-gradient(180deg,#007aff,#5ac8fa)}
+.bar-col:nth-child(3) .bar{background:linear-gradient(180deg,#34c759,#6ee7a0)}
+.bar-col:nth-child(4) .bar{background:linear-gradient(180deg,#ff9500,#ffb340)}
+.bar-col:nth-child(5) .bar{background:linear-gradient(180deg,#af52de,#d68fff)}
+/* Play button */
+.play-btn{display:inline-flex;align-items:center;gap:8px;font-family:var(--font-sans);font-size:.9375rem;font-weight:600;padding:12px 24px;border-radius:980px;border:none;cursor:pointer;background:var(--accent);color:white;box-shadow:0 4px 16px rgba(0,122,255,.25);transition:transform .15s,background .2s}
+.play-btn:active{transform:scale(.95)}
+.play-btn:hover{background:var(--accent-hover)}
+/* Interactive builder */
+.builder{background:var(--bg-card);border:1px solid var(--border);border-radius:24px;padding:24px}
+.builder-inputs{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:12px;margin-bottom:20px}
+.builder-input{text-align:center}
+.builder-input label{display:block;font-size:.75rem;font-weight:600;color:var(--text-tertiary);margin-bottom:6px;text-transform:uppercase}
+.builder-input input{width:100%;padding:10px;border-radius:12px;border:2px solid var(--border-strong);background:var(--bg-card-solid);font-family:var(--font-sans);font-size:1rem;font-weight:600;text-align:center;color:var(--text);outline:none;transition:border-color .15s}
+.builder-input input:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(0,122,255,.1)}
+.builder-chart{position:relative;height:180px;display:flex;align-items:flex-end;gap:12px;padding:0 10px 28px}
+.builder-bar-col{display:flex;flex-direction:column;align-items:center;gap:4px;flex:1}
+.builder-bar{width:100%;max-width:50px;border-radius:8px 8px 4px 4px;transition:height .6s cubic-bezier(.2,.9,.3,1.2)}
+.builder-bar-val{font-size:.6875rem;font-weight:700;color:var(--text)}
+.builder-bar-lbl{font-size:.6875rem;font-weight:600;color:var(--text-secondary);text-align:center;word-break:break-word}
+/* Result */
+.result-box{background:rgba(52,199,89,.08);border:1px solid rgba(52,199,89,.2);border-radius:16px;padding:16px;margin-top:16px;display:none}
+.result-box.show{display:block;animation:popIn .4s var(--spring-default) both}
+.result-box p{font-size:.9375rem;color:var(--text);line-height:1.5}
+/* Question */
+.question-box{background:linear-gradient(135deg,rgba(0,122,255,.06),rgba(0,122,255,.02));border:1px solid rgba(0,122,255,.15);border-radius:20px;padding:24px}
+.question-box h4{font-size:1rem;font-weight:700;margin-bottom:12px}
+.question-input-row{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.question-input{width:80px;padding:10px;border-radius:12px;border:2px solid var(--border-strong);background:var(--bg-card-solid);font-family:var(--font-sans);font-size:1.125rem;font-weight:700;text-align:center;color:var(--text);outline:none;transition:border-color .15s}
+.question-input:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(0,122,255,.1)}
+.check-btn{font-family:var(--font-sans);font-size:.875rem;font-weight:600;padding:10px 20px;border-radius:980px;border:none;cursor:pointer;background:var(--accent);color:white;transition:transform .12s}
+.check-btn:active{transform:scale(.95)}
+.feedback{font-size:.875rem;font-weight:600;margin-top:8px;min-height:24px}
+.feedback.correct{color:var(--green)}
+.feedback.wrong{color:var(--red)}
+/* Animations */
+@keyframes slideUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+@keyframes popIn{0%{opacity:0;transform:scale(.9)}70%{transform:scale(1.02)}100%{opacity:1;transform:scale(1)}}
+@keyframes barGrow{from{height:0}to{height:var(--target-h)}}
+/* Responsive */
+@media(max-width:640px){
+.content{padding:16px}
+.chart-area{height:160px;gap:10px;padding:0 20px 24px 0}
+.chart-y-axis{width:28px}
+.bar-label{font-size:.6875rem}
+.builder-inputs{grid-template-columns:repeat(3,1fr)}
+}
+</style>
+</head>
+<body>
+
+<nav class="nav">
+<a href="menu.html" class="nav-title">
+<img src="../../Recursos/LogoRakinMath.png" alt="RakinMath" style="height: 24px; width: auto;">
+
+</a>
+<a href="menu.html" class="exit-btn">Volver</a>
+</nav>
+
+<div class="content">
+
+<a href="menu.html" class="back-link">&#x2190; Volver a Datos</a>
+
+<!-- SECTION 1: ¿Qué es? -->
+<div class="section">
+<div class="section-title">&#x1F4CA; ¿Qué es un Gráfico de Barras?</div>
+<div class="section-subtitle">Un gráfico de barras es una forma de <strong>organizar datos</strong> para verlos más fácil. Usa barras de diferente altura para mostrar cuánto vale cada cosa.</div>
+<div class="concept-box">
+<h3>&#x1F4A1; ¡Para qué sirve?</h3>
+<p>Imagina que quieres saber qué fruta es la más popular de tu clase. Puedes hacer una lista, pero es difícil de entender rápido. Con un gráfico de barras, cada fruta tiene su barra: <strong>cuanto más alta la barra, más personas la eligieron</strong>. Así ves al instante cuál ganó.</p>
+</div>
+</div>
+
+<!-- SECTION 2: Demo animada -->
+<div class="section">
+<div class="section-title">&#x1F3AC; Mira cómo se construye</div>
+<div class="section-subtitle">Presiona el botón para ver cómo crecen las barras desde cero hasta su valor final.</div>
+<div class="demo-chart">
+<div class="demo-title">Frutas favoritas de la clase</div>
+<div class="chart-area" id="demo-chart">
+<div class="chart-y-axis">
+<span class="chart-y-label">15</span>
+<span class="chart-y-label">12</span>
+<span class="chart-y-label">9</span>
+<span class="chart-y-label">6</span>
+<span class="chart-y-label">3</span>
+<span class="chart-y-label">0</span>
+</div>
+<div class="chart-bars" id="demo-bars">
+<div class="bar-col"><div class="bar" style="height:0" data-h="73"><div class="bar-value">8</div></div><div class="bar-label">&#x1F34E;<br>Manzana</div></div>
+<div class="bar-col"><div class="bar" style="height:0" data-h="120"><div class="bar-value">13</div></div><div class="bar-label">&#x1F34C;<br>Plátano</div></div>
+<div class="bar-col"><div class="bar" style="height:0" data-h="55"><div class="bar-value">6</div></div><div class="bar-label">&#x1F34A;<br>Naranja</div></div>
+<div class="bar-col"><div class="bar" style="height:0" data-h="90"><div class="bar-value">10</div></div><div class="bar-label">&#x1F353;<br>Fresa</div></div>
+<div class="bar-col"><div class="bar" style="height:0" data-h="45"><div class="bar-value">5</div></div><div class="bar-label">&#x1F347;<br>Uva</div></div>
+</div>
+</div>
+<button class="play-btn" onclick="playDemo()">&#x25B6; Ver animación</button>
+</div>
+</div>
+
+<!-- SECTION 3: Ejemplo con explicación -->
+<div class="section">
+<div class="section-title">&#x1F4D6; Ejemplo paso a paso</div>
+<div class="section-subtitle">Observa cómo se lee un gráfico de barras.</div>
+<div class="question-box">
+<h4>&#x2753; Pregunta de ejemplo</h4>
+<p style="color:var(--text-secondary);margin-bottom:12px;font-size:.9375rem">Según el gráfico de arriba: <strong>¿Cuántos más amigos eligieron plátano que naranja?</strong></p>
+<div class="question-input-row">
+<span style="font-size:.9375rem;color:var(--text-secondary)">Respuesta:</span>
+<input class="question-input" type="number" id="ex-answer" placeholder="?">
+<button class="check-btn" onclick="checkExample()">Comprobar</button>
+</div>
+<div class="feedback" id="ex-feedback"></div>
+<div class="result-box" id="ex-result">
+<p>&#x2705; <strong>¡Muy bien!</strong> Plátano tiene 13 y naranja tiene 6. La diferencia es <strong>13 - 6 = 7</strong>. Por eso la barra del plátano es más alta.</p>
+</div>
+</div>
+</div>
+
+<!-- SECTION 4: Construye tu gráfico -->
+<div class="section">
+<div class="section-title">&#x1F3D7; Construye tu propio gráfico</div>
+<div class="section-subtitle">Ingresa los valores para cada categoría y mira cómo crecen las barras.</div>
+<div class="builder">
+<div class="builder-inputs" id="builder-inputs">
+<div class="builder-input"><label>&#x1F534; Rojo</label><input type="number" min="0" max="20" value="5" oninput="updateBuilder()"></div>
+<div class="builder-input"><label>&#x1F535; Azul</label><input type="number" min="0" max="20" value="8" oninput="updateBuilder()"></div>
+<div class="builder-input"><label>&#x1F7E2; Verde</label><input type="number" min="0" max="20" value="3" oninput="updateBuilder()"></div>
+<div class="builder-input"><label>&#x1F7E1; Amarillo</label><input type="number" min="0" max="20" value="12" oninput="updateBuilder()"></div>
+</div>
+<div class="builder-chart" id="builder-chart"></div>
+</div>
+</div>
+
+<!-- SECTION 5: Pregunta interactiva -->
+<div class="section">
+<div class="section-title">&#x1F9E0; Pon a prueba</div>
+<div class="section-subtitle">Responde según el gráfico que construiste.</div>
+<div class="question-box">
+<h4>&#x2753; Pregunta</h4>
+<p style="color:var(--text-secondary);margin-bottom:12px;font-size:.9375rem" id="quiz-question">¿Cuántas personas eligieron el color con más votos?</p>
+<div class="question-input-row">
+<input class="question-input" type="number" id="quiz-answer" placeholder="?">
+<button class="check-btn" onclick="checkQuiz()">Comprobar</button>
+</div>
+<div class="feedback" id="quiz-feedback"></div>
+</div>
+</div>
+
+
+<div class="section" style="animation-delay:320ms">
+<div class="question-box" style="background:linear-gradient(135deg,rgba(0,122,255,.06),rgba(0,122,255,.02));border:1px solid rgba(0,122,255,.15)">
+<h4>&#x1F3AC; Videos de apoyo</h4>
+<p style="color:var(--text-secondary);margin-bottom:12px;font-size:.9375rem">Agrega links de videos de YouTube para reforzar lo aprendido:</p>
+<div id="videos-container" style="display:flex;flex-direction:column;gap:12px;margin-bottom:12px">
+<div class="video-placeholder" style="border:2px dashed rgba(0,122,255,.25);border-radius:16px;padding:24px;text-align:center;color:var(--text-tertiary);font-size:.875rem;cursor:pointer;transition:border-color .2s,background .2s" onclick="addVideoSlot(this.parentElement)">
+<span style="font-size:1.5rem;display:block;margin-bottom:6px">&#x1F4F1;</span>
+Haz clic aquí para agregar un video de YouTube
+</div>
+</div>
+</div>
+</div>
+
+</div>
+
+<script>
+var activityStartTime = Date.now();
+// Demo animation
+function playDemo(){
+var bars=document.querySelectorAll('#demo-bars .bar');
+bars.forEach(function(b,i){
+b.style.height='0';
+setTimeout(function(){b.style.height=b.dataset.h+'px'},200+i*150);
+});
+}
+
+// Example check
+function checkExample(){
+var ans=parseInt(document.getElementById('ex-answer').value);
+var fb=document.getElementById('ex-feedback');
+var res=document.getElementById('ex-result');
+if(ans===7){fb.textContent='¡Correcto!';fb.className='feedback correct';res.classList.add('show')}
+else if(isNaN(ans)){fb.textContent='Escribe un número';fb.className='feedback wrong'}
+else{fb.textContent='Intenta de nuevo: resta las diferencias';fb.className='feedback wrong';res.classList.remove('show')}
+}
+
+// Builder
+var builderColors=['#ff3b30','#007aff','#34c759','#ff9500','#af52de','#ff2d55'];
+function updateBuilder(){
+var inputs=document.querySelectorAll('#builder-inputs input');
+var chart=document.getElementById('builder-chart');
+var vals=[];
+inputs.forEach(function(inp){vals.push(parseInt(inp.value)||0)});
+var max=Math.max.apply(null,vals.concat([1]));
+chart.innerHTML='';
+vals.forEach(function(v,i){
+var h=Math.round((v/max)*140);
+var col=document.createElement('div');
+col.className='builder-bar-col';
+col.innerHTML='<div class="builder-bar-val">'+v+'</div><div class="builder-bar" style="height:'+h+'px;background:'+builderColors[i]+'"></div><div class="builder-bar-lbl">'+inputs[i].previousElementSibling.textContent+'</div>';
+chart.appendChild(col);
+});
+updateQuiz();
+}
+
+// Quiz based on builder values
+function updateQuiz(){
+var inputs=document.querySelectorAll('#builder-inputs input');
+var vals=[];
+var labels=[];
+inputs.forEach(function(inp){vals.push(parseInt(inp.value)||0);labels.push(inp.previousElementSibling.textContent)});
+var maxIdx=vals.indexOf(Math.max.apply(null,vals));
+var minIdx=vals.indexOf(Math.min.apply(null,vals));
+var total=vals.reduce(function(a,b){return a+b},0);
+var questions=[
+'¿Cuántas personas eligieron '+labels[maxIdx]+' (el más votado)?',
+'¿Cuántas personas eligieron '+labels[minIdx]+' (el menos votado)?',
+'¿Cuántos votos hubo en total?',
+'¿Cuántas personas eligieron '+labels[0]+' y '+labels[1]+' juntas?'
+];
+var q=questions[Math.floor(Math.random()*questions.length)];
+document.getElementById('quiz-question').textContent=q;
+document.getElementById('quiz-feedback').textContent='';
+document.getElementById('quiz-answer').value='';
+}
+function checkQuiz(){
+var q=document.getElementById('quiz-question').textContent;
+var ans=parseInt(document.getElementById('quiz-answer').value);
+var inputs=document.querySelectorAll('#builder-inputs input');
+var vals=[];
+inputs.forEach(function(inp){vals.push(parseInt(inp.value)||0)});
+var labels=[];
+inputs.forEach(function(inp){labels.push(inp.previousElementSibling.textContent)});
+var fb=document.getElementById('quiz-feedback');
+var correct=false;
+if(q.indexOf('total')>-1){correct=ans===vals.reduce(function(a,b){return a+b},0)}
+else if(q.indexOf('juntas')>-1){correct=ans===vals[0]+vals[1]}
+else{
+var maxIdx=vals.indexOf(Math.max.apply(null,vals));
+var minIdx=vals.indexOf(Math.min.apply(null,vals));
+if(q.indexOf(labels[maxIdx])>-1){correct=ans===vals[maxIdx]}
+else if(q.indexOf(labels[minIdx])>-1){correct=ans===vals[minIdx]}
+}
+if(correct){fb.textContent='¡Correcto!';fb.className='feedback correct';RK.Stats.saveActivityResult('actividad-datos-barras',{correct:true,time:Math.round((Date.now()-activityStartTime)/1000),topic:'gr\u00e1ficos de barras'});activityStartTime=Date.now();setTimeout(updateQuiz,1500)}
+else if(isNaN(ans)){fb.textContent='Escribe un n\u00famero';fb.className='feedback wrong';RK.Stats.saveActivityResult('actividad-datos-barras',{correct:false,time:Math.round((Date.now()-activityStartTime)/1000),topic:'gr\u00e1ficos de barras'});activityStartTime=Date.now()}
+else{fb.textContent='Revisa el gr\u00e1fico e intenta de nuevo';fb.className='feedback wrong';RK.Stats.saveActivityResult('actividad-datos-barras',{correct:false,time:Math.round((Date.now()-activityStartTime)/1000),topic:'gr\u00e1ficos de barras'});activityStartTime=Date.now()}
+}
+
+// Init
+updateBuilder();
+playDemo();
+
+function addVideoSlot(container){
+var existing=container.querySelector('.video-placeholder');
+if(existing)existing.remove();
+var div=document.createElement('div');
+div.className='video-slot';
+div.style.cssText='display:flex;gap:8px;align-items:center;background:rgba(0,122,255,.04);border:1px solid rgba(0,122,255,.12);border-radius:12px;padding:10px 12px';
+div.innerHTML='<input type="text" placeholder="Pega el link de YouTube aquí..." style="flex:1;font-family:var(--font-sans);font-size:.875rem;padding:8px 12px;border-radius:8px;border:1px solid rgba(0,0,0,.1);background:white;color:#1d1d1f;outline:none" onfocus="this.style.borderColor=\'#007aff\'" onblur="this.style.borderColor=\'rgba(0,0,0,1)\'"><button onclick="removeVideoSlot(this)" style="font-size:1.1rem;background:none;border:none;cursor:pointer;color:#ff3b30;padding:4px" title="Eliminar">&#x2715;</button>';
+container.appendChild(div);
+var addBtn=document.createElement('div');
+addBtn.className='video-placeholder';
+addBtn.style.cssText='border:2px dashed rgba(0,122,255,.25);border-radius:16px;padding:16px;text-align:center;color:var(--text-tertiary);font-size:.875rem;cursor:pointer;transition:border-color .2s,background .2s';
+addBtn.innerHTML='<span style="font-size:1.25rem;display:block;margin-bottom:4px">&#x2795;</span>Agregar otro video';
+addBtn.onclick=function(){addVideoSlot(container)};
+container.appendChild(addBtn);
+}
+function removeVideoSlot(btn){btn.closest('.video-slot').remove()}
+</script>
+</body>
+</html>

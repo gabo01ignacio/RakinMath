@@ -1,0 +1,193 @@
+<?<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RakinMath " Grandes Números</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"></script>
+<script defer src="../rk-utils.js"></script>
+<link rel="stylesheet" href="../apple-design.css">
+<style>
+body{display:flex;flex-direction:column;min-height:100vh}
+.content{flex:1;max-width:860px;width:100%;margin:0 auto;padding:24px}
+.back-link{display:inline-flex;align-items:center;gap:6px;font-size:.875rem;font-weight:600;color:var(--text-secondary);text-decoration:none;padding:8px 16px;border-radius:980px;background:var(--bg-card);border:1px solid var(--border-strong);transition:transform .15s;margin-bottom:24px}
+.back-link:active{transform:scale(.95)}
+.section{margin-bottom:48px;opacity:0;animation:slideUp .5s var(--spring-default) both}
+.section:nth-child(2){animation-delay:80ms}.section:nth-child(3){animation-delay:160ms}.section:nth-child(4){animation-delay:240ms}.section:nth-child(5){animation-delay:320ms}
+.section-title{font-size:1.5rem;font-weight:700;letter-spacing:-.03em;margin-bottom:8px}
+.section-subtitle{font-size:1rem;color:var(--text-secondary);margin-bottom:20px;line-height:1.6}
+.concept-box{border-radius:var(--radius-md);padding:24px;margin-bottom:20px}
+.concept-box.green{background:linear-gradient(135deg,rgba(52,199,89,.06),rgba(52,199,89,.02));border:1px solid rgba(52,199,89,.15)}
+.concept-box.blue{background:linear-gradient(135deg,rgba(0,122,255,.06),rgba(0,122,255,.02));border:1px solid rgba(0,122,255,.15)}
+.concept-box.purple{background:linear-gradient(135deg,rgba(175,82,222,.06),rgba(175,82,222,.02));border:1px solid rgba(175,82,222,.15)}
+.concept-box h3{font-size:1.125rem;font-weight:700;margin-bottom:8px}
+.concept-box p{font-size:.9375rem;color:var(--text-secondary);line-height:1.7}
+.tip-box{background:linear-gradient(135deg,rgba(175,82,222,.06),rgba(175,82,222,.02));border:1px solid rgba(175,82,222,.15);border-radius:var(--radius-md);padding:20px;margin:16px 0}
+.tip-box h4{font-size:.9375rem;font-weight:700;color:var(--purple);margin-bottom:6px}
+.tip-box p{font-size:.875rem;color:var(--text-secondary);line-height:1.6}
+.card{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-lg);padding:28px 24px 24px;margin-bottom:20px}
+.card h3{font-size:1.125rem;font-weight:700;margin-bottom:16px}
+.quiz-box{background:linear-gradient(135deg,rgba(0,122,255,.06),rgba(0,122,255,.02));border:1px solid rgba(0,122,255,.15);border-radius:var(--radius-md);padding:24px}
+.quiz-box h4{font-size:1rem;font-weight:700;margin-bottom:12px}
+.quiz-problem{font-size:1.75rem;font-weight:700;text-align:center;margin:16px 0 4px;font-variant-numeric:tabular-nums}
+.quiz-row{display:flex;align-items:center;gap:12px;justify-content:center;flex-wrap:wrap;margin-top:12px}
+.quiz-input{width:100px;padding:10px;border-radius:var(--radius-sm);border:2px solid var(--border-strong);background:var(--bg-card-solid);font-family:var(--font-sans);font-size:1.125rem;font-weight:700;text-align:center;color:var(--text);outline:none}
+.quiz-input:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(0,122,255,.1)}
+.feedback{font-size:.875rem;font-weight:600;margin-top:10px;min-height:20px;text-align:center}
+.feedback.correct{color:var(--green)}.feedback.wrong{color:var(--red)}
+.btn{font-family:var(--font-sans);font-size:.875rem;font-weight:600;padding:8px 18px;border-radius:980px;border:none;cursor:pointer;transition:transform .12s,opacity .12s}
+.btn:active{transform:scale(.95)}
+.btn:disabled{opacity:.4;cursor:not-allowed;transform:none}
+.btn-primary{background:var(--accent);color:white;box-shadow:0 2px 10px rgba(0,122,255,.25)}
+.btn-ghost{background:var(--bg-card-solid);color:var(--text);border:1px solid var(--border-strong)}
+.math-inputs{display:flex;gap:10px;align-items:center;justify-content:center;margin-bottom:20px;flex-wrap:wrap}
+.math-input{width:80px;text-align:center;font-size:1.25rem;font-weight:700;padding:8px 10px;border-radius:var(--radius-sm);border:2px solid var(--border-strong);background:var(--bg-card-solid);color:var(--text);outline:none;font-family:var(--font-sans);transition:border-color .2s,box-shadow .2s}
+.math-input:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(0,122,255,.1)}
+.math-op{font-size:1.25rem;font-weight:700;color:var(--text-tertiary)}
+.result-box{font-size:1.5rem;font-weight:700;text-align:center;padding:20px;border-radius:var(--radius-md);background:rgba(52,199,89,.06);border:1px solid rgba(52,199,89,.15);margin-top:12px;font-variant-numeric:tabular-nums}
+.result-box .word{font-size:1rem;color:var(--text-secondary);margin-top:6px;font-weight:500}
+.place-value-table{width:100%;border-collapse:separate;border-spacing:0;border-radius:var(--radius-md);overflow:hidden;margin:16px 0;font-size:.875rem}
+.place-value-table th{background:var(--accent);color:white;padding:10px 12px;font-weight:600;text-align:center}
+.place-value-table td{padding:10px 12px;text-align:center;border-bottom:1px solid var(--border);font-weight:600;font-variant-numeric:tabular-nums}
+.place-value-table tr:last-child td{border-bottom:none}
+.place-value-table .group-label{background:rgba(0,122,255,.06);color:var(--accent);font-weight:700}
+.number-highlight{display:inline-block;padding:2px 8px;border-radius:8px;font-weight:700;transition:all .2s}
+.number-highlight.blue{background:rgba(0,122,255,.1);color:var(--accent)}
+.number-highlight.green{background:rgba(52,199,89,.1);color:var(--green)}
+.number-highlight.orange{background:rgba(255,149,0,.1);color:var(--orange)}
+.number-highlight.purple{background:rgba(175,82,222,.1);color:var(--purple)}
+@keyframes slideUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+@media(max-width:640px){.content{padding:16px}.math-input{width:64px;font-size:1.1rem;padding:6px}.card{padding:20px 16px 16px}.place-value-table{font-size:.75rem}.place-value-table th,.place-value-table td{padding:6px 4px}}
+</style>
+</head>
+<body>
+<nav class="nav"><a href="menu.html" class="nav-title"><img src="../../Recursos/LogoRakinMath.png" alt="RakinMath" style="height:24px;width:auto"></a><a href="menu.html" class="exit-btn">Volver</a></nav>
+<div class="content">
+<a href="menu.html" class="back-link">? Volver a Menú</a>
+
+<div class="section">
+<div class="section-title">🌍 Grandes Números hasta 1.000.000.000</div>
+<div class="section-subtitle">En Chile escribimos los números grandes usando <strong>puntos cada 3 dígitos</strong>. Estos grupos se llaman <strong>clases</strong>. ¡Vamos a aprender a leerlos!</div>
+
+<div class="concept-box green">
+<h3>📐 ¿Qué es una clase?</h3>
+<p>Cada grupo de 3 dígitos tiene un nombre. Desde la derecha:</p>
+<div class="math-display" style="margin:16px 0">
+$$\underbrace{789}_{\text{Millones}} . \underbrace{456}_{\text{Miles}} . \underbrace{123}_{\text{Unidades}}$$
+</div>
+<p><strong>Clase de las Unidades:</strong> Unidades (U), Decenas (D), Centenas (C)</p>
+<p><strong>Clase de los Miles:</strong> Unidades de Mil (UM), Decenas de Mil (DM), Centenas de Mil (CM)</p>
+<p><strong>Clase de los Millones:</strong> Unidades de Millón (UMM), Decenas de Millón (DMM), Centenas de Millón (CMM)</p>
+</div>
+
+<div class="concept-box blue">
+<h3>🇨🇱 Ejemplos de Chile</h3>
+<table class="place-value-table">
+<tr><th>Número</th><th>Lectura</th><th>Contexto</th></tr>
+<tr><td><span class="number-highlight blue">19.000.000</span></td><td>diecinueve millones</td><td>Población de Chile</td></tr>
+<tr><td><span class="number-highlight green">$2.450.000.000</span></td><td>dos mil cuatrocientos cincuenta millones</td><td>Presupuesto de un proyecto</td></tr>
+<tr><td><span class="number-highlight orange">80.000</span></td><td>ochenta mil</td><td>Capacidad del Estadio Nacional</td></tr>
+<tr><td><span class="number-highlight purple">1.234.567</span></td><td>un millón doscientos treinta y cuatro mil quinientos sesenta y siete</td><td>Población de una ciudad</td></tr>
+</table>
+</div>
+
+<div class="tip-box">
+<h4>💡 Tip del profesor</h4>
+<p>Para leer un número grande, empieza por el grupo más a la izquierda. Lee el grupo de 3 cifras y agrega el nombre del grupo (millones, miles, etc.). Si un grupo es <strong>"000"</strong>, simplemente no lo mencionas.</p>
+</div>
+</div>
+
+<div class="section">
+<div class="section-title">🔢 Prueba interactiva</div>
+<div class="card">
+<h3>Escribe un número y míralo formateado</h3>
+<div class="math-inputs">
+<input class="math-input" type="number" min="0" max="999999999" value="19000000" id="numInput" style="width:200px" oninput="formatNumber()">
+</div>
+<div class="result-box" id="resultBox">
+<span id="formattedNum">19.000.000</span>
+<div class="word" id="wordNum">diecinueve millones</div>
+</div>
+</div>
+</div>
+
+<div class="section">
+<div class="quiz-box">
+<h4>📝 Lee el número</h4>
+<p style="color:var(--text-secondary);margin-bottom:4px;font-size:.9375rem">¿Cómo se lee este número?</p>
+<div class="quiz-problem" id="qProblem"></div>
+<div class="quiz-row">
+<input class="quiz-input" type="text" id="qAnswer" placeholder="Escribe en palabras" style="width:260px" onkeydown="if(event.key==='Enter')checkQuiz()">
+<button class="btn btn-primary" onclick="checkQuiz()">Comprobar</button>
+</div>
+<div class="feedback" id="qFeedback"></div>
+<div style="margin-top:14px;text-align:center"><button class="btn btn-ghost" onclick="newQuiz()">Nueva pregunta</button></div>
+</div>
+</div>
+
+<div class="section">
+<div class="videos-box" style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-md);padding:24px">
+<h4>🎬 Videos de apoyo</h4>
+<p style="color:var(--text-secondary);margin-bottom:14px;font-size:.875rem">Agrega links de YouTube para reforzar lo aprendido:</p>
+<div id="videosContainer">
+<div class="video-placeholder" onclick="addVideoSlot()" style="border:2px dashed rgba(0,122,255,.25);border-radius:16px;padding:28px;text-align:center;color:var(--text-tertiary);font-size:.875rem;cursor:pointer;transition:background .2s">
+<span style="font-size:1.5rem;display:block;margin-bottom:6px">▶️</span>
+Haz clic aquí para agregar un video de YouTube
+</div>
+</div>
+</div>
+</div>
+
+</div>
+
+<script>
+function formatNumber(){
+var raw=document.getElementById('numInput').value;
+var n=parseInt(raw);
+if(isNaN(n)||n<0){document.getElementById('formattedNum').textContent='"';document.getElementById('wordNum').textContent='';return}
+var s=String(n);var withDots='';var count=0;
+for(var i=s.length-1;i>=0;i--){if(count>0&&count%3===0)withDots='.'+withDots;withDots=s[i]+withDots;count++}
+document.getElementById('formattedNum').textContent=withDots;
+document.getElementById('wordNum').textContent=numToWords(n);
+}
+
+function numToWords(n){
+if(n===0)return 'cero';
+var ones=['','uno','dos','tres','cuatro','cinco','seis','siete','ocho','nueve','diez','once','doce','trece','catorce','quince','dieciséis','diecisiete','dieciocho','diecinueve'];
+var tens=['','','veinte','treinta','cuarenta','cincuenta','sesenta','setenta','ochenta','noventa'];
+var hundreds=['','ciento','doscientos','trescientos','cuatrocientos','quinientos','seiscientos','setecientos','ochocientos','novecientos'];
+function threeDigits(num){
+if(num===0)return '';if(num===100)return 'cien';
+var h=Math.floor(num/100);var r=num%100;var t=Math.floor(r/10);var o=r%10;var res='';
+if(h>0)res+=hundreds[h];if(r>0){if(res)res+=' ';if(r<20)res+=ones[r];else if(r>=21&&r<=29){var compound=['','veintiuno','veintidós','veintitrés','veinticuatro','veinticinco','veintiséis','veintisiete','veintiocho','veintinueve'];res+=compound[r-20]}else{res+=tens[t];if(o>0)res+=' y '+ones[o]}}
+return res;
+}
+var result='';var groupsOfThree=[];while(n>0){groupsOfThree.push(n%1000);n=Math.floor(n/1000)}
+for(var i=groupsOfThree.length-1;i>=0;i--){
+var g=groupsOfThree[i];if(g===0)continue;var txt=threeDigits(g);
+if(i===1&&g===1)txt='mil';else if(i===2&&g===1)txt='un millón';else if(i>0){var lbl=i===1?'mil':i===2?'millón':'';if(g>1&&i===2)lbl='millones';if(lbl)txt+=' '+lbl}
+if(result&&txt)result+=' ';result+=txt;
+}
+return result;
+}
+
+var qNumber,qAnswer;
+var quizNumbers=[{n:2450000,w:'dos millones cuatrocientos cincuenta mil'},{n:19000000,w:'diecinueve millones'},{n:80000,w:'ochenta mil'},{n:5000000,w:'cinco millones'},{n:123456,w:'ciento veintitrés mil cuatrocientos cincuenta y seis'},{n:789000000,w:'setecientos ochenta y nueve millones'},{n:3050,w:'tres mil cincuenta'},{n:42000,w:'cuarenta y dos mil'}];
+
+function newQuiz(){var idx=Math.floor(Math.random()*quizNumbers.length);qNumber=quizNumbers[idx].n;qAnswer=quizNumbers[idx].w;document.getElementById('qProblem').textContent=qNumber.toLocaleString('es-CL');document.getElementById('qAnswer').value='';document.getElementById('qFeedback').textContent='';document.getElementById('qFeedback').className='feedback'}
+
+function checkQuiz(){var ans=document.getElementById('qAnswer').value.trim().toLowerCase();var fb=document.getElementById('qFeedback');var correct=qAnswer.toLowerCase();if(ans===correct){fb.textContent='¡Correcto! '+qNumber.toLocaleString('es-CL')+' se lee: '+qAnswer;fb.className='feedback correct';setTimeout(newQuiz,2000)}else if(!ans){fb.textContent='Escribe cómo se lee el número';fb.className='feedback wrong'}else{fb.textContent='No es correcto. Intenta leer cada grupo de 3 dígitos por separado.';fb.className='feedback wrong'}}
+
+function addVideoSlot(){var c=document.getElementById('videosContainer');var ph=c.querySelector('.video-placeholder');if(ph)ph.remove();var slot=document.createElement('div');slot.className='video-slot';slot.innerHTML='<input type="text" placeholder="Pega el link de YouTube aquí..." style="flex:1;font-family:var(--font-sans);font-size:.875rem;padding:8px 12px;border-radius:8px;border:1px solid var(--border-strong);background:var(--bg-card-solid);color:var(--text);outline:none"><button class="remove-btn" onclick="this.parentElement.remove();if(!document.querySelector(\'#videosContainer .video-slot\'))resetVideos()" style="font-size:1.1rem;background:none;border:none;cursor:pointer;color:var(--red);padding:4px 6px;border-radius:6px">✕</button>';slot.style.cssText='display:flex;gap:8px;align-items:center;background:rgba(0,122,255,.04);border:1px solid rgba(0,122,255,.12);border-radius:12px;padding:10px 12px';c.appendChild(slot);var addBtn=document.createElement('div');addBtn.className='add-video-btn';addBtn.textContent='+ Agregar otro video';addBtn.onclick=addVideoSlot;addBtn.style.cssText='border:2px dashed rgba(0,122,255,.2);border-radius:12px;padding:12px;text-align:center;color:var(--accent);font-size:.8125rem;font-weight:600;cursor:pointer;transition:background .2s';c.appendChild(addBtn)}
+
+function resetVideos(){document.getElementById('videosContainer').innerHTML='<div class="video-placeholder" onclick="addVideoSlot()" style="border:2px dashed rgba(0,122,255,.25);border-radius:16px;padding:28px;text-align:center;color:var(--text-tertiary);font-size:.875rem;cursor:pointer"><span style="font-size:1.5rem;display:block;margin-bottom:6px">▶️</span>Haz clic aquí para agregar un video de YouTube</div>'}
+
+formatNumber();newQuiz();
+</script>
+</body>
+</html>

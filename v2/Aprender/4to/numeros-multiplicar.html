@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RakinMath  Multiplicacinúmero de 2/3 ds por 1</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../apple-design.css">
+<style>
+body{display:flex;flex-direction:column;min-height:100vh}
+.content{flex:1;max-width:800px;width:100%;margin:0 auto;padding:24px}
+.back-link{display:inline-flex;align-items:center;gap:6px;font-family:var(--font-sans);font-size:.875rem;font-weight:600;color:var(--text-secondary);text-decoration:none;padding:8px 16px;border-radius:980px;background:var(--bg-card);border:1px solid var(--border-strong);transition:transform .15s;margin-bottom:24px}
+.back-link:active{transform:scale(.95)}
+.section{margin-bottom:40px;opacity:0;animation:slideUp .5s var(--spring-default) both}
+.section:nth-child(2){animation-delay:80ms}.section:nth-child(3){animation-delay:160ms}
+.section-title{font-size:1.5rem;font-weight:700;letter-spacing:-.03em;margin-bottom:8px}
+.section-subtitle{font-size:1rem;color:var(--text-secondary);margin-bottom:20px;line-height:1.5}
+.concept-box{border-radius:20px;padding:24px;margin-bottom:20px}
+.concept-box.pink{background:linear-gradient(135deg,rgba(255,45,85,.06),rgba(255,45,85,.02));border:1px solid rgba(255,45,85,.15)}
+.concept-box h3{font-size:1.125rem;font-weight:700;margin-bottom:8px}
+.concept-box p{font-size:.9375rem;color:var(--text-secondary);line-height:1.6}
+.tip-box{background:linear-gradient(135deg,rgba(175,82,222,.06),rgba(175,82,222,.02));border:1px solid rgba(175,82,222,.15);border-radius:20px;padding:20px;margin:16px 0}
+.tip-box h4{font-size:.9375rem;font-weight:700;color:var(--purple);margin-bottom:6px}
+.tip-box p{font-size:.875rem;color:var(--text-secondary);line-height:1.5}
+.area-mult{background:var(--bg-card);border:1px solid var(--border);border-radius:24px;padding:24px;margin-bottom:20px}
+.area-inputs{display:flex;align-items:center;justify-content:center;gap:12px;margin:16px 0}
+.area-input{width:80px;text-align:center;font-size:1.5rem;font-weight:700;padding:8px;border-radius:12px;border:2px solid var(--border-strong);background:var(--bg-card-solid);color:var(--text);outline:none;font-family:var(--font-sans)}
+.area-input:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(0,122,255,.1)}
+.area-visual{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin:16px 0}
+.area-part{padding:12px;border-radius:12px;text-align:center;min-width:80px;opacity:0;animation:slideUp .4s var(--spring-default) both}
+.area-part .label{font-size:.75rem;color:var(--text-tertiary);margin-bottom:4px}
+.area-part .value{font-size:1.25rem;font-weight:700}
+.area-part.c{background:rgba(0,122,255,.08);border:1px solid rgba(0,122,255,.15)}
+.area-part.d{background:rgba(52,199,89,.08);border:1px solid rgba(52,199,89,.15)}
+.area-part.u{background:rgba(255,149,0,.08);border:1px solid rgba(255,149,0,.15)}
+.area-plus{font-size:1.5rem;font-weight:700;color:var(--text-tertiary);align-self:center}
+.area-result{font-size:2rem;font-weight:700;color:var(--accent);text-align:center;margin:16px 0;padding:12px;background:rgba(0,122,255,.06);border-radius:12px;display:none}
+.area-result.show{display:block;animation:scaleIn .4s var(--spring-default) both}
+.question-box{background:linear-gradient(135deg,rgba(0,122,255,.06),rgba(0,122,255,.02));border:1px solid rgba(0,122,255,.15);border-radius:20px;padding:24px}
+.question-box h4{font-size:1rem;font-weight:700;margin-bottom:12px}
+.q-row{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.q-input{width:100px;padding:10px;border-radius:12px;border:2px solid var(--border-strong);background:var(--bg-card-solid);font-family:var(--font-sans);font-size:1.125rem;font-weight:700;text-align:center;color:var(--text);outline:none}
+.q-input:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(0,122,255,.1)}
+.btn{font-family:var(--font-sans);font-size:.875rem;font-weight:600;padding:10px 20px;border-radius:980px;border:none;cursor:pointer;transition:transform .12s}
+.btn:active{transform:scale(.95)}
+.btn-primary{background:var(--accent);color:white}
+.btn-ghost{background:var(--bg-card-solid);color:var(--text);border:1px solid var(--border-strong)}
+.feedback{font-size:.875rem;font-weight:600;margin-top:8px;min-height:24px}
+.feedback.correct{color:var(--green)}.feedback.wrong{color:var(--red)}
+@keyframes slideUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+@keyframes scaleIn{from{opacity:0;transform:scale(.9)}to{opacity:1;transform:scale(1)}}
+@media(max-width:640px){.content{padding:16px}.area-input{width:60px;font-size:1.25rem}}
+</style>
+</head>
+<body>
+<nav class="nav"><a href="menu.html" class="nav-title"><img src="../../Recursos/LogoRakinMath.png" alt="RakinMath" style="height: 24px; width: auto;"></a><a href="menu.html" class="exit-btn">Volver</a></nav>
+<div class="content">
+<a href="menu.html" class="back-link">&#x2190; Volver a Números</a>
+
+<div class="section">
+<div class="section-title">&#x1F4D0; Método de área</div>
+<div class="section-subtitle">Para multiplicar un número de 2 o 3 ds por 1, <strong>descomponemos</strong> el n grande y multiplicamos cada parte por separado. Luego sumamos todo.</div>
+<div class="concept-box pink">
+<h3>&#x1F4A1; Ejemplo: 247  3</h3>
+<p>Descomponemos 247 en: <strong>200 + 40 + 7</strong>. Luego: 2003=600, 403=120, 73=21. Finalmente: 600+120+21 = <strong>741</strong>.</p>
+</div>
+<div class="tip-box">
+<h4>&#x1F4A1; Tip del profesor</h4>
+<p>El método de área es como dibujar un rectángulo grande dividido en partes más pequeñas. Es más fácil multiplicar números chicos que uno gigante.</p>
+</div>
+</div>
+
+<div class="section">
+<div class="section-title">&#x1F3AE; Visualiza paso a paso</div>
+<div class="area-mult">
+<div class="area-inputs">
+<input class="area-input" type="number" min="10" max="999" value="247" id="a-big">
+<span style="font-size:1.5rem;font-weight:700;color:var(--text-tertiary)">&times;</span>
+<input class="area-input" type="number" min="1" max="9" value="3" id="a-small">
+<button class="btn btn-primary" onclick="showArea()">Calcular</button>
+</div>
+<div class="area-visual" id="a-visual"></div>
+<div class="area-result" id="a-result"></div>
+</div>
+</div>
+
+<div class="section">
+<div class="question-box">
+<h4>&#x2753; Resuelve</h4>
+<p style="color:var(--text-secondary);margin-bottom:12px;font-size:.9375rem" id="q-text"></p>
+<div class="q-row"><input class="q-input" type="number" id="q-answer" placeholder="?"><button class="btn btn-primary" onclick="checkQ()">Comprobar</button></div>
+<div class="feedback" id="q-fb"></div>
+<div style="margin-top:12px"><button class="btn btn-ghost" onclick="newQ()">Nueva pregunta</button></div>
+</div>
+</div>
+
+<div class="section" style="animation-delay:320ms">
+<div class="question-box" style="background:linear-gradient(135deg,rgba(0,122,255,.06),rgba(0,122,255,.02));border:1px solid rgba(0,122,255,.15)">
+<h4>&#x1F3AC; Videos de apoyo</h4>
+<p style="color:var(--text-secondary);margin-bottom:12px;font-size:.9375rem">Agrega links de videos de YouTube para reforzar lo aprendido:</p>
+<div id="videos-container" style="display:flex;flex-direction:column;gap:12px;margin-bottom:12px">
+<div class="video-placeholder" style="border:2px dashed rgba(0,122,255,.25);border-radius:16px;padding:24px;text-align:center;color:var(--text-tertiary);font-size:.875rem;cursor:pointer;transition:border-color .2s,background .2s" onclick="addVideoSlot(this.parentElement)">
+<span style="font-size:1.5rem;display:block;margin-bottom:6px">&#x1F4F1;</span>
+Haz clic aquí para agregar un video de YouTube
+</div>
+</div>
+</div>
+</div>
+
+</div>
+
+<script>
+function showArea(){
+var big=parseInt(document.getElementById('a-big').value)||0;
+var small=parseInt(document.getElementById('a-small').value)||1;
+var h=Math.floor(big/100)%10;var d=Math.floor(big/10)%10;var u=big%10;
+var parts=[];var total=0;var delay=0;
+if(h>0){parts.push({label:h+'00  '+small,value:h*100*small,cls:'c',delay:delay});total+=h*100*small;delay+=150}
+if(d>0){parts.push({label:d+'0  '+small,value:d*10*small,cls:'d',delay:delay});total+=d*10*small;delay+=150}
+if(u>0){parts.push({label:u+'  '+small,value:u*small,cls:'u',delay:delay});total+=u*small;delay+=150}
+var vis=document.getElementById('a-visual');vis.innerHTML='';
+parts.forEach(function(p,i){
+if(i>0){var plus=document.createElement('div');plus.className='area-plus';plus.textContent='+';vis.appendChild(plus)}
+var div=document.createElement('div');div.className='area-part '+p.cls;
+div.innerHTML='<div class="label">'+p.label+'</div><div class="value">'+p.value+'</div>';
+div.style.animationDelay=p.delay+'ms';vis.appendChild(div);
+});
+var res=document.getElementById('a-result');
+res.textContent=big+'  '+small+' = '+total;
+res.classList.add('show');
+}
+var qA,qB;
+function newQ(){qA=Math.floor(Math.random()*900)+100;qB=Math.floor(Math.random()*9)+1;document.getElementById('q-text').textContent='¿Cunto es '+qA+'  '+qB+'?';document.getElementById('q-answer').value='';document.getElementById('q-fb').textContent='';document.getElementById('q-fb').className='feedback'}
+function checkQ(){var ans=parseInt(document.getElementById('q-answer').value);var fb=document.getElementById('q-fb');if(ans===qA*qB){fb.textContent='¿Correcto!';fb.className='feedback correct';setTimeout(newQ,2000)}else if(isNaN(ans)){fb.textContent='Escribe un n';fb.className='feedback wrong'}else{fb.textContent='Intenta de nuevo';fb.className='feedback wrong'}}
+newQ();
+
+function addVideoSlot(container){
+var existing=container.querySelector('.video-placeholder');
+if(existing)existing.remove();
+var div=document.createElement('div');
+div.className='video-slot';
+div.style.cssText='display:flex;gap:8px;align-items:center;background:rgba(0,122,255,.04);border:1px solid rgba(0,122,255,.12);border-radius:12px;padding:10px 12px';
+div.innerHTML='<input type="text" placeholder="Pega el link de YouTube aquí..." style="flex:1;font-family:var(--font-sans);font-size:.875rem;padding:8px 12px;border-radius:8px;border:1px solid rgba(0,0,0,.1);background:white;color:#1d1d1f;outline:none" onfocus="this.style.borderColor=\'#007aff\'" onblur="this.style.borderColor=\'rgba(0,0,0,1)\'"><button onclick="removeVideoSlot(this)" style="font-size:1.1rem;background:none;border:none;cursor:pointer;color:#ff3b30;padding:4px" title="Eliminar">&#x2715;</button>';
+container.appendChild(div);
+var addBtn=document.createElement('div');
+addBtn.className='video-placeholder';
+addBtn.style.cssText='border:2px dashed rgba(0,122,255,.25);border-radius:16px;padding:16px;text-align:center;color:var(--text-tertiary);font-size:.875rem;cursor:pointer;transition:border-color .2s,background .2s';
+addBtn.innerHTML='<span style="font-size:1.25rem;display:block;margin-bottom:4px">&#x2795;</span>Agregar otro video';
+addBtn.onclick=function(){addVideoSlot(container)};
+container.appendChild(addBtn);
+}
+function removeVideoSlot(btn){btn.closest('.video-slot').remove()}
+</script>
+</body>
+</html>

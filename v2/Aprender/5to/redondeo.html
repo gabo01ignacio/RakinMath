@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RakinMath  Redondeo de Números Grandes</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../apple-design.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"></script>
+<script defer src="../rk-utils.js"></script>
+<style>
+body{display:flex;flex-direction:column;min-height:100vh}
+.content{flex:1;max-width:820px;width:100%;margin:0 auto;padding:24px}
+.back-link{display:inline-flex;align-items:center;gap:6px;font-size:.875rem;font-weight:600;color:var(--text-secondary);text-decoration:none;padding:8px 16px;border-radius:980px;background:var(--bg-card);border:1px solid var(--border-strong);transition:transform .15s;margin-bottom:24px}
+.back-link:active{transform:scale(.95)}
+.section{margin-bottom:44px;opacity:0;animation:slideUp .5s var(--spring-default) both}
+.section:nth-child(2){animation-delay:80ms}.section:nth-child(3){animation-delay:160ms}.section:nth-child(4){animation-delay:240ms}.section:nth-child(5){animation-delay:320ms}
+.section-title{font-size:1.5rem;font-weight:700;letter-spacing:-.03em;margin-bottom:8px}
+.section-subtitle{font-size:1rem;color:var(--text-secondary);margin-bottom:20px;line-height:1.6}
+.concept-box{border-radius:var(--radius-md);padding:24px;margin-bottom:20px}
+.concept-box.green{background:linear-gradient(135deg,rgba(52,199,89,.06),rgba(52,199,89,.02));border:1px solid rgba(52,199,89,.15)}
+.concept-box h3{font-size:1.125rem;font-weight:700;margin-bottom:8px}
+.concept-box p{font-size:.9375rem;color:var(--text-secondary);line-height:1.7}
+.tip-box{background:linear-gradient(135deg,rgba(175,82,222,.06),rgba(175,82,222,.02));border:1px solid rgba(175,82,222,.15);border-radius:var(--radius-md);padding:20px;margin:16px 0}
+.tip-box h4{font-size:.9375rem;font-weight:700;color:var(--purple);margin-bottom:6px}
+.tip-box p{font-size:.875rem;color:var(--text-secondary);line-height:1.6}
+.card{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-lg);padding:28px 24px 24px;margin-bottom:20px}
+.card h3{font-size:1.125rem;font-weight:700;margin-bottom:16px}
+.quiz-box{background:linear-gradient(135deg,rgba(0,122,255,.06),rgba(0,122,255,.02));border:1px solid rgba(0,122,255,.15);border-radius:var(--radius-md);padding:24px}
+.quiz-box h4{font-size:1rem;font-weight:700;margin-bottom:12px}
+.quiz-problem{font-size:1.75rem;font-weight:700;text-align:center;margin:16px 0 4px;font-variant-numeric:tabular-nums}
+.quiz-row{display:flex;align-items:center;gap:12px;justify-content:center;flex-wrap:wrap;margin-top:12px}
+.quiz-input{width:100px;padding:10px;border-radius:var(--radius-sm);border:2px solid var(--border-strong);background:var(--bg-card-solid);font-family:var(--font-sans);font-size:1.125rem;font-weight:700;text-align:center;color:var(--text);outline:none}
+.quiz-input:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(0,122,255,.1)}
+.feedback{font-size:.875rem;font-weight:600;margin-top:10px;min-height:20px;text-align:center}
+.feedback.correct{color:var(--green)}.feedback.wrong{color:var(--red)}
+.btn{font-family:var(--font-sans);font-size:.875rem;font-weight:600;padding:8px 18px;border-radius:980px;border:none;cursor:pointer;transition:transform .12s,opacity .12s}
+.btn:active{transform:scale(.95)}
+.btn:disabled{opacity:.4;cursor:not-allowed;transform:none}
+.btn-primary{background:var(--accent);color:white}
+.btn-ghost{background:var(--bg-card-solid);color:var(--text);border:1px solid var(--border-strong)}
+.math-inputs{display:flex;gap:10px;align-items:center;justify-content:center;margin-bottom:20px;flex-wrap:wrap}
+.math-input{width:80px;text-align:center;font-size:1.25rem;font-weight:700;padding:8px 10px;border-radius:var(--radius-sm);border:2px solid var(--border-strong);background:var(--bg-card-solid);color:var(--text);outline:none;font-family:var(--font-sans);transition:border-color .2s,box-shadow .2s}
+.math-input:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(0,122,255,.1)}
+.math-op{font-size:1.25rem;font-weight:700;color:var(--text-tertiary)}
+.result-box{font-size:1.5rem;font-weight:700;text-align:center;padding:16px;border-radius:var(--radius-md);background:rgba(52,199,89,.06);border:1px solid rgba(52,199,89,.15);margin-top:12px;font-variant-numeric:tabular-nums}
+.steps-box{background:rgba(0,122,255,.04);border:1px solid rgba(0,122,255,.12);border-radius:var(--radius-md);padding:16px 20px;margin-top:16px;font-size:.9375rem;line-height:1.6}
+.steps-box strong{color:var(--accent)}
+.steps-box .highlight{color:var(--orange);font-weight:700}
+.math-display{background:rgba(0,122,255,.04);border:1px solid rgba(0,122,255,.12);border-radius:var(--radius-md);padding:16px 20px;margin:16px 0;text-align:center;font-size:1.1rem}
+@keyframes slideUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+@media(max-width:640px){.content{padding:16px}.math-input{width:64px;font-size:1.1rem;padding:6px}.card{padding:20px 16px 16px}}
+</style>
+</head>
+<body>
+<nav class="nav"><a href="menu.html" class="nav-title"><img src="../../Recursos/LogoRakinMath.png" alt="RakinMath" style="height:24px;width:auto"></a><a href="menu.html" class="exit-btn">Volver</a></nav>
+<div class="content">
+<a href="menu.html" class="back-link">← Volver a Menú</a>
+
+<div class="section">
+<div class="section-title">📝 Redondeo de Números Grandes</div>
+<div class="section-subtitle">Redondear es aproximar un número al valor más cercano de una magnitud determinada. ¡Muy útil para hacer cálculos rápidos!</div>
+<div class="concept-box green">
+<h3>📐 Regla del redondeo</h3>
+<p>Para redondear, mira el dígito que está <strong>a la derecha</strong> de la posición a la que quieres redondear:</p>
+<div class="math-display">
+$$\text{Si } d \geq 5 \Rightarrow \text{redondeo hacia arriba}$$
+$$\text{Si } d &lt; 5 \Rightarrow \text{redondeo hacia abajo}$$
+</div>
+<p>• Si ese dígito es <strong>0, 1, 2, 3 o 4</strong> → el número se queda igual (redondeas hacia abajo)</p>
+<p>• Si ese dígito es <strong>5, 6, 7, 8 o 9</strong> → el número sube en 1 (redondeas hacia arriba)</p>
+<p style="margin-top:8px">Todos los dígitos a la derecha se convierten en <strong>cero</strong>.</p>
+</div>
+
+<div class="concept-box green">
+<h3>📖 Ejemplo: Estadio Nacional</h3>
+<p>El Estadio Nacional de Chile tiene capacidad para <strong>48.665</strong> personas.</p>
+<div class="math-display">
+$$\text{Redondeo a decenas de mil: } 48.665 \rightarrow 50.000$$
+</div>
+<p style="margin-top:8px"><strong>Redondeo a las decenas de mil:</strong></p>
+<p>El número es $48.665$. Miramos la <strong>posición de las miles</strong> $(8)$ y el dígito a su derecha es $6$.</p>
+<p>Como $6 \geq 5$, redondeamos hacia arriba: $48.665 \rightarrow 50.000$</p>
+<div class="math-display">
+$$\text{Redondeo a miles: } 48.665 \rightarrow 49.000$$
+</div>
+<p style="margin-top:12px"><strong>Redondeo a las miles:</strong></p>
+<p>Miramos la posición de las miles $(8)$ y el dígito a la derecha es $6$. Como $6 \geq 5$: $48.665 \rightarrow 49.000$</p>
+</div>
+
+<div class="tip-box">
+<h4>💡 Tip del profesor</h4>
+<p>¿No recuerdas cuándo redondear hacia arriba? ¡Piensa en la regla del 5! Si el dígito de la derecha es 5 o más, el número "empuja" al siguiente valor. Si es menor que 5, se queda como está. ¡Es como una balanza!</p>
+</div>
+</div>
+
+<div class="section">
+<div class="section-title">🧠 Prueba interactiva</div>
+<div class="card">
+<h3>Redondea el número a la magnitud indicada</h3>
+<div class="math-inputs">
+<input class="math-input" type="number" min="0" max="999999999" value="48665" id="numInput" style="width:160px" oninput="doRound()">
+<span class="math-op">→</span>
+<select id="magSelect" style="padding:8px 12px;border-radius:var(--radius-sm);border:2px solid var(--border-strong);background:var(--bg-card-solid);font-family:var(--font-sans);font-size:1rem;font-weight:600;color:var(--text);outline:none;cursor:pointer" onchange="doRound()">
+<option value="1000000000">Miles de millones</option>
+<option value="100000000">Cientos de millones</option>
+<option value="10000000">Decenas de millones</option>
+<option value="1000000">Millones</option>
+<option value="100000">Decenas de miles</option>
+<option value="10000" selected>Diez mil</option>
+<option value="1000">Miles</option>
+<option value="100">Centenas</option>
+<option value="10">Decenas</option>
+</select>
+</div>
+<div class="result-box" id="resultBox">50.000</div>
+<div class="steps-box" id="stepsBox">El dígito en la posición de las miles es <strong>8</strong>. El dígito a su derecha es <span class="highlight">6</span>. Como $6 \geq 5$, redondeamos hacia arriba → <strong>50.000</strong></div>
+</div>
+</div>
+
+<div class="section">
+<div class="quiz-box">
+<h4>📝 Redondea sin ayuda</h4>
+<p style="color:var(--text-secondary);margin-bottom:4px;font-size:.9375rem">¿Cuál es el resultado?</p>
+<div class="quiz-problem" id="qProblem"></div>
+<div class="quiz-row">
+<input class="quiz-input" type="number" id="qAnswer" placeholder="?" onkeydown="if(event.key==='Enter')checkQuiz()">
+<button class="btn btn-primary" onclick="checkQuiz()">Comprobar</button>
+</div>
+<div class="feedback" id="qFeedback"></div>
+<div style="margin-top:14px;text-align:center"><button class="btn btn-ghost" onclick="newQuiz()">Nueva pregunta</button></div>
+</div>
+</div>
+
+<div class="section">
+<div class="videos-box">
+<h4>🎬 Videos de apoyo</h4>
+<p style="color:var(--text-secondary);margin-bottom:14px;font-size:.875rem">Agrega links de YouTube para reforzar lo aprendido:</p>
+<div id="videosContainer">
+<div class="video-placeholder" onclick="addVideoSlot()">
+<span style="font-size:1.5rem;display:block;margin-bottom:6px">?️</span>
+Haz clic aquí para agregar un video de YouTube
+</div>
+</div>
+</div>
+</div>
+
+</div>
+
+<script>
+function doRound(){
+var n=parseInt(document.getElementById('numInput').value);
+var mag=parseInt(document.getElementById('magSelect').value);
+if(isNaN(n)){
+document.getElementById('resultBox').textContent='—';
+document.getElementById('stepsBox').innerHTML='';
+return;
+}
+var rounded=Math.round(n/mag)*mag;
+document.getElementById('resultBox').textContent=rounded.toLocaleString('es-CL');
+var posNames={1000000000:'mil millones',100000000:'cientos de millones',10000000:'decenas de millones',1000000:'millones',100000:'decenas de miles',10000:'miles',1000:'centenas',100:'decenas',10:'unidades'};
+var magName=posNames[mag]||'magnitud';
+var posIdx=Math.floor(Math.log10(mag));
+var s=String(n);
+var digIdx=s.length-posIdx-1;
+var digit=digIdx>=0?parseInt(s[digIdx]):0;
+var rightDig=digIdx+1<s.length?parseInt(s[digIdx+1]):0;
+var rule=rightDig>=5?'hacia arriba ($\\geq 5$)':'hacia abajo ($< 5$)';
+var digName=digit;
+var arrow=rightDig>=5?'↑':'↓';
+document.getElementById('stepsBox').innerHTML='Miramos la posición de las <strong>'+magName+'</strong>: el dígito es <strong>'+digName+'</strong>. El dígito a su derecha es <span class="highlight">'+rightDig+'</span>. Como '+rightDig+' '+(rightDig>=5?'$\\geq$':'$<$')+' 5, redondeamos '+rule+' → <strong>'+rounded.toLocaleString('es-CL')+'</strong> '+arrow;
+}
+
+var qNum,qMag,qAnswer;
+var quizData=[
+{n:48665,m:10000,a:50000},
+{n:23456,m:1000,a:23000},
+{n:167890,m:100000,a:200000},
+{n:9543,m:1000,a:10000},
+{n:12345,m:100,a:12300},
+{n:8765,m:1000,a:9000},
+{n:156789,m:1000000,a:2000000},
+{n:43210,m:10000,a:40000}
+];
+
+function newQuiz(){
+var idx=Math.floor(Math.random()*quizData.length);
+var q=quizData[idx];
+qNum=q.n;
+qMag=q.m;
+qAnswer=q.a;
+var posNames={1000000000:'mil millones',100000000:'cientos de millones',10000000:'decenas de millones',1000000:'millones',100000:'decenas de miles',10000:'miles',1000:'centenas',100:'decenas',10:'unidades'};
+document.getElementById('qProblem').textContent=qNum.toLocaleString('es-CL')+' → '+posNames[qMag];
+document.getElementById('qAnswer').value='';
+document.getElementById('qFeedback').textContent='';
+document.getElementById('qFeedback').className='feedback';
+}
+
+function checkQuiz(){
+var ans=parseInt(document.getElementById('qAnswer').value);
+var fb=document.getElementById('qFeedback');
+if(ans===qAnswer){
+fb.textContent='¡Correcto! '+qNum.toLocaleString('es-CL')+' redondeado = '+qAnswer.toLocaleString('es-CL');
+fb.className='feedback correct';
+setTimeout(newQuiz,2000);
+}else if(isNaN(ans)){
+fb.textContent='Escribe un número';
+fb.className='feedback wrong';
+}else{
+fb.textContent='No es correcto. Recuerda mirar el dígito a la derecha de la posición a redondear.';
+fb.className='feedback wrong';
+}
+}
+
+function addVideoSlot(){
+var c=document.getElementById('videosContainer');
+var ph=c.querySelector('.video-placeholder');
+if(ph)ph.remove();
+var slot=document.createElement('div');
+slot.className='video-slot';
+slot.innerHTML='<input type="text" placeholder="Pega el link de YouTube aquí..."><button class="remove-btn" onclick="this.parentElement.remove();if(!document.querySelector(\'#videosContainer .video-slot\'))resetVideos()">✕</button>';
+c.appendChild(slot);
+var addBtn=document.createElement('div');
+addBtn.className='add-video-btn';
+addBtn.textContent='+ Agregar otro video';
+addBtn.onclick=addVideoSlot;
+c.appendChild(addBtn);
+}
+
+function resetVideos(){
+document.getElementById('videosContainer').innerHTML='<div class="video-placeholder" onclick="addVideoSlot()"><span style="font-size:1.5rem;display:block;margin-bottom:6px">▶️</span>Haz clic aquí para agregar un video de YouTube</div>';
+}
+
+doRound();
+newQuiz();
+</script>
+</body>
+</html>

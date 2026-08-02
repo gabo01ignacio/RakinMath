@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RakinMath  Divisin con Resto</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../apple-design.css">
+<style>
+body{display:flex;flex-direction:column;min-height:100vh}
+.content{flex:1;max-width:800px;width:100%;margin:0 auto;padding:24px}
+.back-link{display:inline-flex;align-items:center;gap:6px;font-family:var(--font-sans);font-size:.875rem;font-weight:600;color:var(--text-secondary);text-decoration:none;padding:8px 16px;border-radius:980px;background:var(--bg-card);border:1px solid var(--border-strong);transition:transform .15s;margin-bottom:24px}
+.back-link:active{transform:scale(.95)}
+.section{margin-bottom:40px;opacity:0;animation:slideUp .5s var(--spring-default) both}
+.section:nth-child(2){animation-delay:80ms}.section:nth-child(3){animation-delay:160ms}
+.section-title{font-size:1.5rem;font-weight:700;letter-spacing:-.03em;margin-bottom:8px}
+.section-subtitle{font-size:1rem;color:var(--text-secondary);margin-bottom:20px;line-height:1.5}
+.concept-box{border-radius:20px;padding:24px;margin-bottom:20px}
+.concept-box.orange{background:linear-gradient(135deg,rgba(255,149,0,.06),rgba(255,149,0,.02));border:1px solid rgba(255,149,0,.15)}
+.concept-box h3{font-size:1.125rem;font-weight:700;margin-bottom:8px}
+.concept-box p{font-size:.9375rem;color:var(--text-secondary);line-height:1.6}
+.tip-box{background:linear-gradient(135deg,rgba(175,82,222,.06),rgba(175,82,222,.02));border:1px solid rgba(175,82,222,.15);border-radius:20px;padding:20px;margin:16px 0}
+.tip-box h4{font-size:.9375rem;font-weight:700;color:var(--purple);margin-bottom:6px}
+.tip-box p{font-size:.875rem;color:var(--text-secondary);line-height:1.5}
+.div-area{background:var(--bg-card);border:1px solid var(--border);border-radius:24px;padding:24px;margin-bottom:20px}
+.div-inputs{display:flex;align-items:center;justify-content:center;gap:12px;margin:16px 0}
+.div-input{width:70px;text-align:center;font-size:1.5rem;font-weight:700;padding:8px;border-radius:12px;border:2px solid var(--border-strong);background:var(--bg-card-solid);color:var(--text);outline:none;font-family:var(--font-sans)}
+.div-input:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(0,122,255,.1)}
+.plates-area{display:flex;gap:16px;flex-wrap:wrap;justify-content:center;margin:20px 0;min-height:80px}
+.plate{text-align:center}
+.plate-box{width:70px;height:70px;border:3px solid var(--accent);border-radius:16px;display:flex;align-items:center;justify-content:center;font-size:1.5rem;font-weight:700;color:var(--accent);background:rgba(0,122,255,.04);transition:all .3s var(--spring-default)}
+.plate-box.has-items{background:rgba(0,122,255,.1);border-color:var(--green);color:var(--green)}
+.plate-label{font-size:.6875rem;color:var(--text-tertiary);margin-top:4px}
+.candies-remaining{text-align:center;font-size:1rem;color:var(--text-secondary);margin:12px 0}
+.candy-icon{display:inline-block;font-size:1.25rem;animation:popIn .3s var(--spring-default) both}
+.expression{text-align:center;font-size:1.125rem;font-weight:700;color:var(--accent);padding:12px;background:rgba(0,122,255,.06);border-radius:12px;margin-top:12px;display:none}
+.expression.show{display:block;animation:scaleIn .4s var(--spring-default) both}
+.btn-row{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin:12px 0}
+.btn{font-family:var(--font-sans);font-size:.875rem;font-weight:600;padding:10px 20px;border-radius:980px;border:none;cursor:pointer;transition:transform .12s}
+.btn:active{transform:scale(.95)}
+.btn-primary{background:var(--accent);color:white}
+.btn-success{background:var(--green);color:white}
+.btn-ghost{background:var(--bg-card-solid);color:var(--text);border:1px solid var(--border-strong)}
+.question-box{background:linear-gradient(135deg,rgba(0,122,255,.06),rgba(0,122,255,.02));border:1px solid rgba(0,122,255,.15);border-radius:20px;padding:24px}
+.question-box h4{font-size:1rem;font-weight:700;margin-bottom:12px}
+.q-row{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.q-input{width:60px;padding:10px;border-radius:12px;border:2px solid var(--border-strong);background:var(--bg-card-solid);font-family:var(--font-sans);font-size:1.125rem;font-weight:700;text-align:center;color:var(--text);outline:none}
+.q-input:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(0,122,255,.1)}
+.q-label{font-size:.875rem;color:var(--text-secondary)}
+.feedback{font-size:.875rem;font-weight:600;margin-top:8px;min-height:24px}
+.feedback.correct{color:var(--green)}.feedback.wrong{color:var(--red)}
+@keyframes slideUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+@keyframes popIn{0%{opacity:0;transform:scale(0)}100%{opacity:1;transform:scale(1)}}
+@keyframes scaleIn{from{opacity:0;transform:scale(.9)}to{opacity:1;transform:scale(1)}}
+@media(max-width:640px){.content{padding:16px}.div-input{width:56px;font-size:1.25rem}.plate-box{width:56px;height:56px;font-size:1.25rem}}
+</style>
+</head>
+<body>
+<nav class="nav"><a href="menu.html" class="nav-title"><img src="../../Recursos/LogoRakinMath.png" alt="RakinMath" style="height: 24px; width: auto;"></a><a href="menu.html" class="exit-btn">Volver</a></nav>
+<div class="content">
+<a href="menu.html" class="back-link">&#x2190; Volver a Nmeros</a>
+
+<div class="section">
+<div class="section-title">&#x1F36C; Divisin con Resto</div>
+<div class="section-subtitle">Dividir es <strong>repartir en partes iguales</strong>. Cuando no alcanza para darle lo mismo a todos, lo que sobra es el <strong>resto</strong>.</div>
+<div class="concept-box orange">
+<h3>&#x1F4A1; Ejemplo: 23  4</h3>
+<p>Tienes 23 caramelos y los repartes en 4 platos. Cada plato recibe 5 caramelos (45=20) y sobran <strong>3</strong>. Entonces: 23 = 4  5 + 3.</p>
+</div>
+<div class="tip-box">
+<h4>&#x1F4A1; Tip del profesor</h4>
+<p>La división y la multiplicación son <strong>hermanas</strong>. Si 23  4 = 5 R 3, entonces 4  5 + 3 = 23. ¿Siempre puedes comprobar!</p>
+</div>
+</div>
+
+<div class="section">
+<div class="section-title">&#x1F3AE; Reparte los caramelos</div>
+<div class="div-area">
+<div class="div-inputs">
+<span class="q-label">Dividendo:</span>
+<input class="div-input" type="number" min="1" max="50" value="23" id="d-num">
+<span style="font-size:1.5rem;font-weight:700;color:var(--text-tertiary)">&divide;</span>
+<span class="q-label">Divisor:</span>
+<input class="div-input" type="number" min="1" max="10" value="4" id="d-den">
+</div>
+<div class="plates-area" id="d-plates"></div>
+<div class="candies-remaining" id="d-remaining"></div>
+<div class="btn-row">
+<button class="btn btn-success" onclick="divStep()">&#x1F36C; Repartir una vuelta</button>
+<button class="btn btn-ghost" onclick="divReset()">Reiniciar</button>
+</div>
+<div class="expression" id="d-expression"></div>
+</div>
+</div>
+
+<div class="section">
+<div class="question-box">
+<h4>&#x2753; Resuelve</h4>
+<p style="color:var(--text-secondary);margin-bottom:12px;font-size:.9375rem" id="q-text"></p>
+<div class="q-row">
+<input class="q-input" type="number" id="q-q" placeholder="Coc"> <span class="q-label">R</span>
+<input class="q-input" type="number" id="q-r" placeholder="Rto">
+<button class="btn btn-primary" onclick="checkQ()">Comprobar</button>
+</div>
+<div class="feedback" id="q-fb"></div>
+<div style="margin-top:12px"><button class="btn btn-ghost" onclick="newQ()">Nueva pregunta</button></div>
+</div>
+</div>
+
+<div class="section" style="animation-delay:320ms">
+<div class="question-box" style="background:linear-gradient(135deg,rgba(0,122,255,.06),rgba(0,122,255,.02));border:1px solid rgba(0,122,255,.15)">
+<h4>&#x1F3AC; Videos de apoyo</h4>
+<p style="color:var(--text-secondary);margin-bottom:12px;font-size:.9375rem">Agrega links de videos de YouTube para reforzar lo aprendido:</p>
+<div id="videos-container" style="display:flex;flex-direction:column;gap:12px;margin-bottom:12px">
+<div class="video-placeholder" style="border:2px dashed rgba(0,122,255,.25);border-radius:16px;padding:24px;text-align:center;color:var(--text-tertiary);font-size:.875rem;cursor:pointer;transition:border-color .2s,background .2s" onclick="addVideoSlot(this.parentElement)">
+<span style="font-size:1.5rem;display:block;margin-bottom:6px">&#x1F4F1;</span>
+Haz clic aquí para agregar un video de YouTube
+</div>
+</div>
+</div>
+</div>
+
+</div>
+
+<script>
+var dState={num:23,den:4,placed:0,plates:[],remainder:0};
+function divReset(){
+dState.num=parseInt(document.getElementById('d-num').value)||23;
+dState.den=parseInt(document.getElementById('d-den').value)||4;
+dState.placed=0;dState.plates=Array(dState.den).fill(0);
+renderPlates();
+document.getElementById('d-remaining').innerHTML='Caramelos por repartir: <strong>'+dState.num+'</strong>';
+document.getElementById('d-expression').classList.remove('show');
+}
+function divStep(){
+if(dState.placed>=dState.num)return;
+var toPlace=Math.min(dState.den,dState.num-dState.placed);
+for(var i=0;i<toPlace;i++){dState.plates[i%dState.den]++;dState.placed++}
+renderPlates();
+var left=dState.num-dState.placed;
+document.getElementById('d-remaining').innerHTML=left>0?'Caramelos por repartir: <strong>'+left+'</strong>':'<span style="color:var(--green);font-weight:700">Listo! No quedan caramelos</span>';
+if(left===0){
+var q=Math.floor(dState.num/dState.den);var r=dState.num%dState.den;
+document.getElementById('d-expression').innerHTML=dState.num+' = '+dState.den+' &times; '+q+(r?' + '+r:'');
+document.getElementById('d-expression').classList.add('show');
+}
+}
+function renderPlates(){
+var el=document.getElementById('d-plates');el.innerHTML='';
+dState.plates.forEach(function(n,i){
+var div=document.createElement('div');div.className='plate';
+div.innerHTML='<div class="plate-box '+(n>0?'has-items':'')+'">'+n+'</div><div class="plate-label">Plato '+(i+1)+'</div>';
+el.appendChild(div);
+});
+}
+var qN,qD;
+function newQ(){qD=Math.floor(Math.random()*8)+2;qN=qD*(Math.floor(Math.random()*6)+2)+Math.floor(Math.random()*qD);document.getElementById('q-text').textContent='¿Cunto es '+qN+'  '+qD+'? (escribe cociente y resto)';document.getElementById('q-q').value='';document.getElementById('q-r').value='';document.getElementById('q-fb').textContent='';document.getElementById('q-fb').className='feedback'}
+function checkQ(){var cq=parseInt(document.getElementById('q-q').value);var cr=parseInt(document.getElementById('q-r').value);var fb=document.getElementById('q-fb');var expQ=Math.floor(qN/qD);var expR=qN%qD;if(cq===expQ&&cr===expR){fb.textContent='¿Correcto! '+qN+'  '+qD+' = '+expQ+' R '+expR;fb.className='feedback correct';setTimeout(newQ,2500)}else if(isNaN(cq)||isNaN(cr)){fb.textContent='Escribe ambos valores';fb.className='feedback wrong'}else{fb.textContent='Revisa  el cociente es '+expQ+' y el resto es '+expR;fb.className='feedback wrong'}}
+divReset();newQ();
+
+function addVideoSlot(container){
+var existing=container.querySelector('.video-placeholder');
+if(existing)existing.remove();
+var div=document.createElement('div');
+div.className='video-slot';
+div.style.cssText='display:flex;gap:8px;align-items:center;background:rgba(0,122,255,.04);border:1px solid rgba(0,122,255,.12);border-radius:12px;padding:10px 12px';
+div.innerHTML='<input type="text" placeholder="Pega el link de YouTube aquí..." style="flex:1;font-family:var(--font-sans);font-size:.875rem;padding:8px 12px;border-radius:8px;border:1px solid rgba(0,0,0,.1);background:white;color:#1d1d1f;outline:none" onfocus="this.style.borderColor=\'#007aff\'" onblur="this.style.borderColor=\'rgba(0,0,0,1)\'"><button onclick="removeVideoSlot(this)" style="font-size:1.1rem;background:none;border:none;cursor:pointer;color:#ff3b30;padding:4px" title="Eliminar">&#x2715;</button>';
+container.appendChild(div);
+var addBtn=document.createElement('div');
+addBtn.className='video-placeholder';
+addBtn.style.cssText='border:2px dashed rgba(0,122,255,.25);border-radius:16px;padding:16px;text-align:center;color:var(--text-tertiary);font-size:.875rem;cursor:pointer;transition:border-color .2s,background .2s';
+addBtn.innerHTML='<span style="font-size:1.25rem;display:block;margin-bottom:4px">&#x2795;</span>Agregar otro video';
+addBtn.onclick=function(){addVideoSlot(container)};
+container.appendChild(addBtn);
+}
+function removeVideoSlot(btn){btn.closest('.video-slot').remove()}
+</script>
+</body>
+</html>

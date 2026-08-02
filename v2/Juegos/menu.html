@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RakinMath - Juegos</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="apple-design.css">
+<style>
+body{display:flex;flex-direction:column;min-height:100vh}
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.4);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);display:flex;align-items:center;justify-content:center;z-index:1000;padding:24px;opacity:0;animation:fadeIn .3s ease both}
+.modal-overlay.hidden{display:none}
+.modal{background:#fff;border-radius:36px;padding:32px;max-width:400px;width:100%;box-shadow:0 25px 80px rgba(0,0,0,.15);transform:scale(.95);animation:scaleIn .4s cubic-bezier(.2,.9,.3,1.2) .1s both}
+.modal-header{text-align:center;margin-bottom:24px}
+.modal-emoji{font-size:2.5rem;margin-bottom:12px;animation:popIn .5s cubic-bezier(.2,.9,.3,1.2) .2s both}
+.modal-header h2{font-size:1.375rem;margin-bottom:8px;font-weight:700;letter-spacing:-.03em}
+.modal-header p{font-size:.9375rem;color:#6e6e73}
+.modal-field{margin-bottom:20px}
+.modal-field label{display:block;font-size:.8125rem;font-weight:600;color:#6e6e73;margin-bottom:8px;letter-spacing:-.01em}
+.modal-field input,.modal-field select{font-family:Inter,sans-serif;font-size:1rem;font-weight:500;padding:12px 16px;border-radius:20px;border:2px solid rgba(0,0,0,.1);background:rgba(255,255,255,.8);color:#1d1d1f;width:100%;outline:none;transition:border-color .15s,box-shadow .15s;-webkit-appearance:none;letter-spacing:-.01em}
+.modal-field input:focus,.modal-field select:focus{border-color:#007aff;box-shadow:0 0 0 4px rgba(0,122,255,.12)}
+.modal-field input::placeholder{color:#86868b}
+.modal-btn{width:100%;font-family:Inter,sans-serif;font-size:1rem;font-weight:600;padding:12px 20px;border-radius:980px;border:none;cursor:pointer;background:#007aff;color:white;box-shadow:0 2px 10px rgba(0,122,255,.25);transition:transform .15s,background .2s;letter-spacing:-.01em}
+.modal-btn:active{transform:scale(.96)}
+.modal-btn:hover{background:#0056b3}
+.modal-btn:disabled{opacity:.5;cursor:not-allowed}
+.gs{position:relative;display:flex;background:rgba(255,255,255,.8);border:1px solid rgba(0,0,0,.1);border-radius:980px;padding:4px;backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px)}
+.gs input[type=radio]{position:absolute;opacity:0;width:0;height:0;pointer-events:none}
+.gs label{flex:1;text-align:center;padding:12px 16px;font-family:Inter,sans-serif;font-size:.9375rem;font-weight:600;color:#6e6e73;cursor:pointer;border-radius:980px;transition:color .25s;position:relative;z-index:1;-webkit-tap-highlight-color:transparent;user-select:none}
+.gs label .si{display:block;font-size:1.125rem;margin-bottom:2px}
+.gs .sb{position:absolute;top:4px;left:4px;width:calc(50% - 4px);height:calc(100% - 8px);background:#007aff;border-radius:980px;box-shadow:0 2px 10px rgba(0,122,255,.25);transition:transform .35s cubic-bezier(.2,.9,.3,1.2);z-index:0;pointer-events:none}
+.gs.r .sb{transform:translateX(100%)}
+.gs label.on{color:white}
+.nr{display:flex;align-items:center;gap:12px}
+.nmw{position:relative}
+.nmb{font-family:Inter,sans-serif;font-size:.8125rem;font-weight:600;display:flex;align-items:center;gap:8px;padding:6px 14px;border-radius:980px;background:#f5f5f7;border:1px solid rgba(0,0,0,.1);color:#6e6e73;cursor:pointer;transition:transform .12s,background .15s;-webkit-tap-highlight-color:transparent}
+.nmb:active{transform:scale(.95)}
+.nmb:hover{background:rgba(0,0,0,.06);color:#1d1d1f}
+.nmb .ni{font-size:.9375rem}
+.nmb svg{width:12px;height:12px;transition:transform .25s cubic-bezier(.2,.9,.3,1.2)}
+.nmw.open .nmb svg{transform:rotate(180deg)}
+.ndd{position:absolute;top:calc(100% + 8px);right:0;width:260px;padding:16px;background:#fff;border:1px solid rgba(0,0,0,.06);border-radius:28px;box-shadow:0 20px 60px rgba(0,0,0,.08);opacity:0;pointer-events:none;transform:translateY(-8px);transition:opacity .2s,transform .25s cubic-bezier(.2,.9,.3,1.2);z-index:100}
+.nmw.open .ndd{opacity:1;pointer-events:auto;transform:translateY(0)}
+.ndt{font-size:.75rem;font-weight:600;color:#86868b;margin-bottom:12px;letter-spacing:.02em;text-transform:uppercase}
+.ndd .gs{width:100%;margin-bottom:12px}
+.ndd .gs label{font-size:.8125rem;padding:8px 12px}
+.ndd .gs label .si{font-size:1rem}
+.lb{width:100%;font-family:Inter,sans-serif;font-size:.8125rem;font-weight:600;padding:10px 16px;border-radius:980px;border:1px solid rgba(255,59,48,.2);background:rgba(255,59,48,.06);color:#ff3b30;cursor:pointer;transition:background .15s,transform .12s;display:flex;align-items:center;justify-content:center;gap:6px}
+.lb:hover{background:rgba(255,59,48,.12)}
+.lb:active{transform:scale(.97)}
+.hero{text-align:center;padding:48px 24px 32px}
+.hero-emoji{font-size:3rem;margin-bottom:12px;animation:popIn .6s cubic-bezier(.2,.9,.3,1.2) both}
+.hero h1{margin-bottom:8px;font-size:clamp(1.75rem,4vw,2.5rem);font-weight:700;letter-spacing:-.03em;line-height:1.08}
+.hero h1 .brand{color:#007aff}
+.hero p{font-size:1.0625rem;max-width:400px;margin:0 auto;color:#6e6e73}
+.selector{display:flex;justify-content:center;gap:12px;padding:0 24px;margin-bottom:32px;flex-wrap:wrap}
+.sbtn{font-family:Inter,sans-serif;font-size:.9375rem;font-weight:600;padding:12px 20px;border-radius:980px;border:1px solid rgba(0,0,0,.1);background:rgba(255,255,255,.8);backdrop-filter:blur(10px);color:#1d1d1f;cursor:pointer;transition:transform .15s,background .2s;-webkit-tap-highlight-color:transparent;display:flex;align-items:center;gap:8px;letter-spacing:-.01em}
+.sbtn:active{transform:scale(.94)}
+.sbtn.active{background:#007aff;color:white;border-color:#007aff;box-shadow:0 2px 10px rgba(0,122,255,.25)}
+.sbtn[data-g=4to]:not(.active):hover{border-color:#5ac8fa;background:rgba(90,200,250,.08)}
+.sbtn[data-g=5to]:not(.active):hover{border-color:#ff9500;background:rgba(255,149,0,.08)}
+.sbtn[data-g=6to]:not(.active):hover{border-color:#af52de;background:rgba(175,82,222,.08)}
+.gg{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:20px;padding:0 24px;max-width:1200px;width:100%;margin:0 auto;padding-bottom:48px}
+.gc{background:rgba(255,255,255,.8);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border:1px solid rgba(0,0,0,.06);border-radius:28px;padding:24px;text-decoration:none;color:#1d1d1f;box-shadow:0 1px 3px rgba(0,0,0,.04);transition:transform .4s cubic-bezier(.2,.9,.3,1.2),box-shadow .4s,border-color .3s;will-change:transform;display:flex;flex-direction:column;gap:12px;opacity:0;animation:slideUp .6s cubic-bezier(.2,.9,.3,1.2) both}
+.gc:nth-child(1){animation-delay:0ms}.gc:nth-child(2){animation-delay:60ms}.gc:nth-child(3){animation-delay:120ms}.gc:nth-child(4){animation-delay:180ms}.gc:nth-child(5){animation-delay:240ms}.gc:nth-child(6){animation-delay:300ms}.gc:nth-child(7){animation-delay:360ms}.gc:nth-child(8){animation-delay:420ms}.gc:nth-child(9){animation-delay:480ms}.gc:nth-child(10){animation-delay:540ms}
+.gc:hover{transform:translateY(-6px);box-shadow:0 20px 60px rgba(0,0,0,.08);border-color:rgba(0,0,0,.1)}
+.gc:active{transform:scale(.97);transition-duration:100ms}
+.gc.hidden{display:none}
+.gch{display:flex;align-items:center;gap:16px}
+.gi{width:52px;height:52px;border-radius:20px;display:flex;align-items:center;justify-content:center;font-size:1.5rem;flex-shrink:0;transition:transform .3s cubic-bezier(.2,.9,.3,1.2)}
+.gc:hover .gi{transform:scale(1.1)}
+.gi.cyan{background:linear-gradient(135deg,#e8f8fd,#dce8f5)}.gi.yellow{background:linear-gradient(135deg,#fff3e0,#ffe0b2)}.gi.purple{background:linear-gradient(135deg,#f3e5f5,#e1bee7)}.gi.green{background:linear-gradient(135deg,#e8f8ed,#c8e6d0)}.gi.orange{background:linear-gradient(135deg,#fff3e0,#ffe0b2)}.gi.pink{background:linear-gradient(135deg,#fce4ec,#f8bbd0)}.gi.indigo{background:linear-gradient(135deg,#e8e8fd,#d4d4f5)}
+.gct{font-size:1.0625rem;font-weight:600;letter-spacing:-.02em}
+.gcd{font-size:.95rem;color:#6e6e73;line-height:1.5;letter-spacing:-.01em}
+.gcf{display:flex;align-items:center;justify-content:space-between;margin-top:auto;padding-top:12px}
+.gt{font-size:.75rem;font-weight:600;padding:4px 8px;border-radius:12px;background:rgba(0,0,0,.04);color:#86868b;letter-spacing:-.01em}
+.pa{width:32px;height:32px;border-radius:50%;background:#007aff;color:white;display:flex;align-items:center;justify-content:center;font-size:.875rem;transition:transform .3s cubic-bezier(.2,.9,.3,1.2);box-shadow:0 2px 8px rgba(0,122,255,.25)}
+.gc:hover .pa{transform:scale(1.1)}
+.footer{border-top:1px solid rgba(0,0,0,.06);text-align:center;padding:32px 24px;color:#86868b;font-size:.8125rem;background:rgba(255,255,255,.8);backdrop-filter:blur(10px);letter-spacing:-.01em}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+@keyframes slideUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+@keyframes scaleIn{from{opacity:0;transform:scale(.9)}to{opacity:1;transform:scale(1)}}
+@keyframes popIn{0%{opacity:0;transform:scale(.8)}70%{transform:scale(1.03)}100%{opacity:1;transform:scale(1)}}
+@media(max-width:480px){.hero{padding:32px 16px 24px}.hero-emoji{font-size:2.25rem}.hero h1{font-size:1.5rem}.selector{gap:8px;padding:0 16px}.sbtn{padding:8px 16px;font-size:.8125rem}.gg{gap:16px;padding:0 16px 24px}.modal{padding:24px}.ndd{width:230px;right:-10px}}
+
+/* ─── DARK THEME ─── */
+[data-theme="dark"] body{background:#0a0a0a;color:#f5f5f7}
+[data-theme="dark"] .modal{background:#1c1c1e;box-shadow:0 25px 80px rgba(0,0,0,.5)}
+[data-theme="dark"] .modal-header h2{color:#f5f5f7}
+[data-theme="dark"] .modal-header p,[data-theme="dark"] .modal-field label{color:#a1a1a6}
+[data-theme="dark"] .modal-field input,[data-theme="dark"] .modal-field select{border-color:rgba(255,255,255,.12);background:rgba(28,28,30,.8);color:#f5f5f7}
+[data-theme="dark"] .modal-field input::placeholder{color:#8e8e93}
+[data-theme="dark"] .gs{background:rgba(28,28,30,.8);border-color:rgba(255,255,255,.08)}
+[data-theme="dark"] .gs label{color:#a1a1a6}
+[data-theme="dark"] .nmb{background:rgba(28,28,30,.8);border-color:rgba(255,255,255,.08);color:#a1a1a6}
+[data-theme="dark"] .nmb:hover{background:rgba(255,255,255,.06);color:#f5f5f7}
+[data-theme="dark"] .ndd{background:#1c1c1e;border-color:rgba(255,255,255,.08);box-shadow:0 20px 60px rgba(0,0,0,.5)}
+[data-theme="dark"] .hero h1{color:#f5f5f7}
+[data-theme="dark"] .hero p{color:#a1a1a6}
+[data-theme="dark"] .sbtn{border-color:rgba(255,255,255,.08);background:rgba(28,28,30,.8);color:#f5f5f7}
+[data-theme="dark"] .gc{background:rgba(28,28,30,.75);border-color:rgba(255,255,255,.08);color:#f5f5f7}
+[data-theme="dark"] .gc:hover{box-shadow:0 20px 60px rgba(0,0,0,.4)}
+[data-theme="dark"] .gcd{color:#a1a1a6}
+[data-theme="dark"] .gt{background:rgba(255,255,255,.06);color:#8e8e93}
+[data-theme="dark"] .footer{background:rgba(28,28,30,.8);border-color:rgba(255,255,255,.08);color:#8e8e93}
+[data-theme="dark"] .stats-link{border-color:rgba(10,132,255,.2);background:rgba(10,132,255,.06);color:#0a84ff}
+
+/* ─── PRÓXIMAMENTE ─── */
+.sbtn-locked{opacity:.5;cursor:not-allowed;position:relative}
+.sbtn-locked:hover{transform:none;background:rgba(255,255,255,.8);border-color:rgba(0,0,0,.1)}
+.modal-coming-soon .modal-emoji{font-size:3rem}
+.modal-coming-soon .modal-header p{margin-top:8px}
+</style>
+</head>
+<body>
+<div class="modal-overlay hidden" id="modal-soon">
+<div class="modal modal-coming-soon">
+<div class="modal-header"><div class="modal-emoji">&#x1F4DA;</div><h2>Modo Aprender</h2><p>&#x1F52E; Estamos trabajando en algo increíble. ¡Muy pronto podrás aprender matemáticas de una forma nueva!</p></div>
+<button class="modal-btn" onclick="document.getElementById('modal-soon').classList.add('hidden')">Entendido</button>
+</div></div>
+<nav class="nav"><a href="menu.html" class="nav-title"><img src="../Recursos/LogoRakinMath.png" alt="RakinMath" style="height: 24px; width: auto;"></a><div class="nr"><div class="nmw" id="nmw"><button class="nmb" id="nmb"><span class="ni" id="ni">&#x1F3AE;</span><span id="nt">Practicar</span><svg viewBox="0 0 12 12" fill="none"><path d="M3 4.5L6 7.5L9 4.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button><div class="ndd"><div class="ndt">Cambiar modo</div><div class="gs r" id="nS"><input type="radio" name="navmode" id="n-a" value="aprender"><label for="n-a"><span class="si">&#x1F4DA;</span>Aprender<br><small style="font-size:.625rem;color:#86868b;font-weight:500">Próximamente</small></label><input type="radio" name="navmode" id="n-p" value="practicar" checked><label for="n-p" class="on"><span class="si">&#x1F3AE;</span>Practicar</label><div class="sb"></div></div><a href="../dashboard.html" class="stats-link" style="display:block;width:100%;font-family:Inter,sans-serif;font-size:.8125rem;font-weight:600;padding:10px 16px;border-radius:980px;border:1px solid rgba(0,122,255,.2);background:rgba(0,122,255,.06);color:#007aff;text-decoration:none;text-align:center;transition:background .15s;margin-bottom:8px">&#x1F4CA; Mis Estadísticas</a><button class="lb" id="lb">&#x1F6AA; Cerrar Sesion</button></div></div></div></nav>
+<div class="hero"><div class="hero-emoji">&#x1F3AE;</div><h1 id="ht">Juegos de Matematicas</h1><p>Aprende jugando con retos interactivos</p></div>
+<div class="selector">
+<button class="sbtn active" data-g="all" onclick="fg('all',this)">Todos</button>
+<button class="sbtn" data-g="4to" onclick="fg('4to',this)">&#x1F392; 4 Basico</button>
+<button class="sbtn" data-g="5to" onclick="fg('5to',this)">&#x1F9E0; 5 Basico</button>
+<button class="sbtn" data-g="6to" onclick="fg('6to',this)">&#x1F680; 6 Basico</button>
+</div>
+<div class="gg" id="gg">
+<a href="juego1.html" class="gc" data-g="5to"><div class="gch"><div class="gi cyan">&#x2716;&#xFE0F;</div><div><div class="gct">Duelo de Numeros</div></div></div><div class="gcd">Rapidez multiplicando y dividiendo en equipo</div><div class="gcf"><span class="gt">5 Basico</span><div class="pa">&rarr;</div></div></a>
+<a href="juego2.html" class="gc" data-g="5to"><div class="gch"><div class="gi yellow">&#x1F4D0;</div><div><div class="gct">Estimaciones</div></div></div><div class="gcd">Redondea y calcula aproximaciones rapidas</div><div class="gcf"><span class="gt">5 Basico</span><div class="pa">&rarr;</div></div></a>
+<a href="juego3.html" class="gc" data-g="4to,5to"><div class="gch"><div class="gi purple">&#x1F355;</div><div><div class="gct">Chefs de Fracciones</div></div></div><div class="gcd">Fracciones deliciosas en la cocina</div><div class="gcf"><span class="gt">4 &middot; 5</span><div class="pa">&rarr;</div></div></a>
+<a href="juego4.html" class="gc" data-g="4to,5to"><div class="gch"><div class="gi green">&#x1F3D7;&#xFE0F;</div><div><div class="gct">Arquitectas</div></div></div><div class="gcd">Calcula perimetro y area para ayudar a los animales</div><div class="gcf"><span class="gt">4 &middot; 5</span><div class="pa">&rarr;</div></div></a>
+<a href="juego5.html" class="gc" data-g="5to"><div class="gch"><div class="gi orange">&#x1F5FA;&#xFE0F;</div><div><div class="gct">Buscatesoros</div></div></div><div class="gcd">Navega por el plano cartesiano con coordenadas (X, Y)</div><div class="gcf"><span class="gt">5 Basico</span><div class="pa">&rarr;</div></div></a>
+<a href="juego6.html" class="gc" data-g="5to,6to"><div class="gch"><div class="gi pink">&#x1F9EA;</div><div><div class="gct">El Caldero Magico</div></div></div><div class="gcd">Usa el orden de las operaciones para crear pociones</div><div class="gcf"><span class="gt">5 &middot; 6</span><div class="pa">&rarr;</div></div></a>
+<a href="juego7.html" class="gc" data-g="4to"><div class="gch"><div class="gi cyan">&#x1F916;</div><div><div class="gct">Mision Robot</div></div></div><div class="gcd">Repara al robot: doble, mitad y trucos de ceros</div><div class="gcf"><span class="gt">4 Basico</span><div class="pa">&rarr;</div></div></a>
+<a href="juego8.html" class="gc" data-g="4to,5to"><div class="gch"><div class="gi indigo">&#x1F9EE;</div><div><div class="gct">Calculo Mental</div></div></div><div class="gcd">7 operaciones, 3 modos, preguntas tipo enunciado y estadisticas</div><div class="gcf"><span class="gt">4 &middot; 5</span><div class="pa">&rarr;</div></div></a>
+<a href="juego9.html" class="gc" data-g="4to,5to"><div class="gch"><div class="gi purple">&#x1F9EA;</div><div><div class="gct">Laboratorio de Pociones</div></div></div><div class="gcd">Mezcla ingredientes mágicos sumando y restando fracciones</div><div class="gcf"><span class="gt">4 &middot; 5</span><div class="pa">&rarr;</div></div></a>
+<a href="juego10.html" class="gc" data-g="4to,5to"><div class="gch"><div class="gi green">&#x1F6D2;</div><div><div class="gct">El Mercado Chileno</div></div></div><div class="gcd">Compra productos, paga y recibe el vuelto. ¡Maneja dinero chileno!</div><div class="gcf"><span class="gt">4 &middot; 5</span><div class="pa">&rarr;</div></div></a>
+<a href="juego11.html" class="gc" data-g="4to,5to"><div class="gch"><div class="gi orange">&#x1F355;</div><div><div class="gct">Pizza Master</div></div></div><div class="gcd">Corta, suma y compara fracciones con pizza. ¡Aprende fracciones jugando!</div><div class="gcf"><span class="gt">4 &middot; 5</span><div class="pa">&rarr;</div></div></a>
+<a href="juego12.html" class="gc" data-g="4to,5to"><div class="gch"><div class="gi indigo">&#x1F4D0;</div><div><div class="gct">Geometrix Builder</div></div></div><div class="gcd">Construye figuras en grilla y calcula perímetro y área. ¡Arquitecto!</div><div class="gcf"><span class="gt">4 &middot; 5</span><div class="pa">&rarr;</div></div></a>
+</div>
+<div class="footer">RakinMath &middot; Aprende matematicas jugando</div>
+<script src="../auth.js"></script>
+<script>
+(function(){
+// ─── AUTH CHECK ───
+var session=getSession();
+if(!session||!session.user){window.location.href='../login.html';return}
+if(isTeacher()){window.location.href='../Profesor/index.html';return}
+
+// ─── STATE ───
+var uN=session.user;
+var uM=session.mode||'practicar';
+var uT=session.isTeacher||false;
+
+var $=function(id){return document.getElementById(id)};
+function ss(s,m){var r=s.querySelector('input[value="'+m+'"]');if(r)r.checked=true;s.classList.toggle('r',m==='practicar');s.querySelectorAll('label').forEach(function(l){l.classList.remove('on')});var a=s.querySelector('input:checked+label');if(a)a.classList.add('on')}
+function esc(s){var d=document.createElement('div');d.appendChild(document.createTextNode(s));return d.innerHTML}
+
+var hT=$('ht'),nI=$('ni'),nT=$('nt'),nW=$('nmw'),nB=$('nmb'),mS=$('mS'),nS=$('nS');
+
+// ─── MODE SELECTORS ───
+mS.querySelectorAll('input').forEach(function(r){r.addEventListener('change',function(){var v=mS.querySelector('input:checked').value;if(v==='aprender'){document.getElementById('modal-soon').classList.remove('hidden');mS.querySelector('input[value="practicar"]').checked=true;ss(mS,'practicar');return}ss(mS,mS.querySelector('input:checked').value)})});
+nS.querySelectorAll('input').forEach(function(r){r.addEventListener('change',function(){var v=nS.querySelector('input:checked').value;ss(nS,v);if(v==='aprender'){document.getElementById('modal-soon').classList.remove('hidden');nS.querySelector('input[value="practicar"]').checked=true;ss(nS,'practicar');return}if(v!==uM){uM=v;updateSession({mode:uM});ub()}})});
+
+// ─── NAV DROPDOWN ───
+nB.addEventListener('click',function(e){e.stopPropagation();nW.classList.toggle('open')});
+document.addEventListener('click',function(e){if(!nW.contains(e.target))nW.classList.remove('open')});
+
+// ─── LOGOUT ───
+$('lb').addEventListener('click',function(){
+  destroySession();
+  window.location.href='../login.html';
+});
+
+// ─── UI ───
+function ub(){if(uM==='aprender'){nI.textContent='\u{1F4DA}';nT.textContent='Aprender'}else{nI.textContent='\u{1F3AE}';nT.textContent='Practicar'}}
+function ui(){hT.innerHTML='Bienvenido <span class="brand">'+esc(uN)+'</span>';ub();ss(mS,uM);ss(nS,uM);if(uT){fg('all',document.querySelector('.sbtn[data-g="all"]'))}}
+
+window.fg=function(g,b){document.querySelectorAll('.sbtn').forEach(function(x){x.classList.remove('active')});b.classList.add('active');document.querySelectorAll('.gc').forEach(function(c,i){var show=uT||g==='all'||c.dataset.g.split(',').indexOf(g)!==-1;if(show){c.classList.remove('hidden');c.style.animation='none';c.offsetHeight;c.style.animation='slideUp .4s cubic-bezier(.2,.9,.3,1.2) '+(i*50)+'ms both'}else{c.classList.add('hidden')}})};
+
+// ─── INIT ───
+ui();
+fg('all',document.querySelector('.sbtn[data-g="all"]'));
+})();
+</script>
+</body></html>

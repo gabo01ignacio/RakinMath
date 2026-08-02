@@ -1,0 +1,151 @@
+<?﻿<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RakinMath  Figuras 2D y 3D</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../apple-design.css">
+<style>
+body{display:flex;flex-direction:column;min-height:100vh}.content{flex:1;max-width:800px;width:100%;margin:0 auto;padding:24px}.back-link{display:inline-flex;align-items:center;gap:6px;font-family:var(--font-sans);font-size:.875rem;font-weight:600;color:var(--text-secondary);text-decoration:none;padding:8px 16px;border-radius:980px;background:var(--bg-card);border:1px solid var(--border-strong);transition:transform .15s;margin-bottom:24px}.back-link:active{transform:scale(.95)}.section{margin-bottom:40px;opacity:0;animation:slideUp .5s var(--spring-default) both}.section:nth-child(2){animation-delay:80ms}.section:nth-child(3){animation-delay:160ms}.section-title{font-size:1.5rem;font-weight:700;letter-spacing:-.03em;margin-bottom:8px}.section-subtitle{font-size:1rem;color:var(--text-secondary);margin-bottom:20px;line-height:1.5}
+.concept-box{border-radius:20px;padding:24px;margin-bottom:20px}.concept-box.purple{background:linear-gradient(135deg,rgba(175,82,222,.06),rgba(175,82,222,.02));border:1px solid rgba(175,82,222,.15)}.concept-box h3{font-size:1.125rem;font-weight:700;margin-bottom:8px}.concept-box p{font-size:.9375rem;color:var(--text-secondary);line-height:1.6}
+.tip-box{background:linear-gradient(135deg,rgba(175,82,222,.06),rgba(175,82,222,.02));border:1px solid rgba(175,82,222,.15);border-radius:20px;padding:20px;margin:16px 0}.tip-box h4{font-size:.9375rem;font-weight:700;color:var(--purple);margin-bottom:6px}.tip-box p{font-size:.875rem;color:var(--text-secondary);line-height:1.5}
+.fig-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:12px;margin:16px 0}
+.fig-card{background:var(--bg-card);border:1px solid var(--border);border-radius:16px;padding:16px;text-align:center;cursor:pointer;transition:all .2s var(--spring-default)}.fig-card:hover{transform:translateY(-3px);box-shadow:var(--shadow-md)}.fig-card.active{border-color:var(--accent);background:rgba(0,122,255,.06)}
+.fig-icon{font-size:2.5rem;margin-bottom:8px}
+.fig-name{font-size:.875rem;font-weight:600}
+.fig-info{background:var(--bg-card);border:1px solid var(--border);border-radius:20px;padding:24px;margin:16px 0}
+.fig-info h3{font-size:1.25rem;font-weight:700;margin-bottom:12px}
+.fig-props{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;text-align:center}
+.fig-prop{padding:12px;border-radius:12px;background:rgba(0,0,0,.02)}
+.fig-prop-val{font-size:1.5rem;font-weight:700;color:var(--accent)}
+.fig-prop-label{font-size:.75rem;color:var(--text-tertiary);margin-top:4px}
+.views-area{background:var(--bg-card);border:1px solid var(--border);border-radius:20px;padding:24px;margin:16px 0}
+.views-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:16px 0}
+.view-box{aspect-ratio:1;border:2px dashed var(--border-strong);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:2rem;transition:all .2s}
+.view-box.filled{border-style:solid;border-color:var(--accent);background:rgba(0,122,255,.06)}
+.view-label{font-size:.75rem;font-weight:600;color:var(--text-tertiary);text-align:center;margin-top:6px}
+.btn-row{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin:12px 0}
+.btn{font-family:var(--font-sans);font-size:.875rem;font-weight:600;padding:10px 20px;border-radius:980px;border:none;cursor:pointer;transition:transform .12s}.btn:active{transform:scale(.95)}
+.btn-primary{background:var(--accent);color:white}.btn-ghost{background:var(--bg-card-solid);color:var(--text);border:1px solid var(--border-strong)}
+.feedback{font-size:.875rem;font-weight:600;margin-top:8px;min-height:24px}.feedback.correct{color:var(--green)}.feedback.wrong{color:var(--red)}
+@keyframes slideUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+@media(max-width:640px){.content{padding:16px}.fig-grid{grid-template-columns:repeat(3,1fr)}.fig-props{grid-template-columns:repeat(3,1fr);gap:8px}.views-grid{grid-template-columns:repeat(3,1fr)}}
+</style>
+</head>
+<body>
+<nav class="nav"><a href="menu.html" class="nav-title"><img src="../../Recursos/LogoRakinMath.png" alt="RakinMath" style="height: 24px; width: auto;"></a><a href="menu.html" class="exit-btn">Volver</a></nav>
+<div class="content">
+<a href="menu.html" class="back-link">&#x2190; Volver a Geometría</a>
+
+<div class="section">
+<div class="section-title">&#x1F4E6; Figuras 2D y 3D</div>
+<div class="section-subtitle">Las figuras <strong>2D</strong> son planas (tienen largo y ancho). Las figuras <strong>3D</strong> tienen volumen (también tienen alto o profundidad).</div>
+<div class="concept-box purple">
+<h3>&#x1F4A1; Elementos de una figura</h3>
+<p><strong>Caras:</strong> las superficies planas. <strong>Aristas:</strong> donde se juntan dos caras. <strong>Vértices:</strong> los puntos donde se juntan 3 o más aristas.</p>
+</div>
+<div class="tip-box">
+<h4>&#x1F4A1; Tip del profesor</h4>
+<p>Un cubo tiene 6 caras cuadradas, 12 aristas iguales y 8 vértices. Un prisma rectangular es como una caja de zapatos.</p>
+</div>
+</div>
+
+<div class="section">
+<div class="section-title">&#x1F3AE; Explora las figuras</div>
+<div class="fig-grid" id="fig-grid"></div>
+<div class="fig-info" id="fig-info" style="display:none">
+<h3 id="fig-title"></h3>
+<div class="fig-props">
+<div class="fig-prop"><div class="fig-prop-val" id="fig-faces">-</div><div class="fig-prop-label">Caras</div></div>
+<div class="fig-prop"><div class="fig-prop-val" id="fig-edges">-</div><div class="fig-prop-label">Aristas</div></div>
+<div class="fig-prop"><div class="fig-prop-val" id="fig-verts">-</div><div class="fig-prop-label">Vértices</div></div>
+</div>
+</div>
+</div>
+
+<div class="section">
+<div class="section-title">&#x1F441; Vistas de un objeto</div>
+<div class="section-subtitle">Las vistas muestran el objeto desde diferentes ángulos: <strong>frente</strong>, <strong>lado</strong> y <strong>arriba</strong>.</div>
+<div class="views-area">
+<p style="color:var(--text-secondary);margin-bottom:12px" id="view-question">¿Cómo se ve un cubo desde arriba?</p>
+<div class="views-grid">
+<div><div class="view-box" id="view-front"></div><div class="view-label">Frente</div></div>
+<div><div class="view-box" id="view-side"></div><div class="view-label">Lado</div></div>
+<div><div class="view-box" id="view-top"></div><div class="view-label">Arriba</div></div>
+</div>
+<div class="btn-row"><button class="btn btn-primary" onclick="showViews()">Mostrar vistas</button><button class="btn btn-ghost" onclick="newView()">Nuevo objeto</button></div>
+</div>
+</div>
+
+<div class="section" style="animation-delay:320ms">
+<div class="question-box" style="background:linear-gradient(135deg,rgba(0,122,255,.06),rgba(0,122,255,.02));border:1px solid rgba(0,122,255,.15)">
+<h4>&#x1F3AC; Videos de apoyo</h4>
+<p style="color:var(--text-secondary);margin-bottom:12px;font-size:.9375rem">Agrega links de videos de YouTube para reforzar lo aprendido:</p>
+<div id="videos-container" style="display:flex;flex-direction:column;gap:12px;margin-bottom:12px">
+<div class="video-placeholder" style="border:2px dashed rgba(0,122,255,.25);border-radius:16px;padding:24px;text-align:center;color:var(--text-tertiary);font-size:.875rem;cursor:pointer;transition:border-color .2s,background .2s" onclick="addVideoSlot(this.parentElement)">
+<span style="font-size:1.5rem;display:block;margin-bottom:6px">&#x1F4F1;</span>
+Haz clic aquí para agregar un video de YouTube
+</div>
+</div>
+</div>
+</div>
+
+</div>
+
+<script>
+var figs=[
+{name:'Cuadrado',icon:'&#x25A1;',type:'2d',faces:0,edges:4,verts:4},
+{name:'Triángulo',icon:'&#x25B3;',type:'2d',faces:0,edges:3,verts:3},
+{name:'Círculo',icon:'&#x25CB;',type:'2d',faces:0,edges:1,verts:0},
+{name:'Cubo',icon:'&#x1F4E6;',type:'3d',faces:6,edges:12,verts:8},
+{name:'Prisma',icon:'&#x1F4E7;',type:'3d',faces:5,edges:9,verts:6},
+{name:'Pirámide',icon:'&#x1F3D7;',type:'3d',faces:5,edges:8,verts:5},
+{name:'Esfera',icon:'&#x26AA;',type:'3d',faces:1,edges:0,verts:0},
+{name:'Cono',icon:'&#x1F538;',type:'3d',faces:2,edges:1,verts:1}
+];
+function renderFigs(){
+var el=document.getElementById('fig-grid');el.innerHTML='';
+figs.forEach(function(f,i){
+var div=document.createElement('div');div.className='fig-card';div.style.animationDelay=i*40+'ms';
+div.innerHTML='<div class="fig-icon">'+f.icon+'</div><div class="fig-name">'+f.name+'</div>';
+div.onclick=function(){showFig(f,div)};el.appendChild(div);
+});
+}
+function showFig(f,card){
+document.querySelectorAll('.fig-card').forEach(function(c){c.classList.remove('active')});
+card.classList.add('active');
+var info=document.getElementById('fig-info');info.style.display='block';
+document.getElementById('fig-title').textContent=f.name+' ('+f.type+')';
+document.getElementById('fig-faces').textContent=f.faces||'';
+document.getElementById('fig-edges').textContent=f.edges||'';
+document.getElementById('fig-verts').textContent=f.verts||'';
+info.style.animation='none';info.offsetHeight;info.style.animation='slideUp .3s var(--spring-default) both';
+}
+var views=[{name:'Cubo',front:'&#x25A1;',side:'&#x25A1;',top:'&#x25A1;'},{name:'Prisma',front:'&#x25A1;',side:'&#x25AD;',top:'&#x25A1;'},{name:'Cilindro',front:'&#x25AD;',side:'&#x25AD;',top:'&#x25CB;'}];
+var curView;
+function newView(){curView=views[Math.floor(Math.random()*views.length)];document.getElementById('view-question').textContent='¿Cómo se ve un '+curView.name+' desde arriba?';document.getElementById('view-front').innerHTML='?';document.getElementById('view-front').classList.remove('filled');document.getElementById('view-side').innerHTML='?';document.getElementById('view-side').classList.remove('filled');document.getElementById('view-top').innerHTML='?';document.getElementById('view-top').classList.remove('filled')}
+function showViews(){document.getElementById('view-front').innerHTML=curView.front;document.getElementById('view-front').classList.add('filled');document.getElementById('view-side').innerHTML=curView.side;document.getElementById('view-side').classList.add('filled');document.getElementById('view-top').innerHTML=curView.top;document.getElementById('view-top').classList.add('filled')}
+renderFigs();newView();
+
+function addVideoSlot(container){
+var existing=container.querySelector('.video-placeholder');
+if(existing)existing.remove();
+var div=document.createElement('div');
+div.className='video-slot';
+div.style.cssText='display:flex;gap:8px;align-items:center;background:rgba(0,122,255,.04);border:1px solid rgba(0,122,255,.12);border-radius:12px;padding:10px 12px';
+div.innerHTML='<input type="text" placeholder="Pega el link de YouTube aqu\u00ed..." style="flex:1;font-family:var(--font-sans);font-size:.875rem;padding:8px 12px;border-radius:8px;border:1px solid rgba(0,0,0,.1);background:white;color:#1d1d1f;outline:none" onfocus="this.style.borderColor=\'#007aff\'" onblur="this.style.borderColor=\'rgba(0,0,0,1)\'"><button onclick="removeVideoSlot(this)" style="font-size:1.1rem;background:none;border:none;cursor:pointer;color:#ff3b30;padding:4px" title="Eliminar">&#x2715;</button>';
+container.appendChild(div);
+var addBtn=document.createElement('div');
+addBtn.className='video-placeholder';
+addBtn.style.cssText='border:2px dashed rgba(0,122,255,.25);border-radius:16px;padding:16px;text-align:center;color:var(--text-tertiary);font-size:.875rem;cursor:pointer;transition:border-color .2s,background .2s';
+addBtn.innerHTML='<span style="font-size:1.25rem;display:block;margin-bottom:4px">&#x2795;</span>Agregar otro video';
+addBtn.onclick=function(){addVideoSlot(container)};
+container.appendChild(addBtn);
+}
+function removeVideoSlot(btn){btn.closest('.video-slot').remove()}
+</script>
+</body>
+</html>

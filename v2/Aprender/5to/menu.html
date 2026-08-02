@@ -1,0 +1,198 @@
+<?<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RakinMath - Aprender 5° Básico</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../apple-design.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"></script>
+<script defer src="../rk-utils.js"></script>
+<style>
+body{display:flex;flex-direction:column;min-height:100vh;position:relative;overflow:hidden}
+body::before{content:'';position:fixed;top:-100px;right:-100px;width:350px;height:350px;background:radial-gradient(circle,rgba(175,82,222,.06) 0%,transparent 70%);pointer-events:none;z-index:0}
+body::after{content:'';position:fixed;bottom:-80px;left:-60px;width:300px;height:300px;background:radial-gradient(circle,rgba(88,86,214,.05) 0%,transparent 70%);pointer-events:none;z-index:0}
+.math-bg{position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:0;overflow:hidden;opacity:.03;font-size:2rem;font-weight:700;color:#af52de}
+.math-bg span{position:absolute;white-space:nowrap}
+.hero{text-align:center;padding:48px 24px 24px;position:relative;z-index:1}
+.hero-emoji{font-size:3rem;margin-bottom:12px;animation:popIn .6s cubic-bezier(.2,.9,.3,1.2) both}
+.hero h1{margin-bottom:8px;font-size:clamp(1.75rem,4vw,2.5rem);font-weight:700;letter-spacing:-.03em;line-height:1.08}
+.hero h1 .brand{color:#af52de}
+.hero p{font-size:1.0625rem;max-width:420px;margin:0 auto;color:#6e6e73;line-height:1.5}
+.course-badge{display:inline-flex;align-items:center;gap:6px;padding:8px 16px;border-radius:980px;background:linear-gradient(135deg,#af52de,#5856d6);color:white;font-size:.875rem;font-weight:600;margin-bottom:20px;animation:slideUp .5s cubic-bezier(.2,.9,.3,1.2) .1s both;box-shadow:0 4px 16px rgba(175,82,222,.3)}
+.ejes{display:flex;justify-content:center;gap:10px;padding:0 24px;margin-bottom:32px;flex-wrap:wrap;position:relative;z-index:1}
+.eje-btn{font-family:Inter,sans-serif;font-size:.8125rem;font-weight:600;padding:10px 16px;border-radius:980px;border:1.5px solid rgba(0,0,0,.08);background:rgba(255,255,255,.9);backdrop-filter:blur(10px);color:#1d1d1f;cursor:pointer;transition:all .2s cubic-bezier(.2,.9,.3,1.2);display:flex;align-items:center;gap:6px;-webkit-tap-highlight-color:transparent}
+.eje-btn:active{transform:scale(.94)}
+.eje-btn.active{color:white;border-color:transparent;box-shadow:0 4px 16px rgba(0,0,0,.15)}
+.eje-btn[data-e="numeros"].active{background:linear-gradient(135deg,#5ac8fa,#007aff)}
+.eje-btn[data-e="álgebra"].active{background:linear-gradient(135deg,#34c759,#30b350)}
+.eje-btn[data-e="geometria"].active{background:linear-gradient(135deg,#ff9500,#ff6b00)}
+.eje-btn[data-e="datos"].active{background:linear-gradient(135deg,#ff2d55,#e11d48)}
+.materias-container{max-width:900px;width:100%;margin:0 auto;padding:0 24px 48px;position:relative;z-index:1}
+.materias-title{font-size:.75rem;font-weight:600;color:#86868b;text-transform:uppercase;letter-spacing:.06em;margin-bottom:16px;text-align:center}
+.materias-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:16px}
+.materia-card{background:rgba(255,255,255,.85);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border:1px solid rgba(0,0,0,.06);border-radius:24px;padding:20px;text-decoration:none;color:#1d1d1f;box-shadow:0 1px 3px rgba(0,0,0,.03);transition:transform .4s cubic-bezier(.2,.9,.3,1.2),box-shadow .4s,border-color .3s;display:flex;flex-direction:column;gap:10px;opacity:0;animation:slideUp .5s cubic-bezier(.2,.9,.3,1.2) both;position:relative;overflow:hidden}
+.materia-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;opacity:0;transition:opacity .3s}
+.materia-card:hover::before{opacity:1}
+.materia-card:nth-child(1){animation-delay:0ms}.materia-card:nth-child(2){animation-delay:50ms}.materia-card:nth-child(3){animation-delay:100ms}.materia-card:nth-child(4){animation-delay:150ms}.materia-card:nth-child(5){animation-delay:200ms}.materia-card:nth-child(6){animation-delay:250ms}.materia-card:nth-child(7){animation-delay:300ms}.materia-card:nth-child(8){animation-delay:350ms}
+.materia-card:hover{transform:translateY(-6px);box-shadow:0 20px 60px rgba(0,0,0,.1);border-color:rgba(175,82,222,.12)}
+.materia-card:active{transform:scale(.97);transition-duration:80ms}
+.materia-icon{width:48px;height:48px;border-radius:16px;display:flex;align-items:center;justify-content:center;font-size:1.5rem;flex-shrink:0;transition:transform .3s cubic-bezier(.2,.9,.3,1.2)}
+.materia-card:hover .materia-icon{transform:scale(1.1)}
+.materia-icon.blue{background:linear-gradient(135deg,#e8f4fd,#d4e8f7)}
+.materia-icon.green{background:linear-gradient(135deg,#e8f8ed,#c8e6d0)}
+.materia-icon.purple{background:linear-gradient(135deg,#f3e5f5,#e1bee7)}
+.materia-icon.orange{background:linear-gradient(135deg,#fff3e0,#ffe0b2)}
+.materia-icon.pink{background:linear-gradient(135deg,#fce4ec,#f8bbd0)}
+.materia-icon.teal{background:linear-gradient(135deg,#e0f7fa,#b2ebf2)}
+.materia-icon.red{background:linear-gradient(135deg,#ffebee,#ffcdd2)}
+.materia-info{flex:1}
+.materia-name{font-size:.9375rem;font-weight:700;letter-spacing:-.02em;margin-bottom:2px}
+.materia-desc{font-size:.8125rem;color:#6e6e73;line-height:1.4}
+.materia-badge{display:inline-flex;align-items:center;gap:4px;font-size:.6875rem;font-weight:600;color:#86868b;margin-top:4px;padding:3px 8px;border-radius:6px;background:rgba(0,0,0,.04)}
+.materia-arrow{width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,#af52de,#5856d6);color:white;display:flex;align-items:center;justify-content:center;font-size:.75rem;transition:transform .3s cubic-bezier(.2,.9,.3,1.2),box-shadow .3s;box-shadow:0 2px 8px rgba(175,82,222,.2);align-self:center}
+.materia-card:hover .materia-arrow{transform:scale(1.15);box-shadow:0 4px 16px rgba(175,82,222,.3)}
+.empty-state{text-align:center;padding:48px 24px;color:#86868b}
+.empty-state-emoji{font-size:3rem;margin-bottom:12px;opacity:.5}
+.footer{border-top:1px solid rgba(0,0,0,.06);text-align:center;padding:32px 24px;color:#86868b;font-size:.8125rem;background:rgba(255,255,255,.8);backdrop-filter:blur(10px);margin-top:auto}
+.nr{position:relative;display:flex;align-items:center;gap:12px}
+.nmw{position:relative}
+.nmb{font-family:Inter,sans-serif;font-size:.8125rem;font-weight:600;display:flex;align-items:center;gap:8px;padding:6px 14px;border-radius:980px;background:#f5f5f7;border:1px solid rgba(0,0,0,.1);color:#6e6e73;cursor:pointer;transition:transform .12s,background .15s;-webkit-tap-highlight-color:transparent}
+.nmb:active{transform:scale(.95)}
+.nmb:hover{background:rgba(0,0,0,.06);color:#1d1d1f}
+.nmb .ni{font-size:.9375rem}
+.nmb svg{width:12px;height:12px;transition:transform .25s cubic-bezier(.2,.9,.3,1.2)}
+.nmw.open .nmb svg{transform:rotate(180deg)}
+.ndd{position:absolute;top:calc(100% + 8px);right:0;width:260px;padding:16px;background:#fff;border:1px solid rgba(0,0,0,.06);border-radius:28px;box-shadow:0 20px 60px rgba(0,0,0,.08);opacity:0;pointer-events:none;transform:translateY(-8px);transition:opacity .2s,transform .25s cubic-bezier(.2,.9,.3,1.2);z-index:100}
+.nmw.open .ndd{opacity:1;pointer-events:auto;transform:translateY(0)}
+.ndt{font-size:.75rem;font-weight:600;color:#86868b;margin-bottom:12px;letter-spacing:.02em;text-transform:uppercase}
+.ndd .gs{width:100%;margin-bottom:12px}
+.ndd .gs label{font-size:.8125rem;padding:8px 12px}
+.ndd .gs label .si{font-size:1rem}
+.gs{position:relative;display:flex;background:rgba(255,255,255,.8);border:1px solid rgba(0,0,0,.1);border-radius:980px;padding:4px;backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px)}
+.gs input[type=radio]{position:absolute;opacity:0;width:0;height:0;pointer-events:none}
+.gs label{flex:1;text-align:center;padding:12px 16px;font-family:Inter,sans-serif;font-size:.9375rem;font-weight:600;color:#6e6e73;cursor:pointer;border-radius:980px;transition:color .25s;position:relative;z-index:1;-webkit-tap-highlight-color:transparent;user-select:none}
+.gs label .si{display:block;font-size:1.125rem;margin-bottom:2px}
+.gs .sb{position:absolute;top:4px;left:4px;width:calc(50% - 4px);height:calc(100% - 8px);background:#af52de;border-radius:980px;box-shadow:0 2px 10px rgba(175,82,222,.25);transition:transform .35s cubic-bezier(.2,.9,.3,1.2);z-index:0;pointer-events:none}
+.gs.r .sb{transform:translateX(100%)}
+.gs label.on{color:white}
+.lb{width:100%;font-family:Inter,sans-serif;font-size:.8125rem;font-weight:600;padding:10px 16px;border-radius:980px;border:1px solid rgba(255,59,48,.2);background:rgba(255,59,48,.06);color:#ff3b30;cursor:pointer;transition:background .15s,transform .12s;display:flex;align-items:center;justify-content:center;gap:6px}
+.lb:hover{background:rgba(255,59,48,.12)}
+.lb:active{transform:scale(.97)}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+@keyframes slideUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+@keyframes popIn{0%{opacity:0;transform:scale(.8)}70%{transform:scale(1.03)}100%{opacity:1;transform:scale(1)}}
+@media(max-width:480px){.hero{padding:32px 16px 20px}.hero-emoji{font-size:2.25rem}.hero h1{font-size:1.5rem}.ejes{gap:6px;padding:0 16px}.eje-btn{padding:8px 12px;font-size:.75rem}.materias-container{padding:0 16px 32px}.materias-grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="math-bg"><span style="top:5%;left:8%">x²</span><span style="top:15%;right:12%">y=mx+b</span><span style="top:28%;left:5%">πr²</span><span style="top:40%;right:8%">a²+b²</span><span style="top:55%;left:10%">n!</span><span style="top:68%;right:15%">∑</span><span style="top:80%;left:8%">√x</span><span style="top:90%;right:10%">∞</span><span style="top:20%;left:90%">%</span><span style="top:50%;left:2%">Δ</span></div>
+<nav class="nav"><a href="../index.html" class="nav-title"><img src="../../Recursos/LogoRakinMath.png" alt="RakinMath" style="height: 24px; width: auto;"></a><div class="nr"><div class="nmw" id="nmw"><button class="nmb" id="nmb"><span class="ni" id="ni">&#x1F4DA;</span><span id="nt">Aprender</span><svg viewBox="0 0 12 12" fill="none"><path d="M3 4.5L6 7.5L9 4.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button><div class="ndd"><div class="ndt">Cambiar modo</div><div class="gs" id="nS"><input type="radio" name="navmode" id="n-a" value="aprender" checked><label for="n-a" class="on"><span class="si">&#x1F4DA;</span>Aprender</label><input type="radio" name="navmode" id="n-p" value="practicar"><label for="n-p"><span class="si">&#x1F3AE;</span>Practicar</label><div class="sb"></div></div><button class="lb" id="lb">&#x1F6AA; Cerrar Sesion</button></div></div></div></nav>
+
+<div class="hero">
+<div class="hero-emoji">&#x1F4DA;</div>
+<div class="course-badge">&#x1F392; 5° Básico — Programa Mineduc</div>
+<h1>Aprende Matemáticas</h1>
+<p>Basado en las Bases Curriculares del Ministerio de Educación de Chile. Elige un eje para comenzar.</p>
+</div>
+
+<div class="ejes" id="ejes">
+<button class="eje-btn" data-e="numeros" onclick="selectEje('numeros',this)"><span>&#x1F522;</span>Números y Operaciones</button>
+<button class="eje-btn" data-e="álgebra" onclick="selectEje('álgebra',this)"><span>&#x1F4D0;</span>Álgebra</button>
+<button class="eje-btn" data-e="geometria" onclick="selectEje('geometria',this)"><span>&#x1F4D0;</span>Geometría y Medición</button>
+<button class="eje-btn" data-e="datos" onclick="selectEje('datos',this)"><span>&#x1F4CA;</span>Datos y Probabilidades</button>
+</div>
+
+<div class="materias-container" id="materias-container">
+<div class="empty-state" id="empty-state">
+<div class="empty-state-emoji">&#x1F3AF;</div>
+<p>Selecciona un eje arriba para ver las materias</p>
+</div>
+</div>
+
+<div class="footer">RakinMath · Alineado al Currículum Nacional de Chile · 5° Básico</div>
+
+<script>
+(function(){
+var SK='rakin_session';
+var currentUser='';
+try{var sr=localStorage.getItem(SK);var sv=sr?JSON.parse(sr):null;if(!sv||!sv.user){window.location.href='../../login.html';return}currentUser=sv.user}catch(e){window.location.href='../../login.html';return}
+
+function ss(s,m){var r=s.querySelector('input[value="'+m+'"]');if(r)r.checked=true;s.classList.toggle('r',m==='practicar');s.querySelectorAll('label').forEach(function(l){l.classList.remove('on')});var a=s.querySelector('input:checked+label');if(a)a.classList.add('on')}
+
+var nI=document.getElementById('ni'),nT=document.getElementById('nt'),nW=document.getElementById('nmw'),nB=document.getElementById('nmb'),nS=document.getElementById('nS');
+
+nS.querySelectorAll('input').forEach(function(r){r.addEventListener('change',function(){var v=nS.querySelector('input:checked').value;ss(nS,v);if(v==='practicar'){window.location.href='../../Juegos/menu.html'}})});
+nB.addEventListener('click',function(e){e.stopPropagation();nW.classList.toggle('open')});
+document.addEventListener('click',function(e){if(!nW.contains(e.target))nW.classList.remove('open')});
+document.getElementById('lb').addEventListener('click',function(){localStorage.removeItem(SK);localStorage.removeItem('rakin_user_'+currentUser);window.location.href='../../login.html'});
+
+function ub(){nI.textContent='\u{1F4DA}';nT.textContent='Aprender';ss(nS,'aprender')}
+ub();
+
+var h1=document.querySelector('.hero h1');
+if(h1&&currentUser){h1.innerHTML='Hola, <span class="brand">'+currentUser.charAt(0).toUpperCase()+currentUser.slice(1)+'</span>'}
+})();
+
+var materias={
+numeros:{
+title:"Números y Operaciones",
+subtitle:"OA 01–07 · Bases Curriculares Mineduc",
+items:[
+{name:"Grandes Números",desc:"Números hasta 1.000.000.000, clases y valor posiciónal (OA 01)",icon:"&#x1F30D;",iconClass:"blue",link:"grandes-numeros.html",badge:"Clases: U, D, C, UM, DM, CM"},
+{name:"Redondeo",desc:"Redondear números grandes a diversas magnitudes (OA 02)",icon:"&#x1F504;",iconClass:"green",link:"redondeo.html",badge:"Regla del 5 y approximation"},
+{name:"Sumas y Restas",desc:"Operaciones hasta 100.000 con canje y préstamo (OA 05)",icon:"&#x2795;",iconClass:"purple",link:"sumas-restas.html",badge:"Reagrupación paso a paso"},
+{name:"Multiplicación 2×2",desc:"Método de área y propiedades distributivas (OA 03)",icon:"&#x2716;",iconClass:"orange",link:"multiplicacion.html",badge:"Descomposición en áreas"},
+{name:"Estrategias de Multiplicación",desc:"6 estrategias para multiplicar rápido: tablas, cálculo mental, área (OA 03)",icon:"&#x1F9E0;",iconClass:"purple",link:"estrategias-multiplicacion.html",badge:"Repetición, tablas, propiedades, mental"},
+{name:"División 2-3 dígitos",desc:"División exacta y con resto, contexto chileno (OA 04)",icon:"&#x1F36C;",iconClass:"teal",link:"division.html",badge:"Algoritmo paso a paso"},
+{name:"Factores y Múltiplos",desc:"Divisores comunes y tabla de multiplicar (OA 06)",icon:"&#x1F517;",iconClass:"pink",link:"factores-multiplos.html",badge:"Juego de la cadena"},
+{name:"Suma de Fracciones",desc:"Mismo y distinto denominador, mcm (OA 06)",icon:"&#x1F96A;",iconClass:"green",link:"suma-fracciones.html",badge:"Denominadores hasta 12"},
+{name:"Decimales",desc:"Representación, recta, sumas, restas y equivalencias (OA 07)",icon:"&#x1F4B0;",iconClass:"blue",link:"decimales.html",badge:"Décimos, centésimos, milésimos"}
+]},
+álgebra:{
+title:"Álgebra",
+subtitle:"OA 15–16 · Bases Curriculares Mineduc",
+items:[
+{name:"Ecuaciones",desc:"Resolver ecuaciones de un paso con las 4 operaciones (OA 15)",icon:"&#x1F9EE;",iconClass:"green",link:"ecuaciones.html",badge:"Suma ↔ Resta, Multi ↔ Div"},
+{name:"Sucesiones",desc:"Descubrir y expresar reglas en secuencias (OA 16)",icon:"&#x1F4C8;",iconClass:"purple",link:"sucesiones.html",badge:"Patrones numéricos"}
+]},
+geometria:{
+title:"Geometría y Medición",
+subtitle:"OA 18–21 · Bases Curriculares Mineduc",
+items:[
+{name:"Unidades de Medida",desc:"Transformar longitud (km-m-cm) y masa (kg-g) (OA 19)",icon:"&#x1F4CF;",iconClass:"teal",link:"unidades.html",badge:"Escalera métrica"},
+{name:"Plano Cartesiano",desc:"Ubicar puntos en el primer cuadrante (OA 21)",icon:"&#x1F5FA;",iconClass:"orange",link:"plano-cartesiano.html",badge:"Coordenadas (x, y)"},
+{name:"Congruencia",desc:"Identificar figuras con misma forma y tamaño (OA 18)",icon:"&#x1F4D0;",iconClass:"blue",link:"congruencia.html",badge:"Superposición y calco"},
+{name:"Perímetro y Área",desc:"Cuadrado, rectángulo, triángulo y trapecio (OA 20)",icon:"&#x1F3D0;",iconClass:"pink",link:"perimetro-area.html",badge:"Fórmulas interactivas"}
+]},
+datos:{
+title:"Datos y Probabilidades",
+subtitle:"OA 24–26 · Bases Curriculares Mineduc",
+items:[
+{name:"Promedio",desc:"Media aritmética de un conjunto de datos (OA 24)",icon:"&#x1F4CA;",iconClass:"red",link:"promedio.html",badge:"Suma ÷ cantidad"},
+{name:"Tallo y Hojas",desc:"Construir e interpretar diagramas (OA 25)",icon:"&#x1F4CB;",iconClass:"blue",link:"tallo-hojas.html",badge:"Organizar datos"},
+{name:"Gráficos de Barra y Línea",desc:"Comparar datos y mostrar tendencias (OA 26)",icon:"&#x1F4C8;",iconClass:"green",link:"graficos.html",badge:"Barras + Líneas"}
+]}};
+
+function selectEje(eje,btn){
+document.querySelectorAll('.eje-btn').forEach(function(b){b.classList.remove('active')});
+btn.classList.add('active');
+var data=materias[eje];
+var c=document.getElementById('materias-container');
+if(!data){c.innerHTML='<div class="empty-state"><div class="empty-state-emoji">&#x1F914;</div><p>Próximamente</p></div>';return}
+var h='<div class="materias-title">'+data.title+' — '+data.subtitle+'</div><div class="materias-grid">';
+data.items.forEach(function(item,i){
+h+='<a href="'+item.link+'" class="materia-card" style="animation-delay:'+(i*50)+'ms">';
+h+='<div class="materia-icon '+item.iconClass+'">'+item.icon+'</div>';
+h+='<div class="materia-info"><div class="materia-name">'+item.name+'</div><div class="materia-desc">'+item.desc+'</div>';
+if(item.badge)h+='<div class="materia-badge">&#x2728; '+item.badge+'</div>';
+h+='</div><div class="materia-arrow">&rarr;</div></a>'});
+h+='</div>';c.innerHTML=h;
+}
+</script>
+</body>
+</html>

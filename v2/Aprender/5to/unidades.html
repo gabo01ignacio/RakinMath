@@ -1,0 +1,180 @@
+<?<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RakinMath " Transformación de Unidades</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../apple-design.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"></script>
+<script defer src="../rk-utils.js"></script>
+<style>
+body{display:flex;flex-direction:column;min-height:100vh}
+.content{flex:1;max-width:820px;width:100%;margin:0 auto;padding:24px}
+.back-link{display:inline-flex;align-items:center;gap:6px;font-size:.875rem;font-weight:600;color:var(--text-secondary);text-decoration:none;padding:8px 16px;border-radius:980px;background:var(--bg-card);border:1px solid var(--border-strong);transition:transform .15s;margin-bottom:24px}
+.back-link:active{transform:scale(.95)}
+.section{margin-bottom:44px;opacity:0;animation:slideUp .5s var(--spring-default) both}
+.section:nth-child(2){animation-delay:80ms}.section:nth-child(3){animation-delay:160ms}.section:nth-child(4){animation-delay:240ms}.section:nth-child(5){animation-delay:320ms}
+.section-title{font-size:1.5rem;font-weight:700;letter-spacing:-.03em;margin-bottom:8px}
+.section-subtitle{font-size:1rem;color:var(--text-secondary);margin-bottom:20px;line-height:1.6}
+.concept-box{border-radius:var(--radius-md);padding:24px;margin-bottom:20px}
+.concept-box.green{background:linear-gradient(135deg,rgba(52,199,89,.06),rgba(52,199,89,.02));border:1px solid rgba(52,199,89,.15)}
+.concept-box h3{font-size:1.125rem;font-weight:700;margin-bottom:8px}
+.concept-box p{font-size:.9375rem;color:var(--text-secondary);line-height:1.7}
+.tip-box{background:linear-gradient(135deg,rgba(175,82,222,.06),rgba(175,82,222,.02));border:1px solid rgba(175,82,222,.15);border-radius:var(--radius-md);padding:20px;margin:16px 0}
+.tip-box h4{font-size:.9375rem;font-weight:700;color:var(--purple);margin-bottom:6px}
+.tip-box p{font-size:.875rem;color:var(--text-secondary);line-height:1.6}
+.card{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-lg);padding:28px 24px 24px;margin-bottom:20px}
+.card h3{font-size:1.125rem;font-weight:700;margin-bottom:16px}
+.quiz-box{background:linear-gradient(135deg,rgba(0,122,255,.06),rgba(0,122,255,.02));border:1px solid rgba(0,122,255,.15);border-radius:var(--radius-md);padding:24px}
+.quiz-box h4{font-size:1rem;font-weight:700;margin-bottom:12px}
+.quiz-problem{font-size:1.25rem;font-weight:700;text-align:center;margin:16px 0 4px}
+.quiz-row{display:flex;align-items:center;gap:12px;justify-content:center;flex-wrap:wrap;margin-top:12px}
+.quiz-input{width:100px;padding:10px;border-radius:var(--radius-sm);border:2px solid var(--border-strong);background:var(--bg-card-solid);font-family:var(--font-sans);font-size:1.125rem;font-weight:700;text-align:center;color:var(--text);outline:none}
+.quiz-input:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(0,122,255,.1)}
+.feedback{font-size:.875rem;font-weight:600;margin-top:10px;min-height:20px;text-align:center}
+.feedback.correct{color:var(--green)}.feedback.wrong{color:var(--red)}
+.btn{font-family:var(--font-sans);font-size:.875rem;font-weight:600;padding:8px 18px;border-radius:980px;border:none;cursor:pointer;transition:transform .12s,opacity .12s}
+.btn:active{transform:scale(.95)}
+.btn:disabled{opacity:.4;cursor:not-allowed;transform:none}
+.btn-primary{background:var(--accent);color:white}
+.btn-ghost{background:var(--bg-card-solid);color:var(--text);border:1px solid var(--border-strong)}
+.math-display{background:var(--bg-card-solid);border:1px solid var(--border);border-radius:var(--radius-md);padding:16px 24px;margin:16px 0;text-align:center;font-size:1.125rem}
+@keyframes slideUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+@media(max-width:640px){.content{padding:16px}.card{padding:20px 16px 16px}}
+</style>
+</head>
+<body>
+<nav style="display:flex;align-items:center;justify-content:space-between;padding:16px 24px;border-bottom:1px solid var(--border)">
+<img src="../../Recursos/LogoRakinMath.png" alt="RakinMath" style="height:32px">
+<a href="menu.html" class="btn btn-ghost">Volver</a>
+</nav>
+<div class="content">
+<a href="menu.html" class="back-link">? Volver al menú</a>
+
+<div class="section">
+<h1 class="section-title">Transformación de Unidades</h1>
+<p class="section-subtitle">El sistema métrico decimal usa prefijos para indicar múltiplos de $10$. Convertir unidades es multiplicar o dividir por $10$, $100$ o $1000$.</p>
+</div>
+
+<div class="section">
+<div class="concept-box green">
+<h3>Unidades de longitud</h3>
+<p><strong>$\text{km} \to \text{m} \to \text{cm} \to \text{mm}$</strong></p>
+<div class="math-display">
+De mayor a menor: multiplicar por $10$ en cada paso<br>
+De menor a mayor: dividir por $10$ en cada paso
+</div>
+<p><strong>Ejemplo:</strong> $120 \text{ km} = 120{,}000 \text{ m} = 12{,}000{,}000 \text{ cm}$</p>
+</div>
+<div class="concept-box green">
+<h3>Unidades de masa</h3>
+<p><strong>$\text{kg} \to \text{g} \to \text{mg}$</strong></p>
+<div class="math-display">
+De kg a g: multiplicar por $1000$<br>
+De g a mg: multiplicar por $1000$
+</div>
+<p><strong>Ejemplo:</strong> $3 \text{ kg} = 3{,}000 \text{ g} = 3{,}000{,}000 \text{ mg}$</p>
+</div>
+<div class="tip-box">
+<h4>Consejo</h4>
+<p>Para recordar: si vas de una unidad mayor a menor, multiplicas. Si vas de menor a mayor, divides. Es como mover la coma decimal.</p>
+</div>
+</div>
+
+<div class="section">
+<div class="card">
+<h3>Contexto chileno</h3>
+<p style="color:var(--text-secondary);line-height:1.7">La distancia de Santiago a Valparaíso es de aproximadamente $120 \text{ km}$. En metros serían $120{,}000 \text{ m}$. Si un camión carga $5$ toneladas ($5{,}000 \text{ kg}$) de papas, ¿cuántos gramos son? $5{,}000{,}000 \text{ g}$.</p>
+</div>
+</div>
+
+<div class="section">
+<div class="card">
+<h3>Conversor de unidades</h3>
+<p style="color:var(--text-secondary);margin-bottom:16px">Ingresa un valor y selecciona las unidades para convertir.</p>
+<div style="text-align:center">
+<div style="display:flex;gap:10px;align-items:center;justify-content:center;flex-wrap:wrap;margin-bottom:16px">
+<input type="number" class="quiz-input" id="conv-value" placeholder="Valor">
+<select class="quiz-input" id="conv-from" style="width:auto;padding:8px 12px">
+<option value="km">km</option>
+<option value="m" selected>m</option>
+<option value="cm">cm</option>
+<option value="mm">mm</option>
+<option value="kg">kg</option>
+<option value="g">g</option>
+<option value="mg">mg</option>
+</select>
+<span style="font-size:1.25rem;color:var(--text-tertiary)">→</span>
+<select class="quiz-input" id="conv-to" style="width:auto;padding:8px 12px">
+<option value="km">km</option>
+<option value="m">m</option>
+<option value="cm">cm</option>
+<option value="mm">mm</option>
+<option value="kg">kg</option>
+<option value="g" selected>g</option>
+<option value="mg">mg</option>
+</select>
+</div>
+<button class="btn btn-primary" onclick="convert()">Convertir</button>
+<p class="feedback" id="conv-feedback" style="font-size:1.125rem;margin-top:16px"></p>
+</div>
+</div>
+</div>
+
+<div class="section">
+<div class="quiz-box">
+<h4>Practica: Convierte las unidades</h4>
+<p class="quiz-problem" id="quiz-conv-problem"></p>
+<div class="quiz-row">
+<input type="number" class="quiz-input" id="quiz-conv-answer" placeholder="Respuesta">
+<button class="btn btn-primary" onclick="checkQuizConv()">Verificar</button>
+</div>
+<p class="feedback" id="quiz-conv-feedback"></p>
+</div>
+</div>
+
+<div class="section">
+<div class="videos-box" style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-md);padding:24px;text-align:center">
+<p style="color:var(--text-tertiary);font-size:.875rem">Próximamente: Videos explicativos sobre transformación de unidades</p>
+</div>
+</div>
+</div>
+
+<script>
+const convRates={km:{m:1000,cm:100000,mm:1000000,kg:null,g:null,mg:null},m:{km:0.001,cm:100,mm:1000,kg:null,g:null,mg:null},cm:{km:0.00001,m:0.01,mm:10,kg:null,g:null,mg:null},mm:{km:0.000001,m:0.001,cm:0.1,kg:null,g:null,mg:null},kg:{km:null,m:null,cm:null,mm:null,g:1000,mg:1000000},g:{km:null,m:null,cm:null,mm:null,kg:0.001,mg:1000},mg:{km:null,m:null,cm:null,mm:null,kg:0.000001,g:0.001}};
+function convert(){
+const val=parseFloat(document.getElementById('conv-value').value);
+const from=document.getElementById('conv-from').value;
+const to=document.getElementById('conv-to').value;
+if(isNaN(val)){document.getElementById('conv-feedback').textContent='Ingresa un número válido';document.getElementById('conv-feedback').className='feedback wrong';return;}
+if(from===to){document.getElementById('conv-feedback').textContent=val+' '+from+' = '+val+' '+to;document.getElementById('conv-feedback').className='feedback correct';return;}
+const rate=convRates[from][to];
+if(rate===null||rate===undefined){document.getElementById('conv-feedback').textContent='Conversión no disponible';document.getElementById('conv-feedback').className='feedback wrong';return;}
+const result=val*rate;
+document.getElementById('conv-feedback').textContent=val+' '+from+' = '+result.toLocaleString('es-CL')+' '+to;
+document.getElementById('conv-feedback').className='feedback correct';
+}
+const convQuizData=[
+{q:'5 km = ? m',a:5000},{q:'3,000 cm = ? m',a:30},{q:'2.5 kg = ? g',a:2500},{q:'450 mm = ? cm',a:45},{q:'120 g = ? mg',a:120000}
+];
+function genQuizConv(){
+const d=convQuizData[Math.floor(Math.random()*convQuizData.length)];
+document.getElementById('quiz-conv-problem').textContent=d.q;
+document.getElementById('quiz-conv-answer').value='';
+document.getElementById('quiz-conv-feedback').textContent='';
+document.getElementById('quiz-conv-feedback').className='feedback';
+window._convAnswer=d.a;
+}
+function checkQuizConv(){
+const ans=parseInt(document.getElementById('quiz-conv-answer').value);
+const fb=document.getElementById('quiz-conv-feedback');
+if(ans===window._convAnswer){fb.textContent='\u00a1Correcto!';fb.className='feedback correct';}
+else{fb.textContent='Respuesta incorrecta. Intenta otra vez.';fb.className='feedback wrong';}
+}
+genQuizConv();
+</script>
+</body>
+</html>

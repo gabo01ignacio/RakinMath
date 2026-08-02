@@ -1,0 +1,175 @@
+<?﻿<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RakinMath — Líneas de Simetría</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../apple-design.css">
+<style>
+body{display:flex;flex-direction:column;min-height:100vh}.content{flex:1;max-width:800px;width:100%;margin:0 auto;padding:24px}.back-link{display:inline-flex;align-items:center;gap:6px;font-family:var(--font-sans);font-size:.875rem;font-weight:600;color:var(--text-secondary);text-decoration:none;padding:8px 16px;border-radius:980px;background:var(--bg-card);border:1px solid var(--border-strong);transition:transform .15s;margin-bottom:24px}.back-link:active{transform:scale(.95)}.section{margin-bottom:40px;opacity:0;animation:slideUp .5s var(--spring-default) both}.section:nth-child(2){animation-delay:80ms}.section:nth-child(3){animation-delay:160ms}.section-title{font-size:1.5rem;font-weight:700;letter-spacing:-.03em;margin-bottom:8px}.section-subtitle{font-size:1rem;color:var(--text-secondary);margin-bottom:20px;line-height:1.5}
+.concept-box{border-radius:20px;padding:24px;margin-bottom:20px}.concept-box.pink{background:linear-gradient(135deg,rgba(255,45,85,.06),rgba(255,45,85,.02));border:1px solid rgba(255,45,85,.15)}.concept-box h3{font-size:1.125rem;font-weight:700;margin-bottom:8px}.concept-box p{font-size:.9375rem;color:var(--text-secondary);line-height:1.6}
+.tip-box{background:linear-gradient(135deg,rgba(175,82,222,.06),rgba(175,82,222,.02));border:1px solid rgba(175,82,222,.15);border-radius:20px;padding:20px;margin:16px 0}.tip-box h4{font-size:.9375rem;font-weight:700;color:var(--purple);margin-bottom:6px}.tip-box p{font-size:.875rem;color:var(--text-secondary);line-height:1.5}
+.sym-area{background:var(--bg-card);border:1px solid var(--border);border-radius:24px;padding:24px;margin-bottom:20px;text-align:center}
+.sym-canvas{width:220px;height:220px;margin:16px auto;background:white;border:2px solid var(--border-strong);border-radius:16px;position:relative;overflow:hidden;cursor:pointer}
+.sym-shape{position:absolute;transition:all .3s var(--spring-default)}
+.sym-line{position:absolute;width:2px;height:100%;background:repeating-linear-gradient(to bottom,var(--accent) 0,var(--accent) 8px,transparent 8px,transparent 16px);left:50%;top:0;transform:translateX(-50%);opacity:0;transition:opacity .3s}
+.sym-line.show{opacity:1}
+.sym-line-h{position:absolute;width:100%;height:2px;background:repeating-linear-gradient(to right,var(--accent) 0,var(--accent) 8px,transparent 8px,transparent 16px);top:50%;left:0;transform:translateY(-50%);opacity:0;transition:opacity .3s}
+.sym-line-h.show{opacity:1}
+.btn-row{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin:12px 0}
+.btn{font-family:var(--font-sans);font-size:.875rem;font-weight:600;padding:10px 20px;border-radius:980px;border:none;cursor:pointer;transition:transform .12s}.btn:active{transform:scale(.95)}
+.btn-primary{background:var(--accent);color:white}.btn-ghost{background:var(--bg-card-solid);color:var(--text);border:1px solid var(--border-strong)}
+.sym-label{font-size:1rem;font-weight:600;color:var(--text-secondary);margin:8px 0}
+.shapes-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:16px 0}
+.shape-btn{width:100%;aspect-ratio:1;border-radius:16px;border:2px solid var(--border-strong);background:var(--bg-card-solid);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:2rem;transition:all .2s}.shape-btn:hover{border-color:var(--accent);background:rgba(0,122,255,.06)}.shape-btn.active{border-color:var(--accent);background:rgba(0,122,255,.1)}
+.question-box{background:linear-gradient(135deg,rgba(0,122,255,.06),rgba(0,122,255,.02));border:1px solid rgba(0,122,255,.15);border-radius:20px;padding:24px}.question-box h4{font-size:1rem;font-weight:700;margin-bottom:12px}
+.q-opts{display:flex;gap:12px;flex-wrap:wrap;justify-content:center;margin:12px 0}
+.q-opt{padding:12px 24px;border-radius:16px;border:2px solid var(--border-strong);background:var(--bg-card-solid);font-family:var(--font-sans);font-size:1rem;font-weight:600;cursor:pointer;transition:all .15s}.q-opt:hover{border-color:var(--accent)}.q-opt.selected{border-color:var(--accent);background:rgba(0,122,255,.08)}
+.feedback{font-size:.875rem;font-weight:600;margin-top:8px;min-height:24px}.feedback.correct{color:var(--green)}.feedback.wrong{color:var(--red)}
+@keyframes slideUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+</style>
+</head>
+<body>
+<nav class="nav"><a href="menu.html" class="nav-title"><img src="../../Recursos/LogoRakinMath.png" alt="RakinMath" style="height: 24px; width: auto;"></a><a href="menu.html" class="exit-btn">Volver</a></nav>
+<div class="content">
+<a href="menu.html" class="back-link">&#x2190; Volver a Geometría</a>
+
+<div class="section">
+<div class="section-title">&#x2728; Líneas de Simetría</div>
+<div class="section-subtitle">Una figura tiene <strong>simetría</strong> si puedes doblarla por la mitad y ambas partes coinciden exactamente. La línea por donde doblas es la <strong>línea de simetría</strong>.</div>
+<div class="concept-box pink">
+<h3>&#x1F4A1; ¿Qué es la simetría?</h3>
+<p>Si dibujas una línea en el medio de una mariposa, el lado izquierdo es igual al derecho. Esa línea es la <strong>línea de simetría</strong>. Las figuras simétricas se ven "iguales" a ambos lados.</p>
+</div>
+<div class="tip-box">
+<h4>&#x1F4A1; Tip del profesor</h4>
+<p>Un cuadrado tiene <strong>4 líneas de simetría</strong>. Un rectángulo tiene <strong>2</strong>. Un círculo tiene <strong>infinitas</strong>. Un triángulo equilátero tiene <strong>3</strong>.</p>
+</div>
+</div>
+
+<div class="section">
+<div class="section-title">&#x1F3AE; Explora la simetría</div>
+<div class="sym-area">
+<div class="sym-label">Elige una figura:</div>
+<div class="shapes-grid">
+<button class="shape-btn active" onclick="selectShape(0,this)">&#x25A0;</button>
+<button class="shape-btn" onclick="selectShape(1,this)">&#x25B3;</button>
+<button class="shape-btn" onclick="selectShape(2,this)">&#x2B22;</button>
+<button class="shape-btn" onclick="selectShape(3,this)">&#x2726;</button>
+<button class="shape-btn" onclick="selectShape(4,this)">&#x1F98B;</button>
+<button class="shape-btn" onclick="selectShape(5,this)">&#x1F3F4;</button>
+</div>
+<div class="sym-canvas" id="sym-canvas">
+<div class="sym-line" id="sym-v"></div>
+<div class="sym-line-h" id="sym-h"></div>
+<svg id="sym-svg" width="220" height="220" viewBox="0 0 220 220"></svg>
+</div>
+<div class="btn-row">
+<button class="btn btn-primary" onclick="showSymmetry()">&#x1F4D0; Mostrar simetría</button>
+<button class="btn btn-ghost" onclick="toggleAxis()">&#x21C4; Cambiar eje</button>
+</div>
+<div class="sym-label" id="sym-info">Esta figura tiene 4 líneas de simetría</div>
+</div>
+</div>
+
+<div class="section">
+<div class="question-box">
+<h4>&#x2753; ¿Cuántas líneas de simetría tiene?</h4>
+<p style="color:var(--text-secondary);margin-bottom:12px;font-size:.9375rem" id="q-text"></p>
+<div style="text-align:center;font-size:3rem;margin:12px 0" id="q-shape">&#x25A0;</div>
+<div class="q-opts" id="q-opts"></div>
+<div class="feedback" id="q-fb"></div>
+<div class="btn-row"><button class="btn btn-ghost" onclick="newSymQ()">Nueva pregunta</button></div>
+</div>
+</div>
+
+<div class="section" style="animation-delay:320ms">
+<div class="question-box" style="background:linear-gradient(135deg,rgba(0,122,255,.06),rgba(0,122,255,.02));border:1px solid rgba(0,122,255,.15)">
+<h4>&#x1F3AC; Videos de apoyo</h4>
+<p style="color:var(--text-secondary);margin-bottom:12px;font-size:.9375rem">Agrega links de videos de YouTube para reforzar lo aprendido:</p>
+<div id="videos-container" style="display:flex;flex-direction:column;gap:12px;margin-bottom:12px">
+<div class="video-placeholder" style="border:2px dashed rgba(0,122,255,.25);border-radius:16px;padding:24px;text-align:center;color:var(--text-tertiary);font-size:.875rem;cursor:pointer;transition:border-color .2s,background .2s" onclick="addVideoSlot(this.parentElement)">
+<span style="font-size:1.5rem;display:block;margin-bottom:6px">&#x1F4F1;</span>
+Haz clic aquí para agregar un video de YouTube
+</div>
+</div>
+</div>
+</div>
+
+</div>
+
+<script>
+var shapes=[
+{svg:'<rect x="55" y="55" width="110" height="110" rx="8" fill="#007aff" opacity=".15" stroke="#007aff" stroke-width="3"/>',name:'Cuadrado',lines:4,emoji:'&#x25A0;'},
+{svg:'<polygon points="110,35 195,185 25,185" fill="#ff9500" opacity=".15" stroke="#ff9500" stroke-width="3"/>',name:'Triángulo',lines:3,emoji:'&#x25B3;'},
+{svg:'<polygon points="110,25 145,80 210,80 160,120 180,190 110,150 40,190 60,120 10,80 75,80" fill="#34c759" opacity=".15" stroke="#34c759" stroke-width="3"/>',name:'Estrella',lines:5,emoji:'&#x2726;'},
+{svg:'<ellipse cx="110" cy="110" rx="80" ry="55" fill="#ff2d55" opacity=".12" stroke="#ff2d55" stroke-width="3"/>',name:'Elipse',lines:2,emoji:'&#x2B23;'},
+{svg:'<path d="M110,40 C130,20 180,40 180,80 C180,130 110,180 110,180 C110,180 40,130 40,80 C40,40 90,20 110,40Z" fill="#af52de" opacity=".12" stroke="#af52de" stroke-width="3"/>',name:'Corazón',lines:1,emoji:'&#x2764;'},
+{svg:'<rect x="35" y="70" width="150" height="80" rx="8" fill="#ff9500" opacity=".12" stroke="#ff9500" stroke-width="3"/>',name:'Rectángulo',lines:2,emoji:'&#x25A1;'}
+];
+var currentShape=0,axisV=true;
+function selectShape(idx,btn){
+currentShape=idx;axisV=true;
+document.querySelectorAll('.shape-btn').forEach(function(b){b.classList.remove('active')});
+btn.classList.add('active');
+document.getElementById('sym-svg').innerHTML=shapes[idx].svg;
+document.getElementById('sym-v').classList.remove('show');
+document.getElementById('sym-h').classList.remove('show');
+document.getElementById('sym-info').textContent='Esta figura tiene '+shapes[idx].lines+' líneas de simetría';
+}
+function showSymmetry(){
+var s=shapes[currentShape];
+if(s.lines>=1)document.getElementById('sym-v').classList.add('show');
+if(s.lines>=2)document.getElementById('sym-h').classList.add('show');
+}
+function toggleAxis(){
+var sv=document.getElementById('sym-v');
+var sh=document.getElementById('sym-h');
+if(sv.classList.contains('show')&&!sh.classList.contains('show')){sv.classList.remove('show');sh.classList.add('show')}
+else if(!sv.classList.contains('show')&&sh.classList.contains('show')){sv.classList.add('show')}
+else{sv.classList.toggle('show');sh.classList.toggle('show')}
+}
+var qAnswer;
+function newSymQ(){
+var idx=Math.floor(Math.random()*shapes.length);
+qAnswer=shapes[idx].lines;
+document.getElementById('q-text').textContent='¿Cuántas líneas de simetría tiene '+shapes[idx].name+'?';
+document.getElementById('q-shape').innerHTML=shapes[idx].emoji;
+document.getElementById('q-fb').textContent='';document.getElementById('q-fb').className='feedback';
+var opts=document.getElementById('q-opts');opts.innerHTML='';
+for(var i=0;i<=6;i++){
+var b=document.createElement('button');b.className='q-opt';b.textContent=i;
+b.onclick=function(){document.querySelectorAll('.q-opt').forEach(function(o){o.classList.remove('selected')});this.classList.add('selected');checkSymQ(parseInt(this.textContent))};
+opts.appendChild(b);
+}
+}
+function checkSymQ(val){
+var fb=document.getElementById('q-fb');
+if(val===qAnswer){fb.textContent='¡Correcto! '+qAnswer+' línea'+(qAnswer>1?'s':'');fb.className='feedback correct';setTimeout(newSymQ,2000)}
+else{fb.textContent='Intenta de nuevo — recuerda doblar la figura mentalmente';fb.className='feedback wrong'}
+}
+selectShape(0,document.querySelector('.shape-btn'));
+newSymQ();
+
+function addVideoSlot(container){
+var existing=container.querySelector('.video-placeholder');
+if(existing)existing.remove();
+var div=document.createElement('div');
+div.className='video-slot';
+div.style.cssText='display:flex;gap:8px;align-items:center;background:rgba(0,122,255,.04);border:1px solid rgba(0,122,255,.12);border-radius:12px;padding:10px 12px';
+div.innerHTML='<input type="text" placeholder="Pega el link de YouTube aqu\u00ed..." style="flex:1;font-family:var(--font-sans);font-size:.875rem;padding:8px 12px;border-radius:8px;border:1px solid rgba(0,0,0,.1);background:white;color:#1d1d1f;outline:none" onfocus="this.style.borderColor=\'#007aff\'" onblur="this.style.borderColor=\'rgba(0,0,0,1)\'"><button onclick="removeVideoSlot(this)" style="font-size:1.1rem;background:none;border:none;cursor:pointer;color:#ff3b30;padding:4px" title="Eliminar">&#x2715;</button>';
+container.appendChild(div);
+var addBtn=document.createElement('div');
+addBtn.className='video-placeholder';
+addBtn.style.cssText='border:2px dashed rgba(0,122,255,.25);border-radius:16px;padding:16px;text-align:center;color:var(--text-tertiary);font-size:.875rem;cursor:pointer;transition:border-color .2s,background .2s';
+addBtn.innerHTML='<span style="font-size:1.25rem;display:block;margin-bottom:4px">&#x2795;</span>Agregar otro video';
+addBtn.onclick=function(){addVideoSlot(container)};
+container.appendChild(addBtn);
+}
+function removeVideoSlot(btn){btn.closest('.video-slot').remove()}
+</script>
+</body>
+</html>

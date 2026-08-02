@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="apple-design.css">
+    <script src="../stats/rk-stats.js"></script>
+    <script src="rk-feedback.js"></script>
+    <title>Chefs de Fracciones | RakinMath</title>
+    <style>
+        body{display:flex;flex-direction:column;height:100dvh;overflow:hidden}
+        .top-bar{padding:8px 16px;display:flex;align-items:center;justify-content:space-between}
+        .top-bar h1{font-size:1rem;font-weight:700}
+        .score-pill{padding:4px 14px;border-radius:var(--radius-pill);background:var(--bg-card);border:1px solid var(--border);font-weight:700;font-size:.875rem}
+
+        .game-layout{flex:1;display:grid;grid-template-columns:220px 1fr 180px;gap:14px;padding:0 16px 16px;align-items:center;max-width:1100px;margin:0 auto;width:100%}
+
+        .ticket{background:var(--bg-card-solid);border:1px solid var(--border);border-radius:var(--radius-lg);padding:20px;text-align:center;box-shadow:var(--shadow-sm)}
+        .ticket-label{font-size:.6875rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--text-tertiary);margin-bottom:4px}
+        .ticket-food{font-size:1rem;font-weight:700;text-transform:uppercase;margin-bottom:12px;color:var(--text)}
+        .frac{display:flex;flex-direction:column;align-items:center;gap:0;margin:12px 0}
+        .frac-num,.frac-den{font-size:3rem;font-weight:800;line-height:1;color:var(--text);font-variant-numeric:tabular-nums}
+        .frac-line{width:80px;height:5px;background:var(--text);border-radius:3px;margin:6px 0}
+        .ticket-hint{font-size:.75rem;color:var(--text-tertiary)}
+
+        .kitchen{display:flex;flex-direction:column;align-items:center;gap:10px}
+        .cuts-bar{display:flex;align-items:center;gap:10px;background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-pill);padding:4px 6px}
+        .cuts-btn{width:36px;height:36px;border-radius:50%;border:none;background:rgba(0,0,0,.04);font-size:1.125rem;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:transform .1s,background .15s;font-family:var(--font-sans);color:var(--text)}
+        .cuts-btn:active{transform:scale(.9)}
+        .cuts-btn:hover{background:rgba(0,0,0,.07)}
+        .cuts-label{font-size:.875rem;font-weight:700;min-width:80px;text-align:center}
+
+        .food-svg{width:320px;height:320px;filter:drop-shadow(0 4px 12px rgba(0,0,0,.12))}
+        .slice{stroke:rgba(0,0,0,.12);stroke-width:1.5;stroke-linejoin:round;cursor:pointer;transition:fill .15s,opacity .15s}
+        .slice:hover{opacity:.85}
+        .slice-center{cursor:default}
+
+        /* Deliver button */
+        .action-zone{display:flex;flex-direction:column;align-items:center;gap:8px}
+        .deliver-btn{
+            width:140px;height:140px;border-radius:50%;border:none;
+            background:linear-gradient(135deg,#34C759,#28A745);
+            color:white;cursor:pointer;
+            display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;
+            font-family:var(--font-sans);font-size:.9375rem;font-weight:700;
+            box-shadow:0 8px 0 #1E7E34,0 8px 24px rgba(40,167,69,.35);
+            transition:transform .1s,box-shadow .1s;
+            position:relative;overflow:hidden;
+        }
+        .deliver-btn::before{
+            content:'';position:absolute;top:-50%;left:-50%;width:200%;height:200%;
+            background:linear-gradient(45deg,transparent 30%,rgba(255,255,255,.15) 50%,transparent 70%);
+            transform:translateX(-100%);transition:none;
+        }
+        .deliver-btn:active{
+            transform:translateY(6px);
+            box-shadow:0 2px 0 #1E7E34,0 2px 8px rgba(40,167,69,.35);
+        }
+        .deliver-btn:hover::before{animation:btnShine .6s ease}
+        @keyframes btnShine{0%{transform:translateX(-100%)}100%{transform:translateX(100%)}}
+        .deliver-btn .icon{font-size:2rem;line-height:1}
+        .deliver-btn .lbl{font-size:.8125rem;opacity:.9;letter-spacing:-.01em}
+
+        .toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(16px);padding:10px 24px;border-radius:var(--radius-pill);font-weight:600;font-size:.875rem;color:white;z-index:1000;opacity:0;pointer-events:none;transition:opacity .2s,transform .2s;box-shadow:var(--shadow-md)}
+        .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+        @media(max-width:860px){
+            .game-layout{grid-template-columns:1fr;grid-template-rows:auto auto auto;padding:0 12px 12px;gap:10px;align-items:start}
+            .ticket{padding:14px}.frac-num,.frac-den{font-size:2.25rem}.frac-line{width:60px;height:4px}
+            .kitchen{order:-1}.food-svg{width:200px;height:200px}
+            .action-zone{order:0;padding:4px 0 8px}
+            .deliver-btn{width:110px;height:110px;font-size:.8125rem}
+            .deliver-btn .icon{font-size:1.5rem}
+        }
+        @media(max-width:480px){
+            .game-layout{padding:0 8px 8px;gap:8px}
+            .food-svg{width:160px;height:160px}
+            .frac-num,.frac-den{font-size:1.75rem}.frac-line{width:48px;height:3px;margin:4px 0}
+            .ticket{padding:10px}.ticket-food{font-size:.875rem;margin-bottom:8px}
+            .cuts-label{font-size:.8125rem;min-width:60px}.cuts-btn{width:32px;height:32px;font-size:1rem}
+            .deliver-btn{width:96px;height:96px;font-size:.75rem;box-shadow:0 4px 0 #1E7E34}
+            .deliver-btn .icon{font-size:1.25rem}
+        }
+    </style>
+</head>
+<body>
+
+<nav class="nav">
+    <a href="menu.html" class="nav-title">
+        <img src="../Recursos/LogoRakinMath.png" alt="RakinMath" style="height:24px;width:auto">
+        <span>Chefs de Fracciones | Rakin<span class="brand">Math</span></span>
+    </a>
+    <a href="menu.html" class="exit-btn">Salir</a>
+</nav>
+
+<div class="top-bar">
+    <h1>👩‍🍳 Academia de Chefs</h1>
+    <div class="score-pill">⭐ <span id="score">0</span></div>
+</div>
+
+<div class="game-layout">
+    <div class="ticket">
+        <div class="ticket-label">Pedido</div>
+        <div class="ticket-food" id="food-name">PIZZA</div>
+        <div class="frac">
+            <span class="frac-num" id="target-n">?</span>
+            <div class="frac-line"></div>
+            <span class="frac-den" id="target-d">?</span>
+        </div>
+        <div class="ticket-hint">Haz una fracción equivalente</div>
+    </div>
+
+    <div class="kitchen">
+        <div class="cuts-bar">
+            <button class="cuts-btn" onclick="changeCuts(-1)">−</button>
+            <span class="cuts-label" id="cut-display">2 partes</span>
+            <button class="cuts-btn" onclick="changeCuts(1)">+</button>
+        </div>
+        <svg id="food-svg" class="food-svg" viewBox="0 0 200 200"></svg>
+    </div>
+
+    <div class="action-zone">
+        <button class="deliver-btn" onclick="verify()">
+            <span class="icon">🛎️</span>
+            <span class="lbl">¡Entregar!</span>
+        </button>
+    </div>
+</div>
+
+<div id="toast" class="toast"></div>
+
+<script>
+var nObj=0,dObj=0,score=0,currentCuts=2,currentFood='pizza';
+var sessionTotal=0,sessionCorrect=0,sessionWrong=0,sessionTimer=0,sessionRound=0;
+var selected=[];
+var dens=[2,3,4,5,6,7,8,9,10,11,12,15];
+var ns='http://www.w3.org/2000/svg';
+
+/* ═══ POOL TRACKING — no repeats ═══ */
+var usedFoods=[];
+var usedFracs=[];
+
+function pickRandom(arr){return arr[~~(Math.random()*arr.length)]}
+function shuffle(arr){var a=arr.slice();for(var i=a.length-1;i>0;i--){var j=~~(Math.random()*(i+1));var t=a[i];a[i]=a[j];a[j]=t}return a}
+
+/* ═══ PROGRESSIVE DIFFICULTY ═══ */
+function getDifficulty(){
+    var pct=sessionRound/Math.max(sessionTotal,1);
+    if(pct<0.25)return{dens:[2,3,4],label:'Fácil'};
+    if(pct<0.5)return{dens:[2,3,4,5,6],label:'Medio'};
+    if(pct<0.75)return{dens:[3,4,5,6,8],label:'Difícil'};
+    return{dens:[4,5,6,8,10,12],label:'Experto'};
+}
+
+function pickFraction(){
+    /* Try to pick from remaining unused fractions */
+    var diff=getDifficulty();
+    var pool=diff.dens.filter(function(d){return usedFracs.indexOf(d)===-1});
+    if(pool.length===0){
+        /* All used at this level — advance to next level or reset */
+        usedFracs=[];
+        pool=diff.dens;
+    }
+    var d=pickRandom(pool);
+    var n=~~(Math.random()*(d-1))+1;
+    var key=d+'/'+n;
+    /* Avoid exact same numerator+denominator combo */
+    usedFracs.push(d);
+    return{d:d,n:n};
+}
+
+function pickFood(){
+    var pool=foodDB.filter(function(f){return usedFoods.indexOf(f.id)===-1});
+    if(pool.length===0){usedFoods=[];pool=foodDB.slice()}
+    var f=pickRandom(pool);
+    usedFoods.push(f.id);
+    return f;
+}
+
+/* ═══ FOOD DATABASE ═══ */
+/* Each food: emoji, name, base color, slice colors (variations of base) */
+var foodDB=[
+  {id:'pizza',   emoji:'🍕',name:'PIZZA',   base:'#F5A623',slices:['#F5A623','#EDA030','#E5953D','#DD8A4A','#D57F57','#CD7464','#C56971','#BD5E7E']},
+  {id:'torta',   emoji:'🎂',name:'TORTA',   base:'#FFB6C1',slices:['#FFB6C1','#FFA8B5','#FF9AA9','#FF8C9D','#FF7E91','#FF7085','#FF6279','#FF546D']},
+  {id:'donut',   emoji:'🍩',name:'DONUT',   base:'#FF85A2',slices:['#FF85A2','#FF7796','#FF698A','#FF5B7E','#FF4D72','#FF3F66','#FF315A','#FF234E']},
+  {id:'sandwich',emoji:'🥪',name:'SANDWICH',base:'#DEB887',slices:['#DEB887','#D4AA79','#C99C6B','#BFAE8E','#B5A080','#AB9272','#A18464','#977656']},
+  {id:'cookie',  emoji:'🍪',name:'COOKIE',  base:'#D2A679',slices:['#D2A679','#C8986D','#BE8A61','#B47C55','#AA6E49','#A0603D','#965231','#8C4425']},
+  {id:'manzana', emoji:'🍎',name:'MANZANA', base:'#FF6B6B',slices:['#FF6B6B','#FF5D5D','#FF4F4F','#FF4141','#F33333','#E72525','#DB1717','#CF0909']},
+  {id:'melon',   emoji:'🍈',name:'MELÓN',  base:'#98D8AA',slices:['#98D8AA','#8ACC9E','#7CC092','#70B486','#64A87A','#589C6E','#4C9062','#408456']},
+  {id:'blueberry',emoji:'🫐',name:'ARÁNDANO',base:'#7B68EE',slices:['#7B68EE','#6F5CE2','#6350D6','#5744CA','#4B38BE','#3E2CB2','#3220A6','#26149A']},
+  {id:'naranja', emoji:'🍊',name:'NARANJA', base:'#FFA500',slices:['#FFA500','#F09800','#E08B00','#D07E00','#C07100','#B06400','#A05700','#904A00']},
+  {id:'limon',   emoji:'🍋',name:'LIMÓN',  base:'#FFF44F',slices:['#FFF44F','#F5EA45','#EBE03B','#E1D631','#D7CC27','#CDC21D','#C3B813','#B9AE09']}
+];
+
+/* ═══ SVG HELPERS ═══ */
+function makeSlice(cx,cy,r,startAngle,endAngle){
+    var rad=function(d){return d*Math.PI/180};
+    var x1=cx+r*Math.cos(rad(startAngle-90));
+    var y1=cy+r*Math.sin(rad(startAngle-90));
+    var x2=cx+r*Math.cos(rad(endAngle-90));
+    var y2=cy+r*Math.sin(rad(endAngle-90));
+    var large=(endAngle-startAngle)>180?1:0;
+    return 'M'+cx+','+cy+' L'+x1+','+y1+' A'+r+','+r+' 0 '+large+' 1 '+x2+','+y2+' Z';
+}
+
+function makeEl(tag,attrs){
+    var el=document.createElementNS(ns,tag);
+    for(var k in attrs)el.setAttribute(k,attrs[k]);
+    return el;
+}
+
+function addClick(el,idx,baseColor){
+    el.dataset.i=idx;
+    el.dataset.base=baseColor;
+    el.addEventListener('click',function(){
+        var i=parseInt(this.dataset.i);
+        selected[i]=!selected[i];
+        this.setAttribute('fill',selected[i]?'#4CD964':this.dataset.base);
+    });
+}
+
+/* ═══ DRAW FUNCTIONS ═══ */
+function draw(){
+    var svg=document.getElementById('food-svg');
+    svg.innerHTML='';
+    var food=foodDB.find(function(f){return f.id===currentFood})||foodDB[0];
+    if(food.id==='donut'){
+        drawDonut(svg,food);
+    }else if(food.id==='sandwich'){
+        drawTriangle(svg,food);
+    }else{
+        drawPie(svg,food);
+    }
+    drawDecor(svg,food);
+}
+
+/* ═══ DECORATIONS ═══ */
+function drawDecor(svg,food){
+    var s=200,cx=s/2,cy=s/2,r=s/2-10;
+    var ns='http://www.w3.org/2000/svg';
+    function dot(x,y,fill,rad){
+        var c=document.createElementNS(ns,'circle');
+        c.setAttribute('cx',x);c.setAttribute('cy',y);c.setAttribute('r',rad||3);
+        c.setAttribute('fill',fill);c.setAttribute('pointer-events','none');
+        svg.appendChild(c);
+    }
+    function leaf(x,y,rot){
+        var p=document.createElementNS(ns,'path');
+        p.setAttribute('d','M'+x+','+y+' q4,-10 0,-16 q-4,6 0,16');
+        p.setAttribute('fill','#4CAF50');
+        p.setAttribute('transform','rotate('+rot+','+x+','+y+')');
+        p.setAttribute('pointer-events','none');
+        svg.appendChild(p);
+    }
+    function stem(x,y){
+        var l=document.createElementNS(ns,'line');
+        l.setAttribute('x1',x);l.setAttribute('y1',y);l.setAttribute('x2',x);l.setAttribute('y2',y-10);
+        l.setAttribute('stroke','#8B6914');l.setAttribute('stroke-width','2.5');l.setAttribute('stroke-linecap','round');
+        l.setAttribute('pointer-events','none');
+        svg.appendChild(l);
+    }
+    function sprinkle(x,y,color){
+        var r=document.createElementNS(ns,'rect');
+        r.setAttribute('x',x-1.5);r.setAttribute('y',y-3);
+        r.setAttribute('width','3');r.setAttribute('height','6');
+        r.setAttribute('rx','1.5');
+        r.setAttribute('fill',color);
+        r.setAttribute('transform','rotate('+(Math.random()*180-90)+','+x+','+y+')');
+        r.setAttribute('pointer-events','none');
+        svg.appendChild(r);
+    }
+
+    /* Cookie — chocolate chips */
+    if(food.id==='cookie'){
+        var chipPos=[[cx-18,cy-22],[cx+15,cy-18],[cx-8,cy+12],[cx+20,cy+8],[cx-22,cy+5],[cx+5,cy-8],[cx-12,cy-5],[cx+12,cy+22]];
+        chipPos.forEach(function(p){dot(p[0],p[1],'#3E2723',3.5)});
+    }
+
+    /* Torta — sprinkles */
+    if(food.id==='torta'){
+        var spColors=['#FF6B6B','#FFD93D','#6BCB77','#4D96FF','#FF6FC8','#FF9F45'];
+        for(var i=0;i<14;i++){
+            var angle=Math.random()*Math.PI*2;
+            var dist=20+Math.random()*45;
+            sprinkle(cx+Math.cos(angle)*dist,cy+Math.sin(angle)*dist,spColors[i%spColors.length]);
+        }
+    }
+
+    /* Donut — sprinkles on ring */
+    if(food.id==='donut'){
+        var dColors=['#FF6B6B','#FFD93D','#6BCB77','#4D96FF','#FF6FC8'];
+        var donutMid=(r+((s/2-6)*.38))/2;
+        for(var j=0;j<12;j++){
+            var a=Math.random()*Math.PI*2;
+            sprinkle(cx+Math.cos(a)*donutMid,cy+Math.sin(a)*donutMid,dColors[j%dColors.length]);
+        }
+    }
+
+    /* Manzana — stem + leaf */
+    if(food.id==='manzana'){
+        stem(cx,cy-r+8);
+        leaf(cx+3,cy-r+8,25);
+    }
+
+    /* Naranja — peel dots + leaf */
+    if(food.id==='naranja'){
+        for(var k=0;k<6;k++){
+            var ang=Math.random()*Math.PI*2;
+            var dist=25+Math.random()*30;
+            dot(cx+Math.cos(ang)*dist,cy+Math.sin(ang)*dist,'rgba(0,0,0,.12)',2);
+        }
+        stem(cx,cy-r+8);
+        leaf(cx+3,cy-r+8,30);
+    }
+
+    /* Limón — dots + leaf */
+    if(food.id==='limon'){
+        for(var m=0;m<5;m++){
+            var ang2=Math.random()*Math.PI*2;
+            var dist2=20+Math.random()*35;
+            dot(cx+Math.cos(ang2)*dist2,cy+Math.sin(ang2)*dist2,'rgba(180,140,0,.2)',2);
+        }
+        stem(cx,cy-r+8);
+        leaf(cx+3,cy-r+8,-20);
+    }
+
+    /* Melón — seed lines */
+    if(food.id==='melon'){
+        for(var n=0;n<3;n++){
+            var la=-30+n*30;
+            var lr=r*0.5;
+            var lx=cx+lr*Math.cos(la*Math.PI/180);
+            var ly=cy+lr*Math.sin(la*Math.PI/180);
+            dot(lx,ly,'#5D4037',2);
+        }
+        stem(cx,cy-r+8);
+        leaf(cx+3,cy-r+8,15);
+    }
+
+    /* Arándano — highlight dots */
+    if(food.id==='blueberry'){
+        dot(cx-8,cy-8,'rgba(255,255,255,.3)',4);
+        dot(cx+12,cy+5,'rgba(255,255,255,.2)',3);
+        stem(cx,cy-r+8);
+        leaf(cx+3,cy-r+8,0);
+    }
+}
+
+function drawPie(svg,food){
+    var s=200,cx=s/2,cy=s/2,r=s/2-6;
+    var sliceSize=360/currentCuts;
+    for(var i=0;i<currentCuts;i++){
+        var start=i*sliceSize,end=(i+1)*sliceSize;
+        var c=food.slices[i%food.slices.length];
+        var path=makeEl('path',{
+            d:makeSlice(cx,cy,r,start,end),
+            fill:selected[i]?'#4CD964':c,
+            'class':'slice'
+        });
+        addClick(path,i,c);
+        svg.appendChild(path);
+    }
+    svg.appendChild(makeEl('circle',{cx:cx,cy:cy,r:5,fill:'#fff',opacity:.5,'class':'slice-center'}));
+}
+
+function drawDonut(svg,food){
+    var s=200,cx=s/2,cy=s/2;
+    var outerR=s/2-6,innerR=outerR*.38;
+    var sliceSize=360/currentCuts;
+    for(var i=0;i<currentCuts;i++){
+        var start=i*sliceSize,end=(i+1)*sliceSize;
+        var rad=function(d){return d*Math.PI/180};
+        var ox1=cx+outerR*Math.cos(rad(start-90)),oy1=cy+outerR*Math.sin(rad(start-90));
+        var ox2=cx+outerR*Math.cos(rad(end-90)),oy2=cy+outerR*Math.sin(rad(end-90));
+        var ix1=cx+innerR*Math.cos(rad(end-90)),iy1=cy+innerR*Math.sin(rad(end-90));
+        var ix2=cx+innerR*Math.cos(rad(start-90)),iy2=cy+innerR*Math.sin(rad(start-90));
+        var large=(end-start)>180?1:0;
+        var d='M'+ox1+','+oy1+' A'+outerR+','+outerR+' 0 '+large+' 1 '+ox2+','+oy2+
+              ' L'+ix1+','+iy1+' A'+innerR+','+innerR+' 0 '+large+' 0 '+ix2+','+iy2+' Z';
+        var c=food.slices[i%food.slices.length];
+        var path=makeEl('path',{d:d,fill:selected[i]?'#4CD964':c,'class':'slice'});
+        addClick(path,i,c);
+        svg.appendChild(path);
+    }
+    svg.appendChild(makeEl('circle',{cx:cx,cy:cy,r:innerR,fill:'#f5f5f7'}));
+}
+
+function drawTriangle(svg,food){
+    var s=200,pad=10;
+    var triH=s-pad*2,triW=s-pad*2,cx=s/2;
+    var stripH=triH/currentCuts;
+    for(var i=0;i<currentCuts;i++){
+        var y1=pad+i*stripH,y2=pad+(i+1)*stripH;
+        var t1=(y1-pad)/triH,t2=(y2-pad)/triH;
+        var lx1=cx-triW*t1/2,rx1=cx+triW*t1/2;
+        var lx2=cx-triW*t2/2,rx2=cx+triW*t2/2;
+        if(i===currentCuts-1){lx2=cx-triW/2;rx2=cx+triW/2;}
+        var d='M'+cx+','+y1+' L'+rx1+','+y1+' L'+rx2+','+y2+' L'+lx2+','+y2+' Z';
+        var c=food.slices[i%food.slices.length];
+        var path=makeEl('path',{d:d,fill:selected[i]?'#4CD964':c,'class':'slice'});
+        addClick(path,i,c);
+        svg.appendChild(path);
+    }
+}
+
+/* ═══ GAME LOGIC ═══ */
+window.onload=function(){
+    RK.Stats.showRoundModal('Chefs de Fracciones','🍕',function(rounds){
+        sessionTotal=rounds;
+        sessionRound=0;
+        sessionTimer=Date.now();
+        usedFoods=[];
+        usedFracs=[];
+        init();
+    });
+};
+
+function init(){
+    /* Pick non-repeating fraction with progressive difficulty */
+    var frac=pickFraction();
+    dObj=frac.d;
+    nObj=frac.n;
+    document.getElementById('target-n').textContent=nObj;
+    document.getElementById('target-d').textContent=dObj;
+
+    /* Pick non-repeating food */
+    var f=pickFood();
+    currentFood=f.id;
+    document.getElementById('food-name').textContent=f.emoji+' '+f.name;
+
+    currentCuts=2;
+    selected=[];
+    RK.Feedback.reset();
+    updateCuts();
+    draw();
+}
+
+function changeCuts(v){
+    var i=dens.indexOf(currentCuts)+v;
+    if(i>=0&&i<dens.length){currentCuts=dens[i];selected=[];updateCuts();draw();}
+}
+
+function updateCuts(){
+    document.getElementById('cut-display').textContent=currentCuts+' partes';
+}
+
+function verify(){
+    var selCount=selected.filter(function(x){return x}).length;
+    sessionRound++;
+    if((nObj*currentCuts)===(selCount*dObj)){
+        score+=10;
+        sessionCorrect++;
+        document.getElementById('score').textContent=score;
+        RK.Feedback.show('success');
+        if(sessionTotal>0&&sessionRound>=sessionTotal){setTimeout(endGame,1000)}
+        else{setTimeout(init,1200)}
+    }else{
+        sessionWrong++;
+        var ideal=nObj*currentCuts/dObj;
+        var m='Elegiste '+selCount+'/'+currentCuts+'.';
+        if(Number.isInteger(ideal))m+=' Marca '+ideal+'.';
+        RK.Feedback.show('error',m);
+    }
+}
+
+function endGame(){
+    var totalTime=Math.round((Date.now()-sessionTimer)/1000);
+    RK.Stats.saveGameResult('juego3',{
+        score:score,rounds:sessionRound,totalTime:totalTime,
+        correct:sessionCorrect,wrong:sessionWrong,errors:['fracciones','equivalencias']
+    });
+    RK.Stats.showEndModal('Chefs de Fracciones',{
+        score:score,rounds:sessionRound,totalTime:totalTime,
+        correct:sessionCorrect,wrong:sessionWrong
+    });
+}
+</script>
+</body>
+</html>

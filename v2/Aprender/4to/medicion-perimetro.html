@@ -1,0 +1,514 @@
+<?<!DOCTYPE html>
+
+
+<html lang="es">
+
+
+<head>
+
+
+<meta charset="UTF-8">
+
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+
+<title>RakinMath  Per</title>
+
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+
+
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+
+<link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+
+
+<link rel="stylesheet" href="../apple-design.css">
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+
+
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+
+
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"></script>
+
+
+<script defer src="../rk-utils.js"></script>
+
+
+<style>
+
+
+body{display:flex;flex-direction:column;min-height:100vh}.content{flex:1;max-width:800px;width:100%;margin:0 auto;padding:24px}.back-link{display:inline-flex;align-items:center;gap:6px;font-family:var(--font-sans);font-size:.875rem;font-weight:600;color:var(--text-secondary);text-decoration:none;padding:8px 16px;border-radius:980px;background:var(--bg-card);border:1px solid var(--border-strong);transition:transform .15s;margin-bottom:24px}.back-link:active{transform:scale(.95)}.section{margin-bottom:40px;opacity:0;animation:slideUp .5s var(--spring-default) both}.section:nth-child(2){animation-delay:80ms}.section:nth-child(3){animation-delay:160ms}.section-title{font-size:1.5rem;font-weight:700;letter-spacing:-.03em;margin-bottom:8px}.section-subtitle{font-size:1rem;color:var(--text-secondary);margin-bottom:20px;line-height:1.5}
+
+
+.concept-box{border-radius:20px;padding:24px;margin-bottom:20px}.concept-box.orange{background:linear-gradient(135deg,rgba(255,149,0,.06),rgba(255,149,0,.02));border:1px solid rgba(255,149,0,.15)}.concept-box h3{font-size:1.125rem;font-weight:700;margin-bottom:8px}.concept-box p{font-size:.9375rem;color:var(--text-secondary);line-height:1.6}
+
+
+.tip-box{background:linear-gradient(135deg,rgba(175,82,222,.06),rgba(175,82,222,.02));border:1px solid rgba(175,82,222,.15);border-radius:20px;padding:20px;margin:16px 0}.tip-box h4{font-size:.9375rem;font-weight:700;color:var(--purple);margin-bottom:6px}.tip-box p{font-size:.875rem;color:var(--text-secondary);line-height:1.5}
+
+
+.perim-area{background:var(--bg-card);border:1px solid var(--border);border-radius:24px;padding:24px;margin-bottom:20px;text-align:center}
+
+
+.perim-svg{width:240px;height:180px;margin:16px auto}
+
+
+.perim-shape{stroke:var(--accent);stroke-width:3;fill:rgba(0,122,255,.08);transition:all .3s}
+
+
+.perim-side{font-size:.8125rem;font-weight:700;fill:var(--text)}
+
+
+.perim-result{font-size:1.5rem;font-weight:700;color:var(--accent);margin:12px 0;padding:12px;background:rgba(0,122,255,.06);border-radius:12px}
+
+
+.btn-row{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin:12px 0}
+
+
+.btn{font-family:var(--font-sans);font-size:.875rem;font-weight:600;padding:10px 20px;border-radius:980px;border:none;cursor:pointer;transition:transform .12s}.btn:active{transform:scale(.95)}
+
+
+.btn-primary{background:var(--accent);color:white}.btn-ghost{background:var(--bg-card-solid);color:var(--text);border:1px solid var(--border-strong)}
+
+
+.perim-inputs{display:flex;align-items:center;gap:8px;justify-content:center;flex-wrap:wrap;margin:12px 0}
+
+
+.perim-input{width:60px;padding:8px;border-radius:10px;border:2px solid var(--border-strong);background:var(--bg-card-solid);font-family:var(--font-sans);font-size:1rem;font-weight:700;text-align:center;color:var(--text);outline:none}.perim-input:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(0,122,255,.1)}
+
+
+.perim-label{font-size:.875rem;font-weight:600;color:var(--text-secondary)}
+
+
+.question-box{background:linear-gradient(135deg,rgba(0,122,255,.06),rgba(0,122,255,.02));border:1px solid rgba(0,122,255,.15);border-radius:20px;padding:24px}.question-box h4{font-size:1rem;font-weight:700;margin-bottom:12px}
+
+
+.q-input{width:80px;padding:10px;border-radius:12px;border:2px solid var(--border-strong);background:var(--bg-card-solid);font-family:var(--font-sans);font-size:1.125rem;font-weight:700;text-align:center;color:var(--text);outline:none}.q-input:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(0,122,255,.1)}
+
+
+.feedback{font-size:.875rem;font-weight:600;margin-top:8px;min-height:24px}.feedback.correct{color:var(--green)}.feedback.wrong{color:var(--red)}
+
+
+@keyframes slideUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+
+
+</style>
+
+
+</head>
+
+
+<body>
+
+
+<nav class="nav"><a href="menu.html" class="nav-title"><img src="../../Recursos/LogoRakinMath.png" alt="RakinMath" style="height: 24px; width: auto;"></a><a href="menu.html" class="exit-btn">Volver</a></nav>
+
+
+<div class="content">
+
+
+<a href="menu.html" class="back-link">&#x2190; Volver a Medición</a>
+
+
+
+
+
+<div class="section">
+
+
+<div class="section-title">&#x1F3D0; Perímetro</div>
+
+
+<div class="section-subtitle">El perímetro es la <strong>suma de todos los lados</strong> de una figura. Es como <strong>recorrer todo el contorno</strong> caminando por el borde.</div>
+
+
+<div class="concept-box orange">
+
+
+<h3>&#x1F4A1; ¿Qué es el perímetro?</h3>
+
+
+<p>Imagina que rodeas una cancha de fútbol caminando por la línea blanca. La distancia total que recorres es el <strong>perímetro</strong>. Se mide en metros (m) o centímetros (cm).</p>
+
+
+</div>
+
+
+<div class="tip-box">
+
+
+<h4>&#x1F4A1; Tip del profesor</h4>
+
+
+<p>Para calcular el perímetro, solo <strong>suma todos los lados</strong>. Si es un cuadrado, como todos los lados son iguales, puedes multiplicar: \(4 \times \text{lado}\).</p>
+
+
+</div>
+
+
+</div>
+
+
+
+
+
+<div class="section">
+
+
+<div class="section-title">&#x1F3AE; Calcula el perímetro</div>
+
+
+<div class="perim-area">
+
+
+<div class="perim-inputs">
+
+
+<span class="perim-label">Figura:</span>
+
+
+<select id="p-shape" onchange="drawPerim()" style="padding:8px 12px;border-radius:10px;border:2px solid var(--border-strong);background:var(--bg-card-solid);font-family:var(--font-sans);font-size:.875rem;font-weight:600">
+
+
+<option value="rect">Rectángulo</option><option value="cuad">Cuadrado</option><option value="tri">Triángulo</option>
+
+
+</select>
+
+
+<span class="perim-label">Lado A:</span><input class="perim-input" type="number" id="p-a" value="60" oninput="drawPerim()">
+
+
+<span class="perim-label">Lado B:</span><input class="perim-input" type="number" id="p-b" value="40" oninput="drawPerim()">
+
+
+<button class="btn btn-primary" onclick="calcPerim()">Calcular</button>
+
+
+</div>
+
+
+<svg class="perim-svg" id="p-svg" viewBox="0 0 240 180"></svg>
+
+
+<div class="perim-result" id="p-result">Perímetro: 200 cm</div>
+
+
+</div>
+
+
+</div>
+
+
+
+
+
+<div class="section">
+
+
+<div class="question-box">
+
+
+<h4>&#x2753; Resuelve</h4>
+
+
+<p style="color:var(--text-secondary);margin-bottom:12px;font-size:.9375rem" id="q-text"></p>
+
+
+<div class="perim-inputs">
+
+
+<input class="q-input" type="number" id="q-answer" placeholder="?">
+
+
+<span class="perim-label" id="q-unit"></span>
+
+
+<button class="btn btn-primary" onclick="checkPerim()">Comprobar</button>
+
+
+</div>
+
+
+<div class="feedback" id="q-fb"></div>
+
+
+<div class="btn-row"><button class="btn btn-ghost" onclick="newPerimQ()">Nueva pregunta</button></div>
+
+
+</div>
+
+
+</div>
+
+
+
+
+
+<div class="section" style="animation-delay:320ms">
+
+
+<div class="question-box" style="background:linear-gradient(135deg,rgba(0,122,255,.06),rgba(0,122,255,.02));border:1px solid rgba(0,122,255,.15)">
+
+
+<h4>&#x1F3AC; Videos de apoyo</h4>
+
+
+<p style="color:var(--text-secondary);margin-bottom:12px;font-size:.9375rem">Agrega links de videos de YouTube para reforzar lo aprendido:</p>
+
+
+<div id="videos-container" style="display:flex;flex-direction:column;gap:12px;margin-bottom:12px">
+
+
+<div class="video-placeholder" style="border:2px dashed rgba(0,122,255,.25);border-radius:16px;padding:24px;text-align:center;color:var(--text-tertiary);font-size:.875rem;cursor:pointer;transition:border-color .2s,background .2s" onclick="addVideoSlot(this.parentElement)">
+
+
+<span style="font-size:1.5rem;display:block;margin-bottom:6px">&#x1F4F1;</span>
+
+
+Haz clic aquí para agregar un video de YouTube
+
+
+</div>
+
+
+</div>
+
+
+</div>
+
+
+</div>
+
+
+
+
+
+</div>
+
+
+
+
+
+<script>
+
+
+function drawPerim(){
+
+
+var shape=document.getElementById('p-shape').value;
+
+
+var a=parseInt(document.getElementById('p-a').value)||50;
+
+
+var b=parseInt(document.getElementById('p-b').value)||50;
+
+
+var svg=document.getElementById('p-svg');
+
+
+if(shape==='rect'){
+
+
+var w=Math.min(a*1.5,200),h=Math.min(b*1.5,140);
+
+
+svg.innerHTML='<rect x="'+(120-w/2)+'" y="'+(90-h/2)+'" width="'+w+'" height="'+h+'" class="perim-shape"/>'+
+
+
+'<text x="'+120+'" y="'+(90-h/2-8)+'" text-anchor="middle" class="perim-side">'+a+' cm</text>'+
+
+
+'<text x="'+(120+w/2+8)+'" y="'+12+'" text-anchor="start" class="perim-side">'+b+' cm</text>'+
+
+
+'<text x="'+120+'" y="'+(90+h/2+16)+'" text-anchor="middle" class="perim-side">'+a+' cm</text>'+
+
+
+'<text x="'+(120-w/2-8)+'" y="'+12+'" text-anchor="end" class="perim-side">'+b+' cm</text>';
+
+
+}else if(shape==='cuad'){
+
+
+var s=Math.min(a*1.5,180);
+
+
+svg.innerHTML='<rect x="'+(120-s/2)+'" y="'+(90-s/2)+'" width="'+s+'" height="'+s+'" class="perim-shape"/>'+
+
+
+'<text x="'+120+'" y="'+(90-s/2-8)+'" text-anchor="middle" class="perim-side">'+a+' cm</text>'+
+
+
+'<text x="'+(120+s/2+8)+'" y="'+12+'" text-anchor="start" class="perim-side">'+a+' cm</text>'+
+
+
+'<text x="'+120+'" y="'+(90+s/2+16)+'" text-anchor="middle" class="perim-side">'+a+' cm</text>'+
+
+
+'<text x="'+(120-s/2-8)+'" y="'+12+'" text-anchor="end" class="perim-side">'+a+' cm</text>';
+
+
+}else{
+
+
+var pts='120,20 '+(20+Number(a)*1.5)+',160 '+(220-Number(a)*1.5)+',160';
+
+
+svg.innerHTML='<polygon points="'+pts+'" class="perim-shape"/>'+
+
+
+'<text x="120" y="10" text-anchor="middle" class="perim-side">'+a+' cm</text>'+
+
+
+'<text x="'+(220-Number(a)*0.7)+'" y="145" text-anchor="middle" class="perim-side">'+a+' cm</text>'+
+
+
+'<text x="'+(20+Number(a)*0.7)+'" y="145" text-anchor="middle" class="perim-side">'+b+' cm</text>';
+
+
+}
+
+
+}
+
+
+function calcPerim(){
+
+
+var shape=document.getElementById('p-shape').value;
+
+
+var a=parseInt(document.getElementById('p-a').value)||0;
+
+
+var b=parseInt(document.getElementById('p-b').value)||0;
+
+
+var p=shape==='cuad'?a*4:shape==='rect'?2*(a+b):a*2+b;
+
+
+document.getElementById('p-result').textContent='Perímetro: '+p+' cm';
+
+
+}
+
+
+var qAnswer,qUnit;
+
+
+function newPerimQ(){
+
+
+var shapes=['rect','cuad','tri'];
+
+
+var s=shapes[Math.floor(Math.random()*3)];
+
+
+var a=Math.floor(Math.random()*8)+3,b=Math.floor(Math.random()*8)+3;
+
+
+if(s==='rect'){qAnswer=2*(a+b);qUnit='cm';document.getElementById('q-text').textContent='Un rectángulo mide '+a+' cm de largo y '+b+' cm de ancho. ¿Cuánto es su perímetro?'}
+
+
+else if(s==='cuad'){qAnswer=a*4;qUnit='cm';document.getElementById('q-text').textContent='Un cuadrado mide '+a+' cm de lado. ¿Cuánto es su perímetro?'}
+
+
+else{qAnswer=a*2+b;qUnit='cm';document.getElementById('q-text').textContent='Un triángulo tiene lados de '+a+' cm, '+a+' cm y '+b+' cm. ¿Cuánto es su perímetro?'}
+
+
+document.getElementById('q-answer').value='';document.getElementById('q-fb').textContent='';document.getElementById('q-fb').className='feedback';
+
+
+}
+
+
+function checkPerim(){
+
+
+var ans=parseInt(document.getElementById('q-answer').value);
+
+
+var fb=document.getElementById('q-fb');
+
+
+if(ans===qAnswer){fb.textContent='¡Correcto! '+qAnswer+' '+qUnit;fb.className='feedback correct';setTimeout(newPerimQ,2000)}
+
+
+else if(isNaN(ans)){fb.textContent='Escribe un número';fb.className='feedback wrong'}
+
+
+else{fb.textContent='Suma todos los lados de la figura';fb.className='feedback wrong'}
+
+
+}
+
+
+drawPerim();newPerimQ();
+
+
+
+
+
+function addVideoSlot(container){
+
+
+var existing=container.querySelector('.video-placeholder');
+
+
+if(existing)existing.remove();
+
+
+var div=document.createElement('div');
+
+
+div.className='video-slot';
+
+
+div.style.cssText='display:flex;gap:8px;align-items:center;background:rgba(0,122,255,.04);border:1px solid rgba(0,122,255,.12);border-radius:12px;padding:10px 12px';
+
+
+div.innerHTML='<input type="text" placeholder="Pega el link de YouTube aquí..." style="flex:1;font-family:var(--font-sans);font-size:.875rem;padding:8px 12px;border-radius:8px;border:1px solid rgba(0,0,0,.1);background:white;color:#1d1d1f;outline:none" onfocus="this.style.borderColor=\'#007aff\'" onblur="this.style.borderColor=\'rgba(0,0,0,1)\'"><button onclick="removeVideoSlot(this)" style="font-size:1.1rem;background:none;border:none;cursor:pointer;color:#ff3b30;padding:4px" title="Eliminar">&#x2715;</button>';
+
+
+container.appendChild(div);
+
+
+var addBtn=document.createElement('div');
+
+
+addBtn.className='video-placeholder';
+
+
+addBtn.style.cssText='border:2px dashed rgba(0,122,255,.25);border-radius:16px;padding:16px;text-align:center;color:var(--text-tertiary);font-size:.875rem;cursor:pointer;transition:border-color .2s,background .2s';
+
+
+addBtn.innerHTML='<span style="font-size:1.25rem;display:block;margin-bottom:4px">&#x2795;</span>Agregar otro video';
+
+
+addBtn.onclick=function(){addVideoSlot(container)};
+
+
+container.appendChild(addBtn);
+
+
+}
+
+
+function removeVideoSlot(btn){btn.closest('.video-slot').remove()}
+
+
+</script>
+
+
+</body>
+
+
+</html>

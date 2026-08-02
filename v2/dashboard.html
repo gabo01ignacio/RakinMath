@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet">
+    <script src="auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
+    <script src="Juegos/firebase-config.js"></script>
+    <script src="stats/rk-stats.js"></script>
+    <title>Mis Estadísticas | RakinMath</title>
+    <link rel="stylesheet" href="stats/dashboard.css">
+</head>
+<body>
+
+<nav class="nav">
+    <a href="Juegos/menu.html" class="nav-title">
+        <img src="Recursos/LogoRakinMath.png" alt="RakinMath" style="height: 24px; width: auto;">
+        <span>Mis Estadísticas | Rakin<span class="brand">Math</span></span>
+    </a>
+    <div style="display:flex;gap:8px;align-items:center">
+        <span id="nav-user" style="font-size:.8125rem;font-weight:600;color:#6e6e73"></span>
+        <a href="Juegos/menu.html" class="exit-btn">Volver</a>
+        <button class="exit-btn" id="logoutBtn" style="border-color:rgba(255,59,48,.2);color:#ff3b30">Cerrar sesión</button>
+    </div>
+</nav>
+
+<div class="dashboard">
+
+    <div class="dash-hero">
+        <div class="dash-hero-emoji">📊</div>
+        <h1>Mis Estadísticas</h1>
+        <p id="user-name">Cargando...</p>
+    </div>
+
+    <!-- Summary Cards -->
+    <div class="summary-grid" id="summary-grid">
+        <div class="summary-card sc-blue">
+            <div class="sc-icon">🎮</div>
+            <div class="sc-val" id="sum-games">0</div>
+            <div class="sc-label">Sesiones de juego</div>
+        </div>
+        <div class="summary-card sc-green">
+            <div class="sc-icon">📚</div>
+            <div class="sc-val" id="sum-activities">0</div>
+            <div class="sc-label">Actividades</div>
+        </div>
+        <div class="summary-card sc-orange">
+            <div class="sc-icon">⏱️</div>
+            <div class="sc-val" id="sum-time">0m</div>
+            <div class="sc-label">Tiempo total</div>
+        </div>
+        <div class="summary-card sc-purple">
+            <div class="sc-icon">🎯</div>
+            <div class="sc-val" id="sum-accuracy">0%</div>
+            <div class="sc-label">Precisión general</div>
+        </div>
+    </div>
+
+    <!-- No Data Message -->
+    <div id="no-data" class="no-data" style="display:none">
+        <div class="no-data-emoji">🕹️</div>
+        <h2>¡Aún no hay datos!</h2>
+        <p>Juega algunos juegos o completa actividades para ver tus estadísticas aquí.</p>
+        <a href="Juegos/menu.html" class="no-data-btn">¡Empezar a jugar!</a>
+    </div>
+
+    <!-- Games Section -->
+    <div id="games-section" class="section" style="display:none">
+        <h2 class="section-title">🎮 Juegos</h2>
+        <div class="games-grid" id="games-grid"></div>
+    </div>
+
+    <!-- Activities Section -->
+    <div id="activities-section" class="section" style="display:none">
+        <h2 class="section-title">📚 Actividades de Aprender</h2>
+        <div class="activities-grid" id="activities-grid"></div>
+    </div>
+
+    <!-- Recent History -->
+    <div id="history-section" class="section" style="display:none">
+        <h2 class="section-title">📅 Historial Reciente</h2>
+        <div class="history-list" id="history-list"></div>
+    </div>
+
+    <!-- Common Errors -->
+    <div id="errors-section" class="section" style="display:none">
+        <h2 class="section-title">⚠️ Errores Más Comunes</h2>
+        <div class="errors-list" id="errors-list"></div>
+    </div>
+
+</div>
+
+<script>
+(function() {
+    // ─── AUTH CHECK ───
+    var session = getSession();
+    if (!session || !session.user) {
+        window.location.href = 'login.html';
+        return;
+    }
+
+    document.getElementById('nav-user').textContent = session.user;
+    document.getElementById('logoutBtn').addEventListener('click', function() {
+        destroySession();
+        window.location.href = 'login.html';
+    });
+
+    var user = session.user;
+    document.getElementById('user-name').textContent = 'Jugador: ' + user;
+
+    var stats = RK.Stats.getAllStats();
+    var summary = RK.Stats.getSummary();
+
+    if (!stats || (Object.keys(stats.games || {}).length === 0 && Object.keys(stats.activities || {}).length === 0)) {
+        document.getElementById('no-data').style.display = 'block';
+        return;
+    }
+
+    // Summary
+    document.getElementById('sum-games').textContent = summary.totalGamesPlayed || 0;
+    document.getElementById('sum-activities').textContent = summary.totalActivitiesCompleted || 0;
+    var totalMin = Math.round((summary.totalTimeSpent || 0) / 60);
+    document.getElementById('sum-time').textContent = totalMin > 0 ? totalMin + 'm' : '≤1m';
+    document.getElementById('sum-accuracy').textContent = (summary.overallAccuracy || 0) + '%';
+
+    // Games
+    var gameNames = {
+        juego1: { name: 'Duelo de Números', emoji: '⚔️' },
+        juego2: { name: 'Estimaciones', emoji: '📐' },
+        juego3: { name: 'Chefs de Fracciones', emoji: '🍕' },
+        juego4: { name: 'Arquitectas', emoji: '🏗️' },
+        juego5: { name: 'Buscatesoros', emoji: '🏴‍☠️' },
+        juego6: { name: 'El Caldero Mágico', emoji: '🧪' },
+        juego7: { name: 'Misión Robot', emoji: '🤖' },
+        juego8: { name: 'Cálculo Mental', emoji: '🧠' },
+        juego9: { name: 'Laboratorio de Pociones', emoji: '🧪' },
+        juego10: { name: 'El Mercado Chileno', emoji: '🛒' },
+        juego11: { name: 'Pizza Master', emoji: '🍕' },
+        juego12: { name: 'Geometrix Builder', emoji: '📐' }
+    };
+
+    var gamesHtml = '';
+    var hasGames = false;
+    for (var gid in stats.games) {
+        if (!stats.games.hasOwnProperty(gid)) continue;
+        hasGames = true;
+        var g = stats.games[gid];
+        var gn = gameNames[gid] || { name: gid, emoji: '🎮' };
+        var avgTime = g.avgTimePerRound || 0;
+        var acc = g.accuracy || 0;
+        gamesHtml +=
+            '<div class="game-card">' +
+                '<div class="gc-header">' +
+                    '<span class="gc-emoji">' + gn.emoji + '</span>' +
+                    '<div><div class="gc-name">' + gn.name + '</div><div class="gc-sessions">' + g.sessions + ' sesiones</div></div>' +
+                '</div>' +
+                '<div class="gc-stats">' +
+                    '<div class="gc-stat"><div class="gc-stat-val">' + g.bestScore + '</div><div class="gc-stat-lbl">Mejor</div></div>' +
+                    '<div class="gc-stat"><div class="gc-stat-val">' + g.avgScore + '</div><div class="gc-stat-lbl">Promedio</div></div>' +
+                    '<div class="gc-stat"><div class="gc-stat-val">' + acc + '%</div><div class="gc-stat-lbl">Precisión</div></div>' +
+                    '<div class="gc-stat"><div class="gc-stat-val">' + avgTime + 's</div><div class="gc-stat-lbl">Tiempo/ronda</div></div>' +
+                '</div>' +
+                '<div class="gc-bar">' +
+                    '<div class="gc-bar-fill" style="width:' + Math.min(acc, 100) + '%"></div>' +
+                '</div>' +
+            '</div>';
+    }
+    if (hasGames) {
+        document.getElementById('games-section').style.display = 'block';
+        document.getElementById('games-grid').innerHTML = gamesHtml;
+    }
+
+    // Activities
+    var activityNames = {
+        'actividad-numeros-sumas': { name: 'Suma Vertical', emoji: '➕', topic: 'Números' },
+        'actividad-frac-suma': { name: 'Suma de Fracciones', emoji: '🍕', topic: 'Fracciones' },
+        'actividad-geo-cuadricula': { name: 'Coordenadas', emoji: '🗺️', topic: 'Geometría' },
+        'actividad-datos-barras': { name: 'Gráficos de Barras', emoji: '📊', topic: 'Datos' },
+        'actividad-alg-ecuaciones': { name: 'Ecuaciones', emoji: '⚖️', topic: 'Álgebra' }
+    };
+
+    var actHtml = '';
+    var hasAct = false;
+    for (var aid in stats.activities) {
+        if (!stats.activities.hasOwnProperty(aid)) continue;
+        hasAct = true;
+        var a = stats.activities[aid];
+        var an = activityNames[aid] || { name: aid, emoji: '📝', topic: '' };
+        var acc = a.accuracy || 0;
+        actHtml +=
+            '<div class="activity-card">' +
+                '<div class="ac-emoji">' + an.emoji + '</div>' +
+                '<div class="ac-info">' +
+                    '<div class="ac-name">' + an.name + '</div>' +
+                    '<div class="ac-topic">' + an.topic + '</div>' +
+                '</div>' +
+                '<div class="ac-stats">' +
+                    '<div class="ac-stat"><b>' + a.correct + '</b> correctas</div>' +
+                    '<div class="ac-stat"><b>' + a.wrong + '</b> incorrectas</div>' +
+                    '<div class="ac-stat"><b>' + acc + '%</b> precisión</div>' +
+                '</div>' +
+            '</div>';
+    }
+    if (hasAct) {
+        document.getElementById('activities-section').style.display = 'block';
+        document.getElementById('activities-grid').innerHTML = actHtml;
+    }
+
+    // History (last 10 sessions across all games)
+    var allHistory = [];
+    for (var hid in stats.games) {
+        if (!stats.games[hid].history) continue;
+        stats.games[hid].history.forEach(function(h) {
+            var gn2 = gameNames[hid] || { name: hid, emoji: '🎮' };
+            allHistory.push({ game: gn2.name, emoji: gn2.emoji, date: h.date, score: h.score, rounds: h.rounds, accuracy: h.accuracy });
+        });
+    }
+    allHistory.sort(function(a, b) { return new Date(b.date) - new Date(a.date); });
+    allHistory = allHistory.slice(0, 10);
+
+    if (allHistory.length > 0) {
+        document.getElementById('history-section').style.display = 'block';
+        var histHtml = '';
+        allHistory.forEach(function(h) {
+            var d = new Date(h.date);
+            var dateStr = d.toLocaleDateString('es-CL', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' });
+            histHtml +=
+                '<div class="hist-item">' +
+                    '<div class="hist-emoji">' + h.emoji + '</div>' +
+                    '<div class="hist-info">' +
+                        '<div class="hist-name">' + h.game + '</div>' +
+                        '<div class="hist-date">' + dateStr + '</div>' +
+                    '</div>' +
+                    '<div class="hist-stats">' +
+                        '<span class="hist-score">⭐ ' + h.score + '</span>' +
+                        '<span class="hist-acc">' + (h.accuracy || 0) + '%</span>' +
+                    '</div>' +
+                '</div>';
+        });
+        document.getElementById('history-list').innerHTML = histHtml;
+    }
+
+    // Common errors
+    var errorCounts = {};
+    for (var eid in stats.games) {
+        if (!stats.games[eid].commonErrors) continue;
+        for (var err in stats.games[eid].commonErrors) {
+            errorCounts[err] = (errorCounts[err] || 0) + stats.games[eid].commonErrors[err];
+        }
+    }
+    var sortedErrors = Object.keys(errorCounts).sort(function(a, b) { return errorCounts[b] - errorCounts[a]; }).slice(0, 5);
+
+    if (sortedErrors.length > 0) {
+        document.getElementById('errors-section').style.display = 'block';
+        var errHtml = '';
+        var maxErr = errorCounts[sortedErrors[0]] || 1;
+        sortedErrors.forEach(function(err) {
+            var pct = Math.round(errorCounts[err] / maxErr * 100);
+            errHtml +=
+                '<div class="error-item">' +
+                    '<div class="error-name">' + err + '</div>' +
+                    '<div class="error-bar"><div class="error-bar-fill" style="width:' + pct + '%"></div></div>' +
+                    '<div class="error-count">' + errorCounts[err] + ' veces</div>' +
+                '</div>';
+        });
+        document.getElementById('errors-list').innerHTML = errHtml;
+    }
+
+    // If no sections shown, show no-data
+    if (!hasGames && !hasAct) {
+        document.getElementById('no-data').style.display = 'block';
+    }
+})();
+</script>
+
+</body>
+</html>

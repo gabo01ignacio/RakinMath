@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RakinMath  Tablas de Multiplicar</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../apple-design.css">
+<style>
+body{display:flex;flex-direction:column;min-height:100vh}
+.content{flex:1;max-width:800px;width:100%;margin:0 auto;padding:24px}
+.back-link{display:inline-flex;align-items:center;gap:6px;font-family:var(--font-sans);font-size:.875rem;font-weight:600;color:var(--text-secondary);text-decoration:none;padding:8px 16px;border-radius:980px;background:var(--bg-card);border:1px solid var(--border-strong);transition:transform .15s;margin-bottom:24px}
+.back-link:active{transform:scale(.95)}
+.section{margin-bottom:40px;opacity:0;animation:slideUp .5s var(--spring-default) both}
+.section:nth-child(2){animation-delay:80ms}.section:nth-child(3){animation-delay:160ms}.section:nth-child(4){animation-delay:240ms}
+.section-title{font-size:1.5rem;font-weight:700;letter-spacing:-.03em;margin-bottom:8px}
+.section-subtitle{font-size:1rem;color:var(--text-secondary);margin-bottom:20px;line-height:1.5}
+.concept-box{border-radius:20px;padding:24px;margin-bottom:20px}
+.concept-box.purple{background:linear-gradient(135deg,rgba(175,82,222,.06),rgba(175,82,222,.02));border:1px solid rgba(175,82,222,.15)}
+.concept-box h3{font-size:1.125rem;font-weight:700;margin-bottom:8px}
+.concept-box p{font-size:.9375rem;color:var(--text-secondary);line-height:1.6}
+.tip-box{background:linear-gradient(135deg,rgba(175,82,222,.06),rgba(175,82,222,.02));border:1px solid rgba(175,82,222,.15);border-radius:20px;padding:20px;margin:16px 0}
+.tip-box h4{font-size:.9375rem;font-weight:700;color:var(--purple);margin-bottom:6px}
+.tip-box p{font-size:.875rem;color:var(--text-secondary);line-height:1.5}
+.mult-area{background:var(--bg-card);border:1px solid var(--border);border-radius:24px;padding:24px;margin-bottom:20px}
+.mult-inputs{display:flex;align-items:center;justify-content:center;gap:12px;margin:16px 0}
+.mult-input{width:70px;text-align:center;font-size:1.5rem;font-weight:700;padding:8px;border-radius:12px;border:2px solid var(--border-strong);background:var(--bg-card-solid);color:var(--text);outline:none;font-family:var(--font-sans)}
+.mult-input:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(0,122,255,.1)}
+.mult-op{font-size:1.5rem;font-weight:700;color:var(--text-tertiary)}
+.mult-grid{display:flex;gap:6px;flex-wrap:wrap;justify-content:center;margin:16px 0;min-height:50px}
+.dot{width:12px;height:12px;border-radius:50%;background:var(--accent);opacity:0;transition:all .3s}
+.dot.on{opacity:1;animation:popIn .3s var(--spring-default) both}
+.mult-result{font-size:2rem;font-weight:700;color:var(--accent);text-align:center;margin:12px 0;padding:12px;background:rgba(0,122,255,.06);border-radius:12px;display:none}
+.mult-result.show{display:block;animation:scaleIn .4s var(--spring-default) both}
+.commutative{display:flex;align-items:center;justify-content:center;gap:16px;margin:12px 0;font-size:1.125rem;font-weight:600}
+.commutative .arrow{font-size:1.5rem;color:var(--accent);transition:transform .5s var(--spring-default)}
+.commutative .arrow.spin{transform:rotate(180deg)}
+.question-box{background:linear-gradient(135deg,rgba(0,122,255,.06),rgba(0,122,255,.02));border:1px solid rgba(0,122,255,.15);border-radius:20px;padding:24px}
+.question-box h4{font-size:1rem;font-weight:700;margin-bottom:12px}
+.q-row{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.q-input{width:100px;padding:10px;border-radius:12px;border:2px solid var(--border-strong);background:var(--bg-card-solid);font-family:var(--font-sans);font-size:1.125rem;font-weight:700;text-align:center;color:var(--text);outline:none}
+.q-input:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(0,122,255,.1)}
+.btn{font-family:var(--font-sans);font-size:.875rem;font-weight:600;padding:10px 20px;border-radius:980px;border:none;cursor:pointer;transition:transform .12s}
+.btn:active{transform:scale(.95)}
+.btn-primary{background:var(--accent);color:white}
+.btn-ghost{background:var(--bg-card-solid);color:var(--text);border:1px solid var(--border-strong)}
+.feedback{font-size:.875rem;font-weight:600;margin-top:8px;min-height:24px}
+.feedback.correct{color:var(--green)}.feedback.wrong{color:var(--red)}
+@keyframes slideUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+@keyframes popIn{0%{opacity:0;transform:scale(0)}100%{opacity:1;transform:scale(1)}}
+@keyframes scaleIn{from{opacity:0;transform:scale(.9)}to{opacity:1;transform:scale(1)}}
+@media(max-width:640px){.content{padding:16px}.mult-input{width:56px;font-size:1.25rem}.dot{width:10px;height:10px}}
+</style>
+</head>
+<body>
+<nav class="nav"><a href="menu.html" class="nav-title"><img src="../../Recursos/LogoRakinMath.png" alt="RakinMath" style="height: 24px; width: auto;"></a><a href="menu.html" class="exit-btn">Volver</a></nav>
+<div class="content">
+<a href="menu.html" class="back-link">&#x2190; Volver a Nmeros</a>
+
+<div class="section">
+<div class="section-title">&#x2716; Tablas de Multiplicar</div>
+<div class="section-subtitle">Multiplicar es <strong>sumar la misma cantidad varias veces</strong>. 3  4 es lo mismo que 3 + 3 + 3 + 3 = 12.</div>
+<div class="concept-box purple">
+<h3>&#x1F4A1; ¿Qu significa cada n?</h3>
+<p>En <strong>6  7 = 42</strong>: el 6 es cuntas veces sumamos, y el 7 es la cantidad que sumamos. Tambin podemos verlo como <strong>6 grupos de 7</strong> o un rect de 6 filas por 7 columnas.</p>
+</div>
+<div class="tip-box">
+<h4>&#x1F4A1; Tip del profesor</h4>
+<p>La multiplicación es <strong>conmutativa</strong>: 6 × 7 da lo mismo que 7 × 6. ¡Prueba girar el rectángulo!</p>
+</div>
+</div>
+
+<div class="section">
+<div class="section-title">&#x1F3AE; Visualiza la multiplicación</div>
+<div class="mult-area">
+<div class="mult-inputs">
+<input class="mult-input" type="number" min="1" max="12" value="6" id="m-a" oninput="showMult()">
+<span class="mult-op">&times;</span>
+<input class="mult-input" type="number" min="1" max="12" value="7" id="m-b" oninput="showMult()">
+<span class="mult-op">=</span>
+<span class="mult-result" id="m-result">42</span>
+</div>
+<div class="mult-grid" id="m-grid"></div>
+<div class="commutative">
+<span id="comm-a">6  7 = 42</span>
+<span class="arrow" id="comm-arrow">&#x21C4;</span>
+<span id="comm-b">7  6 = 42</span>
+</div>
+<div style="text-align:center;margin-top:8px"><button class="btn btn-ghost" onclick="invertMult()">&#x1F504; Invertir factores</button></div>
+</div>
+</div>
+
+<div class="section">
+<div class="question-box">
+<h4>&#x2753; Resuelve</h4>
+<p style="color:var(--text-secondary);margin-bottom:12px;font-size:.9375rem" id="q-text"></p>
+<div class="q-row"><input class="q-input" type="number" id="q-answer" placeholder="?"><button class="btn btn-primary" onclick="checkQ()">Comprobar</button></div>
+<div class="feedback" id="q-fb"></div>
+<div style="margin-top:12px"><button class="btn btn-ghost" onclick="newQ()">Nueva pregunta</button></div>
+</div>
+</div>
+
+<div class="section" style="animation-delay:320ms">
+<div class="question-box" style="background:linear-gradient(135deg,rgba(0,122,255,.06),rgba(0,122,255,.02));border:1px solid rgba(0,122,255,.15)">
+<h4>&#x1F3AC; Videos de apoyo</h4>
+<p style="color:var(--text-secondary);margin-bottom:12px;font-size:.9375rem">Agrega links de videos de YouTube para reforzar lo aprendido:</p>
+<div id="videos-container" style="display:flex;flex-direction:column;gap:12px;margin-bottom:12px">
+<div class="video-placeholder" style="border:2px dashed rgba(0,122,255,.25);border-radius:16px;padding:24px;text-align:center;color:var(--text-tertiary);font-size:.875rem;cursor:pointer;transition:border-color .2s,background .2s" onclick="addVideoSlot(this.parentElement)">
+<span style="font-size:1.5rem;display:block;margin-bottom:6px">&#x1F4F1;</span>
+Haz clic aquí para agregar un video de YouTube
+</div>
+</div>
+</div>
+</div>
+
+</div>
+
+<script>
+function showMult(){
+var a=parseInt(document.getElementById('m-a').value)||1;
+var b=parseInt(document.getElementById('m-b').value)||1;
+var grid=document.getElementById('m-grid');grid.innerHTML='';
+for(var i=0;i<a;i++)for(var j=0;j<b;j++){
+var dot=document.createElement('div');dot.className='dot';
+dot.style.animationDelay=(i*b+j)*25+'ms';
+grid.appendChild(dot);
+requestAnimationFrame(function(d){d.classList.add('on')}.bind(null,dot));
+}
+document.getElementById('m-result').textContent=a*b;
+document.getElementById('m-result').classList.add('show');
+document.getElementById('comm-a').textContent=a+'  '+b+' = '+(a*b);
+document.getElementById('comm-b').textContent=b+'  '+a+' = '+(a*b);
+}
+function invertMult(){
+var a=document.getElementById('m-a').value;var b=document.getElementById('m-b').value;
+document.getElementById('m-a').value=b;document.getElementById('m-b').value=a;
+var arrow=document.getElementById('comm-arrow');arrow.classList.add('spin');
+setTimeout(function(){arrow.classList.remove('spin')},500);
+showMult();
+}
+var qA,qB;
+function newQ(){qA=Math.floor(Math.random()*11)+2;qB=Math.floor(Math.random()*11)+2;document.getElementById('q-text').textContent='¿Cunto es '+qA+'  '+qB+'?';document.getElementById('q-answer').value='';document.getElementById('q-fb').textContent='';document.getElementById('q-fb').className='feedback'}
+function checkQ(){var ans=parseInt(document.getElementById('q-answer').value);var fb=document.getElementById('q-fb');if(ans===qA*qB){fb.textContent='¿Correcto! '+qA+'  '+qB+' = '+(qA*qB);fb.className='feedback correct';setTimeout(newQ,2000)}else if(isNaN(ans)){fb.textContent='Escribe un n';fb.className='feedback wrong'}else{fb.textContent='Intenta de nuevo';fb.className='feedback wrong'}}
+showMult();newQ();
+
+function addVideoSlot(container){
+var existing=container.querySelector('.video-placeholder');
+if(existing)existing.remove();
+var div=document.createElement('div');
+div.className='video-slot';
+div.style.cssText='display:flex;gap:8px;align-items:center;background:rgba(0,122,255,.04);border:1px solid rgba(0,122,255,.12);border-radius:12px;padding:10px 12px';
+div.innerHTML='<input type="text" placeholder="Pega el link de YouTube aquí..." style="flex:1;font-family:var(--font-sans);font-size:.875rem;padding:8px 12px;border-radius:8px;border:1px solid rgba(0,0,0,.1);background:white;color:#1d1d1f;outline:none" onfocus="this.style.borderColor=\'#007aff\'" onblur="this.style.borderColor=\'rgba(0,0,0,1)\'"><button onclick="removeVideoSlot(this)" style="font-size:1.1rem;background:none;border:none;cursor:pointer;color:#ff3b30;padding:4px" title="Eliminar">&#x2715;</button>';
+container.appendChild(div);
+var addBtn=document.createElement('div');
+addBtn.className='video-placeholder';
+addBtn.style.cssText='border:2px dashed rgba(0,122,255,.25);border-radius:16px;padding:16px;text-align:center;color:var(--text-tertiary);font-size:.875rem;cursor:pointer;transition:border-color .2s,background .2s';
+addBtn.innerHTML='<span style="font-size:1.25rem;display:block;margin-bottom:4px">&#x2795;</span>Agregar otro video';
+addBtn.onclick=function(){addVideoSlot(container)};
+container.appendChild(addBtn);
+}
+function removeVideoSlot(btn){btn.closest('.video-slot').remove()}
+</script>
+</body>
+</html>

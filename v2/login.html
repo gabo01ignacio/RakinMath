@@ -1,0 +1,535 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RakinMath - Iniciar Sesión</title>
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="logos/launchericon-192x192.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --font-sans:'Inter',-apple-system,BlinkMacSystemFont,'SF Pro Display',system-ui,sans-serif;
+  --spring-default:cubic-bezier(0.2,0.9,0.3,1.2);
+  --spring-smooth:cubic-bezier(0.25,0.1,0.15,1);
+  --radius-sm:12px;--radius-md:20px;--radius-lg:28px;--radius-xl:36px;
+}
+[data-theme="light"]{
+  --bg:#f5f5f7;--bg-card:rgba(255,255,255,0.8);--bg-card-solid:#fff;
+  --text:#1d1d1f;--text-secondary:#6e6e73;--text-tertiary:#86868b;
+  --accent:#007aff;--accent-hover:#0056b3;
+  --green:#34c759;--red:#ff3b30;
+  --border:rgba(0,0,0,0.06);--border-strong:rgba(0,0,0,0.1);
+  --shadow-md:0 8px 30px rgba(0,0,0,0.06);
+  --glass-blur:blur(30px) saturate(180%);
+}
+[data-theme="dark"]{
+  --bg:#0a0a0a;--bg-card:rgba(28,28,30,0.75);--bg-card-solid:#1c1c1e;
+  --text:#f5f5f7;--text-secondary:#a1a1a6;--text-tertiary:#8e8e93;
+  --accent:#0a84ff;--accent-hover:#409cff;
+  --green:#30d158;--red:#ff453a;
+  --border:rgba(255,255,255,0.08);--border-strong:rgba(255,255,255,0.12);
+  --shadow-md:0 8px 30px rgba(0,0,0,0.4);
+  --glass-blur:blur(30px) saturate(180%);
+}
+html{scroll-behavior:smooth}
+body{
+  font-family:var(--font-sans);background:var(--bg);color:var(--text);
+  -webkit-font-smoothing:antialiased;line-height:1.5;letter-spacing:-0.01em;
+  min-height:100vh;display:flex;align-items:center;justify-content:center;
+  padding:24px;transition:background 0.4s ease,color 0.4s ease;
+}
+
+.login-container{
+  width:100%;max-width:400px;animation:slideUp 0.6s var(--spring-default) both;
+}
+.login-header{text-align:center;margin-bottom:32px}
+.login-logo{
+  display:inline-flex;align-items:center;gap:10px;
+  text-decoration:none;color:var(--text);font-weight:700;font-size:1.2rem;
+  letter-spacing:-0.02em;margin-bottom:24px;
+  animation:popIn 0.5s var(--spring-default) 0.1s both;
+}
+.login-logo img{height:32px;width:auto}
+.login-logo span{color:var(--accent)}
+
+.login-card{
+  background:var(--bg-card);backdrop-filter:var(--glass-blur);
+  -webkit-backdrop-filter:var(--glass-blur);
+  border:1px solid var(--border-strong);border-radius:var(--radius-xl);
+  box-shadow:var(--shadow-md);padding:32px;
+  animation:slideUp 0.6s var(--spring-default) 0.2s both;
+}
+.login-title{
+  font-size:1.5rem;font-weight:700;letter-spacing:-0.03em;
+  text-align:center;margin-bottom:8px;
+}
+.login-subtitle{
+  font-size:0.95rem;color:var(--text-secondary);text-align:center;
+  margin-bottom:28px;line-height:1.5;
+}
+
+.form-group{margin-bottom:20px}
+.form-label{
+  display:block;font-size:0.8125rem;font-weight:600;
+  color:var(--text-secondary);margin-bottom:8px;letter-spacing:-0.01em;
+}
+.form-input{
+  width:100%;font-family:var(--font-sans);font-size:1rem;font-weight:500;
+  padding:14px 18px;border-radius:var(--radius-md);
+  border:2px solid var(--border-strong);background:var(--bg);
+  color:var(--text);outline:none;transition:border-color 0.15s,box-shadow 0.15s;
+  letter-spacing:-0.01em;
+}
+.form-input:focus{
+  border-color:var(--accent);box-shadow:0 0 0 4px rgba(0,122,255,0.12);
+}
+.form-input::placeholder{color:var(--text-tertiary)}
+.form-input.error{border-color:var(--red);box-shadow:0 0 0 4px rgba(255,59,48,0.1)}
+
+.error-message{
+  font-size:0.8125rem;color:var(--red);margin-top:8px;
+  display:none;align-items:center;gap:6px;
+}
+.error-message.show{display:flex}
+
+.login-btn{
+  width:100%;font-family:var(--font-sans);font-size:1rem;font-weight:600;
+  padding:14px 20px;border-radius:980px;border:none;cursor:pointer;
+  background:var(--accent);color:#fff;
+  box-shadow:0 4px 16px rgba(0,122,255,0.3);
+  transition:transform 0.15s var(--spring-smooth),background 0.2s,box-shadow 0.2s;
+  letter-spacing:-0.01em;margin-top:8px;
+}
+.login-btn:hover{
+  background:var(--accent-hover);
+  box-shadow:0 6px 24px rgba(0,122,255,0.4);
+  transform:translateY(-1px);
+}
+.login-btn:active{transform:scale(0.96)}
+.login-btn:disabled{opacity:0.5;cursor:not-allowed;transform:none}
+
+.login-divider{
+  display:flex;align-items:center;gap:16px;margin:24px 0;
+  color:var(--text-tertiary);font-size:0.8125rem;
+}
+.login-divider::before,.login-divider::after{
+  content:'';flex:1;height:1px;background:var(--border-strong);
+}
+
+.register-link{
+  text-align:center;font-size:0.9375rem;color:var(--text-secondary);
+}
+.register-link button{
+  background:none;border:none;color:var(--accent);font-weight:600;
+  cursor:pointer;font-family:var(--font-sans);font-size:0.9375rem;
+  transition:color 0.2s;
+}
+.register-link button:hover{color:var(--accent-hover)}
+
+/* Register form */
+.login-form.hidden{display:none}
+
+.back-btn{
+  display:inline-flex;align-items:center;gap:6px;
+  background:none;border:none;color:var(--text-secondary);
+  font-family:var(--font-sans);font-size:0.875rem;font-weight:500;
+  cursor:pointer;margin-bottom:20px;padding:0;transition:color 0.2s;
+}
+.back-btn:hover{color:var(--text)}
+
+.theme-toggle{
+  position:fixed;top:20px;right:20px;
+  width:40px;height:40px;border-radius:50%;
+  border:1px solid var(--border-strong);background:var(--bg-card-solid);
+  cursor:pointer;display:flex;align-items:center;justify-content:center;
+  transition:transform 0.2s var(--spring-default),background 0.3s;
+  font-size:1.1rem;color:var(--text);z-index:10;
+}
+.theme-toggle:hover{transform:scale(1.1)}
+.theme-toggle:active{transform:scale(0.9)}
+
+@keyframes slideUp{
+  from{opacity:0;transform:translateY(20px)}
+  to{opacity:1;transform:translateY(0)}
+}
+@keyframes popIn{
+  0%{opacity:0;transform:scale(0.8)}
+  70%{transform:scale(1.03)}
+  100%{opacity:1;transform:scale(1)}
+}
+@keyframes shake{
+  0%,100%{transform:translateX(0)}
+  20%{transform:translateX(-6px)}
+  40%{transform:translateX(6px)}
+  60%{transform:translateX(-3px)}
+  80%{transform:translateX(3px)}
+}
+.shake{animation:shake 0.4s ease}
+
+@media(max-width:480px){
+  body{padding:16px}
+  .login-card{padding:24px}
+  .login-title{font-size:1.25rem}
+}
+.dev-notice{text-align:center;padding:8px 0}
+.dev-notice-icon{font-size:2.5rem;margin-bottom:16px;animation:popIn 0.5s var(--spring-default) both}
+
+.register-form .success-msg{
+  background:rgba(52,199,89,.1);border:1px solid rgba(52,199,89,.2);
+  border-radius:var(--radius-md);padding:14px 18px;margin-bottom:20px;
+  color:var(--green);font-size:.875rem;font-weight:500;text-align:center;
+  display:none;
+}
+.register-form .success-msg.show{display:block}
+
+.course-select{text-align:center;padding:8px 0}
+.course-select-icon{font-size:2.5rem;margin-bottom:16px;animation:popIn 0.5s var(--spring-default) both}
+.course-options{display:flex;flex-direction:column;gap:12px;margin-top:24px}
+.course-btn{
+  display:flex;align-items:center;gap:14px;width:100%;
+  padding:16px 20px;border-radius:var(--radius-md);
+  border:2px solid var(--border-strong);background:var(--bg);
+  cursor:pointer;transition:all 0.2s var(--spring-smooth);
+  text-align:left;font-family:var(--font-sans);
+}
+.course-btn:hover{border-color:var(--accent);background:rgba(0,122,255,0.04);transform:translateY(-2px)}
+.course-btn:active{transform:scale(0.97)}
+.course-emoji{font-size:1.5rem}
+.course-name{font-size:1rem;font-weight:600;color:var(--text);letter-spacing:-0.01em}
+</style>
+</head>
+<body>
+
+<button class="theme-toggle" id="themeToggle" aria-label="Cambiar tema">
+  <span class="icon-light">☀️</span>
+  <span class="icon-dark" style="display:none">🌙</span>
+</button>
+
+<div class="login-container">
+  <div class="login-header">
+    <a href="index.html" class="login-logo">
+      <img src="Recursos/LogoRakinMath.png" alt="RakinMath" style="height: 32px; width: auto;">
+    </a>
+  </div>
+
+  <div class="login-card">
+    <!-- LOGIN FORM -->
+    <div class="login-form" id="loginForm">
+      <h1 class="login-title">Iniciar Sesión</h1>
+      <p class="login-subtitle">Ingresa tu usuario o correo y contraseña</p>
+
+      <div class="form-group">
+        <label class="form-label" for="loginUser">Usuario o Correo</label>
+        <input class="form-input" type="text" id="loginUser" placeholder="Tu usuario o correo electrónico" autocomplete="username">
+      </div>
+      <div class="form-group">
+        <label class="form-label" for="loginPass">Contraseña</label>
+        <input class="form-input" type="password" id="loginPass" placeholder="Escribe tu contraseña" autocomplete="current-password">
+      </div>
+
+      <div class="error-message" id="loginError">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M15 9l-6 6M9 9l6 6"/></svg>
+        <span id="loginErrorText">Credenciales incorrectas</span>
+      </div>
+
+      <button class="login-btn" id="loginBtn">Entrar</button>
+
+      <div class="login-divider">o</div>
+
+      <div class="register-link">
+        ¿No tienes cuenta? <button id="showRegister">Solicitar acceso</button>
+      </div>
+    </div>
+
+    <!-- REGISTER FORM -->
+    <div class="login-form register-form hidden" id="registerForm">
+      <button class="back-btn" id="backToLogin">&#8592; Volver al login</button>
+      <h1 class="login-title">Crear Cuenta</h1>
+      <p class="login-subtitle">Regístrate y espera aprobación del administrador</p>
+
+      <div class="success-msg" id="registerSuccess">
+        &#x2714; <span id="registerSuccessText">¡Registro exitoso!</span>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" for="regUser">Nombre de usuario</label>
+        <input class="form-input" type="text" id="regUser" placeholder="Elige un usuario (mín. 3 caracteres)" autocomplete="username">
+      </div>
+      <div class="form-group">
+        <label class="form-label" for="regEmail">Correo electrónico</label>
+        <input class="form-input" type="email" id="regEmail" placeholder="tu@correo.cl" autocomplete="email">
+      </div>
+      <div class="form-group">
+        <label class="form-label" for="regPass">Contraseña</label>
+        <input class="form-input" type="password" id="regPass" placeholder="Mín. 4 caracteres" autocomplete="new-password">
+      </div>
+
+      <div class="error-message" id="registerError">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M15 9l-6 6M9 9l6 6"/></svg>
+        <span id="registerErrorText">Error</span>
+      </div>
+
+      <button class="login-btn" id="registerBtn">Solicitar acceso</button>
+
+      <div class="login-divider">o</div>
+
+      <div class="register-link">
+        ¿Ya tienes cuenta? <button id="showLogin">Iniciar sesión</button>
+      </div>
+    </div>
+
+    <!-- COURSE SELECT -->
+    <div class="course-select" id="courseSelect" style="display:none">
+      <div class="course-select-icon">🎓</div>
+      <h1 class="login-title">¿En qué curso estás?</h1>
+      <p class="login-subtitle">Selecciona tu curso para personalizar tu experiencia</p>
+      <div class="course-options">
+        <button class="course-btn" data-grade="4to">
+          <span class="course-emoji">🎒</span>
+          <span class="course-name">4° Básico</span>
+        </button>
+        <button class="course-btn" data-grade="5to">
+          <span class="course-emoji">🧠</span>
+          <span class="course-name">5° Básico</span>
+        </button>
+        <button class="course-btn" data-grade="6to">
+          <span class="course-emoji">🚀</span>
+          <span class="course-name">6° Básico</span>
+        </button>
+        <button class="course-btn" data-grade="profesor" style="display:none">
+          <span class="course-emoji">👨‍🏫</span>
+          <span class="course-name">Soy profesor</span>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
+<script src="auth.js"></script>
+<script src="Juegos/firebase-config.js"></script>
+<script>
+(function(){
+  // ─── THEME ───
+  var html = document.documentElement;
+  var themeToggle = document.getElementById('themeToggle');
+  var iconLight = document.querySelector('.icon-light');
+  var iconDark = document.querySelector('.icon-dark');
+
+  function setTheme(t){
+    html.setAttribute('data-theme', t);
+    localStorage.setItem('rakin-theme', t);
+    if(t==='dark'){iconLight.style.display='none';iconDark.style.display='inline'}
+    else{iconLight.style.display='inline';iconDark.style.display='none'}
+  }
+
+  var saved = localStorage.getItem('rakin-theme');
+  if(saved) setTheme(saved);
+  else setTheme(window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+
+  themeToggle.addEventListener('click', function(){
+    var c = html.getAttribute('data-theme');
+    setTheme(c==='dark' ? 'light' : 'dark');
+  });
+
+  // ─── CHECK SESSION ───
+  var session = getSession();
+  if(session && session.user){
+    if(isTeacher()){
+      window.location.href = 'Profesor/index.html';
+    } else {
+      window.location.href = 'Juegos/menu.html';
+    }
+    return;
+  }
+
+  // ─── ELEMENTS ───
+  var loginForm = document.getElementById('loginForm');
+  var registerForm = document.getElementById('registerForm');
+  var courseSelect = document.getElementById('courseSelect');
+  var loginUser = document.getElementById('loginUser');
+  var loginPass = document.getElementById('loginPass');
+  var loginBtn = document.getElementById('loginBtn');
+  var loginError = document.getElementById('loginError');
+  var loginErrorText = document.getElementById('loginErrorText');
+
+  var regUser = document.getElementById('regUser');
+  var regEmail = document.getElementById('regEmail');
+  var regPass = document.getElementById('regPass');
+  var regBtn = document.getElementById('registerBtn');
+  var regError = document.getElementById('registerError');
+  var regErrorText = document.getElementById('registerErrorText');
+  var regSuccess = document.getElementById('registerSuccess');
+
+  var pendingUser = null;
+
+  // ─── TOGGLE FORMS ───
+  document.getElementById('showRegister').addEventListener('click', function(){
+    loginForm.classList.add('hidden');
+    registerForm.classList.remove('hidden');
+    clearErrors();
+    clearRegErrors();
+  });
+
+  document.getElementById('backToLogin').addEventListener('click', function(){
+    registerForm.classList.add('hidden');
+    loginForm.classList.remove('hidden');
+    clearErrors();
+    clearRegErrors();
+  });
+
+  document.getElementById('showLogin').addEventListener('click', function(){
+    registerForm.classList.add('hidden');
+    loginForm.classList.remove('hidden');
+    clearErrors();
+    clearRegErrors();
+  });
+
+  function clearErrors(){
+    loginError.classList.remove('show');
+    loginPass.classList.remove('error');
+  }
+
+  function clearRegErrors(){
+    regError.classList.remove('show');
+    regSuccess.classList.remove('show');
+    regUser.classList.remove('error');
+    regEmail.classList.remove('error');
+    regPass.classList.remove('error');
+  }
+
+  function showError(el, text){
+    el.querySelector('span').textContent = text;
+    el.classList.add('show');
+  }
+
+  function shakeInput(el){
+    el.classList.add('shake');
+    setTimeout(function(){el.classList.remove('shake')}, 400);
+  }
+
+  // ─── LOGIN ───
+  loginBtn.addEventListener('click', doLogin);
+  loginPass.addEventListener('keydown', function(e){if(e.key==='Enter')doLogin()});
+  loginUser.addEventListener('keydown', function(e){if(e.key==='Enter')loginPass.focus()});
+
+  function doLogin(){
+    clearErrors();
+    var user = loginUser.value.trim().toLowerCase();
+    var pass = loginPass.value;
+
+    if(!user || !pass){
+      showError(loginError, 'Completa todos los campos');
+      if(!user) shakeInput(loginUser);
+      if(!pass) shakeInput(loginPass);
+      return;
+    }
+
+    authCheck(user, pass).then(function(result){
+      if(result.ok){
+        pendingUser = result.user;
+        var isSuper = (result.user === SUPER_ADMIN);
+        var isTch = (result.role === 'teacher' || result.role === 'superadmin');
+
+        // Crear sesión unificada
+        createSession(result.user, {
+          isTeacher: isTch,
+          isSuperAdmin: isSuper
+        });
+
+        if(isTch){
+          window.location.href = 'Profesor/index.html';
+          return;
+        }
+
+        // Estudiante: verificar si ya tiene curso
+        var userData = getUserData(result.user);
+        if(userData && userData.grade){
+          updateSession({ grade: userData.grade });
+          window.location.href = 'Juegos/menu.html';
+        } else {
+          loginForm.classList.add('hidden');
+          courseSelect.style.display = 'block';
+        }
+      } else {
+        showError(loginError, result.msg);
+        shakeInput(loginPass);
+        loginPass.value = '';
+        loginPass.focus();
+      }
+    }).catch(function(err){
+      showError(loginError, 'Error de conexión. Intenta de nuevo.');
+      console.error('Login error:', err);
+    });
+  }
+
+  // ─── REGISTER ───
+  regBtn.addEventListener('click', doRegister);
+  regPass.addEventListener('keydown', function(e){if(e.key==='Enter')doRegister()});
+  regEmail.addEventListener('keydown', function(e){if(e.key==='Enter')regPass.focus()});
+  regUser.addEventListener('keydown', function(e){if(e.key==='Enter')regEmail.focus()});
+
+  function doRegister(){
+    clearRegErrors();
+    var user = regUser.value.trim().toLowerCase();
+    var email = regEmail.value.trim().toLowerCase();
+    var pass = regPass.value;
+
+    if(!user || !email || !pass){
+      showError(regError, 'Completa todos los campos');
+      if(!user) shakeInput(regUser);
+      if(!email) shakeInput(regEmail);
+      if(!pass) shakeInput(regPass);
+      return;
+    }
+
+    var result = registerUser(user, email, pass);
+
+    if(result.ok){
+      regSuccess.querySelector('span').textContent = result.msg;
+      regSuccess.classList.add('show');
+      regUser.value = '';
+      regEmail.value = '';
+      regPass.value = '';
+      regUser.disabled = true;
+      regEmail.disabled = true;
+      regPass.disabled = true;
+      regBtn.disabled = true;
+      regBtn.textContent = 'Solicitud enviada';
+      regBtn.style.opacity = '0.5';
+    } else {
+      showError(regError, result.msg);
+      if(result.msg.indexOf('usuario') > -1) shakeInput(regUser);
+      else if(result.msg.indexOf('correo') > -1) shakeInput(regEmail);
+      else if(result.msg.indexOf('contraseña') > -1) shakeInput(regPass);
+    }
+  }
+
+  // ─── AUTO FOCUS ───
+  loginUser.focus();
+
+  // ─── COURSE SELECT ───
+  document.querySelectorAll('.course-btn').forEach(function(btn){
+    btn.addEventListener('click', function(){
+      var grade = this.getAttribute('data-grade');
+      if(pendingUser){
+        // Guardar curso en perfil del usuario
+        saveUserData(pendingUser, { grade: grade, ts: Date.now() });
+        // Guardar curso en sesión
+        updateSession({ grade: grade });
+      }
+      window.location.href = 'Juegos/menu.html';
+    });
+  });
+})();
+</script>
+<script>
+if('serviceWorker' in navigator){navigator.serviceWorker.register('sw.js').catch(function(){})}
+</script>
+</body>
+</html>

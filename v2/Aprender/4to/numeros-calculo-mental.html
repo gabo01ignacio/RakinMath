@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RakinMath  Cálculo Mental</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../apple-design.css">
+<style>
+body{display:flex;flex-direction:column;min-height:100vh}.content{flex:1;max-width:800px;width:100%;margin:0 auto;padding:24px}.back-link{display:inline-flex;align-items:center;gap:6px;font-family:var(--font-sans);font-size:.875rem;font-weight:600;color:var(--text-secondary);text-decoration:none;padding:8px 16px;border-radius:980px;background:var(--bg-card);border:1px solid var(--border-strong);transition:transform .15s;margin-bottom:24px}.back-link:active{transform:scale(.95)}.section{margin-bottom:40px;opacity:0;animation:slideUp .5s var(--spring-default) both}.section:nth-child(2){animation-delay:80ms}.section:nth-child(3){animation-delay:160ms}.section-title{font-size:1.5rem;font-weight:700;letter-spacing:-.03em;margin-bottom:8px}.section-subtitle{font-size:1rem;color:var(--text-secondary);margin-bottom:20px;line-height:1.5}
+.concept-box{border-radius:20px;padding:24px;margin-bottom:20px}.concept-box.purple{background:linear-gradient(135deg,rgba(175,82,222,.06),rgba(175,82,222,.02));border:1px solid rgba(175,82,222,.15)}.concept-box h3{font-size:1.125rem;font-weight:700;margin-bottom:8px}.concept-box p{font-size:.9375rem;color:var(--text-secondary);line-height:1.6}
+.tip-box{background:linear-gradient(135deg,rgba(0,122,255,.06),rgba(0,122,255,.02));border:1px solid rgba(0,122,255,.15);border-radius:20px;padding:20px;margin:16px 0}.tip-box h4{font-size:.9375rem;font-weight:700;color:var(--accent);margin-bottom:6px}.tip-box p{font-size:.875rem;color:var(--text-secondary);line-height:1.5}
+.strat-cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:16px;margin:20px 0}
+.strat-card{padding:20px;border-radius:20px;background:var(--bg-card);border:1px solid var(--border);transition:all .2s}
+.strat-card:hover{transform:translateY(-3px);box-shadow:0 8px 24px rgba(0,0,0,.06)}
+.strat-icon{font-size:1.5rem;margin-bottom:8px}
+.strat-title{font-size:.9375rem;font-weight:700;margin-bottom:4px}
+.strat-desc{font-size:.8125rem;color:var(--text-secondary);line-height:1.4}
+.mental-area{background:var(--bg-card);border:1px solid var(--border);border-radius:24px;padding:24px;margin-bottom:20px;text-align:center}
+.mental-problem{font-size:2.5rem;font-weight:700;color:var(--text);margin:20px 0;letter-spacing:-.02em}
+.mental-problem .op{color:var(--accent)}
+.mental-input{width:120px;padding:14px;border-radius:16px;border:3px solid var(--border-strong);background:var(--bg-card-solid);font-family:var(--font-sans);font-size:1.5rem;font-weight:700;text-align:center;color:var(--text);outline:none;transition:all .2s}.mental-input:focus{border-color:var(--accent);box-shadow:0 0 0 4px rgba(0,122,255,.1)}
+.btn-row{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin:12px 0}
+.btn{font-family:var(--font-sans);font-size:.875rem;font-weight:600;padding:10px 20px;border-radius:980px;border:none;cursor:pointer;transition:transform .12s}.btn:active{transform:scale(.95)}
+.btn-primary{background:var(--purple);color:white}.btn-ghost{background:var(--bg-card-solid);color:var(--text);border:1px solid var(--border-strong)}
+.btn-hint{background:rgba(255,149,0,.1);color:#ff9500;border:1px solid rgba(255,149,0,.2)}
+.feedback{font-size:.875rem;font-weight:600;margin-top:8px;min-height:24px}.feedback.correct{color:var(--green)}.feedback.wrong{color:var(--red)}
+.hint-box{background:rgba(255,149,0,.06);border:1px solid rgba(255,149,0,.15);border-radius:16px;padding:16px;margin:12px 0;text-align:left;display:none}
+.hint-box.show{display:block;animation:slideUp .3s var(--spring-default) both}
+.hint-box h4{font-size:.875rem;font-weight:700;color:#ff9500;margin-bottom:6px}
+.hint-box p{font-size:.8125rem;color:var(--text-secondary);line-height:1.5}
+.streak-display{font-size:.875rem;font-weight:600;color:var(--text-secondary);text-align:center;margin:8px 0}
+.streak-display span{color:var(--accent);font-weight:700}
+@keyframes slideUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+</style>
+</head>
+<body>
+<nav class="nav"><a href="menu.html" class="nav-title"><img src="../../Recursos/LogoRakinMath.png" alt="RakinMath" style="height: 24px; width: auto;"></a><a href="menu.html" class="exit-btn">Volver</a></nav>
+<div class="content">
+<a href="menu.html" class="back-link">&#x2190; Volver a Números</a>
+
+<div class="section">
+<div class="section-title">&#x1F9E0; Cálculo Mental</div>
+<div class="section-subtitle">El cálculo mental te permite <strong>resolver problemas rápido</strong> sin lápiz ni papel. Usa estrategias como contar, doblar y descomponer.</div>
+<div class="concept-box purple">
+<h3>&#x1F4A1; ¡Por qu sirve el cálculo mental?</h3>
+<p>Cuando calculas rápido en tu cabeza, desarrollas <strong>agilidad numérica</strong>. Te ayuda en la vida diaria: calcular el vuelto, sumar precios, o saber si te alcanza para algo.</p>
+</div>
+<div class="tip-box">
+<h4>&#x1F4A1; Tip del profesor</h4>
+<p>No se trata de memorizar todo. Se trata de usar <strong>estrategias inteligentes</strong>. Por ejemplo, para sumar 98 + 34, piensa: 98 es casi 100, as que suma 100 + 34 = 134 y resta 2 = 132.</p>
+</div>
+</div>
+
+<div class="section">
+<div class="section-title">&#x1F4CB; Estrategias de cálculo</div>
+<div class="strat-cards">
+<div class="strat-card"><div class="strat-icon">&#x1F51C;</div><div class="strat-title">Contar hacia adelante</div><div class="strat-desc">Desde un n, sigue contando: 45 + 3 = 46, 47, 48</div></div>
+<div class="strat-card"><div class="strat-icon">&#x1F504;</div><div class="strat-title">Contar hacia atrás</div><div class="strat-desc">Desde un n, ve restando: 45 - 3 = 44, 43, 42</div></div>
+<div class="strat-card"><div class="strat-icon">&#x2728;</div><div class="strat-title">Doblar</div><div class="strat-desc">Doblar es fácil: 6 + 6 = 12, 7  2 = 14</div></div>
+<div class="strat-card"><div class="strat-icon">&#x1F4A1;</div><div class="strat-title">Doble del doble</div><div class="strat-desc">Para multiplicar por 4: dobla dos veces. 6  4 = 12  2 = 24</div></div>
+<div class="strat-card"><div class="strat-icon">&#x2709;</div><div class="strat-title">Descomponer</div><div class="strat-desc">Separa en partes fáciles: 67 + 25 = 67 + 20 + 5 = 92</div></div>
+<div class="strat-card"><div class="strat-icon">&#x1F522;</div><div class="strat-title">Redondear y ajustar</div><div class="strat-desc">Redondea a la decena: 38 + 24  40 + 24 = 64 - 2 = 62</div></div>
+</div>
+</div>
+
+<div class="section">
+<div class="section-title">&#x1F3AE; Practica cálculo mental</div>
+<div class="mental-area">
+<div class="streak-display">Racha: <span id="streak">0</span> correctas seguidas</div>
+<div class="mental-problem" id="mental-problem">34 <span class="op">+</span> 27 = <span class="op">?</span></div>
+<input class="mental-input" type="number" id="mental-answer" placeholder="?" onkeypress="if(event.key==='Enter')checkMental()">
+<div class="btn-row">
+<button class="btn btn-primary" onclick="checkMental()">Responder</button>
+<button class="btn btn-hint" onclick="showHint()">&#x1F4A1; Pista</button>
+<button class="btn btn-ghost" onclick="newMental()">Saltar</button>
+</div>
+<div class="feedback" id="mental-fb"></div>
+<div class="hint-box" id="hint-box"><h4>&#x1F4A1; Pista</h4><p id="hint-text"></p></div>
+</div>
+</div>
+
+<div class="section" style="animation-delay:320ms">
+<div class="question-box" style="background:linear-gradient(135deg,rgba(0,122,255,.06),rgba(0,122,255,.02));border:1px solid rgba(0,122,255,.15)">
+<h4>&#x1F3AC; Videos de apoyo</h4>
+<p style="color:var(--text-secondary);margin-bottom:12px;font-size:.9375rem">Agrega links de videos de YouTube para reforzar lo aprendido:</p>
+<div id="videos-container" style="display:flex;flex-direction:column;gap:12px;margin-bottom:12px">
+<div class="video-placeholder" style="border:2px dashed rgba(0,122,255,.25);border-radius:16px;padding:24px;text-align:center;color:var(--text-tertiary);font-size:.875rem;cursor:pointer;transition:border-color .2s,background .2s" onclick="addVideoSlot(this.parentElement)">
+<span style="font-size:1.5rem;display:block;margin-bottom:6px">&#x1F4F1;</span>
+Haz clic aquí para agregar un video de YouTube
+</div>
+</div>
+</div>
+</div>
+
+</div>
+
+<script>
+var streak=0,qAnswer,qHint;
+function newMental(){
+document.getElementById('hint-box').classList.remove('show');
+var types=[
+function(){var a=Math.floor(Math.random()*40)+10;var b=Math.floor(Math.random()*40)+10;qAnswer=a+b;qHint='Suma las decenas: '+a+' + '+b+' = '+qAnswer;return a+' <span class="op">+</span> '+b+' = <span class="op">?</span>'},
+function(){var a=Math.floor(Math.random()*40)+20;var b=Math.floor(Math.random()*Math.min(a-1,40))+5;qAnswer=a-b;qHint='Resta paso a paso: '+a+' - '+b+' = '+qAnswer;return a+' <span class="op">-</span> '+b+' = <span class="op">?</span>'},
+function(){var a=Math.floor(Math.random()*8)+2;var b=Math.floor(Math.random()*8)+2;qAnswer=a*b;qHint='Dobla '+a+' veces: '+a+'  '+b+' = '+qAnswer;return a+' <span class="op"></span> '+b+' = <span class="op">?</span>'},
+function(){var b=Math.floor(Math.random()*8)+2;qAnswer=Math.floor(Math.random()*5+2);var a=qAnswer*b;qHint='¿Qué número por '+b+' da '+a+'?';return a+' <span class="op"></span> '+b+' = <span class="op">?</span>'},
+function(){var a=Math.floor(Math.random()*50)+50;var b=Math.floor(Math.random()*50)+50;qAnswer=a+b;qHint='Suma de frente: '+a+' + '+b+' = '+qAnswer;return a+' <span class="op">+</span> '+b+' = <span class="op">?</span>'}
+];
+document.getElementById('mental-problem').innerHTML=types[Math.floor(Math.random()*types.length)]();
+document.getElementById('mental-answer').value='';document.getElementById('mental-fb').textContent='';document.getElementById('mental-fb').className='feedback';
+document.getElementById('mental-answer').focus();
+}
+function showHint(){
+document.getElementById('hint-text').textContent=qHint;
+document.getElementById('hint-box').classList.add('show');
+}
+function checkMental(){
+var ans=parseInt(document.getElementById('mental-answer').value);
+var fb=document.getElementById('mental-fb');
+if(ans===qAnswer){streak++;document.getElementById('streak').textContent=streak;fb.textContent='¿Correcto! '+qAnswer;fb.className='feedback correct';setTimeout(newMental,1500)}
+else if(isNaN(ans)){fb.textContent='Escribe un n';fb.className='feedback wrong'}
+else{streak=0;document.getElementById('streak').textContent=streak;fb.textContent='La respuesta es '+qAnswer;fb.className='feedback wrong';setTimeout(newMental,2000)}
+}
+newMental();
+
+function addVideoSlot(container){
+var existing=container.querySelector('.video-placeholder');
+if(existing)existing.remove();
+var div=document.createElement('div');
+div.className='video-slot';
+div.style.cssText='display:flex;gap:8px;align-items:center;background:rgba(0,122,255,.04);border:1px solid rgba(0,122,255,.12);border-radius:12px;padding:10px 12px';
+div.innerHTML='<input type="text" placeholder="Pega el link de YouTube aquí..." style="flex:1;font-family:var(--font-sans);font-size:.875rem;padding:8px 12px;border-radius:8px;border:1px solid rgba(0,0,0,.1);background:white;color:#1d1d1f;outline:none" onfocus="this.style.borderColor=\'#007aff\'" onblur="this.style.borderColor=\'rgba(0,0,0,1)\'"><button onclick="removeVideoSlot(this)" style="font-size:1.1rem;background:none;border:none;cursor:pointer;color:#ff3b30;padding:4px" title="Eliminar">&#x2715;</button>';
+container.appendChild(div);
+var addBtn=document.createElement('div');
+addBtn.className='video-placeholder';
+addBtn.style.cssText='border:2px dashed rgba(0,122,255,.25);border-radius:16px;padding:16px;text-align:center;color:var(--text-tertiary);font-size:.875rem;cursor:pointer;transition:border-color .2s,background .2s';
+addBtn.innerHTML='<span style="font-size:1.25rem;display:block;margin-bottom:4px">&#x2795;</span>Agregar otro video';
+addBtn.onclick=function(){addVideoSlot(container)};
+container.appendChild(addBtn);
+}
+function removeVideoSlot(btn){btn.closest('.video-slot').remove()}
+</script>
+</body>
+</html>

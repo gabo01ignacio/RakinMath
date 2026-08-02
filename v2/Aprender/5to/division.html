@@ -1,0 +1,267 @@
+<?<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RakinMath " División de 2 y 3 Dígitos por 1 Dígito</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../apple-design.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"></script>
+<script defer src="../rk-utils.js"></script>
+<style>
+body{display:flex;flex-direction:column;min-height:100vh}
+.content{flex:1;max-width:820px;width:100%;margin:0 auto;padding:24px}
+.back-link{display:inline-flex;align-items:center;gap:6px;font-size:.875rem;font-weight:600;color:var(--text-secondary);text-decoration:none;padding:8px 16px;border-radius:980px;background:var(--bg-card);border:1px solid var(--border-strong);transition:transform .15s;margin-bottom:24px}
+.back-link:active{transform:scale(.95)}
+.section{margin-bottom:44px;opacity:0;animation:slideUp .5s var(--spring-default) both}
+.section:nth-child(2){animation-delay:80ms}.section:nth-child(3){animation-delay:160ms}.section:nth-child(4){animation-delay:240ms}.section:nth-child(5){animation-delay:320ms}
+.section-title{font-size:1.5rem;font-weight:700;letter-spacing:-.03em;margin-bottom:8px}
+.section-subtitle{font-size:1rem;color:var(--text-secondary);margin-bottom:20px;line-height:1.6}
+.concept-box{border-radius:var(--radius-md);padding:24px;margin-bottom:20px}
+.concept-box.green{background:linear-gradient(135deg,rgba(52,199,89,.06),rgba(52,199,89,.02));border:1px solid rgba(52,199,89,.15)}
+.concept-box h3{font-size:1.125rem;font-weight:700;margin-bottom:8px}
+.concept-box p{font-size:.9375rem;color:var(--text-secondary);line-height:1.7}
+.tip-box{background:linear-gradient(135deg,rgba(175,82,222,.06),rgba(175,82,222,.02));border:1px solid rgba(175,82,222,.15);border-radius:var(--radius-md);padding:20px;margin:16px 0}
+.tip-box h4{font-size:.9375rem;font-weight:700;color:var(--purple);margin-bottom:6px}
+.tip-box p{font-size:.875rem;color:var(--text-secondary);line-height:1.6}
+.card{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-lg);padding:28px 24px 24px;margin-bottom:20px}
+.card h3{font-size:1.125rem;font-weight:700;margin-bottom:16px}
+.quiz-box{background:linear-gradient(135deg,rgba(0,122,255,.06),rgba(0,122,255,.02));border:1px solid rgba(0,122,255,.15);border-radius:var(--radius-md);padding:24px}
+.quiz-box h4{font-size:1rem;font-weight:700;margin-bottom:12px}
+.quiz-problem{font-size:1.75rem;font-weight:700;text-align:center;margin:16px 0 4px;font-variant-numeric:tabular-nums}
+.quiz-row{display:flex;align-items:center;gap:12px;justify-content:center;flex-wrap:wrap;margin-top:12px}
+.quiz-input{width:100px;padding:10px;border-radius:var(--radius-sm);border:2px solid var(--border-strong);background:var(--bg-card-solid);font-family:var(--font-sans);font-size:1.125rem;font-weight:700;text-align:center;color:var(--text);outline:none}
+.quiz-input:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(0,122,255,.1)}
+.feedback{font-size:.875rem;font-weight:600;margin-top:10px;min-height:20px;text-align:center}
+.feedback.correct{color:var(--green)}.feedback.wrong{color:var(--red)}
+.btn{font-family:var(--font-sans);font-size:.875rem;font-weight:600;padding:8px 18px;border-radius:980px;border:none;cursor:pointer;transition:transform .12s,opacity .12s}
+.btn:active{transform:scale(.95)}
+.btn:disabled{opacity:.4;cursor:not-allowed;transform:none}
+.btn-primary{background:var(--accent);color:white}
+.btn-ghost{background:var(--bg-card-solid);color:var(--text);border:1px solid var(--border-strong)}
+.math-inputs{display:flex;gap:10px;align-items:center;justify-content:center;margin-bottom:20px;flex-wrap:wrap}
+.math-input{width:80px;text-align:center;font-size:1.25rem;font-weight:700;padding:8px 10px;border-radius:var(--radius-sm);border:2px solid var(--border-strong);background:var(--bg-card-solid);color:var(--text);outline:none;font-family:var(--font-sans);transition:border-color .2s,box-shadow .2s}
+.math-input:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(0,122,255,.1)}
+.math-op{font-size:1.25rem;font-weight:700;color:var(--text-tertiary)}
+.division-board{font-family:'Courier New',monospace;font-size:1.2rem;font-weight:700;margin:16px auto;max-width:280px}
+.division-board .div-row{display:flex;align-items:center;gap:4px;margin-bottom:2px}
+.division-board .div-label{color:var(--text-tertiary);font-family:var(--font-sans);font-size:.75rem;font-weight:600;width:50px}
+.division-board .div-cells{display:flex;gap:4px}
+.division-board .div-cell{width:28px;height:32px;display:flex;align-items:center;justify-content:center;border-radius:6px;transition:all .25s}
+.division-board .div-cell.active{background:rgba(0,122,255,.08);outline:2px solid var(--accent)}
+.division-board .div-cell.result{color:var(--accent);font-weight:800}
+.division-board .div-cell.rem{color:var(--orange);font-size:.8rem}
+.division-board .div-cell.divisor{font-size:1.1rem}
+.division-board .bracket{font-size:1.4rem;color:var(--text-secondary)}
+.step-box{background:linear-gradient(135deg,rgba(0,122,255,.04),rgba(0,122,255,.01));border:1px solid rgba(0,122,255,.12);border-radius:var(--radius-md);padding:16px 20px;margin-top:16px;font-size:.9375rem;line-height:1.6}
+.step-box strong{color:var(--accent)}
+.step-box em{color:var(--orange);font-style:normal;font-weight:600}
+.controls{display:flex;gap:8px;justify-content:center;flex-wrap:wrap}
+.math-display{background:rgba(0,122,255,.04);border:1px solid rgba(0,122,255,.12);border-radius:var(--radius-md);padding:16px 20px;margin:16px 0;text-align:center;font-size:1.1rem}
+@keyframes slideUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+@media(max-width:640px){.content{padding:16px}.math-input{width:64px;font-size:1.1rem;padding:6px}.card{padding:20px 16px 16px}}
+</style>
+</head>
+<body>
+<nav class="nav"><a href="menu.html" class="nav-title"><img src="../../Recursos/LogoRakinMath.png" alt="RakinMath" style="height:24px;width:auto"></a><a href="menu.html" class="exit-btn">Volver</a></nav>
+<div class="content">
+<a href="menu.html" class="back-link">? Volver a Menú</a>
+
+<div class="section">
+<div class="section-title">➗ División de 2 y 3 Dígitos por 1 Dígito</div>
+<div class="section-subtitle">La división larga se resuelve paso a paso: <strong>divides, multiplicas, restas y bajas el siguiente dígito</strong>. ¡Repites hasta terminar!</div>
+<div class="concept-box green">
+<h3>📌 Pasos de la división larga</h3>
+<div class="math-display">
+$$156 \div 4 = 39$$
+</div>
+<p><strong>Ejemplo: $156 \div 4$</strong></p>
+<p style="margin-top:8px"><strong>Paso 1:</strong> ¿Cuántas veces cabe $4$ en $15$? → <strong>3 veces</strong> (porque $3 \times 4 = 12$ y $4 \times 4 = 16$ es demasiado)</p>
+<p><strong>Paso 2:</strong> Multiplicamos: $3 \times 4 = 12$. Restamos: $15 - 12 = 3$. Bajamos el $6$ → $36$</p>
+<p><strong>Paso 3:</strong> ¿Cuántas veces cabe $4$ en $36$? → <strong>9 veces</strong> (porque $9 \times 4 = 36$)</p>
+<p><strong>Paso 4:</strong> Multiplicamos: $9 \times 4 = 36$. Restamos: $36 - 36 = 0$. ¡No sobra nada!</p>
+<p style="margin-top:12px;padding:10px 16px;background:rgba(52,199,89,.08);border-radius:12px;font-weight:700;color:var(--green)">Resultado: $156 \div 4 = 39$. ¡Exacto, sin residuo!</p>
+</div>
+
+<div class="concept-box green">
+<h3>🇨🇱 Ejemplo chileno</h3>
+<p>Tienes <strong>156 kilos</strong> de papas y quieres repartirlos en <strong>4 cajones</strong> iguales. ¿Cuántos kilos van en cada cajón?</p>
+<div class="math-display">
+$$156 \div 4 = 39 \text{ kilos por cajón}$$
+</div>
+</div>
+
+<div class="tip-box">
+<h4>💡 Tip del profesor</h4>
+<p>Cuando el dividendo tiene más dígitos, el proceso es el mismo: tomas los primeros dígitos hasta que el número sea mayor que el divisor. Divides, multiplicas, restas y bajas el siguiente dígito. ¡Repite hasta que no queden dígitos!</p>
+</div>
+</div>
+
+<div class="section">
+<div class="section-title">🔢 Prueba paso a paso</div>
+<div class="card">
+<h3>División Larga Visual</h3>
+<div class="math-inputs">
+<input class="math-input" type="number" min="1" max="9999" value="156" id="numA" oninput="doDivision()" style="width:100px">
+<span class="math-op">÷</span>
+<input class="math-input" type="number" min="1" max="9" value="4" id="numB" oninput="doDivision()" style="width:60px">
+</div>
+<div class="controls">
+<button class="btn btn-ghost" id="prevStep" disabled>? Anterior</button>
+<button class="btn btn-primary" id="nextStep">Siguiente →</button>
+<button class="btn btn-ghost" id="resetBtn">Reiniciar</button>
+</div>
+<div class="division-board" id="divBoard"></div>
+<div class="step-box" id="stepText">Haz clic en <strong>Siguiente</strong> para comenzar la explicación.</div>
+</div>
+</div>
+
+<div class="section">
+<div class="quiz-box">
+<h4>📝 Divide sin ayuda</h4>
+<p style="color:var(--text-secondary);margin-bottom:4px;font-size:.9375rem">¿Cuánto da?</p>
+<div class="quiz-problem" id="qProblem"></div>
+<div class="quiz-row">
+<input class="quiz-input" type="number" id="qAnswer" placeholder="?" onkeydown="if(event.key==='Enter')checkQuiz()">
+<button class="btn btn-primary" onclick="checkQuiz()">Comprobar</button>
+</div>
+<div class="feedback" id="qFeedback"></div>
+<div style="margin-top:14px;text-align:center"><button class="btn btn-ghost" onclick="newQuiz()">Nueva pregunta</button></div>
+</div>
+</div>
+
+<div class="section">
+<div class="videos-box">
+<h4>🎬 Videos de apoyo</h4>
+<p style="color:var(--text-secondary);margin-bottom:14px;font-size:.875rem">Agrega links de YouTube para reforzar lo aprendido:</p>
+<div id="videosContainer">
+<div class="video-placeholder" onclick="addVideoSlot()">
+<span style="font-size:1.5rem;display:block;margin-bottom:6px">▶️</span>
+Haz clic aquí para agregar un video de YouTube
+</div>
+</div>
+</div>
+</div>
+
+</div>
+
+<script>
+var steps=[], currentStep=0;
+
+function doDivision(){
+var a=parseInt(document.getElementById('numA').value);
+var b=parseInt(document.getElementById('numB').value);
+if(isNaN(a)||isNaN(b)||a<=0||b<=0||b>9){
+document.getElementById('divBoard').innerHTML='';
+document.getElementById('stepText').innerHTML='';
+return;
+}
+var digits=String(a).split('').map(Number);
+var quotient='';
+var remainder=0;
+var current=0;
+var stepsArr=[];
+var boardLines=[];
+
+stepsArr.push({text:'Queremos dividir <strong>'+a+' ÷ '+b+'</strong>. Empezamos por los primeros dígitos del dividendo.'});
+
+for(var i=0;i<digits.length;i++){
+current=remainder*10+digits[i];
+var q=Math.floor(current/b);
+var sub=q*b;
+var rem=current-sub;
+quotient+=q;
+
+if(q===0&&i===0&&digits.length>1){
+remainder=rem;
+continue;
+}
+
+stepsArr.push({text:'<strong>Paso '+(stepsArr.length)+':</strong> Miramos <strong>'+current+'</strong>. ¿Cuántas veces cabe '+b+' en '+current+'? → <strong>'+q+' veces</strong> ('+q+'×'+b+'='+sub+')'});
+stepsArr.push({text:'Restamos: '+current+' − '+sub+' = <em>'+rem+'</em>.'+(i<digits.length-1?' Bajamos el '+digits[i+1]+'.':' No quedan más dígitos.')});
+remainder=rem;
+}
+
+document.getElementById('stepText').innerHTML=stepsArr.length>0?stepsArr[0].text:'';
+
+var boardHTML='<div class="div-row"><div class="div-label">Cociente:</div><div class="div-cells">';
+for(var j=0;j<quotient.length;j++) boardHTML+='<div class="div-cell result" id="qr-'+j+'">'+quotient[j]+'</div>';
+boardHTML+='</div></div>';
+boardHTML+='<div class="div-row"><div class="div-label"></div><span class="bracket">) </span><div class="div-cells" id="dividendRow">';
+for(var j=0;j<digits.length;j++) boardHTML+='<div class="div-cell" id="dd-'+j+'">'+digits[j]+'</div>';
+boardHTML+='</div></div>';
+boardHTML+='<div class="div-row"><div class="div-label">Divisor:</div><div class="div-cells"><div class="div-cell divisor">'+b+'</div></div></div>';
+document.getElementById('divBoard').innerHTML=boardHTML;
+
+steps=stepsArr;
+currentStep=0;
+renderStep();
+}
+
+function renderStep(){
+if(steps.length===0)return;
+document.getElementById('stepText').innerHTML=steps[currentStep].text;
+document.getElementById('prevStep').disabled=(currentStep===0);
+document.getElementById('nextStep').disabled=(currentStep===steps.length-1);
+}
+
+document.getElementById('nextStep').addEventListener('click',function(){if(currentStep<steps.length-1){currentStep++;renderStep()}});
+document.getElementById('prevStep').addEventListener('click',function(){if(currentStep>0){currentStep--;renderStep()}});
+document.getElementById('resetBtn').addEventListener('click',function(){currentStep=0;renderStep()});
+
+var qA,qB,qAnswer;
+function newQuiz(){
+qB=Math.floor(Math.random()*8)+2;
+var qQ=Math.floor(Math.random()*80)+10;
+qA=qQ*qB;
+qAnswer=qQ;
+document.getElementById('qProblem').textContent=qA+' ÷ '+qB+' = ?';
+document.getElementById('qAnswer').value='';
+document.getElementById('qFeedback').textContent='';
+document.getElementById('qFeedback').className='feedback';
+}
+
+function checkQuiz(){
+var ans=parseInt(document.getElementById('qAnswer').value);
+var fb=document.getElementById('qFeedback');
+if(ans===qAnswer){
+fb.textContent='¡Correcto! '+qA+' ÷ '+qB+' = '+qAnswer;
+fb.className='feedback correct';
+setTimeout(newQuiz,2000);
+}else if(isNaN(ans)){
+fb.textContent='Escribe un número';
+fb.className='feedback wrong';
+}else{
+fb.textContent='No es correcto. Recuerda ir dividiendo dígito por dígito.';
+fb.className='feedback wrong';
+}
+}
+
+function addVideoSlot(){
+var c=document.getElementById('videosContainer');
+var ph=c.querySelector('.video-placeholder');
+if(ph)ph.remove();
+var slot=document.createElement('div');
+slot.className='video-slot';
+slot.innerHTML='<input type="text" placeholder="Pega el link de YouTube aquí..."><button class="remove-btn" onclick="this.parentElement.remove();if(!document.querySelector(\'#videosContainer .video-slot\'))resetVideos()">✕</button>';
+c.appendChild(slot);
+var addBtn=document.createElement('div');
+addBtn.className='add-video-btn';
+addBtn.textContent='+ Agregar otro video';
+addBtn.onclick=addVideoSlot;
+c.appendChild(addBtn);
+}
+
+function resetVideos(){
+document.getElementById('videosContainer').innerHTML='<div class="video-placeholder" onclick="addVideoSlot()"><span style="font-size:1.5rem;display:block;margin-bottom:6px">▶️</span>Haz clic aquí para agregar un video de YouTube</div>';
+}
+
+doDivision();
+newQuiz();
+</script>
+</body>
+</html>

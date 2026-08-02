@@ -1,0 +1,171 @@
+<?﻿<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RakinMath  Longitud: Metros y Centímetros</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../apple-design.css">
+<style>
+body{display:flex;flex-direction:column;min-height:100vh}.content{flex:1;max-width:800px;width:100%;margin:0 auto;padding:24px}.back-link{display:inline-flex;align-items:center;gap:6px;font-family:var(--font-sans);font-size:.875rem;font-weight:600;color:var(--text-secondary);text-decoration:none;padding:8px 16px;border-radius:980px;background:var(--bg-card);border:1px solid var(--border-strong);transition:transform .15s;margin-bottom:24px}.back-link:active{transform:scale(.95)}.section{margin-bottom:40px;opacity:0;animation:slideUp .5s var(--spring-default) both}.section:nth-child(2){animation-delay:80ms}.section:nth-child(3){animation-delay:160ms}.section-title{font-size:1.5rem;font-weight:700;letter-spacing:-.03em;margin-bottom:8px}.section-subtitle{font-size:1rem;color:var(--text-secondary);margin-bottom:20px;line-height:1.5}
+.concept-box{border-radius:20px;padding:24px;margin-bottom:20px}.concept-box.blue{background:linear-gradient(135deg,rgba(0,122,255,.06),rgba(0,122,255,.02));border:1px solid rgba(0,122,255,.15)}.concept-box h3{font-size:1.125rem;font-weight:700;margin-bottom:8px}.concept-box p{font-size:.9375rem;color:var(--text-secondary);line-height:1.6}
+.tip-box{background:linear-gradient(135deg,rgba(175,82,222,.06),rgba(175,82,222,.02));border:1px solid rgba(175,82,222,.15);border-radius:20px;padding:20px;margin:16px 0}.tip-box h4{font-size:.9375rem;font-weight:700;color:var(--purple);margin-bottom:6px}.tip-box p{font-size:.875rem;color:var(--text-secondary);line-height:1.5}
+.ruler-area{background:var(--bg-card);border:1px solid var(--border);border-radius:24px;padding:24px;margin-bottom:20px}
+.ruler{width:100%;height:80px;background:linear-gradient(90deg,#ffe0b2 0%,#ffe0b2 30%,#fff3e0 30%,#fff3e0 100%);border:2px solid var(--text);border-radius:8px;position:relative;margin:16px 0;overflow:hidden}
+.ruler-mark{position:absolute;bottom:0;width:2px;background:var(--text);transform-origin:bottom}
+.ruler-mark.major{height:40px}.ruler-mark.mid{height:28px}.ruler-mark.minor{height:18px}
+.ruler-num{position:absolute;bottom:44px;font-size:.625rem;font-weight:700;color:var(--text);transform:translateX(-50%)}
+.ruler-obj{position:absolute;bottom:42px;height:6px;background:var(--accent);border-radius:3px;transition:width .3s}
+.ruler-label{font-size:.875rem;font-weight:600;color:var(--text-secondary);text-align:center;margin:8px 0}
+.ruler-val{font-size:1.5rem;font-weight:700;color:var(--accent);text-align:center}
+.conv-area{background:var(--bg-card);border:1px solid var(--border);border-radius:24px;padding:24px;margin-bottom:20px}
+.conv-row{display:flex;align-items:center;gap:12px;justify-content:center;flex-wrap:wrap;margin:12px 0}
+.conv-input{width:80px;padding:10px;border-radius:12px;border:2px solid var(--border-strong);background:var(--bg-card-solid);font-family:var(--font-sans);font-size:1.125rem;font-weight:700;text-align:center;color:var(--text);outline:none}.conv-input:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(0,122,255,.1)}
+.conv-label{font-size:.875rem;font-weight:600;color:var(--text-secondary)}
+.conv-arrow{font-size:1.25rem;color:var(--accent)}
+.btn-row{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin:12px 0}
+.btn{font-family:var(--font-sans);font-size:.875rem;font-weight:600;padding:10px 20px;border-radius:980px;border:none;cursor:pointer;transition:transform .12s}.btn:active{transform:scale(.95)}
+.btn-primary{background:var(--accent);color:white}.btn-ghost{background:var(--bg-card-solid);color:var(--text);border:1px solid var(--border-strong)}
+.question-box{background:linear-gradient(135deg,rgba(0,122,255,.06),rgba(0,122,255,.02));border:1px solid rgba(0,122,255,.15);border-radius:20px;padding:24px}.question-box h4{font-size:1rem;font-weight:700;margin-bottom:12px}
+.q-input{width:80px;padding:10px;border-radius:12px;border:2px solid var(--border-strong);background:var(--bg-card-solid);font-family:var(--font-sans);font-size:1.125rem;font-weight:700;text-align:center;color:var(--text);outline:none}.q-input:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(0,122,255,.1)}
+.feedback{font-size:.875rem;font-weight:600;margin-top:8px;min-height:24px}.feedback.correct{color:var(--green)}.feedback.wrong{color:var(--red)}
+@keyframes slideUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+</style>
+</head>
+<body>
+<nav class="nav"><a href="menu.html" class="nav-title"><img src="../../Recursos/LogoRakinMath.png" alt="RakinMath" style="height: 24px; width: auto;"></a><a href="menu.html" class="exit-btn">Volver</a></nav>
+<div class="content">
+<a href="menu.html" class="back-link">&#x2190; Volver a Medición</a>
+
+<div class="section">
+<div class="section-title">&#x1F4CF; Longitud: Metros y Centímetros</div>
+<div class="section-subtitle">La longitud se mide en <strong>metros (m)</strong> para distancias largas y <strong>centímetros (cm)</strong> para distancias cortas. 1 metro = 100 centímetros.</div>
+<div class="concept-box blue">
+<h3>&#x1F4A1; ¿Cuándo usar cada unidad?</h3>
+<p>Usamos <strong>metros</strong> para medir la estatura, el largo de una cancha, la distancia al colegio. Usamos <strong>centímetros</strong> para medir un lápiz, una hoja, el ancho de tu escritorio.</p>
+</div>
+<div class="tip-box">
+<h4>&#x1F4A1; Tip del profesor</h4>
+<p>Para convertir de metros a centímetros, multiplica por 100. Para convertir de centímetros a metros, divide por 100. Ejemplo: 3 m = 300 cm.</p>
+</div>
+</div>
+
+<div class="section">
+<div class="section-title">&#x1F3AE; Mide con la regla</div>
+<div class="ruler-area">
+<div class="ruler" id="ruler"></div>
+<div class="ruler-obj" id="ruler-obj" style="left:0;width:120px"></div>
+<div class="ruler-label">Arrastra para medir objetos</div>
+<div class="ruler-val" id="ruler-val">12 cm</div>
+<div class="conv-row">
+<span class="conv-label">Largo:</span>
+<input class="conv-input" type="range" min="1" max="20" value="12" id="ruler-slider" oninput="updateRuler()" style="width:160px">
+<span class="conv-label" id="ruler-m">= 0.12 m</span>
+</div>
+</div>
+</div>
+
+<div class="section">
+<div class="section-title">&#x1F504; Convierte metros y centímetros</div>
+<div class="conv-area">
+<div class="conv-row">
+<input class="conv-input" type="number" id="conv-m" value="2" oninput="convLength()">
+<span class="conv-label">metros</span>
+<span class="conv-arrow">&#x2192;</span>
+<span class="conv-label" id="conv-cm" style="font-size:1.125rem;font-weight:700;color:var(--accent)">200 cm</span>
+</div>
+<div class="conv-row">
+<input class="conv-input" type="number" id="conv-cm2" value="350" oninput="convLength2()">
+<span class="conv-label">centímetros</span>
+<span class="conv-arrow">&#x2192;</span>
+<span class="conv-label" id="conv-m2" style="font-size:1.125rem;font-weight:700;color:var(--accent)">3.5 m</span>
+</div>
+</div>
+</div>
+
+<div class="section">
+<div class="question-box">
+<h4>&#x2753; Resuelve la conversión</h4>
+<p style="color:var(--text-secondary);margin-bottom:12px;font-size:.9375rem" id="q-text"></p>
+<div class="conv-row">
+<input class="q-input" type="number" id="q-answer" placeholder="?">
+<span class="conv-label" id="q-unit"></span>
+<button class="btn btn-primary" onclick="checkLen()">Comprobar</button>
+</div>
+<div class="feedback" id="q-fb"></div>
+<div class="btn-row"><button class="btn btn-ghost" onclick="newLenQ()">Nueva pregunta</button></div>
+</div>
+</div>
+
+<div class="section" style="animation-delay:320ms">
+<div class="question-box" style="background:linear-gradient(135deg,rgba(0,122,255,.06),rgba(0,122,255,.02));border:1px solid rgba(0,122,255,.15)">
+<h4>&#x1F3AC; Videos de apoyo</h4>
+<p style="color:var(--text-secondary);margin-bottom:12px;font-size:.9375rem">Agrega links de videos de YouTube para reforzar lo aprendido:</p>
+<div id="videos-container" style="display:flex;flex-direction:column;gap:12px;margin-bottom:12px">
+<div class="video-placeholder" style="border:2px dashed rgba(0,122,255,.25);border-radius:16px;padding:24px;text-align:center;color:var(--text-tertiary);font-size:.875rem;cursor:pointer;transition:border-color .2s,background .2s" onclick="addVideoSlot(this.parentElement)">
+<span style="font-size:1.5rem;display:block;margin-bottom:6px">&#x1F4F1;</span>
+Haz clic aquí para agregar un video de YouTube
+</div>
+</div>
+</div>
+</div>
+
+</div>
+
+<script>
+function buildRuler(){
+var r=document.getElementById('ruler');r.innerHTML='';
+for(var i=0;i<=20;i++){
+var mark=document.createElement('div');mark.className='ruler-mark '+(i%5===0?'major':i%2===0?'mid':'minor');
+mark.style.left=(i/20*100)+'%';r.appendChild(mark);
+if(i%5===0){var num=document.createElement('div');num.className='ruler-num';num.textContent=i;num.style.left=(i/20*100)+'%';r.appendChild(num)}
+}
+}
+function updateRuler(){
+var val=parseInt(document.getElementById('ruler-slider').value);
+document.getElementById('ruler-obj').style.width=(val/20*100)+'%';
+document.getElementById('ruler-val').textContent=val+' cm';
+document.getElementById('ruler-m').textContent='= '+(val/100).toFixed(2)+' m';
+}
+function convLength(){var m=parseFloat(document.getElementById('conv-m').value)||0;document.getElementById('conv-cm').textContent=m*100+' cm'}
+function convLength2(){var cm=parseFloat(document.getElementById('conv-cm2').value)||0;document.getElementById('conv-m2').textContent=(cm/100).toFixed(2)+' m'}
+var qAnswer,qUnit;
+function newLenQ(){
+var types=[{from:'m',to:'cm',factor:100},{from:'cm',to:'m',factor:100}];
+var t=types[Math.floor(Math.random()*2)];
+var val=Math.floor(Math.random()*9)+1;
+qAnswer=t.from==='m'?val*100:val/100;
+qUnit=t.to;
+document.getElementById('q-text').textContent='Convierte: '+val+' '+t.from+' = ? '+t.to;
+document.getElementById('q-answer').value='';document.getElementById('q-fb').textContent='';document.getElementById('q-fb').className='feedback';
+}
+function checkLen(){
+var ans=parseFloat(document.getElementById('q-answer').value);
+var fb=document.getElementById('q-fb');
+if(Math.abs(ans-qAnswer)<0.01){fb.textContent='¡Correcto! '+qAnswer+' '+qUnit;fb.className='feedback correct';setTimeout(newLenQ,2000)}
+else if(isNaN(ans)){fb.textContent='Escribe un número';fb.className='feedback wrong'}
+else{fb.textContent='Recuerda: 1 m = 100 cm';fb.className='feedback wrong'}
+}
+buildRuler();updateRuler();newLenQ();
+
+function addVideoSlot(container){
+var existing=container.querySelector('.video-placeholder');
+if(existing)existing.remove();
+var div=document.createElement('div');
+div.className='video-slot';
+div.style.cssText='display:flex;gap:8px;align-items:center;background:rgba(0,122,255,.04);border:1px solid rgba(0,122,255,.12);border-radius:12px;padding:10px 12px';
+div.innerHTML='<input type="text" placeholder="Pega el link de YouTube aqu\u00ed..." style="flex:1;font-family:var(--font-sans);font-size:.875rem;padding:8px 12px;border-radius:8px;border:1px solid rgba(0,0,0,.1);background:white;color:#1d1d1f;outline:none" onfocus="this.style.borderColor=\'#007aff\'" onblur="this.style.borderColor=\'rgba(0,0,0,1)\'"><button onclick="removeVideoSlot(this)" style="font-size:1.1rem;background:none;border:none;cursor:pointer;color:#ff3b30;padding:4px" title="Eliminar">&#x2715;</button>';
+container.appendChild(div);
+var addBtn=document.createElement('div');
+addBtn.className='video-placeholder';
+addBtn.style.cssText='border:2px dashed rgba(0,122,255,.25);border-radius:16px;padding:16px;text-align:center;color:var(--text-tertiary);font-size:.875rem;cursor:pointer;transition:border-color .2s,background .2s';
+addBtn.innerHTML='<span style="font-size:1.25rem;display:block;margin-bottom:4px">&#x2795;</span>Agregar otro video';
+addBtn.onclick=function(){addVideoSlot(container)};
+container.appendChild(addBtn);
+}
+function removeVideoSlot(btn){btn.closest('.video-slot').remove()}
+</script>
+</body>
+</html>

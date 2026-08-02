@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="apple-design.css">
+    <script src="../auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
+    <script src="firebase-config.js"></script>
+    <script src="../stats/rk-stats.js"></script>
+    <title>Misión Robot | RakinMath</title>
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            overflow: hidden;
+            background: var(--bg);
+        }
+
+        .game-area {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: var(--space-6);
+            gap: var(--space-6);
+            min-height: 0;
+        }
+
+        /* Start screen */
+        .start-panel {
+            text-align: center;
+            max-width: 380px;
+            width: 100%;
+            animation: slideUp 500ms var(--ease-spring-out) both;
+        }
+
+        .start-icon {
+            font-size: 4rem;
+            margin-bottom: var(--space-4);
+            line-height: 1;
+        }
+
+        .start-panel h1 {
+            margin-bottom: var(--space-3);
+        }
+
+        .start-panel p {
+            margin-bottom: var(--space-6);
+            line-height: 1.6;
+        }
+
+        .start-btn {
+            font-family: var(--font-sans);
+            font-size: 1rem;
+            font-weight: 700;
+            padding: var(--space-3) var(--space-8);
+            border-radius: 980px;
+            border: none;
+            background: var(--accent);
+            color: white;
+            cursor: pointer;
+            box-shadow: 0 2px 10px rgba(0, 122, 255, 0.25);
+            transition: transform 0.1s ease, box-shadow 0.2s ease;
+            -webkit-tap-highlight-color: transparent;
+        }
+        .start-btn:active { transform: scale(0.96); }
+        .start-btn:hover { box-shadow: 0 4px 16px rgba(0, 122, 255, 0.35); }
+
+        /* Game screen */
+        .game-panel {
+            width: 100%;
+            max-width: 400px;
+            animation: scaleIn 400ms var(--ease-spring-out) both;
+        }
+
+        .round-label {
+            text-align: center;
+            font-size: 0.6875rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            color: var(--red);
+            margin-bottom: var(--space-3);
+        }
+
+        .timer-bar {
+            width: 100%;
+            height: 4px;
+            background: var(--border);
+            border-radius: 980px;
+            margin-bottom: var(--space-5);
+            overflow: hidden;
+        }
+
+        .timer-fill {
+            height: 100%;
+            background: var(--red);
+            border-radius: 980px;
+            transition: width 100ms linear;
+        }
+
+        .patient-card {
+            background: var(--bg-card);
+            backdrop-filter: blur(20px) saturate(150%);
+            -webkit-backdrop-filter: blur(20px) saturate(150%);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-2xl);
+            padding: var(--space-8) var(--space-6);
+            text-align: center;
+            margin-bottom: var(--space-5);
+            box-shadow: var(--shadow-sm);
+            transition: background 0.2s ease;
+        }
+
+        .patient-card.flash-green {
+            background: rgba(52, 199, 89, 0.08);
+            border-color: rgba(52, 199, 89, 0.2);
+        }
+
+        .animal-emoji {
+            font-size: 3rem;
+            line-height: 1;
+            margin-bottom: var(--space-4);
+        }
+
+        .prescription {
+            font-size: 2.25rem;
+            font-weight: 800;
+            color: var(--text);
+            letter-spacing: -0.02em;
+            font-variant-numeric: tabular-nums;
+        }
+
+        .answer-wrap {
+            display: flex;
+            justify-content: center;
+            margin-bottom: var(--space-5);
+        }
+
+        .answer-field {
+            width: 200px;
+            font-size: 2.5rem;
+            font-weight: 700;
+            padding: var(--space-3);
+            text-align: center;
+            border: 2px solid var(--border-strong);
+            border-radius: var(--radius-xl);
+            background: var(--bg-card);
+            color: var(--text);
+            outline: none;
+            font-family: var(--font-sans);
+            font-variant-numeric: tabular-nums;
+            transition: border-color 0.15s ease, box-shadow 0.15s ease;
+            -webkit-appearance: none;
+        }
+
+        .answer-field:focus {
+            border-color: var(--accent);
+            box-shadow: 0 0 0 4px rgba(0, 122, 255, 0.1);
+        }
+
+        .answer-field.correct {
+            border-color: var(--green);
+            box-shadow: 0 0 0 4px rgba(52, 199, 89, 0.12);
+        }
+
+        .answer-field.wrong {
+            border-color: var(--red);
+            box-shadow: 0 0 0 4px rgba(255, 59, 48, 0.1);
+            animation: shake 0.3s ease;
+        }
+
+        .score-line {
+            text-align: center;
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+        }
+
+        .score-line b {
+            color: var(--text);
+        }
+
+        /* End screen */
+        .end-panel {
+            text-align: center;
+            max-width: 380px;
+            width: 100%;
+            animation: slideUp 500ms var(--ease-spring-out) both;
+        }
+
+        .end-emoji {
+            font-size: 3.5rem;
+            margin-bottom: var(--space-4);
+            line-height: 1;
+        }
+
+        .end-title {
+            font-size: 1.75rem;
+            font-weight: 800;
+            margin-bottom: var(--space-2);
+            letter-spacing: -0.02em;
+        }
+
+        .end-score {
+            font-size: 1rem;
+            color: var(--text-secondary);
+            margin-bottom: var(--space-6);
+        }
+
+        .hidden { display: none !important; }
+
+        @media (max-width: 480px) {
+            .game-area { padding: var(--space-4); }
+            .patient-card { padding: var(--space-6) var(--space-4); }
+            .prescription { font-size: 1.75rem; }
+            .answer-field { width: 160px; font-size: 2rem; }
+            .animal-emoji { font-size: 2.25rem; }
+            .start-icon { font-size: 3rem; }
+        }
+    </style>
+</head>
+<body>
+
+<nav class="nav">
+    <a href="menu.html" class="nav-title">
+        <img src="../Recursos/LogoRakinMath.png" alt="RakinMath" style="height: 24px; width: auto;">
+        <span>Misión Robot | Rakin<span class="brand">Math</span></span>
+    </a>
+    <a href="menu.html" class="exit-btn">Salir</a>
+</nav>
+
+<div class="game-area">
+
+    <div id="start-screen" class="start-panel">
+        <div class="start-icon">🏥 🤖</div>
+        <h1>Clínica de Rescate</h1>
+        <p>Calcula las dosis de medicina para los animalitos.<br>Doblamos, dividimos y sumamos.</p>
+        <button class="start-btn" onclick="startGame()">¡A trabajar!</button>
+    </div>
+
+    <div id="game-screen" class="game-panel hidden">
+        <div class="round-label">¡Turno de emergencia!</div>
+
+        <div class="timer-bar">
+            <div id="timer-bar" class="timer-fill" style="width: 100%"></div>
+        </div>
+
+        <div class="patient-card" id="p-box">
+            <span id="patient-icon" class="animal-emoji">🐶</span>
+            <div class="prescription" id="op-text">--</div>
+        </div>
+
+        <div class="answer-wrap">
+            <input type="number" id="ans-input" class="answer-field" placeholder="?" autocomplete="off" inputmode="numeric">
+        </div>
+
+        <div class="score-line">🐾 Curados: <b id="score">0</b></div>
+    </div>
+
+    <div id="end-screen" class="end-panel hidden">
+        <div class="end-emoji">🏆</div>
+        <div class="end-title">Fin del turno</div>
+        <div class="end-score" id="end-score-text">Curaste a 0 animalitos.</div>
+        <button class="start-btn" onclick="location.reload()">¿Otra vez?</button>
+    </div>
+
+</div>
+
+<script>
+    let score = 0;
+    let timeLeft = 60;
+    let timerId;
+    let currentAns;
+    let sessionCorrect = 0, sessionWrong = 0, sessionTimer = 0;
+    const animals = ['🐶','🐱','🐰','🐹','🦊','🐼','🐨','🐷','🦁','🐸'];
+
+    window.onload = function() {
+        RK.Stats.showRoundModal('Misión Robot', '🤖', function(rounds) {
+            startGame();
+        });
+    };
+
+    function startGame() {
+        score = 0;
+        timeLeft = 60;
+        sessionTimer = Date.now();
+        document.getElementById('start-screen').classList.add('hidden');
+        document.getElementById('game-screen').classList.remove('hidden');
+        document.getElementById('score').innerText = score;
+
+        nextPatient();
+        setTimeout(() => document.getElementById('ans-input').focus(), 100);
+
+        timerId = setInterval(() => {
+            timeLeft -= 0.1;
+            document.getElementById('timer-bar').style.width = (timeLeft / 60 * 100) + "%";
+            if (timeLeft <= 0) endGame();
+        }, 100);
+    }
+
+    function nextPatient() {
+        document.getElementById('patient-icon').innerText = animals[Math.floor(Math.random() * animals.length)];
+
+        const types = ['suma','resta','multi2','divi2','multi10','multi100'];
+        const type = types[Math.floor(Math.random() * types.length)];
+        let a, b, text;
+
+        switch (type) {
+            case 'suma':
+                a = Math.floor(Math.random() * 60) + 15;
+                b = Math.floor(Math.random() * 30) + 11;
+                text = `${a} + ${b}`; currentAns = a + b;
+                break;
+            case 'resta':
+                a = Math.floor(Math.random() * 50) + 40;
+                b = Math.floor(Math.random() * 30) + 11;
+                text = `${a} − ${b}`; currentAns = a - b;
+                break;
+            case 'multi2':
+                a = Math.floor(Math.random() * 45) + 5;
+                text = `${a} × 2`; currentAns = a * 2;
+                break;
+            case 'divi2':
+                a = (Math.floor(Math.random() * 45) + 1) * 2;
+                text = `${a} ÷ 2`; currentAns = a / 2;
+                break;
+            case 'multi10':
+                a = Math.floor(Math.random() * 90) + 2;
+                text = `${a} × 10`; currentAns = a * 10;
+                break;
+            case 'multi100':
+                a = Math.floor(Math.random() * 9) + 1;
+                text = `${a} × 100`; currentAns = a * 100;
+                break;
+        }
+
+        document.getElementById('op-text').innerText = text;
+        const input = document.getElementById('ans-input');
+        input.value = "";
+        input.className = 'answer-field';
+        document.getElementById('p-box').className = 'patient-card';
+    }
+
+    document.getElementById('ans-input').addEventListener('input', function () {
+        const val = parseInt(this.value);
+        if (val === currentAns) {
+            score++;
+            sessionCorrect++;
+            document.getElementById('score').innerText = score;
+
+            const box = document.getElementById('p-box');
+            box.classList.add('flash-green');
+            this.classList.add('correct');
+
+            setTimeout(() => nextPatient(), 150);
+        } else if (this.value.length > 0 && val !== currentAns) {
+            sessionWrong++;
+            this.classList.add('wrong');
+            setTimeout(() => this.classList.remove('wrong'), 300);
+        }
+    });
+
+    function endGame() {
+        clearInterval(timerId);
+        var totalTime = Math.round((Date.now() - sessionTimer) / 1000);
+        RK.Stats.saveGameResult('juego7', {
+            score: score,
+            rounds: sessionCorrect + sessionWrong,
+            totalTime: totalTime,
+            correct: sessionCorrect,
+            wrong: sessionWrong,
+            errors: ['suma', 'resta', 'multiplicación', 'división']
+        });
+        document.getElementById('game-screen').classList.add('hidden');
+        document.getElementById('end-screen').classList.remove('hidden');
+        document.getElementById('end-score-text').innerText = `Curaste a ${score} animalitos.`;
+    }
+</script>
+</body>
+</html>

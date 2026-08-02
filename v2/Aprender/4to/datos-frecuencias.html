@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RakinMath – Tablas de Frecuencias</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../apple-design.css">
+<style>
+body{display:flex;flex-direction:column;min-height:100vh}
+.content{flex:1;max-width:800px;width:100%;margin:0 auto;padding:24px}
+.back-link{display:inline-flex;align-items:center;gap:6px;font-family:var(--font-sans);font-size:.875rem;font-weight:600;color:var(--text-secondary);text-decoration:none;padding:8px 16px;border-radius:980px;background:var(--bg-card);border:1px solid var(--border-strong);transition:transform .15s,background .15s;margin-bottom:24px}
+.back-link:active{transform:scale(.95)}
+.back-link:hover{background:var(--bg-card-solid);color:var(--text)}
+.section{margin-bottom:40px;opacity:0;animation:slideUp .5s var(--spring-default) both}
+.section:nth-child(2){animation-delay:100ms}.section:nth-child(3){animation-delay:200ms}.section:nth-child(4){animation-delay:300ms}
+.section-title{font-size:1.5rem;font-weight:700;letter-spacing:-.03em;margin-bottom:8px}
+.section-subtitle{font-size:1rem;color:var(--text-secondary);margin-bottom:20px;line-height:1.5}
+.concept-box{background:linear-gradient(135deg,rgba(0,122,255,.06),rgba(0,122,255,.02));border:1px solid rgba(0,122,255,.15);border-radius:20px;padding:24px;margin-bottom:24px}
+.concept-box h3{font-size:1.125rem;font-weight:700;margin-bottom:8px}
+.concept-box p{font-size:.9375rem;color:var(--text-secondary);line-height:1.6}
+/* Table */
+.freq-table{width:100%;border-collapse:separate;border-spacing:0;border-radius:16px;overflow:hidden;background:var(--bg-card);border:1px solid var(--border)}
+.freq-table th{background:rgba(0,0,0,.04);padding:12px 16px;font-size:.8125rem;font-weight:600;color:var(--text-secondary);text-transform:uppercase;letter-spacing:.02em;text-align:left;border-bottom:2px solid var(--border-strong)}
+.freq-table td{padding:12px 16px;border-bottom:1px solid var(--border);font-size:.9375rem}
+.freq-table tr:last-child td{border-bottom:none}
+.freq-table .color-dot{display:inline-block;width:14px;height:14px;border-radius:50%;margin-right:8px;vertical-align:middle}
+.freq-table .tally{font-family:monospace;font-size:1rem;letter-spacing:2px;color:var(--text-tertiary)}
+.freq-table .total{font-weight:700;color:var(--accent)}
+/* Tally visual */
+.tally-marks{display:flex;gap:2px;align-items:flex-end}
+.tally-mark{width:3px;height:20px;background:var(--text-tertiary);border-radius:1px}
+.tally-mark.cross{width:16px;height:3px;margin-bottom:8px;background:var(--red);transform:rotate(-30deg);transform-origin:left bottom}
+.tally-group{display:flex;gap:2px;align-items:flex-end;position:relative}
+.tally-group.done .tally-mark{background:var(--green)}
+.tally-group.done::after{content:'?';position:absolute;right:-14px;top:50%;transform:translateY(-50%);font-size:.75rem;color:var(--green)}
+/* Demo stream */
+.stream-demo{background:var(--bg-card);border:1px solid var(--border);border-radius:24px;padding:24px;margin-bottom:24px}
+.stream-display{text-align:center;font-size:2.5rem;margin:16px 0;min-height:50px;transition:all .3s}
+.stream-label{font-size:.875rem;color:var(--text-secondary);margin-bottom:4px}
+/* Interactive */
+.interactive-area{background:var(--bg-card);border:1px solid var(--border);border-radius:24px;padding:24px}
+.count-buttons{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin:16px 0}
+.count-btn{font-family:var(--font-sans);font-size:.9375rem;font-weight:600;padding:12px 20px;border-radius:980px;border:2px solid var(--border-strong);background:var(--bg-card-solid);color:var(--text);cursor:pointer;transition:all .15s;display:flex;align-items:center;gap:8px}
+.count-btn:active{transform:scale(.95)}
+.count-btn:hover{border-color:var(--accent);background:rgba(0,122,255,.04)}
+.count-btn .dot{width:12px;height:12px;border-radius:50%}
+.count-btn.rojo .dot{background:#ff3b30}
+.count-btn.azul .dot{background:#007aff}
+.count-btn.verde .dot{background:#34c759}
+.count-btn.amarillo .dot{background:#ffcc00}
+.progress-info{text-align:center;font-size:.8125rem;color:var(--text-tertiary);margin-bottom:12px}
+.btn-row{display:flex;gap:8px;justify-content:center;flex-wrap:wrap}
+.btn-sm{font-family:var(--font-sans);font-size:.8125rem;font-weight:600;padding:8px 16px;border-radius:980px;border:none;cursor:pointer;transition:transform .12s}
+.btn-sm:active{transform:scale(.95)}
+.btn-primary{background:var(--accent);color:white}
+.btn-ghost{background:var(--bg-card-solid);color:var(--text);border:1px solid var(--border-strong)}
+/* Question */
+.question-box{background:linear-gradient(135deg,rgba(0,122,255,.06),rgba(0,122,255,.02));border:1px solid rgba(0,122,255,.15);border-radius:20px;padding:24px}
+.question-box h4{font-size:1rem;font-weight:700;margin-bottom:12px}
+.question-input-row{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.question-input{width:80px;padding:10px;border-radius:12px;border:2px solid var(--border-strong);background:var(--bg-card-solid);font-family:var(--font-sans);font-size:1.125rem;font-weight:700;text-align:center;color:var(--text);outline:none;transition:border-color .15s}
+.question-input:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(0,122,255,.1)}
+.check-btn{font-family:var(--font-sans);font-size:.875rem;font-weight:600;padding:10px 20px;border-radius:980px;border:none;cursor:pointer;background:var(--accent);color:white;transition:transform .12s}
+.check-btn:active{transform:scale(.95)}
+.feedback{font-size:.875rem;font-weight:600;margin-top:8px;min-height:24px}
+.feedback.correct{color:var(--green)}
+.feedback.wrong{color:var(--red)}
+.result-box{background:rgba(52,199,89,.08);border:1px solid rgba(52,199,89,.2);border-radius:16px;padding:16px;margin-top:12px;display:none}
+.result-box.show{display:block;animation:popIn .4s var(--spring-default) both}
+.result-box p{font-size:.9375rem;color:var(--text);line-height:1.5}
+@keyframes slideUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+@keyframes popIn{0%{opacity:0;transform:scale(.9)}70%{transform:scale(1.02)}100%{opacity:1;transform:scale(1)}}
+@media(max-width:640px){.content{padding:16px}.count-btn{padding:10px 14px;font-size:.8125rem}.freq-table th,.freq-table td{padding:8px 10px;font-size:.8125rem}}
+</style>
+</head>
+<body>
+
+<nav class="nav">
+<a href="menu.html" class="nav-title">
+<img src="../../Recursos/LogoRakinMath.png" alt="RakinMath" style="height: 24px; width: auto;">
+
+</a>
+<a href="menu.html" class="exit-btn">Volver</a>
+</nav>
+
+<div class="content">
+
+<a href="menu.html" class="back-link">&#x2190; Volver a Datos</a>
+
+<!-- SECTION 1: ¿Qué es? -->
+<div class="section">
+<div class="section-title">&#x1F4CB; ¿Qué es una Tabla de Frecuencias?</div>
+<div class="section-subtitle">Una tabla de frecuencias <strong>cuenta cuántas veces aparece cada cosa</strong>. Organiza los datos para que sea fácil ver cuál es el más común y cuál el menos común.</div>
+<div class="concept-box">
+<h3>&#x1F4A1; ¡Para qué sirve?</h3>
+<p>Imagina que observas los colores de autos que pasan por tu calle. Puedes ir escribiendo cada auto, pero es difícil de entender. Con una tabla de frecuencias, solo cuentas: cuántos rojos, cuántos azules, etc. Al final ves el <strong>total de cada color</strong> de un vistazo.</p>
+</div>
+</div>
+
+<!-- SECTION 2: Demo animada -->
+<div class="section">
+<div class="section-title">&#x1F3AC; Mira cómo funciona</div>
+<div class="section-subtitle">Los autos pasan por tu calle. Observa y cuenta cuántos de cada color ves.</div>
+<div class="stream-demo">
+<div class="stream-label">Auto que pasa ahora:</div>
+<div class="stream-display" id="stream-car">&#x1F697;</div>
+<div class="stream-label" id="stream-color" style="font-weight:600;font-size:1rem"></div>
+</div>
+<table class="freq-table" id="demo-table">
+<thead><tr><th>Color</th><th>Marcas</th><th>Total</th></tr></thead>
+<tbody>
+<tr><td><span class="color-dot" style="background:#ff3b30"></span>Rojo</td><td class="tally" id="demo-tally-rojo"></td><td class="total" id="demo-num-rojo">0</td></tr>
+<tr><td><span class="color-dot" style="background:#007aff"></span>Azul</td><td class="tally" id="demo-tally-azul"></td><td class="total" id="demo-num-azul">0</td></tr>
+<tr><td><span class="color-dot" style="background:#34c759"></span>Verde</td><td class="tally" id="demo-tally-verde"></td><td class="total" id="demo-num-verde">0</td></tr>
+<tr><td><span class="color-dot" style="background:#ffcc00"></span>Amarillo</td><td class="tally" id="demo-tally-amarillo"></td><td class="total" id="demo-num-amarillo">0</td></tr>
+</tbody>
+</table>
+<div class="btn-row" style="margin-top:16px">
+<button class="btn-sm btn-primary" onclick="playStreamDemo()">&#x25B6; Ver autos pasar</button>
+<button class="btn-sm btn-ghost" onclick="resetDemo()">Reiniciar</button>
+</div>
+</div>
+
+<!-- SECTION 3: Ejemplo -->
+<div class="section">
+<div class="section-title">&#x1F4D6; Ejemplo paso a paso</div>
+<div class="question-box">
+<h4>&#x2753; Pregunta</h4>
+<p style="color:var(--text-secondary);margin-bottom:12px;font-size:.9375rem">Según la tabla de arriba: <strong>¿Cuántos autos rojos pasaron?</strong></p>
+<div class="question-input-row">
+<input class="question-input" type="number" id="ex-answer" placeholder="?">
+<button class="check-btn" onclick="checkExample()">Comprobar</button>
+</div>
+<div class="feedback" id="ex-feedback"></div>
+<div class="result-box" id="ex-result">
+<p>&#x2705; <strong>¡Correcto!</strong> En la tabla puedes ver cuántas marcas tiene cada color. Cada marca representa 1 auto.</p>
+</div>
+</div>
+</div>
+
+<!-- SECTION 4: Interactivo -->
+<div class="section">
+<div class="section-title">&#x1F3D7; Tú cuenta los autos</div>
+<div class="section-subtitle">Haz clic en el color del auto que ves pasar. La tabla se llena sola.</div>
+<div class="interactive-area">
+<div class="progress-info" id="prog-info">Auto 1 de 20</div>
+<div class="stream-display" id="my-car" style="font-size:3rem;margin:8px 0">&#x1F697;</div>
+<div class="count-buttons">
+<button class="count-btn rojo" onclick="countCar('rojo')"><span class="dot"></span>Rojo</button>
+<button class="count-btn azul" onclick="countCar('azul')"><span class="dot"></span>Azul</button>
+<button class="count-btn verde" onclick="countCar('verde')"><span class="dot"></span>Verde</button>
+<button class="count-btn amarillo" onclick="countCar('amarillo')"><span class="dot"></span>Amarillo</button>
+</div>
+<table class="freq-table" id="my-table">
+<thead><tr><th>Color</th><th>Marcas</th><th>Total</th></tr></thead>
+<tbody>
+<tr><td><span class="color-dot" style="background:#ff3b30"></span>Rojo</td><td class="tally" id="my-tally-rojo"></td><td class="total" id="my-num-rojo">0</td></tr>
+<tr><td><span class="color-dot" style="background:#007aff"></span>Azul</td><td class="tally" id="my-tally-azul"></td><td class="total" id="my-num-azul">0</td></tr>
+<tr><td><span class="color-dot" style="background:#34c759"></span>Verde</td><td class="tally" id="my-tally-verde"></td><td class="total" id="my-num-verde">0</td></tr>
+<tr><td><span class="color-dot" style="background:#ffcc00"></span>Amarillo</td><td class="tally" id="my-tally-amarillo"></td><td class="total" id="my-num-amarillo">0</td></tr>
+</tbody>
+</table>
+<div class="btn-row" style="margin-top:16px">
+<button class="btn-sm btn-ghost" onclick="resetMyCount()">Reiniciar</button>
+</div>
+</div>
+</div>
+
+<!-- SECTION 5: Pregunta -->
+<div class="section">
+<div class="section-title">&#x1F9E0; Pon a prueba</div>
+<div class="question-box">
+<h4>&#x2753; Pregunta</h4>
+<p style="color:var(--text-secondary);margin-bottom:12px;font-size:.9375rem" id="quiz-question">¿Cuántos autos pasaron en total?</p>
+<div class="question-input-row">
+<input class="question-input" type="number" id="quiz-answer" placeholder="?">
+<button class="check-btn" onclick="checkQuiz()">Comprobar</button>
+</div>
+<div class="feedback" id="quiz-feedback"></div>
+</div>
+</div>
+
+
+<div class="section" style="animation-delay:320ms">
+<div class="question-box" style="background:linear-gradient(135deg,rgba(0,122,255,.06),rgba(0,122,255,.02));border:1px solid rgba(0,122,255,.15)">
+<h4>&#x1F3AC; Videos de apoyo</h4>
+<p style="color:var(--text-secondary);margin-bottom:12px;font-size:.9375rem">Agrega links de videos de YouTube para reforzar lo aprendido:</p>
+<div id="videos-container" style="display:flex;flex-direction:column;gap:12px;margin-bottom:12px">
+<div class="video-placeholder" style="border:2px dashed rgba(0,122,255,.25);border-radius:16px;padding:24px;text-align:center;color:var(--text-tertiary);font-size:.875rem;cursor:pointer;transition:border-color .2s,background .2s" onclick="addVideoSlot(this.parentElement)">
+<span style="font-size:1.5rem;display:block;margin-bottom:6px">&#x1F4F1;</span>
+Haz clic aquí para agregar un video de YouTube
+</div>
+</div>
+</div>
+</div>
+
+</div>
+
+<script>
+var carEmojis=['&#x1F697;','&#x1F699;','&#x1F698;','&#x1F6FB;'];
+var carColors=['rojo','azul','verde','amarillo'];
+var carColorHex={rojo:'#ff3b30',azul:'#007aff',verde:'#34c759',amarillo:'#ffcc00'};
+
+// Tally marks
+function getTally(n){
+var groups=Math.floor(n/5);
+var remainder=n%5;
+var html='';
+for(var g=0;g<groups;g++){
+html+='<span style="display:inline-flex;gap:1px;margin-right:6px">';
+for(var i=0;i<5;i++){
+if(i<4)html+='<span style="display:inline-block;width:3px;height:18px;background:var(--green);border-radius:1px"></span>';
+else html+='<span style="display:inline-block;width:14px;height:3px;background:var(--green);border-radius:1px;transform:rotate(-30deg);margin-bottom:7px"></span>';
+}
+html+='</span>';
+}
+if(remainder>0){
+html+='<span style="display:inline-flex;gap:1px">';
+for(var i=0;i<remainder;i++){
+html+='<span style="display:inline-block;width:3px;height:18px;background:var(--text-tertiary);border-radius:1px"></span>';
+}
+html+='</span>';
+}
+return html;
+}
+
+// Demo stream
+var demoCounts={rojo:0,azul:0,verde:0,amarillo:0};
+var demoStream=[];
+var demoRunning=false;
+function playStreamDemo(){
+if(demoRunning)return;
+demoRunning=true;
+demoStream=[];
+for(var i=0;i<12;i++){
+demoStream.push(carColors[Math.floor(Math.random()*4)]);
+}
+var idx=0;
+function showNext(){
+if(idx>=demoStream.length){demoRunning=false;return}
+var color=demoStream[idx];
+var carIdx=carColors.indexOf(color);
+document.getElementById('stream-car').innerHTML=carEmojis[carIdx];
+document.getElementById('stream-color').textContent=color.charAt(0).toUpperCase()+color.slice(1);
+document.getElementById('stream-color').style.color=carColorHex[color];
+demoCounts[color]++;
+document.getElementById('demo-tally-'+color).innerHTML=getTally(demoCounts[color]);
+document.getElementById('demo-num-'+color).textContent=demoCounts[color];
+idx++;
+setTimeout(showNext,1200);
+}
+showNext();
+}
+function resetDemo(){
+demoCounts={rojo:0,azul:0,verde:0,amarillo:0};
+carColors.forEach(function(c){
+document.getElementById('demo-tally-'+c).innerHTML='';
+document.getElementById('demo-num-'+c).textContent='0';
+});
+document.getElementById('stream-car').innerHTML='&#x1F697;';
+document.getElementById('stream-color').textContent='';
+demoRunning=false;
+}
+
+// Example check
+function checkExample(){
+var ans=parseInt(document.getElementById('ex-answer').value);
+var correct=demoCounts.rojo;
+var fb=document.getElementById('ex-feedback');
+var res=document.getElementById('ex-result');
+if(ans===correct){fb.textContent='¡Correcto!';fb.className='feedback correct';res.classList.add('show')}
+else if(isNaN(ans)){fb.textContent='Escribe un número';fb.className='feedback wrong'}
+else{fb.textContent='Revisa la tabla: mira la fila de rojo';fb.className='feedback wrong';res.classList.remove('show')}
+}
+
+// Interactive count
+var myCounts={rojo:0,azul:0,verde:0,amarillo:0};
+var myTotal=0;
+var myMax=20;
+var myCars=[];
+function generateCars(){
+myCars=[];
+for(var i=0;i<myMax;i++)myCars.push(carColors[Math.floor(Math.random()*4)]);
+}
+generateCars();
+function countCar(color){
+if(myTotal>=myMax)return;
+myCounts[color]++;
+myTotal++;
+document.getElementById('my-tally-'+color).innerHTML=getTally(myCounts[color]);
+document.getElementById('my-num-'+color).textContent=myCounts[color];
+document.getElementById('prog-info').textContent=myTotal>=myMax?'¿Conteo terminado!':'Auto '+(myTotal+1)+' de '+myMax;
+if(myTotal<myMax){
+var next=myCars[myTotal];
+var ci=carColors.indexOf(next);
+document.getElementById('my-car').innerHTML=carEmojis[ci];
+}
+updateQuiz();
+}
+function resetMyCount(){
+myCounts={rojo:0,azul:0,verde:0,amarillo:0};
+myTotal=0;
+generateCars();
+carColors.forEach(function(c){
+document.getElementById('my-tally-'+c).innerHTML='';
+document.getElementById('my-num-'+c).textContent='0';
+});
+document.getElementById('prog-info').textContent='Auto 1 de '+myMax;
+document.getElementById('my-car').innerHTML='&#x1F697;';
+updateQuiz();
+}
+
+// Quiz
+function updateQuiz(){
+var total=myTotal;
+var maxColor=carColors.reduce(function(a,b){return myCounts[a]>myCounts[b]?a:b},carColors[0]);
+var minColor=carColors.reduce(function(a,b){return myCounts[a]<myCounts[b]?a:b},carColors[0]);
+var questions=[
+'¿Cuántos autos pasaron en total?',
+'¿Cuál fue el color más común y cuántos hubo?',
+'¿Cuántos menos autos del color menos común hubo que del más común?',
+'¿Cuántos autos rojos y azules pasaron juntos?'
+];
+document.getElementById('quiz-question').textContent=questions[Math.floor(Math.random()*questions.length)];
+document.getElementById('quiz-feedback').textContent='';
+document.getElementById('quiz-answer').value='';
+}
+function checkQuiz(){
+var q=document.getElementById('quiz-question').textContent;
+var ans=parseInt(document.getElementById('quiz-answer').value);
+var fb=document.getElementById('quiz-feedback');
+var correct=false;
+var total=myTotal;
+var maxColor=carColors.reduce(function(a,b){return myCounts[a]>myCounts[b]?a:b},carColors[0]);
+var minColor=carColors.reduce(function(a,b){return myCounts[a]<myCounts[b]?a:b},carColors[0]);
+if(q.indexOf('total')>-1){correct=ans===total}
+else if(q.indexOf('más común')>-1){correct=ans===myCounts[maxColor]}
+else if(q.indexOf('menos común')>-1){correct=ans===myCounts[maxColor]-myCounts[minColor]}
+else if(q.indexOf('rojos y azules')>-1){correct=ans===myCounts.rojo+myCounts.azul}
+if(correct){fb.textContent='¡Correcto!';fb.className='feedback correct';setTimeout(updateQuiz,1500)}
+else if(isNaN(ans)){fb.textContent='Escribe un número';fb.className='feedback wrong'}
+else{fb.textContent='Revisa la tabla e intenta de nuevo';fb.className='feedback wrong'}
+}
+
+// Init
+document.getElementById('my-car').innerHTML=carEmojis[Math.floor(Math.random()*4)];
+updateQuiz();
+
+function addVideoSlot(container){
+var existing=container.querySelector('.video-placeholder');
+if(existing)existing.remove();
+var div=document.createElement('div');
+div.className='video-slot';
+div.style.cssText='display:flex;gap:8px;align-items:center;background:rgba(0,122,255,.04);border:1px solid rgba(0,122,255,.12);border-radius:12px;padding:10px 12px';
+div.innerHTML='<input type="text" placeholder="Pega el link de YouTube aquí..." style="flex:1;font-family:var(--font-sans);font-size:.875rem;padding:8px 12px;border-radius:8px;border:1px solid rgba(0,0,0,.1);background:white;color:#1d1d1f;outline:none" onfocus="this.style.borderColor=\'#007aff\'" onblur="this.style.borderColor=\'rgba(0,0,0,1)\'"><button onclick="removeVideoSlot(this)" style="font-size:1.1rem;background:none;border:none;cursor:pointer;color:#ff3b30;padding:4px" title="Eliminar">&#x2715;</button>';
+container.appendChild(div);
+var addBtn=document.createElement('div');
+addBtn.className='video-placeholder';
+addBtn.style.cssText='border:2px dashed rgba(0,122,255,.25);border-radius:16px;padding:16px;text-align:center;color:var(--text-tertiary);font-size:.875rem;cursor:pointer;transition:border-color .2s,background .2s';
+addBtn.innerHTML='<span style="font-size:1.25rem;display:block;margin-bottom:4px">&#x2795;</span>Agregar otro video';
+addBtn.onclick=function(){addVideoSlot(container)};
+container.appendChild(addBtn);
+}
+function removeVideoSlot(btn){btn.closest('.video-slot').remove()}
+</script>
+</body>
+</html>

@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RakinMath - Aprender</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="apple-design.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"></script>
+<script defer src="rk-utils.js"></script>
+<style>
+body{display:flex;flex-direction:column;min-height:100vh;position:relative;overflow:hidden}
+body::before{content:'';position:fixed;top:-120px;right:-120px;width:400px;height:400px;background:radial-gradient(circle,rgba(0,122,255,.06) 0%,transparent 70%);pointer-events:none;z-index:0}
+body::after{content:'+';position:fixed;bottom:-80px;left:-60px;width:300px;height:300px;background:radial-gradient(circle,rgba(175,82,222,.05) 0%,transparent 70%);pointer-events:none;z-index:0;font-size:0}
+.math-bg{position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:0;overflow:hidden;opacity:.035;font-size:2rem;font-weight:700;color:#007aff}
+.math-bg span{position:absolute;white-space:nowrap}
+.hero{text-align:center;padding:48px 24px 24px;position:relative;z-index:1}
+.hero-emoji{font-size:3rem;margin-bottom:12px;animation:popIn .6s cubic-bezier(.2,.9,.3,1.2) both}
+.hero h1{margin-bottom:8px;font-size:clamp(1.75rem,4vw,2.5rem);font-weight:700;letter-spacing:-.03em;line-height:1.08}
+.hero h1 .brand{color:#007aff}
+.hero p{font-size:1.0625rem;max-width:420px;margin:0 auto;color:#6e6e73;line-height:1.5}
+.grade-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:20px;max-width:640px;width:100%;margin:0 auto;padding:0 24px 48px;position:relative;z-index:1}
+.grade-card{background:rgba(255,255,255,.85);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border:1px solid rgba(0,0,0,.06);border-radius:28px;padding:28px 24px;text-decoration:none;color:#1d1d1f;box-shadow:0 1px 3px rgba(0,0,0,.03);transition:transform .4s cubic-bezier(.2,.9,.3,1.2),box-shadow .4s,border-color .3s;display:flex;flex-direction:column;align-items:center;gap:12px;text-align:center;opacity:0;animation:slideUp .5s cubic-bezier(.2,.9,.3,1.2) both;position:relative;overflow:hidden}
+.grade-card:nth-child(1){animation-delay:0ms}.grade-card:nth-child(2){animation-delay:80ms}
+.grade-card::before{content:'';position:absolute;top:0;left:0;right:0;height:4px;background:linear-gradient(90deg,#007aff,#5ac8fa);opacity:0;transition:opacity .3s}
+.grade-card:nth-child(2)::before{background:linear-gradient(90deg,#af52de,#5856d6)}
+.grade-card:hover{transform:translateY(-8px);box-shadow:0 20px 60px rgba(0,0,0,.12);border-color:rgba(0,122,255,.15)}
+.grade-card:hover::before{opacity:1}
+.grade-card:active{transform:scale(.97);transition-duration:80ms}
+.grade-icon{width:64px;height:64px;border-radius:20px;display:flex;align-items:center;justify-content:center;font-size:2rem;transition:transform .3s cubic-bezier(.2,.9,.3,1.2)}
+.grade-card:hover .grade-icon{transform:scale(1.08)}
+.grade-icon.blue{background:linear-gradient(135deg,#e8f4fd,#d4e8f7)}
+.grade-icon.purple{background:linear-gradient(135deg,#f3e5f5,#e1bee7)}
+.grade-name{font-size:1.25rem;font-weight:700;letter-spacing:-.02em}
+.grade-desc{font-size:.875rem;color:#6e6e73;line-height:1.4}
+.grade-arrow{width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,#007aff,#5ac8fa);color:white;display:flex;align-items:center;justify-content:center;font-size:.875rem;transition:transform .3s cubic-bezier(.2,.9,.3,1.2),box-shadow .3s;box-shadow:0 2px 8px rgba(0,122,255,.2)}
+.grade-card:nth-child(2) .grade-arrow{background:linear-gradient(135deg,#af52de,#5856d6);box-shadow:0 2px 8px rgba(175,82,222,.2)}
+.grade-card:hover .grade-arrow{transform:scale(1.15);box-shadow:0 4px 16px rgba(0,122,255,.3)}
+.nr{position:relative;display:flex;align-items:center;gap:12px}
+.nmw{position:relative}
+.nmb{font-family:Inter,sans-serif;font-size:.8125rem;font-weight:600;display:flex;align-items:center;gap:8px;padding:6px 14px;border-radius:980px;background:#f5f5f7;border:1px solid rgba(0,0,0,.1);color:#6e6e73;cursor:pointer;transition:transform .12s,background .15s;-webkit-tap-highlight-color:transparent}
+.nmb:active{transform:scale(.95)}
+.nmb:hover{background:rgba(0,0,0,.06);color:#1d1d1f}
+.nmb .ni{font-size:.9375rem}
+.nmb svg{width:12px;height:12px;transition:transform .25s cubic-bezier(.2,.9,.3,1.2)}
+.nmw.open .nmb svg{transform:rotate(180deg)}
+.ndd{position:absolute;top:calc(100% + 8px);right:0;width:260px;padding:16px;background:#fff;border:1px solid rgba(0,0,0,.06);border-radius:28px;box-shadow:0 20px 60px rgba(0,0,0,.08);opacity:0;pointer-events:none;transform:translateY(-8px);transition:opacity .2s,transform .25s cubic-bezier(.2,.9,.3,1.2);z-index:100}
+.nmw.open .ndd{opacity:1;pointer-events:auto;transform:translateY(0)}
+.ndt{font-size:.75rem;font-weight:600;color:#86868b;margin-bottom:12px;letter-spacing:.02em;text-transform:uppercase}
+.gs{position:relative;display:flex;background:rgba(255,255,255,.8);border:1px solid rgba(0,0,0,.1);border-radius:980px;padding:4px;backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px)}
+.gs input[type=radio]{position:absolute;opacity:0;width:0;height:0;pointer-events:none}
+.gs label{flex:1;text-align:center;padding:12px 16px;font-family:Inter,sans-serif;font-size:.9375rem;font-weight:600;color:#6e6e73;cursor:pointer;border-radius:980px;transition:color .25s;position:relative;z-index:1;-webkit-tap-highlight-color:transparent;user-select:none}
+.gs label .si{display:block;font-size:1.125rem;margin-bottom:2px}
+.gs .sb{position:absolute;top:4px;left:4px;width:calc(50% - 4px);height:calc(100% - 8px);background:#007aff;border-radius:980px;box-shadow:0 2px 10px rgba(0,122,255,.25);transition:transform .35s cubic-bezier(.2,.9,.3,1.2);z-index:0;pointer-events:none}
+.gs.r .sb{transform:translateX(100%)}
+.gs label.on{color:white}
+.lb{width:100%;font-family:Inter,sans-serif;font-size:.8125rem;font-weight:600;padding:10px 16px;border-radius:980px;border:1px solid rgba(255,59,48,.2);background:rgba(255,59,48,.06);color:#ff3b30;cursor:pointer;transition:background .15s,transform .12s;display:flex;align-items:center;justify-content:center;gap:6px}
+.lb:hover{background:rgba(255,59,48,.12)}
+.lb:active{transform:scale(.97)}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+@keyframes slideUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+@keyframes popIn{0%{opacity:0;transform:scale(.8)}70%{transform:scale(1.03)}100%{opacity:1;transform:scale(1)}}
+@media(max-width:480px){.hero{padding:32px 16px 20px}.hero-emoji{font-size:2.25rem}.hero h1{font-size:1.5rem}.grade-grid{padding:0 16px 32px}}
+</style>
+</head>
+<body>
+<div class="math-bg"><span style="top:5%;left:8%">∑</span><span style="top:12%;right:15%">π</span><span style="top:25%;left:5%">∫</span><span style="top:35%;right:8%">√</span><span style="top:48%;left:12%">∞</span><span style="top:60%;right:20%">Δ</span><span style="top:75%;left:8%">θ</span><span style="top:85%;right:10%">±</span><span style="top:15%;left:85%">÷</span><span style="top:55%;left:3%">×</span><span style="top:70%;right:5%">½</span><span style="top:90%;left:15%">∑</span></div>
+<nav class="nav"><a href="../index.html" class="nav-title"><img src="../Recursos/LogoRakinMath.png" alt="RakinMath" style="height: 24px; width: auto;"></a><div class="nr"><div class="nmw" id="nmw"><button class="nmb" id="nmb"><span class="ni" id="ni">&#x1F4DA;</span><span id="nt">Aprender</span><svg viewBox="0 0 12 12" fill="none"><path d="M3 4.5L6 7.5L9 4.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button><div class="ndd"><div class="ndt">Cambiar modo</div><div class="gs" id="nS"><input type="radio" name="navmode" id="n-a" value="aprender" checked><label for="n-a" class="on"><span class="si">&#x1F4DA;</span>Aprender</label><input type="radio" name="navmode" id="n-p" value="practicar"><label for="n-p"><span class="si">&#x1F3AE;</span>Practicar</label><div class="sb"></div></div><a href="../dashboard.html" style="display:block;font-family:Inter,sans-serif;font-size:.8125rem;font-weight:600;padding:10px 16px;border-radius:980px;border:1px solid rgba(0,122,255,.2);background:rgba(0,122,255,.06);color:#007aff;text-decoration:none;text-align:center;transition:background .15s;margin-bottom:8px">&#x1F4CA; Mis Estadísticas</a><button class="lb" id="lb">&#x1F6AA; Cerrar Sesion</button></div></div></div></nav>
+
+<div class="hero">
+<div class="hero-emoji">&#x1F4DA;</div>
+<h1>Aprende Matemáticas</h1>
+<p>Basado en las Bases Curriculares del Ministerio de Educación de Chile. Elige tu nivel para comenzar.</p>
+</div>
+
+<div class="grade-grid">
+<a href="4to/menu.html" class="grade-card">
+<div class="grade-icon blue">&#x1F4DA;</div>
+<div class="grade-name">4° Básico</div>
+<div class="grade-desc">Números, Fracciones, Geometría, Medición y Datos</div>
+<div class="grade-arrow">&rarr;</div>
+</a>
+<a href="5to/menu.html" class="grade-card">
+<div class="grade-icon purple">&#x1F4DA;</div>
+<div class="grade-name">5° Básico</div>
+<div class="grade-desc">Números Grandes, Álgebra, Geometría y Probabilidades</div>
+<div class="grade-arrow">&rarr;</div>
+</a>
+</div>
+
+<div class="footer">RakinMath · Alineado al Currículum Nacional de Chile</div>
+
+<script>
+(function(){
+var SK='rakin_session';
+var currentUser='';
+try{var sr=localStorage.getItem(SK);var sv=sr?JSON.parse(sr):null;if(!sv||!sv.user){window.location.href='../login.html';return}currentUser=sv.user}catch(e){window.location.href='../login.html';return}
+
+window.location.href='../Juegos/menu.html';
+return;
+
+function ss(s,m){var r=s.querySelector('input[value="'+m+'"]');if(r)r.checked=true;s.classList.toggle('r',m==='practicar');s.querySelectorAll('label').forEach(function(l){l.classList.remove('on')});var a=s.querySelector('input:checked+label');if(a)a.classList.add('on')}
+
+var nI=document.getElementById('ni'),nT=document.getElementById('nt'),nW=document.getElementById('nmw'),nB=document.getElementById('nmb'),nS=document.getElementById('nS');
+
+nS.querySelectorAll('input').forEach(function(r){r.addEventListener('change',function(){var v=nS.querySelector('input:checked').value;ss(nS,v);if(v==='practicar'){window.location.href='../Juegos/menu.html'}})});
+nB.addEventListener('click',function(e){e.stopPropagation();nW.classList.toggle('open')});
+document.addEventListener('click',function(e){if(!nW.contains(e.target))nW.classList.remove('open')});
+document.getElementById('lb').addEventListener('click',function(){localStorage.removeItem(SK);localStorage.removeItem('rakin_user_'+currentUser);window.location.href='../login.html'});
+
+function ub(){nI.textContent='\u{1F4DA}';nT.textContent='Aprender';ss(nS,'aprender')}
+ub();
+
+var h1=document.querySelector('.hero h1');
+if(h1&&currentUser){h1.innerHTML='Hola, <span class="brand">'+currentUser.charAt(0).toUpperCase()+currentUser.slice(1)+'</span>'}
+})();
+</script>
+</body>
+</html>

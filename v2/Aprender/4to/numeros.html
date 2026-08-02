@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RakinMath - Números</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../apple-design.css">
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+        .hero {
+            text-align: center;
+            padding: var(--space-16) var(--space-6);
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+        .hero-emoji {
+            font-size: 4rem;
+            margin-bottom: var(--space-4);
+            animation: popIn 0.6s var(--spring-default) both;
+        }
+        .hero h1 {
+            margin-bottom: var(--space-3);
+        }
+        .hero p {
+            font-size: 1.0625rem;
+            max-width: 400px;
+            margin: 0 auto var(--space-6);
+        }
+        .back-btn {
+            font-family: var(--font-sans);
+            font-size: 0.9375rem;
+            font-weight: 600;
+            padding: var(--space-3) var(--space-6);
+            border-radius: var(--radius-pill);
+            border: 1px solid var(--border-strong);
+            background: var(--bg-card);
+            backdrop-filter: blur(10px);
+            color: var(--text);
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: var(--space-2);
+            transition: transform 0.15s var(--spring-smooth), background 0.2s ease;
+        }
+        .back-btn:active {
+            transform: scale(0.94);
+        }
+        .back-btn:hover {
+            background: var(--bg-card-solid);
+        }
+        .footer {
+            border-top: 1px solid var(--border);
+            text-align: center;
+            padding: var(--space-8) var(--space-6);
+            color: var(--text-tertiary);
+            font-size: 0.8125rem;
+            background: var(--bg-card);
+            backdrop-filter: blur(10px);
+        }
+    </style>
+</head>
+<body>
+    <nav class="nav">
+        <a href="menu.html" class="nav-title">
+            <img src="../../Recursos/LogoRakinMath.png" alt="RakinMath" style="height: 24px; width: auto;">
+            
+        </a>
+        <a href="menu.html" class="exit-btn">Volver</a>
+    </nav>
+
+    <div class="hero">
+        <div class="hero-emoji">??</div>
+        <h1>Números</h1>
+        <p>Operaciones con números enteros, decimales y porcentajes</p>
+        <p style="color: var(--text-tertiary); font-size: 0.9375rem;">Próximamente</p>
+        <a href="menu.html" class="back-btn">? Volver al menú</a>
+    </div>
+
+    <div class="footer">
+        RakinMath – Aprende matemáticas jugando
+    </div>
+</body>
+</html>

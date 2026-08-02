@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RakinMath  Conversiones de Tiempo</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../apple-design.css">
+<style>
+body{display:flex;flex-direction:column;min-height:100vh}.content{flex:1;max-width:800px;width:100%;margin:0 auto;padding:24px}.back-link{display:inline-flex;align-items:center;gap:6px;font-family:var(--font-sans);font-size:.875rem;font-weight:600;color:var(--text-secondary);text-decoration:none;padding:8px 16px;border-radius:980px;background:var(--bg-card);border:1px solid var(--border-strong);transition:transform .15s;margin-bottom:24px}.back-link:active{transform:scale(.95)}.section{margin-bottom:40px;opacity:0;animation:slideUp .5s var(--spring-default) both}.section:nth-child(2){animation-delay:80ms}.section:nth-child(3){animation-delay:160ms}.section-title{font-size:1.5rem;font-weight:700;letter-spacing:-.03em;margin-bottom:8px}.section-subtitle{font-size:1rem;color:var(--text-secondary);margin-bottom:20px;line-height:1.5}
+.concept-box{border-radius:20px;padding:24px;margin-bottom:20px}.concept-box.teal{background:linear-gradient(135deg,rgba(90,200,250,.06),rgba(90,200,250,.02));border:1px solid rgba(90,200,250,.15)}.concept-box h3{font-size:1.125rem;font-weight:700;margin-bottom:8px}.concept-box p{font-size:.9375rem;color:var(--text-secondary);line-height:1.6}
+.tip-box{background:linear-gradient(135deg,rgba(175,82,222,.06),rgba(175,82,222,.02));border:1px solid rgba(175,82,222,.15);border-radius:20px;padding:20px;margin:16px 0}.tip-box h4{font-size:.9375rem;font-weight:700;color:var(--purple);margin-bottom:6px}.tip-box p{font-size:.875rem;color:var(--text-secondary);line-height:1.5}
+.time-table{background:var(--bg-card);border:1px solid var(--border);border-radius:24px;padding:24px;margin-bottom:20px}
+.conv-row{display:flex;align-items:center;gap:12px;padding:12px 16px;border-radius:12px;margin:6px 0;background:rgba(0,0,0,.02);transition:all .2s}.conv-row:hover{background:rgba(0,122,255,.06)}
+.conv-icon{font-size:1.5rem;width:40px;text-align:center}
+.conv-text{flex:1;font-size:.9375rem;color:var(--text-secondary)}
+.conv-text strong{color:var(--text);font-weight:700}
+.conv-eq{font-size:1.125rem;font-weight:700;color:var(--accent)}
+.converter-area{background:var(--bg-card);border:1px solid var(--border);border-radius:24px;padding:24px;margin-bottom:20px}
+.conv-inputs{display:flex;align-items:center;gap:12px;justify-content:center;flex-wrap:wrap;margin:16px 0}
+.conv-input{width:80px;padding:10px;border-radius:12px;border:2px solid var(--border-strong);background:var(--bg-card-solid);font-family:var(--font-sans);font-size:1.125rem;font-weight:700;text-align:center;color:var(--text);outline:none}.conv-input:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(0,122,255,.1)}
+.conv-label{font-size:.875rem;font-weight:600;color:var(--text-secondary)}
+.conv-arrow{font-size:1.5rem;color:var(--accent)}
+.conv-result{font-size:1.5rem;font-weight:700;color:var(--accent);text-align:center;min-height:40px;display:flex;align-items:center;justify-content:center}
+.btn-row{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin:12px 0}
+.btn{font-family:var(--font-sans);font-size:.875rem;font-weight:600;padding:10px 20px;border-radius:980px;border:none;cursor:pointer;transition:transform .12s}.btn:active{transform:scale(.95)}
+.btn-primary{background:var(--accent);color:white}.btn-ghost{background:var(--bg-card-solid);color:var(--text);border:1px solid var(--border-strong)}
+.question-box{background:linear-gradient(135deg,rgba(0,122,255,.06),rgba(0,122,255,.02));border:1px solid rgba(0,122,255,.15);border-radius:20px;padding:24px}.question-box h4{font-size:1rem;font-weight:700;margin-bottom:12px}
+.q-input{width:80px;padding:10px;border-radius:12px;border:2px solid var(--border-strong);background:var(--bg-card-solid);font-family:var(--font-sans);font-size:1.125rem;font-weight:700;text-align:center;color:var(--text);outline:none}.q-input:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(0,122,255,.1)}
+.feedback{font-size:.875rem;font-weight:600;margin-top:8px;min-height:24px}.feedback.correct{color:var(--green)}.feedback.wrong{color:var(--red)}
+@keyframes slideUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+</style>
+</head>
+<body>
+<nav class="nav"><a href="menu.html" class="nav-title"><img src="../../Recursos/LogoRakinMath.png" alt="RakinMath" style="height: 24px; width: auto;"></a><a href="menu.html" class="exit-btn">Volver</a></nav>
+<div class="content">
+<a href="menu.html" class="back-link">&#x2190; Volver a Medicin</a>
+
+<div class="section">
+<div class="section-title">&#x23F1; Conversiones de Tiempo</div>
+<div class="section-subtitle">El tiempo se mide en diferentes unidades. Para pasar de una a otra, necesitas saber <strong>cuntas caben</strong> en la siguiente.</div>
+<div class="concept-box teal">
+<h3>&#x1F4A1; Las equivalencias del tiempo</h3>
+<p>1 minuto = <strong>60 segundos</strong>. 1 hora = <strong>60 minutos</strong>. 1 da = <strong>24 horas</strong>. 1 ao = <strong>12 meses</strong>. 1 mes  <strong>30 das</strong>.</p>
+</div>
+<div class="tip-box">
+<h4>&#x1F4A1; Tip del profesor</h4>
+<p>El tiempo es el nico sistema de medicin que no es decimal. No son 100 minutos en una hora sino 60! Por eso hay que aprenderse las equivalencias.</p>
+</div>
+</div>
+
+<div class="section">
+<div class="section-title">&#x1F4CA; Tabla de equivalencias</div>
+<div class="time-table">
+<div class="conv-row"><span class="conv-icon">&#x23F3;</span><span class="conv-text"><strong>60 segundos</strong> = 1 minuto</span><span class="conv-eq">= 1 min</span></div>
+<div class="conv-row"><span class="conv-icon">&#x1F552;</span><span class="conv-text"><strong>60 minutos</strong> = 1 hora</span><span class="conv-eq">= 1 h</span></div>
+<div class="conv-row"><span class="conv-icon">&#x2600;</span><span class="conv-text"><strong>24 horas</strong> = 1 da</span><span class="conv-eq">= 1 da</span></div>
+<div class="conv-row"><span class="conv-icon">&#x1F4C5;</span><span class="conv-text"><strong>7 das</strong> = 1 semana</span><span class="conv-eq">= 1 sem</span></div>
+<div class="conv-row"><span class="conv-icon">&#x1F4C6;</span><span class="conv-text"><strong>30 das</strong> = 1 mes (aprox.)</span><span class="conv-eq"> 1 mes</span></div>
+<div class="conv-row"><span class="conv-icon">&#x1F4C5;</span><span class="conv-text"><strong>12 meses</strong> = 1 ao</span><span class="conv-eq">= 1 ao</span></div>
+</div>
+</div>
+
+<div class="section">
+<div class="section-title">&#x1F3AE; Convierte tiempo</div>
+<div class="converter-area">
+<div class="conv-inputs">
+<input class="conv-input" type="number" id="conv-val" value="2" oninput="convertTime()">
+<select id="conv-from" onchange="convertTime()" style="padding:8px 12px;border-radius:10px;border:2px solid var(--border-strong);background:var(--bg-card-solid);font-family:var(--font-sans);font-size:.875rem;font-weight:600">
+<option value="min">Minutos</option><option value="h">Horas</option><option value="d">Das</option><option value="seg">Segundos</option>
+</select>
+<span class="conv-arrow">&#x2192;</span>
+<span class="conv-result" id="conv-result">120 segundos</span>
+</div>
+</div>
+</div>
+
+<div class="section">
+<div class="question-box">
+<h4>&#x2753; Resuelve la conversión</h4>
+<p style="color:var(--text-secondary);margin-bottom:12px;font-size:.9375rem" id="q-text"></p>
+<div class="conv-inputs">
+<input class="q-input" type="number" id="q-answer" placeholder="?">
+<span class="conv-label" id="q-unit"></span>
+<button class="btn btn-primary" onclick="checkConv()">Comprobar</button>
+</div>
+<div class="feedback" id="q-fb"></div>
+<div class="btn-row"><button class="btn btn-ghost" onclick="newConvQ()">Nueva pregunta</button></div>
+</div>
+</div>
+
+<div class="section" style="animation-delay:320ms">
+<div class="question-box" style="background:linear-gradient(135deg,rgba(0,122,255,.06),rgba(0,122,255,.02));border:1px solid rgba(0,122,255,.15)">
+<h4>&#x1F3AC; Videos de apoyo</h4>
+<p style="color:var(--text-secondary);margin-bottom:12px;font-size:.9375rem">Agrega links de videos de YouTube para reforzar lo aprendido:</p>
+<div id="videos-container" style="display:flex;flex-direction:column;gap:12px;margin-bottom:12px">
+<div class="video-placeholder" style="border:2px dashed rgba(0,122,255,.25);border-radius:16px;padding:24px;text-align:center;color:var(--text-tertiary);font-size:.875rem;cursor:pointer;transition:border-color .2s,background .2s" onclick="addVideoSlot(this.parentElement)">
+<span style="font-size:1.5rem;display:block;margin-bottom:6px">&#x1F4F1;</span>
+Haz clic aquí para agregar un video de YouTube
+</div>
+</div>
+</div>
+</div>
+
+</div>
+
+<script>
+function convertTime(){
+var val=parseInt(document.getElementById('conv-val').value)||0;
+var from=document.getElementById('conv-from').value;
+var res=0,unit='';
+if(from==='seg'){res=val;unit='segundos'}
+else if(from==='min'){res=val*60;unit='segundos'}
+else if(from==='h'){res=val*60;unit='minutos'}
+else if(from==='d'){res=val*24;unit='horas'}
+document.getElementById('conv-result').textContent=res+' '+unit;
+}
+var qAnswer,qUnit;
+function newConvQ(){
+var types=[
+{from:'min',to:'seg',factor:60,unit:'segundos'},
+{from:'h',to:'min',factor:60,unit:'minutos'},
+{from:'d',to:'h',factor:24,unit:'horas'},
+{from:'min',to:'h',factor:60,unit:'horas',div:true},
+{from:'seg',to:'min',factor:60,unit:'minutos',div:true}
+];
+var t=types[Math.floor(Math.random()*types.length)];
+var val=t.div?Math.floor(Math.random()*5)*t.factor+1:Math.floor(Math.random()*5)+1;
+qAnswer=t.div?val/t.factor:t.factor*val;
+qUnit=t.unit;
+document.getElementById('q-text').textContent='Convierte: '+val+' '+t.from+' = ? '+t.unit;
+document.getElementById('q-answer').value='';document.getElementById('q-fb').textContent='';document.getElementById('q-fb').className='feedback';
+}
+function checkConv(){
+var ans=parseInt(document.getElementById('q-answer').value);
+var fb=document.getElementById('q-fb');
+if(ans===qAnswer){fb.textContent='¿Correcto! '+qAnswer+' '+qUnit;fb.className='feedback correct';setTimeout(newConvQ,2000)}
+else if(isNaN(ans)){fb.textContent='Escribe un n';fb.className='feedback wrong'}
+else{fb.textContent='Recuerda la tabla de equivalencias';fb.className='feedback wrong'}
+}
+convertTime();newConvQ();
+
+function addVideoSlot(container){
+var existing=container.querySelector('.video-placeholder');
+if(existing)existing.remove();
+var div=document.createElement('div');
+div.className='video-slot';
+div.style.cssText='display:flex;gap:8px;align-items:center;background:rgba(0,122,255,.04);border:1px solid rgba(0,122,255,.12);border-radius:12px;padding:10px 12px';
+div.innerHTML='<input type="text" placeholder="Pega el link de YouTube aquí..." style="flex:1;font-family:var(--font-sans);font-size:.875rem;padding:8px 12px;border-radius:8px;border:1px solid rgba(0,0,0,.1);background:white;color:#1d1d1f;outline:none" onfocus="this.style.borderColor=\'#007aff\'" onblur="this.style.borderColor=\'rgba(0,0,0,1)\'"><button onclick="removeVideoSlot(this)" style="font-size:1.1rem;background:none;border:none;cursor:pointer;color:#ff3b30;padding:4px" title="Eliminar">&#x2715;</button>';
+container.appendChild(div);
+var addBtn=document.createElement('div');
+addBtn.className='video-placeholder';
+addBtn.style.cssText='border:2px dashed rgba(0,122,255,.25);border-radius:16px;padding:16px;text-align:center;color:var(--text-tertiary);font-size:.875rem;cursor:pointer;transition:border-color .2s,background .2s';
+addBtn.innerHTML='<span style="font-size:1.25rem;display:block;margin-bottom:4px">&#x2795;</span>Agregar otro video';
+addBtn.onclick=function(){addVideoSlot(container)};
+container.appendChild(addBtn);
+}
+function removeVideoSlot(btn){btn.closest('.video-slot').remove()}
+</script>
+</body>
+</html>

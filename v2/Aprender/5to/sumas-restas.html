@@ -1,0 +1,307 @@
+<?<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RakinMath " Sumas y Restas hasta 100.000</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../apple-design.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"></script>
+<script defer src="../rk-utils.js"></script>
+<style>
+body{display:flex;flex-direction:column;min-height:100vh}
+.content{flex:1;max-width:820px;width:100%;margin:0 auto;padding:24px}
+.back-link{display:inline-flex;align-items:center;gap:6px;font-size:.875rem;font-weight:600;color:var(--text-secondary);text-decoration:none;padding:8px 16px;border-radius:980px;background:var(--bg-card);border:1px solid var(--border-strong);transition:transform .15s;margin-bottom:24px}
+.back-link:active{transform:scale(.95)}
+.section{margin-bottom:44px;opacity:0;animation:slideUp .5s var(--spring-default) both}
+.section:nth-child(2){animation-delay:80ms}.section:nth-child(3){animation-delay:160ms}.section:nth-child(4){animation-delay:240ms}.section:nth-child(5){animation-delay:320ms}
+.section-title{font-size:1.5rem;font-weight:700;letter-spacing:-.03em;margin-bottom:8px}
+.section-subtitle{font-size:1rem;color:var(--text-secondary);margin-bottom:20px;line-height:1.6}
+.concept-box{border-radius:var(--radius-md);padding:24px;margin-bottom:20px}
+.concept-box.green{background:linear-gradient(135deg,rgba(52,199,89,.06),rgba(52,199,89,.02));border:1px solid rgba(52,199,89,.15)}
+.concept-box h3{font-size:1.125rem;font-weight:700;margin-bottom:8px}
+.concept-box p{font-size:.9375rem;color:var(--text-secondary);line-height:1.7}
+.tip-box{background:linear-gradient(135deg,rgba(175,82,222,.06),rgba(175,82,222,.02));border:1px solid rgba(175,82,222,.15);border-radius:var(--radius-md);padding:20px;margin:16px 0}
+.tip-box h4{font-size:.9375rem;font-weight:700;color:var(--purple);margin-bottom:6px}
+.tip-box p{font-size:.875rem;color:var(--text-secondary);line-height:1.6}
+.card{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-lg);padding:28px 24px 24px;margin-bottom:20px}
+.card h3{font-size:1.125rem;font-weight:700;margin-bottom:16px}
+.quiz-box{background:linear-gradient(135deg,rgba(0,122,255,.06),rgba(0,122,255,.02));border:1px solid rgba(0,122,255,.15);border-radius:var(--radius-md);padding:24px}
+.quiz-box h4{font-size:1rem;font-weight:700;margin-bottom:12px}
+.quiz-problem{font-size:1.75rem;font-weight:700;text-align:center;margin:16px 0 4px;font-variant-numeric:tabular-nums}
+.quiz-row{display:flex;align-items:center;gap:12px;justify-content:center;flex-wrap:wrap;margin-top:12px}
+.quiz-input{width:100px;padding:10px;border-radius:var(--radius-sm);border:2px solid var(--border-strong);background:var(--bg-card-solid);font-family:var(--font-sans);font-size:1.125rem;font-weight:700;text-align:center;color:var(--text);outline:none}
+.quiz-input:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(0,122,255,.1)}
+.feedback{font-size:.875rem;font-weight:600;margin-top:10px;min-height:20px;text-align:center}
+.feedback.correct{color:var(--green)}.feedback.wrong{color:var(--red)}
+.btn{font-family:var(--font-sans);font-size:.875rem;font-weight:600;padding:8px 18px;border-radius:980px;border:none;cursor:pointer;transition:transform .12s,opacity .12s}
+.btn:active{transform:scale(.95)}
+.btn:disabled{opacity:.4;cursor:not-allowed;transform:none}
+.btn-primary{background:var(--accent);color:white}
+.btn-ghost{background:var(--bg-card-solid);color:var(--text);border:1px solid var(--border-strong)}
+.math-inputs{display:flex;gap:10px;align-items:center;justify-content:center;margin-bottom:20px;flex-wrap:wrap}
+.math-input{width:80px;text-align:center;font-size:1.25rem;font-weight:700;padding:8px 10px;border-radius:var(--radius-sm);border:2px solid var(--border-strong);background:var(--bg-card-solid);color:var(--text);outline:none;font-family:var(--font-sans);transition:border-color .2s,box-shadow .2s}
+.math-input:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(0,122,255,.1)}
+.math-op{font-size:1.25rem;font-weight:700;color:var(--text-tertiary)}
+.board{display:flex;flex-direction:column;align-items:center;font-family:'Courier New',monospace;font-size:2rem;font-weight:700;margin:1rem 0}
+.board .row{display:flex;gap:6px}
+.board .border-bottom{border-bottom:3px solid var(--text);padding-bottom:4px}
+.board .cell{width:40px;height:44px;display:flex;align-items:center;justify-content:center;border-radius:8px;transition:all .25s ease;position:relative}
+.board .cell.reserva{font-size:.9rem;height:26px;color:var(--orange)}
+.board .cell.label{color:var(--text-tertiary);font-family:var(--font-sans);font-size:.85rem;font-weight:600;width:30px}
+.board .cell.active-col{background:rgba(0,122,255,.08);outline:2px solid var(--accent)}
+.board .cell .carry-text{color:var(--orange);font-weight:800}
+.board .cell .result-text{color:var(--accent);font-weight:800}
+.controls{display:flex;gap:8px;justify-content:center;flex-wrap:wrap}
+.step-box{background:linear-gradient(135deg,rgba(0,122,255,.04),rgba(0,122,255,.01));border:1px solid rgba(0,122,255,.12);border-radius:var(--radius-md);padding:16px 20px;margin-top:16px;min-height:52px;line-height:1.5;font-size:.9375rem;color:var(--text)}
+.step-box strong{color:var(--accent);font-weight:700}
+.step-box em{color:var(--orange);font-style:normal;font-weight:600}
+.math-display{background:rgba(0,122,255,.04);border:1px solid rgba(0,122,255,.12);border-radius:var(--radius-md);padding:16px 20px;margin:16px 0;text-align:center;font-size:1.1rem}
+@keyframes slideUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+@media(max-width:640px){.content{padding:16px}.math-input{width:64px;font-size:1.1rem;padding:6px}.board .cell{width:32px;height:38px;font-size:1.4rem}.card{padding:20px 16px 16px}}
+</style>
+</head>
+<body>
+<nav class="nav"><a href="menu.html" class="nav-title"><img src="../../Recursos/LogoRakinMath.png" alt="RakinMath" style="height:24px;width:auto"></a><a href="menu.html" class="exit-btn">Volver</a></nav>
+<div class="content">
+<a href="menu.html" class="back-link">? Volver a Menú</a>
+
+<div class="section">
+<div class="section-title">➕➖ Sumas y Restas hasta 100.000</div>
+<div class="section-subtitle">Las operaciones con números grandes siguen las mismas reglas: <strong>alineamos a la derecha</strong> y resolvemos columna por columna, de derecha a izquierda.</div>
+<div class="concept-box green">
+<h3>📌 Suma con reserva (llevada)</h3>
+<p>En la suma vertical de números grandes, cada vez que la suma de una columna da <strong>10 o más</strong>, dejamos el último dígito y <strong>canjeamos 1</strong> a la columna izquierda. Es el mismo proceso que con números pequeños, solo que hay más columnas.</p>
+<div class="math-display">
+$$\begin{array}{r} 45.678 \\ +\; 23.456 \\ \hline 69.134 \end{array}$$
+</div>
+<p style="margin-top:8px"><strong>Ejemplo:</strong> $45.678 + 23.456$ tapitas de reciclaje</p>
+<p>Unidades: $8 + 6 = 14 \Rightarrow$ dejamos $4$, canjeamos $1$</p>
+<p>Decenas: $7 + 5 + 1 \text{ (reserva)} = 13 \Rightarrow$ dejamos $3$, canjeamos $1$</p>
+<p>Centenas: $6 + 4 + 1 \text{ (reserva)} = 11 \Rightarrow$ dejamos $1$, canjeamos $1$</p>
+<p>Miles: $5 + 3 + 1 \text{ (reserva)} = 9 \Rightarrow$ escribimos $9$</p>
+<p>Decenas de miles: $4 + 2 = 6 \Rightarrow$ escribimos $6$</p>
+<p style="margin-top:12px;padding:10px 16px;background:rgba(52,199,89,.08);border-radius:12px;font-weight:700;color:var(--green)">Resultado: $45.678 + 23.456 = 69.134$ tapitas</p>
+</div>
+
+<div class="concept-box green">
+<h3>📌 Resta con reserva (tomada)</h3>
+<p>En la resta, cuando el número de arriba es <strong>menor</strong> que el de abajo, <strong>"tomamos prestado"</strong> 1 de la columna izquierda. Ese 1 vale 10 en la columna actual.</p>
+<div class="math-display">
+$$\begin{array}{r} 80.000 \\ -\; 69.134 \\ \hline 10.866 \end{array}$$
+</div>
+<p style="margin-top:8px"><strong>Ejemplo:</strong> $80.000 - 69.134 = 10.866$ tapitas sobrantes</p>
+<p style="margin-top:12px;padding:10px 16px;background:rgba(52,199,89,.08);border-radius:12px;font-weight:700;color:var(--green)">Si tienes $80.000$ tapitas y usas $69.134$, te sobran $10.866$ tapitas</p>
+</div>
+
+<div class="tip-box">
+<h4>💡 Tip del profesor</h4>
+<p>La clave es siempre <strong>alinear los números a la derecha</strong>. Si un número tiene menos dígitos, piensa que tiene ceros a la izquierda. Por ejemplo, $23.456$ es como $023.456$ para alinear con $45.678$.</p>
+</div>
+</div>
+
+<div class="section">
+<div class="section-title">🔢 Prueba visual paso a paso</div>
+<div class="card">
+<h3>Suma Vertical Paso a Paso</h3>
+<div class="math-inputs">
+<input class="math-input" type="number" min="1" max="99999" value="45678" id="numA" oninput="onInput()" style="width:120px">
+<span class="math-op">+</span>
+<input class="math-input" type="number" min="1" max="99999" value="23456" id="numB" oninput="onInput()" style="width:120px">
+</div>
+<div class="controls">
+<button class="btn btn-ghost" id="prevStep" disabled>? Anterior</button>
+<button class="btn btn-primary" id="nextStep">Siguiente →</button>
+<button class="btn btn-ghost" id="resetBtn">Reiniciar</button>
+</div>
+<div class="board" id="board"></div>
+<div class="step-box" id="stepText">Haz clic en <strong>Siguiente</strong> para comenzar la explicación.</div>
+</div>
+</div>
+
+<div class="section">
+<div class="quiz-box">
+<h4>📝 Resuelve sin ayuda</h4>
+<p style="color:var(--text-secondary);margin-bottom:4px;font-size:.9375rem">¿Cuánto da?</p>
+<div class="quiz-problem" id="qProblem"></div>
+<div class="quiz-row">
+<input class="quiz-input" type="number" id="qAnswer" placeholder="?" onkeydown="if(event.key==='Enter')checkQuiz()">
+<button class="btn btn-primary" onclick="checkQuiz()">Comprobar</button>
+</div>
+<div class="feedback" id="qFeedback"></div>
+<div style="margin-top:14px;text-align:center"><button class="btn btn-ghost" onclick="newQuiz()">Nueva pregunta</button></div>
+</div>
+</div>
+
+<div class="section">
+<div class="videos-box">
+<h4>🎬 Videos de apoyo</h4>
+<p style="color:var(--text-secondary);margin-bottom:14px;font-size:.875rem">Agrega links de YouTube para reforzar lo aprendido:</p>
+<div id="videosContainer">
+<div class="video-placeholder" onclick="addVideoSlot()">
+<span style="font-size:1.5rem;display:block;margin-bottom:6px">▶️</span>
+Haz clic aquí para agregar un video de YouTube
+</div>
+</div>
+</div>
+</div>
+
+</div>
+
+<script>
+var steps=[], currentStep=0;
+var LABELS=['U','D','C','M','DM'];
+
+function posName(i){return ['u','d','c','m','dm'][i]||('p'+i)}
+
+function buildBoard(a,b){
+var n=Math.max(String(a).length,String(b).length);
+var s1=String(a).padStart(n,'0');
+var s2=String(b).padStart(n,'0');
+var h='<div class="row"><span class="cell label"></span>';
+for(var i=n-1;i>=0;i--) h+='<span class="cell reserva" id="rv-'+posName(n-1-i)+'"></span>';
+h+='</div><div class="row"><span class="cell label"></span>';
+for(var i=n-1;i>=0;i--) h+='<span class="cell" id="n1-'+posName(n-1-i)+'">'+s1[i]+'</span>';
+h+='</div><div class="row border-bottom"><span class="cell label">+</span>';
+for(var i=n-1;i>=0;i--) h+='<span class="cell" id="n2-'+posName(n-1-i)+'">'+s2[i]+'</span>';
+h+='</div><div class="row"><span class="cell label"></span>';
+for(var i=n-1;i>=0;i--) h+='<span class="cell" id="res-'+posName(n-1-i)+'"></span>';
+h+='</div>';
+document.getElementById('board').innerHTML=h;
+}
+
+function buildSteps(a,b){
+var r=[];
+var n=Math.max(String(a).length,String(b).length);
+var s1=String(a).padStart(n,'0');
+var s2=String(b).padStart(n,'0');
+var carry=0;
+var reserva={};
+var result={};
+
+r.push({text:'Queremos sumar <strong>'+a.toLocaleString('es-CL')+' + '+b.toLocaleString('es-CL')+'</strong>. Alineamos los números a la derecha y <strong>empezamos por las Unidades</strong>.',active:[],reserva:{},result:{}});
+
+for(var i=0;i<n;i++){
+var d1=parseInt(s1[n-1-i]);
+var d2=parseInt(s2[n-1-i]);
+var sum=d1+d2+carry;
+var digit=sum%10;
+var nextCarry=Math.floor(sum/10);
+var p=posName(i);
+var lb=LABELS[i]||('Col '+i);
+
+var sumText=d1+' + '+d2;
+if(carry>0) sumText+=' + '+carry+' (reserva)';
+r.push({text:'<strong>PASO '+(i+1)+' " '+lb+':</strong> Sumamos '+sumText+' = <strong>'+sum+'</strong>.',active:['n1-'+p,'n2-'+p],reserva:cp(reserva),result:cp(result)});
+
+if(nextCarry>0){
+var np=posName(i+1);
+reserva[np]='1';
+result[p]=String(digit);
+r.push({text:'Como '+sum+' son 10 o más: dejamos el <strong>'+digit+'</strong> abajo en '+lb+' y <em>canjeamos 1</em> a la columna izquierda.',active:['res-'+p,'rv-'+np],reserva:cp(reserva),result:cp(result)});
+}else{
+result[p]=String(digit);
+r.push({text:'Escribimos el <strong>'+digit+'</strong> abajo en '+lb+'.',active:['res-'+p],reserva:cp(reserva),result:cp(result)});
+}
+carry=nextCarry;
+}
+
+r.push({text:'¡Resultado final: <strong>'+a.toLocaleString('es-CL')+' + '+b.toLocaleString('es-CL')+' = '+(a+b).toLocaleString('es-CL')+'</strong>!',active:[],reserva:cp(reserva),result:cp(result)});
+return r;
+}
+
+function cp(o){var r={};for(var k in o)r[k]=o[k];return r}
+
+function renderStep(){
+var step=steps[currentStep];
+document.getElementById('stepText').innerHTML=step.text;
+document.querySelectorAll('.board .cell').forEach(function(c){c.classList.remove('active-col')});
+for(var k in step.reserva){
+var rv=document.getElementById('rv-'+k);
+if(rv) rv.innerHTML=step.reserva[k]?'<span class="carry-text">'+step.reserva[k]+'</span>':'';
+}
+for(var k in step.result){
+var rs=document.getElementById('res-'+k);
+if(rs) rs.innerHTML='<span class="result-text">'+step.result[k]+'</span>';
+}
+step.active.forEach(function(id){var el=document.getElementById(id);if(el)el.classList.add('active-col')});
+document.getElementById('prevStep').disabled=(currentStep===0);
+document.getElementById('nextStep').disabled=(currentStep===steps.length-1);
+}
+
+function onInput(){
+var a=parseInt(document.getElementById('numA').value)||0;
+var b=parseInt(document.getElementById('numB').value)||0;
+if(a<=0||b<=0)return;
+buildBoard(a,b);steps=buildSteps(a,b);currentStep=0;renderStep();
+}
+
+document.getElementById('nextStep').addEventListener('click',function(){if(currentStep<steps.length-1){currentStep++;renderStep()}});
+document.getElementById('prevStep').addEventListener('click',function(){if(currentStep>0){currentStep--;renderStep()}});
+document.getElementById('resetBtn').addEventListener('click',function(){currentStep=0;renderStep()});
+
+var qA,qB,qOp,qAnswer;
+function newQuiz(){
+var isAdd=Math.random()>0.5;
+if(isAdd){
+qA=Math.floor(Math.random()*80000)+10000;
+qB=Math.floor(Math.random()*80000)+10000;
+qOp='+';
+qAnswer=qA+qB;
+}else{
+qA=Math.floor(Math.random()*80000)+20000;
+qB=Math.floor(Math.random()*qA)+1;
+qOp='−';
+qAnswer=qA-qB;
+}
+document.getElementById('qProblem').textContent=qA.toLocaleString('es-CL')+' '+qOp+' '+qB.toLocaleString('es-CL')+' = ?';
+document.getElementById('qAnswer').value='';
+document.getElementById('qFeedback').textContent='';
+document.getElementById('qFeedback').className='feedback';
+}
+
+function checkQuiz(){
+var ans=parseInt(document.getElementById('qAnswer').value);
+var fb=document.getElementById('qFeedback');
+if(ans===qAnswer){
+fb.textContent='¡Correcto! '+qA.toLocaleString('es-CL')+' '+qOp+' '+qB.toLocaleString('es-CL')+' = '+qAnswer.toLocaleString('es-CL');
+fb.className='feedback correct';
+setTimeout(newQuiz,2000);
+}else if(isNaN(ans)){
+fb.textContent='Escribe un número';
+fb.className='feedback wrong';
+}else{
+fb.textContent='Revisa tu cálculo. ¿Empezaste por la columna de la derecha?';
+fb.className='feedback wrong';
+}
+}
+
+function addVideoSlot(){
+var c=document.getElementById('videosContainer');
+var ph=c.querySelector('.video-placeholder');
+if(ph)ph.remove();
+var slot=document.createElement('div');
+slot.className='video-slot';
+slot.innerHTML='<input type="text" placeholder="Pega el link de YouTube aquí..."><button class="remove-btn" onclick="this.parentElement.remove();if(!document.querySelector(\'#videosContainer .video-slot\'))resetVideos()">✕</button>';
+c.appendChild(slot);
+var addBtn=document.createElement('div');
+addBtn.className='add-video-btn';
+addBtn.textContent='+ Agregar otro video';
+addBtn.onclick=addVideoSlot;
+c.appendChild(addBtn);
+}
+
+function resetVideos(){
+document.getElementById('videosContainer').innerHTML='<div class="video-placeholder" onclick="addVideoSlot()"><span style="font-size:1.5rem;display:block;margin-bottom:6px">▶️</span>Haz clic aquí para agregar un video de YouTube</div>';
+}
+
+var a0=parseInt(document.getElementById('numA').value)||45678;
+var b0=parseInt(document.getElementById('numB').value)||23456;
+buildBoard(a0,b0);steps=buildSteps(a0,b0);currentStep=0;renderStep();newQuiz();
+</script>
+</body>
+</html>

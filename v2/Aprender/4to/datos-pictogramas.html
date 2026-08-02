@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RakinMath – Pictogramas</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../apple-design.css">
+<style>
+body{display:flex;flex-direction:column;min-height:100vh}
+.content{flex:1;max-width:800px;width:100%;margin:0 auto;padding:24px}
+.back-link{display:inline-flex;align-items:center;gap:6px;font-family:var(--font-sans);font-size:.875rem;font-weight:600;color:var(--text-secondary);text-decoration:none;padding:8px 16px;border-radius:980px;background:var(--bg-card);border:1px solid var(--border-strong);transition:transform .15s,background .15s;margin-bottom:24px}
+.back-link:active{transform:scale(.95)}
+.back-link:hover{background:var(--bg-card-solid);color:var(--text)}
+.section{margin-bottom:40px;opacity:0;animation:slideUp .5s var(--spring-default) both}
+.section:nth-child(2){animation-delay:100ms}.section:nth-child(3){animation-delay:200ms}.section:nth-child(4){animation-delay:300ms}
+.section-title{font-size:1.5rem;font-weight:700;letter-spacing:-.03em;margin-bottom:8px}
+.section-subtitle{font-size:1rem;color:var(--text-secondary);margin-bottom:20px;line-height:1.5}
+.concept-box{background:linear-gradient(135deg,rgba(52,199,89,.06),rgba(52,199,89,.02));border:1px solid rgba(52,199,89,.15);border-radius:20px;padding:24px;margin-bottom:24px}
+.concept-box h3{font-size:1.125rem;font-weight:700;margin-bottom:8px}
+.concept-box p{font-size:.9375rem;color:var(--text-secondary);line-height:1.6}
+/* Key legend */
+.key-box{background:var(--bg-card);border:1px solid var(--border);border-radius:20px;padding:20px;margin-bottom:20px;display:flex;align-items:center;gap:16px;flex-wrap:wrap}
+.key-label{font-size:.875rem;font-weight:600;color:var(--text-secondary)}
+.key-icon{font-size:1.5rem}
+.key-equals{font-size:1.25rem;font-weight:700;color:var(--text-tertiary)}
+.key-value{font-size:1.125rem;font-weight:700;color:var(--accent)}
+/* Pictogram demo */
+.picto-demo{background:var(--bg-card);border:1px solid var(--border);border-radius:24px;padding:24px;margin-bottom:24px}
+.picto-row{display:flex;align-items:center;gap:12px;margin-bottom:12px;padding:12px;border-radius:16px;background:rgba(0,0,0,.02);transition:background .2s}
+.picto-row:hover{background:rgba(0,0,0,.04)}
+.picto-row-label{width:100px;font-size:.875rem;font-weight:600;color:var(--text)}
+.picto-row-icons{display:flex;gap:4px;flex-wrap:wrap;font-size:1.25rem}
+.picto-row-total{font-size:1rem;font-weight:700;color:var(--accent);margin-left:auto;min-width:40px;text-align:right}
+.picto-half{opacity:.35}
+/* Interactive builder */
+.builder{background:var(--bg-card);border:1px solid var(--border);border-radius:24px;padding:24px}
+.builder-header{display:flex;align-items:center;gap:12px;margin-bottom:20px;flex-wrap:wrap}
+.builder-header select{font-family:var(--font-sans);font-size:.875rem;padding:8px 14px;border-radius:980px;border:1px solid var(--border-strong);background:var(--bg-card-solid);color:var(--text);cursor:pointer}
+.builder-rows{display:flex;flex-direction:column;gap:12px;margin-bottom:20px}
+.builder-row{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.builder-row input{width:120px;padding:10px;border-radius:12px;border:2px solid var(--border-strong);background:var(--bg-card-solid);font-family:var(--font-sans);font-size:.9375rem;font-weight:600;color:var(--text);outline:none;transition:border-color .15s}
+.builder-row input:focus{border-color:var(--accent)}
+.builder-icons-area{display:flex;gap:4px;flex-wrap:wrap;min-height:36px;flex:1;padding:8px;background:rgba(0,0,0,.02);border-radius:12px}
+.builder-total{font-size:1rem;font-weight:700;color:var(--accent);min-width:40px;text-align:right}
+.btn-row{display:flex;gap:8px;flex-wrap:wrap}
+.btn-sm{font-family:var(--font-sans);font-size:.8125rem;font-weight:600;padding:8px 16px;border-radius:980px;border:none;cursor:pointer;transition:transform .12s}
+.btn-sm:active{transform:scale(.95)}
+.btn-primary{background:var(--accent);color:white}
+.btn-ghost{background:var(--bg-card-solid);color:var(--text);border:1px solid var(--border-strong)}
+/* Question */
+.question-box{background:linear-gradient(135deg,rgba(0,122,255,.06),rgba(0,122,255,.02));border:1px solid rgba(0,122,255,.15);border-radius:20px;padding:24px}
+.question-box h4{font-size:1rem;font-weight:700;margin-bottom:12px}
+.question-input-row{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.question-input{width:80px;padding:10px;border-radius:12px;border:2px solid var(--border-strong);background:var(--bg-card-solid);font-family:var(--font-sans);font-size:1.125rem;font-weight:700;text-align:center;color:var(--text);outline:none;transition:border-color .15s}
+.question-input:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(0,122,255,.1)}
+.check-btn{font-family:var(--font-sans);font-size:.875rem;font-weight:600;padding:10px 20px;border-radius:980px;border:none;cursor:pointer;background:var(--accent);color:white;transition:transform .12s}
+.check-btn:active{transform:scale(.95)}
+.feedback{font-size:.875rem;font-weight:600;margin-top:8px;min-height:24px}
+.feedback.correct{color:var(--green)}
+.feedback.wrong{color:var(--red)}
+.result-box{background:rgba(52,199,89,.08);border:1px solid rgba(52,199,89,.2);border-radius:16px;padding:16px;margin-top:12px;display:none}
+.result-box.show{display:block;animation:popIn .4s var(--spring-default) both}
+.result-box p{font-size:.9375rem;color:var(--text);line-height:1.5}
+@keyframes slideUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+@keyframes popIn{0%{opacity:0;transform:scale(.9)}70%{transform:scale(1.02)}100%{opacity:1;transform:scale(1)}}
+@keyframes iconPop{0%{opacity:0;transform:scale(0)}100%{opacity:1;transform:scale(1)}}
+@media(max-width:640px){.content{padding:16px}.picto-row-label{width:80px;font-size:.8125rem}.builder-row input{width:100px}}
+</style>
+</head>
+<body>
+
+<nav class="nav">
+<a href="menu.html" class="nav-title">
+<img src="../../Recursos/LogoRakinMath.png" alt="RakinMath" style="height: 24px; width: auto;">
+
+</a>
+<a href="menu.html" class="exit-btn">Volver</a>
+</nav>
+
+<div class="content">
+
+<a href="menu.html" class="back-link">&#x2190; Volver a Datos</a>
+
+<!-- SECTION 1: ¿Qué es? -->
+<div class="section">
+<div class="section-title">&#x1F4C8; ¿Qué es un Pictograma?</div>
+<div class="section-subtitle">Un pictograma usa <strong>dibujos o iconos</strong> para representar cantidades. Cada icono significa una cantidad fija, y así puedes ver los datos de forma visual y divertida.</div>
+<div class="concept-box">
+<h3>&#x1F4A1; ¿Cómo se lee?</h3>
+<p>Primero mira la <strong>clave</strong>: te dice cuánto vale cada icono. Por ejemplo, si dice "1 &#x1F34E; = 2 personas", significa que cada manzana representa 2 personas. Si ves 3 manzanas, son 3 × 2 = <strong>6 personas</strong>.</p>
+</div>
+</div>
+
+<!-- SECTION 2: Demo -->
+<div class="section">
+<div class="section-title">&#x1F3AC; Ejemplo: ¿Qué deporte prefieren?</div>
+<div class="section-subtitle">Cada &#x26BD; = 2 personas</div>
+<div class="key-box">
+<span class="key-label">Clave:</span>
+<span class="key-icon">&#x26BD;</span>
+<span class="key-equals">=</span>
+<span class="key-value">2 personas</span>
+</div>
+<div class="picto-demo" id="demo-area">
+<div class="picto-row">
+<div class="picto-row-label">Fútbol</div>
+<div class="picto-row-icons" id="demo-futbol"></div>
+<div class="picto-row-total">10</div>
+</div>
+<div class="picto-row">
+<div class="picto-row-label">Basketball</div>
+<div class="picto-row-icons" id="demo-basket"></div>
+<div class="picto-row-total">6</div>
+</div>
+<div class="picto-row">
+<div class="picto-row-label">Tenis</div>
+<div class="picto-row-icons" id="demo-tenis"></div>
+<div class="picto-row-total">4</div>
+</div>
+<div class="picto-row">
+<div class="picto-row-label">Natación</div>
+<div class="picto-row-icons" id="demo-natacion"></div>
+<div class="picto-row-total">8</div>
+</div>
+</div>
+<button class="btn-sm btn-primary" onclick="playPictoDemo()">&#x25B6; Ver animación</button>
+</div>
+
+<!-- SECTION 3: Ejemplo con pregunta -->
+<div class="section">
+<div class="section-title">&#x1F4D6; Ejemplo paso a paso</div>
+<div class="question-box">
+<h4>&#x2753; Pregunta</h4>
+<p style="color:var(--text-secondary);margin-bottom:12px;font-size:.9375rem">Según el pictograma de arriba: <strong>¿Cuántas personas prefieren fútbol y natación juntas?</strong></p>
+<div class="question-input-row">
+<input class="question-input" type="number" id="ex-answer" placeholder="?">
+<button class="check-btn" onclick="checkExample()">Comprobar</button>
+</div>
+<div class="feedback" id="ex-feedback"></div>
+<div class="result-box" id="ex-result">
+<p>&#x2705; <strong>¡Correcto!</strong> Fútbol tiene 5 &#x26BD; = 10 personas. Natación tiene 4 &#x26BD; = 8 personas. En total: 10 + 8 = <strong>18 personas</strong>.</p>
+</div>
+</div>
+</div>
+
+<!-- SECTION 4: Construye tu pictograma -->
+<div class="section">
+<div class="section-title">&#x1F3D7; Construye tu pictograma</div>
+<div class="section-subtitle">Elige un icono y escribe cuántas personas hay en cada categoría.</div>
+<div class="builder">
+<div class="builder-header">
+<span class="key-label">Icono:</span>
+<select id="icon-select" onchange="updateBuilder()">
+<option value="&#x1F34E;">&#x1F34E; Manzana</option>
+<option value="&#x2B50;">&#x2B50; Estrella</option>
+<option value="&#x1F3AF;">&#x1F3AF; Diana</option>
+<option value="&#x26BD;">&#x26BD; Pelota</option>
+<option value="&#x1F4A0;">&#x1F4A0; Diamante</option>
+</select>
+<span class="key-label" style="margin-left:12px">1 icono =</span>
+<select id="key-select" onchange="updateBuilder()">
+<option value="1">1</option>
+<option value="2" selected>2</option>
+<option value="3">3</option>
+<option value="5">5</option>
+</select>
+<span class="key-label">personas</span>
+</div>
+<div class="builder-rows" id="builder-rows">
+<div class="builder-row"><input type="text" value="Rojo" placeholder="Nombre"><div class="builder-icons-area" data-count="6"></div><div class="builder-total">12</div></div>
+<div class="builder-row"><input type="text" value="Azul" placeholder="Nombre"><div class="builder-icons-area" data-count="4"></div><div class="builder-total">8</div></div>
+<div class="builder-row"><input type="text" value="Verde" placeholder="Nombre"><div class="builder-icons-area" data-count="8"></div><div class="builder-total">16</div></div>
+</div>
+<div class="btn-row">
+<button class="btn-sm btn-ghost" onclick="addBuilderRow()">+ Agregar fila</button>
+<button class="btn-sm btn-primary" onclick="updateBuilder()">Actualizar</button>
+</div>
+</div>
+</div>
+
+<!-- SECTION 5: Pregunta interactiva -->
+<div class="section">
+<div class="section-title">&#x1F9E0; Pon a prueba</div>
+<div class="question-box">
+<h4>&#x2753; Pregunta</h4>
+<p style="color:var(--text-secondary);margin-bottom:12px;font-size:.9375rem" id="quiz-question">¿Cuántas personas hay en la categoría con más iconos?</p>
+<div class="question-input-row">
+<input class="question-input" type="number" id="quiz-answer" placeholder="?">
+<button class="check-btn" onclick="checkQuiz()">Comprobar</button>
+</div>
+<div class="feedback" id="quiz-feedback"></div>
+</div>
+</div>
+
+
+<div class="section" style="animation-delay:320ms">
+<div class="question-box" style="background:linear-gradient(135deg,rgba(0,122,255,.06),rgba(0,122,255,.02));border:1px solid rgba(0,122,255,.15)">
+<h4>&#x1F3AC; Videos de apoyo</h4>
+<p style="color:var(--text-secondary);margin-bottom:12px;font-size:.9375rem">Agrega links de videos de YouTube para reforzar lo aprendido:</p>
+<div id="videos-container" style="display:flex;flex-direction:column;gap:12px;margin-bottom:12px">
+<div class="video-placeholder" style="border:2px dashed rgba(0,122,255,.25);border-radius:16px;padding:24px;text-align:center;color:var(--text-tertiary);font-size:.875rem;cursor:pointer;transition:border-color .2s,background .2s" onclick="addVideoSlot(this.parentElement)">
+<span style="font-size:1.5rem;display:block;margin-bottom:6px">&#x1F4F1;</span>
+Haz clic aquí para agregar un video de YouTube
+</div>
+</div>
+</div>
+</div>
+
+</div>
+
+<script>
+var icons=['&#x1F34E;','&#x2B50;','&#x1F3AF;','&#x26BD;','&#x1F4A0;'];
+
+// Demo animation
+function playPictoDemo(){
+var data=[
+{id:'demo-futbol',count:5},
+{id:'demo-basket',count:3},
+{id:'demo-tenis',count:2},
+{id:'demo-natacion',count:4}
+];
+data.forEach(function(d){
+var el=document.getElementById(d.id);
+el.innerHTML='';
+for(var i=0;i<d.count;i++){
+var span=document.createElement('span');
+span.textContent='\u26BD';
+span.style.animation='iconPop .3s cubic-bezier(.2,.9,.3,1.2) '+(i*80)+'ms both';
+el.appendChild(span);
+}
+});
+}
+playPictoDemo();
+
+// Example check
+function checkExample(){
+var ans=parseInt(document.getElementById('ex-answer').value);
+var fb=document.getElementById('ex-feedback');
+var res=document.getElementById('ex-result');
+if(ans===18){fb.textContent='¡Correcto!';fb.className='feedback correct';res.classList.add('show')}
+else if(isNaN(ans)){fb.textContent='Escribe un número';fb.className='feedback wrong'}
+else{fb.textContent='Intenta de nuevo: recuerda que cada pelota vale 2';fb.className='feedback wrong';res.classList.remove('show')}
+}
+
+// Builder
+function updateBuilder(){
+var icon=document.getElementById('icon-select').value;
+var key=parseInt(document.getElementById('key-select').value);
+var rows=document.querySelectorAll('#builder-rows .builder-row');
+rows.forEach(function(row){
+var input=row.querySelector('input');
+var area=row.querySelector('.builder-icons-area');
+var total=row.querySelector('.builder-total');
+var name=input.value||'';
+var count=parseInt(area.dataset.count)||0;
+var personas=count*key;
+total.textContent=personas;
+area.innerHTML='';
+for(var i=0;i<count;i++){
+var span=document.createElement('span');
+span.textContent=icon;
+span.style.fontSize='1.25rem';
+span.style.animation='iconPop .3s cubic-bezier(.2,.9,.3,1.2) '+(i*40)+'ms both';
+area.appendChild(span);
+}
+// Click to add/remove
+area.onclick=function(e){
+if(e.target===area){
+area.dataset.count=parseInt(area.dataset.count)+1;
+}else{
+area.dataset.count=Math.max(0,parseInt(area.dataset.count)-1);
+}
+updateBuilder();
+};
+area.title='Clic para agregar, clic en ícono para quitar';
+});
+updateQuiz();
+}
+function addBuilderRow(){
+var rows=document.getElementById('builder-rows');
+var div=document.createElement('div');
+div.className='builder-row';
+div.innerHTML='<input type="text" value="Nuevo" placeholder="Nombre"><div class="builder-icons-area" data-count="2"></div><div class="builder-total">4</div>';
+rows.appendChild(div);
+updateBuilder();
+}
+
+// Quiz
+function updateQuiz(){
+var rows=document.querySelectorAll('#builder-rows .builder-row');
+var key=parseInt(document.getElementById('key-select').value);
+var data=[];
+rows.forEach(function(row){
+var name=row.querySelector('input').value||'';
+var count=parseInt(row.querySelector('.builder-icons-area').dataset.count)||0;
+data.push({name:name,personas:count*key});
+});
+var maxD=data.reduce(function(a,b){return a.personas>b.personas?a:b},data[0]);
+var minD=data.reduce(function(a,b){return a.personas<b.personas?a:b},data[0]);
+var total=data.reduce(function(a,b){return a+b.personas},0);
+var questions=[
+'¿Cuántas personas hay en "'+maxD.name+'" (la categoría con más)?',
+'¿Cuántas personas hay en "'+minD.name+'" (la categoría con menos)?',
+'¿Cuántas personas hay en total?',
+'¿Cuántas personas hay en "'+data[0].name+'" y "'+(data[1]?data[1].name:'')+'" juntas?'
+];
+document.getElementById('quiz-question').textContent=questions[Math.floor(Math.random()*questions.length)];
+document.getElementById('quiz-feedback').textContent='';
+document.getElementById('quiz-answer').value='';
+}
+function checkQuiz(){
+var q=document.getElementById('quiz-question').textContent;
+var ans=parseInt(document.getElementById('quiz-answer').value);
+var rows=document.querySelectorAll('#builder-rows .builder-row');
+var key=parseInt(document.getElementById('key-select').value);
+var data=[];
+rows.forEach(function(row){
+var name=row.querySelector('input').value||'';
+var count=parseInt(row.querySelector('.builder-icons-area').dataset.count)||0;
+data.push({name:name,personas:count*key});
+});
+var fb=document.getElementById('quiz-feedback');
+var correct=false;
+if(q.indexOf('total')>-1){correct=ans===data.reduce(function(a,b){return a+b.personas},0)}
+else if(q.indexOf('juntas')>-1){correct=ans===data[0].personas+(data[1]?data[1].personas:0)}
+else{
+var maxD=data.reduce(function(a,b){return a.personas>b.personas?a:b},data[0]);
+var minD=data.reduce(function(a,b){return a.personas<b.personas?a:b},data[0]);
+if(q.indexOf(maxD.name)>-1){correct=ans===maxD.personas}
+else if(q.indexOf(minD.name)>-1){correct=ans===minD.personas}
+}
+if(correct){fb.textContent='¡Correcto!';fb.className='feedback correct';setTimeout(updateQuiz,1500)}
+else if(isNaN(ans)){fb.textContent='Escribe un número';fb.className='feedback wrong'}
+else{fb.textContent='Revisa el pictograma e intenta de nuevo';fb.className='feedback wrong'}
+}
+
+updateBuilder();
+
+function addVideoSlot(container){
+var existing=container.querySelector('.video-placeholder');
+if(existing)existing.remove();
+var div=document.createElement('div');
+div.className='video-slot';
+div.style.cssText='display:flex;gap:8px;align-items:center;background:rgba(0,122,255,.04);border:1px solid rgba(0,122,255,.12);border-radius:12px;padding:10px 12px';
+div.innerHTML='<input type="text" placeholder="Pega el link de YouTube aquí..." style="flex:1;font-family:var(--font-sans);font-size:.875rem;padding:8px 12px;border-radius:8px;border:1px solid rgba(0,0,0,.1);background:white;color:#1d1d1f;outline:none" onfocus="this.style.borderColor=\'#007aff\'" onblur="this.style.borderColor=\'rgba(0,0,0,1)\'"><button onclick="removeVideoSlot(this)" style="font-size:1.1rem;background:none;border:none;cursor:pointer;color:#ff3b30;padding:4px" title="Eliminar">&#x2715;</button>';
+container.appendChild(div);
+var addBtn=document.createElement('div');
+addBtn.className='video-placeholder';
+addBtn.style.cssText='border:2px dashed rgba(0,122,255,.25);border-radius:16px;padding:16px;text-align:center;color:var(--text-tertiary);font-size:.875rem;cursor:pointer;transition:border-color .2s,background .2s';
+addBtn.innerHTML='<span style="font-size:1.25rem;display:block;margin-bottom:4px">&#x2795;</span>Agregar otro video';
+addBtn.onclick=function(){addVideoSlot(container)};
+container.appendChild(addBtn);
+}
+function removeVideoSlot(btn){btn.closest('.video-slot').remove()}
+</script>
+</body>
+</html>

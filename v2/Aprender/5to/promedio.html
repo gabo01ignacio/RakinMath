@@ -1,0 +1,155 @@
+<?<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RakinMath " Promedio (Media Aritmética)</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../apple-design.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"></script>
+<script defer src="../rk-utils.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
+<style>
+body{display:flex;flex-direction:column;min-height:100vh}
+.content{flex:1;max-width:820px;width:100%;margin:0 auto;padding:24px}
+.back-link{display:inline-flex;align-items:center;gap:6px;font-size:.875rem;font-weight:600;color:var(--text-secondary);text-decoration:none;padding:8px 16px;border-radius:980px;background:var(--bg-card);border:1px solid var(--border-strong);transition:transform .15s;margin-bottom:24px}
+.back-link:active{transform:scale(.95)}
+.section{margin-bottom:44px;opacity:0;animation:slideUp .5s var(--spring-default) both}
+.section:nth-child(2){animation-delay:80ms}.section:nth-child(3){animation-delay:160ms}.section:nth-child(4){animation-delay:240ms}.section:nth-child(5){animation-delay:320ms}
+.section-title{font-size:1.5rem;font-weight:700;letter-spacing:-.03em;margin-bottom:8px}
+.section-subtitle{font-size:1rem;color:var(--text-secondary);margin-bottom:20px;line-height:1.6}
+.concept-box{border-radius:var(--radius-md);padding:24px;margin-bottom:20px}
+.concept-box.green{background:linear-gradient(135deg,rgba(52,199,89,.06),rgba(52,199,89,.02));border:1px solid rgba(52,199,89,.15)}
+.concept-box h3{font-size:1.125rem;font-weight:700;margin-bottom:8px}
+.concept-box p{font-size:.9375rem;color:var(--text-secondary);line-height:1.7}
+.tip-box{background:linear-gradient(135deg,rgba(175,82,222,.06),rgba(175,82,222,.02));border:1px solid rgba(175,82,222,.15);border-radius:var(--radius-md);padding:20px;margin:16px 0}
+.tip-box h4{font-size:.9375rem;font-weight:700;color:var(--purple);margin-bottom:6px}
+.tip-box p{font-size:.875rem;color:var(--text-secondary);line-height:1.6}
+.card{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-lg);padding:28px 24px 24px;margin-bottom:20px}
+.card h3{font-size:1.125rem;font-weight:700;margin-bottom:16px}
+.quiz-box{background:linear-gradient(135deg,rgba(0,122,255,.06),rgba(0,122,255,.02));border:1px solid rgba(0,122,255,.15);border-radius:var(--radius-md);padding:24px}
+.quiz-box h4{font-size:1rem;font-weight:700;margin-bottom:12px}
+.quiz-problem{font-size:1.25rem;font-weight:700;text-align:center;margin:16px 0 4px}
+.quiz-row{display:flex;align-items:center;gap:12px;justify-content:center;flex-wrap:wrap;margin-top:12px}
+.quiz-input{width:100px;padding:10px;border-radius:var(--radius-sm);border:2px solid var(--border-strong);background:var(--bg-card-solid);font-family:var(--font-sans);font-size:1.125rem;font-weight:700;text-align:center;color:var(--text);outline:none}
+.quiz-input:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(0,122,255,.1)}
+.feedback{font-size:.875rem;font-weight:600;margin-top:10px;min-height:20px;text-align:center}
+.feedback.correct{color:var(--green)}.feedback.wrong{color:var(--red)}
+.btn{font-family:var(--font-sans);font-size:.875rem;font-weight:600;padding:8px 18px;border-radius:980px;border:none;cursor:pointer;transition:transform .12s,opacity .12s}
+.btn:active{transform:scale(.95)}
+.btn:disabled{opacity:.4;cursor:not-allowed;transform:none}
+.btn-primary{background:var(--accent);color:white}
+.btn-ghost{background:var(--bg-card-solid);color:var(--text);border:1px solid var(--border-strong)}
+.math-display{background:var(--bg-card-solid);border:1px solid var(--border);border-radius:var(--radius-md);padding:20px 24px;margin:16px 0;text-align:center;font-size:1.25rem;font-weight:600}
+@keyframes slideUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+@media(max-width:640px){.content{padding:16px}.card{padding:20px 16px 16px}}
+</style>
+</head>
+<body>
+<nav style="display:flex;align-items:center;justify-content:space-between;padding:16px 24px;border-bottom:1px solid var(--border)">
+<img src="../../Recursos/LogoRakinMath.png" alt="RakinMath" style="height:32px">
+<a href="menu.html" class="btn btn-ghost">Volver</a>
+</nav>
+<div class="content">
+<a href="menu.html" class="back-link">? Volver al menú</a>
+
+<div class="section">
+<h1 class="section-title">Promedio (Media Aritmética)</h1>
+<p class="section-subtitle">El promedio es un número que representa el valor "central" de un conjunto de datos. Se calcula sumando todos los valores y dividiendo por la cantidad de datos.</p>
+</div>
+
+<div class="section">
+<div class="concept-box green">
+<h3>Fórmula del promedio</h3>
+<div class="math-display">
+$$\bar{x} = \frac{\sum_{i=1}^{n} x_i}{n}$$
+</div>
+<p><strong>Ejemplo:</strong> Notas de una prueba: $5, 6, 7, 4, 5$</p>
+<div class="math-display">
+$\text{Suma} = 5 + 6 + 7 + 4 + 5 = 27$<br>
+$n = 5$<br>
+$\bar{x} = \frac{27}{5} = 5{,}4$
+</div>
+</div>
+<div class="concept-box green">
+<h3>¿Cuándo se usa el promedio?</h3>
+<p><strong>Notas del curso:</strong> Para sacar el promedio de las notas del semestre<br>
+<strong>Temperatura:</strong> Para calcular la temperatura promedio del mes<br>
+<strong>Edades:</strong> Para saber la edad promedio de un curso</p>
+</div>
+<div class="tip-box">
+<h4>Consejo</h4>
+<p>El promedio no siempre es un número entero. Puede tener decimales. En Chile, las notas se redondean generalmente a un decimal.</p>
+</div>
+</div>
+
+<div class="section">
+<div class="card">
+<h3>Calculadora de promedio</h3>
+<p style="color:var(--text-secondary);margin-bottom:16px">Ingresa los datos separados por comas (ej: 5,6,7,4,5).</p>
+<div style="text-align:center">
+<input type="text" class="quiz-input" id="avg-input" style="width:300px" placeholder="Ej: 5,6,7,4,5">
+<button class="btn btn-primary" onclick="calcAverage()" style="margin-left:8px">Calcular</button>
+<div id="avg-steps" style="margin-top:16px;text-align:left;font-size:.9375rem;color:var(--text-secondary);line-height:1.8"></div>
+<p id="avg-result" style="font-size:1.5rem;font-weight:700;text-align:center;margin-top:12px"></p>
+</div>
+</div>
+</div>
+
+<div class="section">
+<div class="quiz-box">
+<h4>Practica: Calcula el promedio</h4>
+<p class="quiz-problem" id="quiz-avg-problem"></p>
+<div class="quiz-row">
+<input type="number" class="quiz-input" id="quiz-avg-answer" placeholder="Promedio" step="0.1">
+<button class="btn btn-primary" onclick="checkQuizAvg()">Verificar</button>
+</div>
+<p class="feedback" id="quiz-avg-feedback"></p>
+</div>
+</div>
+
+<div class="section">
+<div class="videos-box" style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-md);padding:24px;text-align:center">
+<p style="color:var(--text-tertiary);font-size:.875rem">Próximamente: Videos explicativos sobre promedio</p>
+</div>
+</div>
+</div>
+
+<script>
+function calcAverage(){
+const input=document.getElementById('avg-input').value;
+const nums=input.split(',').map(n=>parseFloat(n.trim())).filter(n=>!isNaN(n));
+if(nums.length===0){document.getElementById('avg-result').textContent='Ingresa números válidos';document.getElementById('avg-result').style.color='var(--red)';return;}
+const sum=nums.reduce((a,b)=>a+b,0);
+const avg=sum/nums.length;
+let steps='<strong>Paso 1:</strong> Suma = '+nums.join(' + ')+' = '+sum+'<br>';
+steps+='<strong>Paso 2:</strong> Cantidad de datos = '+nums.length+'<br>';
+steps+='<strong>Paso 3:</strong> Promedio = '+sum+' ÷ '+nums.length+' = '+avg.toFixed(2);
+document.getElementById('avg-steps').innerHTML=steps;
+document.getElementById('avg-result').textContent='Promedio = '+avg.toFixed(2);
+document.getElementById('avg-result').style.color='var(--accent)';
+}
+let quizAvgData={};
+function genQuizAvg(){
+const count=Math.floor(Math.random()*3)+4;
+const nums=[];
+for(let i=0;i<count;i++)nums.push(Math.floor(Math.random()*6)+2);
+const sum=nums.reduce((a,b)=>a+b,0);
+quizAvgData={answer:parseFloat((sum/count).toFixed(2))};
+document.getElementById('quiz-avg-problem').textContent='Notas: '+nums.join(', ');
+document.getElementById('quiz-avg-answer').value='';
+document.getElementById('quiz-avg-feedback').textContent='';
+document.getElementById('quiz-avg-feedback').className='feedback';
+}
+function checkQuizAvg(){
+const ans=parseFloat(document.getElementById('quiz-avg-answer').value);
+const fb=document.getElementById('quiz-avg-feedback');
+if(Math.abs(ans-quizAvgData.answer)<0.01){fb.textContent='\u00a1Correcto!';fb.className='feedback correct';}
+else{fb.textContent='Respuesta incorrecta. Promedio: '+quizAvgData.answer;fb.className='feedback wrong';}
+}
+genQuizAvg();
+</script>
+</body>
+</html>

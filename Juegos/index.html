@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RakinMath — Juegos de Matemáticas</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="apple-design.css">
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        /* Hero header */
+        .hero {
+            text-align: center;
+            padding: var(--space-12) var(--space-6) var(--space-8);
+        }
+
+        .hero-emoji {
+            font-size: 3rem;
+            margin-bottom: var(--space-3);
+            animation: popIn 0.6s var(--spring-default) both;
+        }
+
+        .hero h1 {
+            margin-bottom: var(--space-2);
+        }
+
+        .hero p {
+            font-size: 1.0625rem;
+            max-width: 400px;
+            margin: 0 auto;
+        }
+
+        /* Course selector */
+        .selector {
+            display: flex;
+            justify-content: center;
+            gap: var(--space-3);
+            padding: 0 var(--space-6);
+            margin-bottom: var(--space-8);
+            flex-wrap: wrap;
+        }
+
+        .selector-btn {
+            font-family: var(--font-sans);
+            font-size: 0.9375rem;
+            font-weight: 600;
+            padding: var(--space-3) var(--space-5);
+            border-radius: var(--radius-pill);
+            border: 1px solid var(--border-strong);
+            background: var(--bg-card);
+            backdrop-filter: blur(10px);
+            color: var(--text);
+            cursor: pointer;
+            transition: transform 0.15s var(--spring-smooth), background 0.2s ease;
+            -webkit-tap-highlight-color: transparent;
+            display: flex;
+            align-items: center;
+            gap: var(--space-2);
+            letter-spacing: -0.01em;
+        }
+
+        .selector-btn:active {
+            transform: scale(0.94);
+        }
+
+        .selector-btn.active {
+            background: var(--accent);
+            color: white;
+            border-color: var(--accent);
+            box-shadow: 0 2px 10px rgba(0, 122, 255, 0.25);
+        }
+
+        .selector-btn[data-grade="4to"]:not(.active):hover {
+            border-color: var(--teal);
+            background: rgba(90, 200, 250, 0.08);
+        }
+
+        .selector-btn[data-grade="5to"]:not(.active):hover {
+            border-color: var(--orange);
+            background: rgba(255, 149, 0, 0.08);
+        }
+
+        .selector-btn[data-grade="6to"]:not(.active):hover {
+            border-color: var(--purple);
+            background: rgba(175, 82, 222, 0.08);
+        }
+
+        /* Games grid */
+        .games-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 20px;
+            padding: 0 var(--space-6);
+            max-width: var(--max-width);
+            width: 100%;
+            margin: 0 auto;
+            padding-bottom: var(--space-12);
+        }
+
+        .game-card {
+            background: var(--bg-card);
+            backdrop-filter: blur(14px);
+            -webkit-backdrop-filter: blur(14px);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-lg);
+            padding: var(--space-6);
+            text-decoration: none;
+            color: var(--text);
+            box-shadow: var(--shadow-sm);
+            transition: transform 0.4s var(--spring-default), box-shadow 0.4s ease, border-color 0.3s;
+            will-change: transform;
+            display: flex;
+            flex-direction: column;
+            gap: var(--space-3);
+            opacity: 0;
+            animation: slideUp 0.6s var(--spring-default) both;
+        }
+
+        .game-card:nth-child(1) { animation-delay: 0ms; }
+        .game-card:nth-child(2) { animation-delay: 60ms; }
+        .game-card:nth-child(3) { animation-delay: 120ms; }
+        .game-card:nth-child(4) { animation-delay: 180ms; }
+        .game-card:nth-child(5) { animation-delay: 240ms; }
+        .game-card:nth-child(6) { animation-delay: 300ms; }
+        .game-card:nth-child(7) { animation-delay: 360ms; }
+
+        .game-card:hover {
+            transform: translateY(-6px);
+            box-shadow: var(--shadow-lg);
+            border-color: var(--border-strong);
+        }
+
+        .game-card:active {
+            transform: scale(0.97);
+            transition-duration: 100ms;
+        }
+
+        .game-card.hidden {
+            display: none;
+        }
+
+        .game-card-header {
+            display: flex;
+            align-items: center;
+            gap: var(--space-4);
+        }
+
+        .game-icon {
+            width: 52px;
+            height: 52px;
+            border-radius: var(--radius-md);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            flex-shrink: 0;
+            transition: transform 0.3s var(--spring-default);
+        }
+
+        .game-card:hover .game-icon {
+            transform: scale(1.1);
+        }
+
+        .game-icon.cyan    { background: linear-gradient(135deg, #e8f8fd, #dce8f5); }
+        .game-icon.yellow  { background: linear-gradient(135deg, #fff3e0, #ffe0b2); }
+        .game-icon.purple  { background: linear-gradient(135deg, #f3e5f5, #e1bee7); }
+        .game-icon.green   { background: linear-gradient(135deg, #e8f8ed, #c8e6d0); }
+        .game-icon.orange  { background: linear-gradient(135deg, #fff3e0, #ffe0b2); }
+        .game-icon.pink    { background: linear-gradient(135deg, #fce4ec, #f8bbd0); }
+
+        .game-card-title {
+            font-size: 1.0625rem;
+            font-weight: 600;
+            letter-spacing: -0.02em;
+        }
+
+        .game-card-desc {
+            font-size: 0.95rem;
+            color: var(--text-secondary);
+            line-height: 1.5;
+            letter-spacing: -0.01em;
+        }
+
+        .game-card-footer {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-top: auto;
+            padding-top: var(--space-3);
+        }
+
+        .grade-tag {
+            font-size: 0.75rem;
+            font-weight: 600;
+            padding: var(--space-1) var(--space-2);
+            border-radius: var(--radius-sm);
+            background: rgba(0,0,0,0.04);
+            color: var(--text-tertiary);
+            letter-spacing: -0.01em;
+        }
+
+        .play-arrow {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: var(--accent);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.875rem;
+            transition: transform 0.3s var(--spring-default);
+            box-shadow: 0 2px 8px rgba(0, 122, 255, 0.25);
+        }
+
+        .game-card:hover .play-arrow {
+            transform: scale(1.1);
+        }
+
+        /* Footer */
+        .footer {
+            border-top: 1px solid var(--border);
+            text-align: center;
+            padding: var(--space-8) var(--space-6);
+            color: var(--text-tertiary);
+            font-size: 0.8125rem;
+            background: var(--bg-card);
+            backdrop-filter: blur(10px);
+            letter-spacing: -0.01em;
+        }
+
+        @media (max-width: 480px) {
+            .hero { padding: var(--space-8) var(--space-4) var(--space-6); }
+            .hero-emoji { font-size: 2.25rem; }
+            .hero h1 { font-size: 1.5rem; }
+            .selector { gap: var(--space-2); padding: 0 var(--space-4); }
+            .selector-btn { padding: var(--space-2) var(--space-4); font-size: 0.8125rem; }
+            .games-grid { gap: var(--space-4); padding: 0 var(--space-4) var(--space-6); }
+        }
+    </style>
+</head>
+<body>
+
+    <nav class="nav">
+        <a href="index" class="nav-title">
+            <div class="nav-logo-icon">
+                <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M3 10V4h2l2.5 3.5L10 4h2v6h-1.5V6.5L8 10.5H7.5L5 6.5V10H3z" fill="white"/></svg>
+            </div>
+            <span>Rakin<span class="brand">Math</span></span>
+        </a>
+        <a href="../index.html" class="exit-btn">Salir</a>
+    </nav>
+
+    <div class="hero">
+        <div class="hero-emoji">🧮</div>
+        <h1>Juegos de Matemáticas</h1>
+        <p>Aprende jugando con retos interactivos</p>
+        <p>Juegos en desarrollo</p>
+    </div>
+
+    <div class="selector">
+        <button class="selector-btn active" data-grade="all" onclick="filterGames('all', this)">
+            Todos
+        </button>
+        <button class="selector-btn" data-grade="4to" onclick="filterGames('4to', this)">
+            🎒 4° Básico
+        </button>
+        <button class="selector-btn" data-grade="5to" onclick="filterGames('5to', this)">
+            🧠 5° Básico
+        </button>
+        <button class="selector-btn" data-grade="6to" onclick="filterGames('6to', this)">
+            🚀 6° Básico
+        </button>
+    </div>
+
+    <div class="games-grid" id="games-grid">
+
+        <a href="juego1.html" class="game-card" data-grades="5to">
+            <div class="game-card-header">
+                <div class="game-icon cyan">✖️</div>
+                <div>
+                    <div class="game-card-title">Duelo de Números</div>
+                </div>
+            </div>
+            <div class="game-card-desc">Rapidez multiplicando y dividiendo en equipo</div>
+            <div class="game-card-footer">
+                <span class="grade-tag">5° Básico</span>
+                <div class="play-arrow">→</div>
+            </div>
+        </a>
+
+        <a href="juego2.html" class="game-card" data-grades="5to">
+            <div class="game-card-header">
+                <div class="game-icon yellow">📐</div>
+                <div>
+                    <div class="game-card-title">Estimaciones</div>
+                </div>
+            </div>
+            <div class="game-card-desc">Redondea y calcula aproximaciones rápidas</div>
+            <div class="game-card-footer">
+                <span class="grade-tag">5° Básico</span>
+                <div class="play-arrow">→</div>
+            </div>
+        </a>
+
+        <a href="juego3.html" class="game-card" data-grades="4to,5to">
+            <div class="game-card-header">
+                <div class="game-icon purple">🍕</div>
+                <div>
+                    <div class="game-card-title">Chefs de Fracciones</div>
+                </div>
+            </div>
+            <div class="game-card-desc">Fracciones deliciosas en la cocina</div>
+            <div class="game-card-footer">
+                <span class="grade-tag">4° · 5°</span>
+                <div class="play-arrow">→</div>
+            </div>
+        </a>
+
+        <a href="juego4.html" class="game-card" data-grades="4to,5to">
+            <div class="game-card-header">
+                <div class="game-icon green">🏗️</div>
+                <div>
+                    <div class="game-card-title">Arquitectas</div>
+                </div>
+            </div>
+            <div class="game-card-desc">Calcula perímetro y área para ayudar a los animales</div>
+            <div class="game-card-footer">
+                <span class="grade-tag">4° · 5°</span>
+                <div class="play-arrow">→</div>
+            </div>
+        </a>
+
+        <a href="juego5.html" class="game-card" data-grades="5to">
+            <div class="game-card-header">
+                <div class="game-icon orange">🗺️</div>
+                <div>
+                    <div class="game-card-title">Buscatesoros</div>
+                </div>
+            </div>
+            <div class="game-card-desc">Navega por el plano cartesiano con coordenadas (X, Y)</div>
+            <div class="game-card-footer">
+                <span class="grade-tag">5° Básico</span>
+                <div class="play-arrow">→</div>
+            </div>
+        </a>
+
+        <a href="juego6.html" class="game-card" data-grades="5to,6to">
+            <div class="game-card-header">
+                <div class="game-icon pink">🧪</div>
+                <div>
+                    <div class="game-card-title">El Caldero Mágico</div>
+                </div>
+            </div>
+            <div class="game-card-desc">Usa el orden de las operaciones para crear pociones</div>
+            <div class="game-card-footer">
+                <span class="grade-tag">5° · 6°</span>
+                <div class="play-arrow">→</div>
+            </div>
+        </a>
+
+        <a href="juego7.html" class="game-card" data-grades="4to">
+            <div class="game-card-header">
+                <div class="game-icon cyan">🤖</div>
+                <div>
+                    <div class="game-card-title">Misión Robot</div>
+                </div>
+            </div>
+            <div class="game-card-desc">Repara al robot: doble, mitad y trucos de ceros</div>
+            <div class="game-card-footer">
+                <span class="grade-tag">4° Básico</span>
+                <div class="play-arrow">→</div>
+            </div>
+        </a>
+
+    </div>
+
+    <div class="footer">
+        RakinMath · Aprende matemáticas jugando
+    </div>
+
+    <script>
+        function filterGames(grade, btn) {
+            document.querySelectorAll('.selector-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+
+            const cards = document.querySelectorAll('.game-card');
+            cards.forEach((card, i) => {
+                const grades = card.dataset.grades.split(',');
+                const show = grade === 'all' || grades.includes(grade);
+
+                if (show) {
+                    card.classList.remove('hidden');
+                    card.style.animation = 'none';
+                    card.offsetHeight;
+                    card.style.animation = `slideUp 0.4s var(--spring-default) ${i * 50}ms both`;
+                } else {
+                    card.classList.add('hidden');
+                }
+            });
+        }
+    </script>
+
+</body>
+</html>

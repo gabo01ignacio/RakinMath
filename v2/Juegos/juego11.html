@@ -1,0 +1,557 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../Juegos/apple-design.css">
+<script src="../auth.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
+<script src="firebase-config.js"></script>
+<script src="../stats/rk-stats.js"></script>
+<script src="rk-feedback.js"></script>
+<title>Pizza Master | RakinMath</title>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0}
+body{font-family:var(--font-sans);height:100dvh;overflow:hidden;background:var(--bg);color:var(--text);-webkit-tap-highlight-color:transparent;user-select:none}
+
+.screen{display:none;flex-direction:column;height:100dvh;overflow:hidden;position:relative}
+.screen.active{display:flex}
+
+/* ═══ MENU ═══ */
+.menu-inner{flex:1;overflow-y:auto;padding:16px;display:flex;flex-direction:column;align-items:center;gap:14px}
+.menu-header{text-align:center}
+.menu-header .emoji{font-size:3rem;animation:popIn .6s var(--spring-default) both}
+.menu-header h1{font-size:1.5rem;font-weight:800;letter-spacing:-.03em;margin-top:8px}
+.menu-header p{font-size:.8125rem;color:var(--text-secondary);margin-top:4px;max-width:340px}
+.diff-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;width:100%;max-width:360px}
+.diff-card{background:var(--bg-card-solid);border:2px solid var(--border-strong);border-radius:var(--radius-sm);padding:16px 8px;text-align:center;cursor:pointer;transition:all .12s}
+.diff-card:active{transform:scale(.95)}
+.diff-card.sel{border-color:var(--accent);background:rgba(0,122,255,.04)}
+.diff-card .de{font-size:1.75rem;display:block;margin-bottom:4px}
+.diff-card h3{font-size:.875rem;font-weight:700}
+.diff-card p{font-size:.625rem;color:var(--text-tertiary);margin-top:2px}
+.play-btn{width:100%;max-width:360px;font-family:var(--font-sans);font-size:1rem;font-weight:700;padding:14px;border-radius:var(--radius-pill);border:none;background:var(--accent);color:#fff;cursor:pointer;box-shadow:0 4px 16px rgba(0,122,255,.3);transition:all .15s}
+.play-btn:active{transform:scale(.97)}
+.play-btn:disabled{opacity:.4;cursor:not-allowed}
+
+/* ═══ GAME ═══ */
+.game-top{padding:10px 14px 0;display:flex;flex-direction:column;gap:6px}
+.gt-row{display:flex;align-items:center;justify-content:space-between;gap:6px;flex-wrap:wrap}
+.gt-pill{display:flex;align-items:center;gap:4px;font-size:.75rem;font-weight:700;background:var(--bg-card-solid);border:1px solid var(--border);border-radius:var(--radius-pill);padding:4px 12px}
+.gt-pill .v{color:var(--accent)}
+.timer-bar{width:100%;height:4px;border-radius:2px;background:var(--border);overflow:hidden}
+.timer-fill{height:100%;background:var(--green);transition:width .3s linear;border-radius:2px}
+.timer-fill.warn{background:var(--orange)}
+.timer-fill.danger{background:var(--red)}
+
+/* Order */
+.order-bar{padding:10px 14px;display:flex;gap:8px;align-items:center;background:var(--bg-card-solid);border-bottom:1px solid var(--border)}
+.order-bar .ob-emoji{font-size:2rem;animation:popIn .4s var(--spring-default) both}
+.order-bar .ob-text{flex:1}
+.order-bar .ob-title{font-size:.75rem;font-weight:600;color:var(--text-secondary)}
+.order-bar .ob-val{font-size:1.125rem;font-weight:800}
+
+/* Pizza Area */
+.pizza-area{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:12px;position:relative;gap:16px}
+.pizza-wrap{position:relative;width:min(280px,70vw);height:min(280px,70vw)}
+.pizza-svg{width:100%;height:100%;filter:drop-shadow(0 4px 12px rgba(0,0,0,.15))}
+.pizza-slice{transition:fill .2s,opacity .2s;cursor:pointer;stroke:rgba(0,0,0,.15);stroke-width:1.5}
+.pizza-slice:hover{opacity:.85}
+.pizza-slice.selected{stroke:var(--accent);stroke-width:3}
+.pizza-slice.topping{stroke:var(--accent);stroke-width:2}
+
+/* Controls */
+.pizza-ctrl{display:flex;gap:8px;align-items:center;flex-wrap:wrap;justify-content:center}
+.ctrl-btn{font-family:var(--font-sans);font-size:.875rem;font-weight:700;padding:8px 16px;border-radius:var(--radius-pill);border:1.5px solid var(--border-strong);background:var(--bg-card-solid);color:var(--text);cursor:pointer;transition:all .12s}
+.ctrl-btn:active{transform:scale(.95)}
+.ctrl-btn.sel{background:var(--accent);color:#fff;border-color:var(--accent)}
+.ctrl-label{font-size:.6875rem;font-weight:700;color:var(--text-tertiary);text-transform:uppercase;letter-spacing:.04em}
+
+/* Submit */
+.submit-bar{padding:10px 14px;display:flex;gap:8px;align-items:center;border-top:1px solid var(--border)}
+.submit-bar .sb-info{flex:1;font-size:.8125rem;color:var(--text-secondary);font-weight:600}
+.submit-bar .sb-val{font-size:1rem;font-weight:800;color:var(--accent)}
+.submit-btn{font-family:var(--font-sans);font-size:.9375rem;font-weight:700;padding:10px 20px;border-radius:var(--radius-pill);border:none;background:var(--green);color:#fff;cursor:pointer;transition:all .12s;box-shadow:0 2px 8px rgba(52,199,89,.3)}
+.submit-btn:active{transform:scale(.95)}
+.submit-btn:disabled{opacity:.4;cursor:not-allowed}
+
+/* ═══ RESULTS ═══ */
+.res-inner{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;padding:20px;text-align:center}
+.res-emoji{font-size:3.5rem;animation:popIn .5s var(--spring-default) both}
+.res-title{font-size:1.5rem;font-weight:800;letter-spacing:-.03em}
+.res-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;width:100%;max-width:300px}
+.rc{background:var(--bg-card-solid);border:1px solid var(--border);border-radius:var(--radius-sm);padding:14px 8px;text-align:center}
+.rc .rv{font-size:1.375rem;font-weight:800}
+.rc .rl{font-size:.625rem;font-weight:600;color:var(--text-tertiary);text-transform:uppercase;margin-top:2px}
+.rc.g .rv{color:var(--green)}.rc.b .rv{color:var(--accent)}.rc.o .rv{color:var(--orange)}.rc.r .rv{color:var(--red)}
+.res-btns{display:flex;gap:8px;margin-top:8px;flex-wrap:wrap;justify-content:center}
+.res-btns .play-btn{max-width:200px;font-size:.875rem;padding:11px 20px}
+.res-btns .btn-end{font-family:var(--font-sans);font-size:.875rem;font-weight:700;padding:11px 20px;border-radius:var(--radius-pill);border:1.5px solid var(--border-strong);background:var(--bg-card-solid);color:var(--text);cursor:pointer;transition:all .12s}
+
+/* ═══ CONFETTI ═══ */
+.confetti-piece{position:fixed;width:8px;height:8px;border-radius:2px;pointer-events:none;z-index:300;animation:confettiFall 2.5s ease-in forwards}
+@keyframes confettiFall{0%{transform:translateY(-20px) rotate(0deg);opacity:1}100%{transform:translateY(105vh) rotate(720deg);opacity:0}}
+
+/* ═══ EXIT BTN ═══ */
+.screen>.exit-btn{position:absolute;top:12px;right:12px;z-index:10}
+.screen>.exit-btn:active{transform:scale(.95)}
+
+@keyframes popIn{0%{opacity:0;transform:scale(.5)}100%{opacity:1;transform:scale(1)}}
+@keyframes scaleIn{from{opacity:0;transform:scale(.9)}to{opacity:1;transform:scale(1)}}
+</style>
+</head>
+<body>
+
+<!-- ═══════ MENU ═══════ -->
+<div class="screen active" id="scr-menu">
+<button class="exit-btn" onclick="window.location.href='menu.html'">&#x1F6AA; Salir</button>
+<div class="menu-inner">
+<div class="menu-header">
+<div class="emoji">🍕</div>
+<h1>Pizza Master</h1>
+<p>Corta pizzas en fracciones exactas. Aprende a dividir, sumar y comparar fracciones con pizza de verdad.</p>
+</div>
+
+<div class="sec" style="width:100%;max-width:360px">
+<div class="sec-title">Modo de juego</div>
+<div class="diff-grid" id="diffGrid">
+<div class="diff-card sel" data-d="cortar" onclick="setDiff(this)">
+<span class="de">🔪</span><h3>Cortar Pizza</h3><p>Divide la pizza en la fracción correcta</p>
+</div>
+<div class="diff-card" data-d="sumar" onclick="setDiff(this)">
+<span class="de">➕</span><h3>Sumar Pedazos</h3><p>¿Cuánto pizza comen juntos?</p>
+</div>
+<div class="diff-card" data-d="comparar" onclick="setDiff(this)">
+<span class="de">⚖️</span><h3>Comparar</h3><p>¿Cuál fracción es mayor?</p>
+</div>
+<div class="diff-card" data-d="equivalente" onclick="setDiff(this)">
+<span class="de">🔄</span><h3>Equivalente</h3><p>Encuentra fracciones equivalentes</p>
+</div>
+</div>
+</div>
+
+<button class="play-btn" onclick="goGame()">Empezar a cocinar 🍕</button>
+</div>
+</div>
+
+<!-- ═══════ GAME ═══════ -->
+<div class="screen" id="scr-game">
+<button class="exit-btn" onclick="window.location.href='menu.html'">&#x1F6AA; Salir</button>
+<div class="game-top">
+<div class="gt-row">
+<div class="gt-pill"><span>🏆</span><span class="v" id="g-score">0</span> pts</div>
+<div class="gt-pill"><span>📋</span><span class="v" id="g-round">1</span>/8</div>
+<div class="gt-pill"><span>⏱️</span><span class="v" id="g-time">1:30</span></div>
+</div>
+<div class="timer-bar"><div class="timer-fill" id="t-fill" style="width:100%"></div></div>
+</div>
+
+<div class="order-bar" id="order-bar">
+<div class="ob-emoji" id="ob-emoji">🍕</div>
+<div class="ob-text">
+<div class="ob-title">Tu pedido:</div>
+<div class="ob-val" id="ob-val">—</div>
+</div>
+</div>
+
+<div class="pizza-area" id="pizza-area">
+<div class="pizza-wrap" id="pizza-wrap"></div>
+<div class="pizza-ctrl" id="pizza-ctrl"></div>
+</div>
+
+<div class="submit-bar">
+<div class="sb-info">Tu respuesta:</div>
+<div class="sb-val" id="sb-val">—</div>
+<button class="submit-btn" id="submit-btn" onclick="checkAnswer()">Verificar ✓</button>
+</div>
+</div>
+
+<!-- ═══════ RESULTS ═══════ -->
+<div class="screen" id="scr-res">
+<button class="exit-btn" onclick="window.location.href='menu.html'">&#x1F6AA; Salir</button>
+<div class="res-inner">
+<div class="res-emoji" id="r-em">🎉</div>
+<div class="res-title" id="r-ti">¡Pizzero maestro!</div>
+<div class="res-grid">
+<div class="rc g"><div class="rv" id="r-correct">0</div><div class="rl">Correctas</div></div>
+<div class="rc b"><div class="rv" id="r-streak">0</div><div class="rl">Racha</div></div>
+<div class="rc o"><div class="rv" id="r-acc">0%</div><div class="rl">Precisión</div></div>
+<div class="rc"><div class="rv" id="r-score">0</div><div class="rl">Puntaje</div></div>
+</div>
+<div class="res-btns">
+<button class="play-btn" onclick="goGame()">Cocinar otra vez</button>
+<button class="btn-end" onclick="goMenu()">Cambiar modo</button>
+</div>
+</div>
+</div>
+
+<script>
+/* ═══ STATE ═══ */
+var diff='cortar',tL=90,tMax=90,tmr=null;
+var score=0,roundNum=0,maxRounds=8;
+var correct=0,streak=0,bestStreak=0;
+var currentQ=null,answered=false;
+var userNum=0,userDen=1;
+var pizzaPalette=['#F5A623','#E8943A','#D4783F','#C06044','#AC4849','#98304E','#841853','#3A8FD6','#5BA0E0','#7AB6EA'];
+
+/* ═══ DIFFICULTY ═══ */
+function setDiff(el){
+document.querySelectorAll('.diff-card').forEach(function(c){c.classList.remove('sel')});
+el.classList.add('sel');diff=el.dataset.d;
+if(diff==='cortar'){tL=90;tMax=90;maxRounds=8}
+else if(diff==='sumar'||diff==='comparar'){tL=80;tMax=80;maxRounds=8}
+else{tL=100;tMax=100;maxRounds=6}
+}
+
+/* ═══ SCREENS ═══ */
+function showScr(id){document.querySelectorAll('.screen').forEach(function(s){s.classList.remove('active')});document.getElementById(id).classList.add('active')}
+function goMenu(){showScr('scr-menu')}
+function goGame(){
+score=0;roundNum=0;correct=0;streak=0;bestStreak=0;answered=false;
+RK.Feedback.reset();
+showScr('scr-game');
+updateHUD();
+startTimer();
+nextRound();
+}
+function goRes(){
+clearInterval(tmr);
+var acc=roundNum>0?Math.round(correct/roundNum*100):0;
+document.getElementById('r-correct').textContent=correct;
+document.getElementById('r-streak').textContent=bestStreak;
+document.getElementById('r-acc').textContent=acc+'%';
+document.getElementById('r-score').textContent=score;
+document.getElementById('r-em').textContent=acc>=80?'🎉':acc>=50?'👍':'💪';
+document.getElementById('r-ti').textContent=acc>=80?'¡Pizzero maestro!':acc>=50?'¡Buen corte!':'Sigue practicando';
+try{if(typeof RK!=='undefined'&&RK.Stats)RK.Stats.saveGameResult('juego11',{score:score,rounds:roundNum,totalTime:tMax-tL,correct:correct,wrong:roundNum-correct,errors:['fracciones']})}catch(e){}
+showScr('scr-res');
+if(acc>=70)spawnConfetti();
+}
+
+/* ═══ TIMER ═══ */
+function startTimer(){
+uTime();
+tmr=setInterval(function(){tL-=1;if(tL<=0){tL=0;clearInterval(tmr);goRes();return}uTime()},1000);
+}
+function uTime(){
+var m=Math.floor(tL/60),s=tL%60;
+document.getElementById('g-time').textContent=m+':'+(s<10?'0':'')+s;
+var pct=tL/tMax*100;
+var f=document.getElementById('t-fill');
+f.style.width=pct+'%';
+f.className='timer-fill'+(tL<=10?' danger':tL<=20?' warn':'');
+}
+
+/* ═══ HUD ═══ */
+function updateHUD(){
+document.getElementById('g-score').textContent=score;
+document.getElementById('g-round').textContent=Math.min(roundNum+1,maxRounds);
+}
+
+/* ═══ GENERATE QUESTIONS ═══ */
+function genCortar(){
+var denoms=[2,3,4,5,6,8];
+var den=denoms[Math.floor(Math.random()*denoms.length)];
+var num=Math.floor(Math.random()*(den-1))+1;
+var sliceSize=360/den;
+var offsets=[];
+for(var i=0;i<den;i++)offsets.push(i*sliceSize);
+return{num:num,den:den,slices:den,selected:new Array(den).fill(false),offsets:offsets,sliceSize:sliceSize};
+}
+
+function genSumar(){
+var a=genCortar(),b=genCortar();
+// Find common denominator or simple case
+var d1=a.den,d2=b.den;
+var common=d1*d2;
+var n1=a.num*(common/d1),n2=b.num*(common/d2);
+var totalNum=n1+n2,totalDen=common;
+var g=gcd(totalNum,totalDen);
+totalNum/=g;totalDen/=g;
+return{
+type:'sumar',a:a,b:b,
+ansNum:totalNum,ansDen:totalDen,
+userNum:0,userDen:1,
+label:a.num+'/'+a.den+' + '+b.num+'/'+b.den
+};
+}
+
+function genComparar(){
+var a=genCortar(),b=genCortar();
+var valA=a.num/a.den,valB=b.num/b.den;
+return{type:'comparar',a:a,b:b,ans:valA>valB?'a':valA<valB?'b':'igual',
+userChoice:null,label:a.num+'/'+a.den+' vs '+b.num+'/'+b.den};
+}
+
+function genEquivalente(){
+var base=genCortar();
+var mult=Math.floor(Math.random()*3)+2;
+var eqNum=base.num*mult,eqDen=base.den*mult;
+var wrongDen=eqDen+(Math.floor(Math.random()*3)+1);
+return{type:'equivalente',base:base,eqNum:eqNum,eqDen:eqDen,wrongDen:wrongDen,
+ansNum:base.num,ansDen:base.den,userNum:0,userDen:1,
+label:eqNum+'/'+eqDen+' = ?'};
+}
+
+function gcd(a,b){return b===0?a:gcd(b,a%b)}
+
+/* ═══ NEXT ROUND ═══ */
+function nextRound(){
+if(roundNum>=maxRounds){goRes();return}
+answered=false;
+userNum=0;userDen=1;
+document.getElementById('submit-btn').disabled=true;
+document.getElementById('submit-btn').textContent='Verificar ✓';
+
+if(diff==='cortar'){
+currentQ=genCortar();
+document.getElementById('ob-emoji').textContent='🔪';
+document.getElementById('ob-val').textContent='Corta en '+currentQ.num+'/'+currentQ.den;
+renderPizzaCortar(currentQ);
+renderCortarControls();
+document.getElementById('sb-val').textContent='0/'+currentQ.den+' seleccionados';
+}else if(diff==='sumar'){
+currentQ=genSumar();
+document.getElementById('ob-emoji').textContent='➕';
+document.getElementById('ob-val').textContent=currentQ.label;
+renderPizzaSumar(currentQ);
+renderSumarControls();
+document.getElementById('sb-val').textContent='Tu respuesta';
+}else if(diff==='comparar'){
+currentQ=genComparar();
+document.getElementById('ob-emoji').textContent='⚖️';
+document.getElementById('ob-val').textContent=currentQ.label;
+renderPizzaComparar(currentQ);
+renderCompararControls();
+document.getElementById('sb-val').textContent='Elige la mayor';
+}else{
+currentQ=genEquivalente();
+document.getElementById('ob-emoji').textContent='🔄';
+document.getElementById('ob-val').textContent=currentQ.label;
+renderPizzaEquivalente(currentQ);
+renderEquivalenteControls();
+document.getElementById('sb-val').textContent='Tu respuesta';
+}
+updateHUD();
+}
+
+/* ═══ RENDER PIZZA ═══ */
+function makeSlice(cx,cy,r,startAngle,endAngle,color,i){
+var rad=function(d){return d*Math.PI/180};
+var x1=cx+r*Math.cos(rad(startAngle-90));
+var y1=cy+r*Math.sin(rad(startAngle-90));
+var x2=cx+r*Math.cos(rad(endAngle-90));
+var y2=cy+r*Math.sin(rad(endAngle-90));
+var large=(endAngle-startAngle)>180?1:0;
+var d='M'+cx+','+cy+' L'+x1+','+y1+' A'+r+','+r+' 0 '+large+' 1 '+x2+','+y2+' Z';
+return '<path d="'+d+'" fill="'+color+'" class="pizza-slice" data-i="'+i+'"/>';
+}
+
+function renderPizzaCortar(q){
+var el=document.getElementById('pizza-wrap');
+el.style.display='';el.style.gridTemplateColumns='';el.style.gap='';
+var s=280,cx=s/2,cy=s/2,r=s/2-4;
+var html='<svg viewBox="0 0 '+s+' '+s+'" class="pizza-svg">';
+for(var i=0;i<q.slices;i++){
+var start=i*q.sliceSize,end=(i+1)*q.sliceSize;
+var color=q.selected[i]?'#4CD964':pizzaPalette[i%pizzaPalette.length];
+html+=makeSlice(cx,cy,r,start,end,color,i);
+}
+// center dot
+html+='<circle cx="'+cx+'" cy="'+cy+'" r="8" fill="#8B6914"/>';
+html+='</svg>';
+el.innerHTML=html;
+// Click handlers
+el.querySelectorAll('.pizza-slice').forEach(function(s){
+s.addEventListener('click',function(){toggleSlice(parseInt(this.dataset.i))});
+});
+}
+
+function toggleSlice(i){
+if(answered)return;
+currentQ.selected[i]=!currentQ.selected[i];
+var count=currentQ.selected.filter(function(x){return x}).length;
+userNum=count;userDen=currentQ.den;
+renderPizzaCortar(currentQ);
+document.getElementById('sb-val').textContent=count+'/'+currentQ.den+' seleccionados';
+document.getElementById('submit-btn').disabled=count===0;
+}
+
+function renderPizzaSumar(q){
+var el=document.getElementById('pizza-wrap');
+el.style.display='';el.style.gridTemplateColumns='';el.style.gap='';
+var s=280,cx=s/2,cy=s/2,r=s/2-4;
+var aS=360/q.a.den,bS=360/q.b.den;
+var html='<svg viewBox="0 0 '+s+' '+s+'" class="pizza-svg">';
+// Pizza A
+for(var i=0;i<q.a.den;i++){
+var start=i*aS,end=(i+1)*aS;
+var color=i<q.a.num?pizzaPalette[i%pizzaPalette.length]:'#DDD';
+html+=makeSlice(cx,cy,r,start,end,color,i);
+}
+html+='<circle cx="'+cx+'" cy="'+cy+'" r="8" fill="#8B6914"/>';
+html+='</svg>';
+el.innerHTML=html;
+}
+
+function renderPizzaComparar(q){
+var el=document.getElementById('pizza-wrap');
+var s=280,cx=s/2,cy=s/2,r=s/2-4;
+var aS=360/q.a.den,bS=360/q.b.den;
+// Pizza A
+var hA='<svg viewBox="0 0 '+s+' '+s+'" class="pizza-svg">';
+for(var i=0;i<q.a.den;i++){
+var start=i*aS,end=(i+1)*aS;
+var color=i<q.a.num?pizzaPalette[i%pizzaPalette.length]:'#DDD';
+hA+=makeSlice(cx,cy,r,start,end,color,i);
+}
+hA+='<circle cx="'+cx+'" cy="'+cy+'" r="8" fill="#8B6914"/>';
+hA+='</svg>';
+// Pizza B
+var hB='<svg viewBox="0 0 '+s+' '+s+'" class="pizza-svg">';
+for(var j=0;j<q.b.den;j++){
+var start2=j*bS,end2=(j+1)*bS;
+var color2=j<q.b.num?pizzaPalette[(j+3)%pizzaPalette.length]:'#DDD';
+hB+=makeSlice(cx,cy,r,start2,end2,color2,j);
+}
+hB+='<circle cx="'+cx+'" cy="'+cy+'" r="8" fill="#8B6914"/>';
+hB+='</svg>';
+el.innerHTML=hA+hB;
+el.style.display='grid';
+el.style.gridTemplateColumns='1fr 1fr';
+el.style.gap='8px';
+}
+
+function renderPizzaEquivalente(q){
+renderPizzaCortar(q.base);
+}
+
+/* ═══ CONTROLS ═══ */
+function renderCortarControls(){
+var el=document.getElementById('pizza-ctrl');
+el.innerHTML='<div class="ctrl-label">Toca los pedazos para seleccionarlos</div>';
+}
+
+function renderSumarControls(){
+var el=document.getElementById('pizza-ctrl');
+var h='<div class="ctrl-label">Suma: '+currentQ.a.num+'/'+currentQ.a.den+' + '+currentQ.b.num+'/'+currentQ.b.den+'</div>';
+h+='<div style="display:flex;align-items:center;gap:8px">';
+h+='<input type="number" id="sum-num" class="pay-input" style="width:60px;font-size:1rem;text-align:center" min="0" max="20" placeholder="?">';
+h+='<span style="font-size:1.5rem;font-weight:800">/</span>';
+h+='<input type="number" id="sum-den" class="pay-input" style="width:60px;font-size:1rem;text-align:center" min="1" max="20" placeholder="?">';
+h+='</div>';
+h+='<button class="submit-btn" style="margin-top:8px" onclick="checkSumar()">Verificar ✓</button>';
+el.innerHTML=h;
+document.getElementById('submit-btn').style.display='none';
+}
+
+function renderCompararControls(){
+var el=document.getElementById('pizza-ctrl');
+var h='<div class="ctrl-label">¿Cuál fracción es mayor?</div>';
+h+='<div style="display:flex;gap:12px">';
+h+='<button class="ctrl-btn" onclick="pickCompare(\'a\')" id="cmp-a">'+currentQ.a.num+'/'+currentQ.a.den+'</button>';
+h+='<button class="ctrl-btn" onclick="pickCompare(\'igual\')" id="cmp-igual">= Igual</button>';
+h+='<button class="ctrl-btn" onclick="pickCompare(\'b\')" id="cmp-b">'+currentQ.b.num+'/'+currentQ.b.den+'</button>';
+h+='</div>';
+el.innerHTML=h;
+document.getElementById('submit-btn').style.display='none';
+}
+
+function renderEquivalenteControls(){
+var el=document.getElementById('pizza-ctrl');
+var h='<div class="ctrl-label">'+currentQ.eqNum+'/'+currentQ.eqDen+' = ?</div>';
+h+='<div style="display:flex;align-items:center;gap:8px">';
+h+='<input type="number" id="eq-num" class="pay-input" style="width:60px;font-size:1rem;text-align:center" min="0" max="20" placeholder="?">';
+h+='<span style="font-size:1.5rem;font-weight:800">/</span>';
+h+='<input type="number" id="eq-den" class="pay-input" style="width:60px;font-size:1rem;text-align:center" min="1" max="20" placeholder="?">';
+h+='</div>';
+h+='<button class="submit-btn" style="margin-top:8px" onclick="checkEquivalente()">Verificar ✓</button>';
+el.innerHTML=h;
+document.getElementById('submit-btn').style.display='none';
+}
+
+/* ═══ PICK COMPARE ═══ */
+function pickCompare(choice){
+if(answered)return;
+answered=true;
+currentQ.userChoice=choice;
+var isCorrect=choice===currentQ.ans;
+if(isCorrect){correct++;streak++;bestStreak=Math.max(bestStreak,streak);score+=10+streak*2}
+else{streak=0;score=Math.max(0,score-3)}
+roundNum++;
+RK.Feedback.show(isCorrect?'success':'error',isCorrect?null:'No, era '+currentQ.a.num+'/'+currentQ.a.den+(currentQ.ans==='a'?' > ':' < ')+currentQ.b.num+'/'+currentQ.b.den);
+setTimeout(function(){nextRound()},1200);
+}
+
+function checkSumar(){
+if(answered)return;
+var num=parseInt(document.getElementById('sum-num').value);
+var den=parseInt(document.getElementById('sum-den').value);
+if(isNaN(num)||isNaN(den)||den===0)return;
+answered=true;
+var isCorrect=(num*currentQ.ansDen===den*currentQ.ansNum);
+if(isCorrect){correct++;streak++;bestStreak=Math.max(bestStreak,streak);score+=10+streak*2}
+else{streak=0;score=Math.max(0,score-3)}
+roundNum++;
+RK.Feedback.show(isCorrect?'success':'error',isCorrect?null:'Era '+currentQ.ansNum+'/'+currentQ.ansDen);
+setTimeout(function(){nextRound()},1200);
+}
+
+function checkEquivalente(){
+if(answered)return;
+var num=parseInt(document.getElementById('eq-num').value);
+var den=parseInt(document.getElementById('eq-den').value);
+if(isNaN(num)||isNaN(den)||den===0)return;
+answered=true;
+// Check if equivalent by cross-multiplying: a/b == c/d iff a*d == b*c
+var isCorrect=(num*currentQ.base.den===den*currentQ.base.num);
+if(isCorrect){correct++;streak++;bestStreak=Math.max(bestStreak,streak);score+=10+streak*2}
+else{streak=0;score=Math.max(0,score-3)}
+roundNum++;
+RK.Feedback.show(isCorrect?'success':'error',isCorrect?null:'Era '+currentQ.base.num+'/'+currentQ.base.den);
+setTimeout(function(){nextRound()},1200);
+}
+
+/* ═══ CHECK ANSWER (for cortar mode) ═══ */
+function checkAnswer(){
+if(answered||diff!=='cortar')return;
+answered=true;
+var isCorrect=userNum===currentQ.num&&userDen===currentQ.den;
+if(isCorrect){correct++;streak++;bestStreak=Math.max(bestStreak,streak);score+=10+streak*2}
+else{streak=0;score=Math.max(0,score-3)}
+roundNum++;
+RK.Feedback.show(isCorrect?'success':'error',isCorrect?null:'Era '+currentQ.num+'/'+currentQ.den);
+setTimeout(function(){nextRound()},1200);
+}
+
+/* ═══ HELPERS ═══ */
+function spawnConfetti(){
+var cols=['#FF3B30','#FF9500','#FFCC00','#34C759','#007AFF','#AF52DE'];
+for(var i=0;i<40;i++){
+var p=document.createElement('div');
+p.className='confetti-piece';
+p.style.left=Math.random()*100+'vw';
+p.style.background=cols[Math.floor(Math.random()*cols.length)];
+p.style.animationDelay=Math.random()*2+'s';
+p.style.animationDuration=(2+Math.random()*2)+'s';
+document.body.appendChild(p);
+setTimeout(function(){p.remove()},5000);
+}
+}
+
+/* ═══ KEYBOARD ═══ */
+document.addEventListener('keydown',function(e){
+if(e.key==='Enter'){
+var el=document.getElementById('submit-btn');
+if(el&&el.offsetParent!==null&&!el.disabled)el.click();
+}
+});
+
+/* ═══ INIT ═══ */
+</script>
+</body>
+</html>

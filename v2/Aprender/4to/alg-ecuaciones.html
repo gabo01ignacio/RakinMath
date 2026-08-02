@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RakinMath – Ecuaciones de un Paso</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../apple-design.css">
+<script src="../../stats/rk-stats.js"></script>
+<style>
+body{display:flex;flex-direction:column;min-height:100vh}.content{flex:1;max-width:800px;width:100%;margin:0 auto;padding:24px}.back-link{display:inline-flex;align-items:center;gap:6px;font-family:var(--font-sans);font-size:.875rem;font-weight:600;color:var(--text-secondary);text-decoration:none;padding:8px 16px;border-radius:980px;background:var(--bg-card);border:1px solid var(--border-strong);transition:transform .15s;margin-bottom:24px}.back-link:active{transform:scale(.95)}.section{margin-bottom:40px;opacity:0;animation:slideUp .5s var(--spring-default) both}.section:nth-child(2){animation-delay:80ms}.section:nth-child(3){animation-delay:160ms}.section-title{font-size:1.5rem;font-weight:700;letter-spacing:-.03em;margin-bottom:8px}.section-subtitle{font-size:1rem;color:var(--text-secondary);margin-bottom:20px;line-height:1.5}
+.concept-box{border-radius:20px;padding:24px;margin-bottom:20px}.concept-box.purple{background:linear-gradient(135deg,rgba(175,82,222,.06),rgba(175,82,222,.02));border:1px solid rgba(175,82,222,.15)}.concept-box h3{font-size:1.125rem;font-weight:700;margin-bottom:8px}.concept-box p{font-size:.9375rem;color:var(--text-secondary);line-height:1.6}
+.tip-box{background:linear-gradient(135deg,rgba(175,82,222,.06),rgba(175,82,222,.02));border:1px solid rgba(175,82,222,.15);border-radius:20px;padding:20px;margin:16px 0}.tip-box h4{font-size:.9375rem;font-weight:700;color:var(--purple);margin-bottom:6px}.tip-box p{font-size:.875rem;color:var(--text-secondary);line-height:1.5}
+.balance{position:relative;width:100%;max-width:400px;margin:20px auto;height:160px}
+.beam{position:absolute;top:60px;left:20px;right:20px;height:6px;background:var(--text-tertiary);border-radius:3px;transition:transform .6s var(--spring-default)}
+.fulcrum{position:absolute;top:66px;left:50%;transform:translateX(-50%);width:0;height:0;border-left:16px solid transparent;border-right:16px solid transparent;border-bottom:20px solid var(--text-tertiary)}
+.plate{position:absolute;top:66px;width:calc(50% - 30px);min-height:70px;background:rgba(0,122,255,.06);border:2px solid var(--accent);border-radius:12px;display:flex;flex-wrap:wrap;gap:4px;padding:8px;justify-content:center;align-content:flex-start;transition:transform .6s var(--spring-default)}
+.plate.left{left:20px}.plate.right{right:20px}
+.weight{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.7rem;font-weight:700;color:white;animation:popIn .3s var(--spring-default) both}
+.weight.num{background:var(--orange)}.weight.x{background:var(--purple);width:auto;padding:0 8px;border-radius:980px}
+.eq-display{text-align:center;font-size:1.5rem;font-weight:700;color:var(--accent);margin:16px 0;padding:12px;background:rgba(0,122,255,.06);border-radius:12px}
+.btn-row{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin:12px 0}
+.btn{font-family:var(--font-sans);font-size:.875rem;font-weight:600;padding:10px 16px;border-radius:980px;border:none;cursor:pointer;transition:transform .12s}.btn:active{transform:scale(.95)}
+.btn-primary{background:var(--accent);color:white}.btn-success{background:var(--green);color:white}.btn-ghost{background:var(--bg-card-solid);color:var(--text);border:1px solid var(--border-strong)}
+.feedback{font-size:1rem;font-weight:700;text-align:center;margin:12px 0;min-height:24px}.feedback.correct{color:var(--green)}.feedback.wrong{color:var(--red)}
+.question-box{background:linear-gradient(135deg,rgba(0,122,255,.06),rgba(0,122,255,.02));border:1px solid rgba(0,122,255,.15);border-radius:20px;padding:24px}.question-box h4{font-size:1rem;font-weight:700;margin-bottom:12px}
+.q-row{display:flex;align-items:center;gap:12px;flex-wrap:wrap}.q-input{width:80px;padding:10px;border-radius:12px;border:2px solid var(--border-strong);background:var(--bg-card-solid);font-family:var(--font-sans);font-size:1.125rem;font-weight:700;text-align:center;color:var(--text);outline:none}.q-input:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(0,122,255,.1)}
+@keyframes slideUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+@keyframes popIn{0%{opacity:0;transform:scale(0)}100%{opacity:1;transform:scale(1)}}
+@media(max-width:640px){.content{padding:16px}.balance{height:140px}.plate{width:calc(50% - 20px);min-height:60px}}
+</style>
+</head>
+<body>
+<nav class="nav"><a href="menu.html" class="nav-title"><img src="../../Recursos/LogoRakinMath.png" alt="RakinMath" style="height: 24px; width: auto;"></a><a href="menu.html" class="exit-btn">Volver</a></nav>
+<div class="content">
+<a href="menu.html" class="back-link">&#x2190; Volver a Álgebra</a>
+
+<div class="section">
+<div class="section-title">&#x2696; Ecuaciones de un paso</div>
+<div class="section-subtitle">Una ecuación es una <strong>igualdad</strong> con un número desconocido (x). Para encontrar x, hacemos la <strong>operación inversa</strong> en ambos lados.</div>
+<div class="concept-box purple">
+<h3>&#x1F4A1; Ejemplo con balanza</h3>
+<p>Si en la balanza izquierda tienes <strong>x + 3</strong> y en la derecha <strong>7</strong>, la balanza está equilibrada. Para que solo quede x, quitas 3 de ambos lados: x = 7 - 3 = <strong>4</strong>.</p>
+</div>
+<div class="tip-box">
+<h4>&#x1F4A1; Tip del profesor</h4>
+<p>Lo que haces de un lado, lo haces del otro. Si sumas 5 a la izquierda, sumas 5 a la derecha. ¡La balanza siempre debe estar equilibrada!</p>
+</div>
+</div>
+
+<div class="section">
+<div class="section-title">&#x1F3AE; Resuelve con la balanza</div>
+<div class="eq-display" id="eq-text">x + 3 = 7</div>
+<div class="balance" id="balance-box">
+<div class="beam" id="beam"></div>
+<div class="fulcrum"></div>
+<div class="plate left" id="plate-l"></div>
+<div class="plate right" id="plate-r"></div>
+</div>
+<div class="btn-row">
+<button class="btn btn-primary" onclick="balAction('sub-l')">Quitar 1 de izq.</button>
+<button class="btn btn-primary" onclick="balAction('sub-r')">Quitar 1 de der.</button>
+<button class="btn btn-success" onclick="balCheck()">¡Está equilibrada?</button>
+<button class="btn btn-ghost" onclick="newEq()">Nueva ecuación</button>
+</div>
+<div class="feedback" id="eq-fb"></div>
+</div>
+
+<div class="section">
+<div class="question-box">
+<h4>&#x2753; Resuelve</h4>
+<p style="color:var(--text-secondary);margin-bottom:12px;font-size:.9375rem" id="q-text"></p>
+<div class="q-row"><span style="font-size:1.125rem;font-weight:700;color:var(--text-secondary)">x =</span><input class="q-input" type="number" id="q-answer" placeholder="?"><button class="btn btn-primary" onclick="checkQ()">Comprobar</button></div>
+<div class="feedback" id="q-fb"></div>
+<div style="margin-top:12px"><button class="btn btn-ghost" onclick="newQ()">Nueva pregunta</button></div>
+</div>
+</div>
+
+<div class="section" style="animation-delay:320ms">
+<div class="question-box" style="background:linear-gradient(135deg,rgba(0,122,255,.06),rgba(0,122,255,.02));border:1px solid rgba(0,122,255,.15)">
+<h4>&#x1F3AC; Videos de apoyo</h4>
+<p style="color:var(--text-secondary);margin-bottom:12px;font-size:.9375rem">Agrega links de videos de YouTube para reforzar lo aprendido:</p>
+<div id="videos-container" style="display:flex;flex-direction:column;gap:12px;margin-bottom:12px">
+<div class="video-placeholder" style="border:2px dashed rgba(0,122,255,.25);border-radius:16px;padding:24px;text-align:center;color:var(--text-tertiary);font-size:.875rem;cursor:pointer;transition:border-color .2s,background .2s" onclick="addVideoSlot(this.parentElement)">
+<span style="font-size:1.5rem;display:block;margin-bottom:6px">&#x1F4F1;</span>
+Haz clic aquí para agregar un video de YouTube
+</div>
+</div>
+</div>
+</div>
+
+</div>
+
+<script>
+var activityStartTime = Date.now();
+var eq={leftX:1,leftN:3,rightN:7,answer:4};
+function renderBalance(){
+var lTotal=eq.leftX+eq.leftN;var rTotal=eq.rightN;
+var diff=rTotal-lTotal;var angle=Math.max(-12,Math.min(12,diff*4));
+document.getElementById('beam').style.transform='rotate('+angle+'deg)';
+var pl=document.getElementById('plate-l');pl.innerHTML='';
+pl.innerHTML+='<div class="weight x">x</div>';
+for(var i=0;i<eq.leftN;i++)pl.innerHTML+='<div class="weight num">'+(i+1)+'</div>';
+var pr=document.getElementById('plate-r');pr.innerHTML='';
+for(var i=0;i<eq.rightN;i++)pr.innerHTML+='<div class="weight num">'+(i+1)+'</div>';
+document.getElementById('eq-text').textContent='x + '+eq.leftN+' = '+eq.rightN;
+}
+function balAction(side){
+if(side==='sub-l'&&eq.leftN>0){eq.leftN--;renderBalance()}
+else if(side==='sub-r'&&eq.rightN>0){eq.rightN--;renderBalance()}
+}
+function balCheck(){
+var lTotal=eq.leftX+eq.leftN;var rTotal=eq.rightN;
+var fb=document.getElementById('eq-fb');
+if(lTotal===rTotal&&eq.leftN===0){fb.textContent='¡Correcto! x = '+eq.answer;fb.className='feedback correct';setTimeout(newEq,2000)}
+else if(eq.leftN===0){fb.textContent='¡Ahora solo queda x! x = '+eq.rightN;fb.className='feedback correct'}
+else{fb.textContent='Aún no: quita más del lado izquierdo';fb.className='feedback wrong'}
+}
+function newEq(){
+eq.answer=Math.floor(Math.random()*10)+1;
+eq.leftN=Math.floor(Math.random()*8)+1;
+eq.rightN=eq.answer+eq.leftN;
+renderBalance();document.getElementById('eq-fb').textContent='';document.getElementById('eq-fb').className='feedback';
+}
+var qX,qN,qR;
+function newQ(){qX=Math.floor(Math.random()*15)+1;qN=Math.floor(Math.random()*10)+1;qR=qX+qN;document.getElementById('q-text').textContent='Si x + '+qN+' = '+qR+', ¿cuánto vale x?';document.getElementById('q-answer').value='';document.getElementById('q-fb').textContent='';document.getElementById('q-fb').className='feedback'}
+function checkQ(){var ans=parseInt(document.getElementById('q-answer').value);var fb=document.getElementById('q-fb');if(ans===qX){fb.textContent='¡Correcto! x = '+qX;fb.className='feedback correct';RK.Stats.saveActivityResult('actividad-alg-ecuaciones',{correct:true,time:Math.round((Date.now()-activityStartTime)/1000),topic:'ecuaciones'});activityStartTime=Date.now();setTimeout(newQ,2000)}else if(isNaN(ans)){fb.textContent='Escribe un número';fb.className='feedback wrong';RK.Stats.saveActivityResult('actividad-alg-ecuaciones',{correct:false,time:Math.round((Date.now()-activityStartTime)/1000),topic:'ecuaciones'});activityStartTime=Date.now()}else{fb.textContent='Intenta de nuevo: ¿qué número sumado a '+qN+' da '+qR+'?';fb.className='feedback wrong';RK.Stats.saveActivityResult('actividad-alg-ecuaciones',{correct:false,time:Math.round((Date.now()-activityStartTime)/1000),topic:'ecuaciones'});activityStartTime=Date.now()}}
+newEq();newQ();
+
+function addVideoSlot(container){
+var existing=container.querySelector('.video-placeholder');
+if(existing)existing.remove();
+var div=document.createElement('div');
+div.className='video-slot';
+div.style.cssText='display:flex;gap:8px;align-items:center;background:rgba(0,122,255,.04);border:1px solid rgba(0,122,255,.12);border-radius:12px;padding:10px 12px';
+div.innerHTML='<input type="text" placeholder="Pega el link de YouTube aquí..." style="flex:1;font-family:var(--font-sans);font-size:.875rem;padding:8px 12px;border-radius:8px;border:1px solid rgba(0,0,0,.1);background:white;color:#1d1d1f;outline:none" onfocus="this.style.borderColor=\'#007aff\'" onblur="this.style.borderColor=\'rgba(0,0,0,1)\'"><button onclick="removeVideoSlot(this)" style="font-size:1.1rem;background:none;border:none;cursor:pointer;color:#ff3b30;padding:4px" title="Eliminar">&#x2715;</button>';
+container.appendChild(div);
+var addBtn=document.createElement('div');
+addBtn.className='video-placeholder';
+addBtn.style.cssText='border:2px dashed rgba(0,122,255,.25);border-radius:16px;padding:16px;text-align:center;color:var(--text-tertiary);font-size:.875rem;cursor:pointer;transition:border-color .2s,background .2s';
+addBtn.innerHTML='<span style="font-size:1.25rem;display:block;margin-bottom:4px">&#x2795;</span>Agregar otro video';
+addBtn.onclick=function(){addVideoSlot(container)};
+container.appendChild(addBtn);
+}
+function removeVideoSlot(btn){btn.closest('.video-slot').remove()}
+</script>
+</body>
+</html>

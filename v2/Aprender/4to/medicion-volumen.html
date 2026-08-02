@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RakinMath  Volumen</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../apple-design.css">
+<style>
+body{display:flex;flex-direction:column;min-height:100vh}.content{flex:1;max-width:800px;width:100%;margin:0 auto;padding:24px}.back-link{display:inline-flex;align-items:center;gap:6px;font-family:var(--font-sans);font-size:.875rem;font-weight:600;color:var(--text-secondary);text-decoration:none;padding:8px 16px;border-radius:980px;background:var(--bg-card);border:1px solid var(--border-strong);transition:transform .15s;margin-bottom:24px}.back-link:active{transform:scale(.95)}.section{margin-bottom:40px;opacity:0;animation:slideUp .5s var(--spring-default) both}.section:nth-child(2){animation-delay:80ms}.section:nth-child(3){animation-delay:160ms}.section-title{font-size:1.5rem;font-weight:700;letter-spacing:-.03em;margin-bottom:8px}.section-subtitle{font-size:1rem;color:var(--text-secondary);margin-bottom:20px;line-height:1.5}
+.concept-box{border-radius:20px;padding:24px;margin-bottom:20px}.concept-box.purple{background:linear-gradient(135deg,rgba(175,82,222,.06),rgba(175,82,222,.02));border:1px solid rgba(175,82,222,.15)}.concept-box h3{font-size:1.125rem;font-weight:700;margin-bottom:8px}.concept-box p{font-size:.9375rem;color:var(--text-secondary);line-height:1.6}
+.tip-box{background:linear-gradient(135deg,rgba(0,122,255,.06),rgba(0,122,255,.02));border:1px solid rgba(0,122,255,.15);border-radius:20px;padding:20px;margin:16px 0}.tip-box h4{font-size:.9375rem;font-weight:700;color:var(--accent);margin-bottom:6px}.tip-box p{font-size:.875rem;color:var(--text-secondary);line-height:1.5}
+.vol-area{background:var(--bg-card);border:1px solid var(--border);border-radius:24px;padding:24px;margin-bottom:20px;text-align:center}
+.vol-cube-grid{display:inline-flex;flex-direction:column;gap:2px;margin:16px auto}
+.vol-cube-row{display:flex;gap:2px}
+.vol-cube{width:28px;height:28px;border-radius:4px;background:rgba(175,82,222,.2);border:1px solid rgba(175,82,222,.4);transition:all .3s;cursor:pointer;animation:popIn .3s var(--spring-default) both}
+.vol-cube:hover{transform:scale(1.15);background:rgba(175,82,222,.4)}
+.vol-cube.filled{background:rgba(175,82,222,.5);border-color:var(--purple)}
+.vol-inputs{display:flex;align-items:center;gap:8px;justify-content:center;flex-wrap:wrap;margin:12px 0}
+.vol-input{width:60px;padding:8px;border-radius:10px;border:2px solid var(--border-strong);background:var(--bg-card-solid);font-family:var(--font-sans);font-size:1rem;font-weight:700;text-align:center;color:var(--text);outline:none}.vol-input:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(0,122,255,.1)}
+.vol-label{font-size:.875rem;font-weight:600;color:var(--text-secondary)}
+.vol-result{font-size:1.5rem;font-weight:700;color:var(--purple);margin:12px 0;padding:12px;background:rgba(175,82,222,.06);border-radius:12px;display:none}
+.vol-result.show{display:block;animation:popIn .4s var(--spring-default) both}
+.btn-row{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin:12px 0}
+.btn{font-family:var(--font-sans);font-size:.875rem;font-weight:600;padding:10px 20px;border-radius:980px;border:none;cursor:pointer;transition:transform .12s}.btn:active{transform:scale(.95)}
+.btn-primary{background:var(--purple);color:white}.btn-ghost{background:var(--bg-card-solid);color:var(--text);border:1px solid var(--border-strong)}
+.question-box{background:linear-gradient(135deg,rgba(175,82,222,.06),rgba(175,82,222,.02));border:1px solid rgba(175,82,222,.15);border-radius:20px;padding:24px}.question-box h4{font-size:1rem;font-weight:700;margin-bottom:12px}
+.q-input{width:80px;padding:10px;border-radius:12px;border:2px solid var(--border-strong);background:var(--bg-card-solid);font-family:var(--font-sans);font-size:1.125rem;font-weight:700;text-align:center;color:var(--text);outline:none}.q-input:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(0,122,255,.1)}
+.feedback{font-size:.875rem;font-weight:600;margin-top:8px;min-height:24px}.feedback.correct{color:var(--green)}.feedback.wrong{color:var(--red)}
+@keyframes slideUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+@keyframes popIn{0%{opacity:0;transform:scale(0)}100%{opacity:1;transform:scale(1)}}
+@media(max-width:640px){.vol-cube{width:22px;height:22px}}
+</style>
+</head>
+<body>
+<nav class="nav"><a href="menu.html" class="nav-title"><img src="../../Recursos/LogoRakinMath.png" alt="RakinMath" style="height: 24px; width: auto;"></a><a href="menu.html" class="exit-btn">Volver</a></nav>
+<div class="content">
+<a href="menu.html" class="back-link">&#x2190; Volver a Medición</a>
+
+<div class="section">
+<div class="section-title">&#x1F4E6; Volumen</div>
+<div class="section-subtitle">El volumen mide cu <strong>espacio ocupa</strong> un cuerpo tridimensional. Se mide en <strong>unidades cúbicas</strong> (cm, m).</div>
+<div class="concept-box purple">
+<h3>&#x1F4A1; ¿Qué es el volumen?</h3>
+<p>Imagina llenar una caja con cubos pequeños de 1 cm. El n total de cubos que caben es el <strong>volumen</strong>. Si caben 3 filas de 4 cubos por 2 de altura, son 3  4  2 = <strong>24 cm</strong>.</p>
+</div>
+<div class="tip-box">
+<h4>&#x1F4A1; Tip del profesor</h4>
+<p>El volumen se mide en cubos, no en cuadrados. Por eso las unidades llevan "cúbicas" (cm). Un dado de 1 cm tiene volumen de 1 cm.</p>
+</div>
+</div>
+
+<div class="section">
+<div class="section-title">&#x1F3AE; Cuenta los cubos</div>
+<div class="vol-area">
+<div class="vol-inputs">
+<span class="vol-label">Largo:</span><input class="vol-input" type="number" min="1" max="6" value="4" id="v-l" oninput="drawVol()">
+<span class="vol-label">Ancho:</span><input class="vol-input" type="number" min="1" max="6" value="3" id="v-w" oninput="drawVol()">
+<span class="vol-label">Alto:</span><input class="vol-input" type="number" min="1" max="4" value="2" id="v-h" oninput="drawVol()">
+<button class="btn btn-primary" onclick="fillVol()">Llenar</button>
+<button class="btn btn-ghost" onclick="resetVol()">Limpiar</button>
+</div>
+<div class="vol-cube-grid" id="vol-grid"></div>
+<div class="vol-result" id="vol-result"></div>
+</div>
+</div>
+
+<div class="section">
+<div class="question-box">
+<h4>&#x2753; Resuelve</h4>
+<p style="color:var(--text-secondary);margin-bottom:12px;font-size:.9375rem" id="q-text"></p>
+<div class="vol-inputs">
+<input class="q-input" type="number" id="q-answer" placeholder="?">
+<span class="vol-label">cm</span>
+<button class="btn btn-primary" onclick="checkVol()">Comprobar</button>
+</div>
+<div class="feedback" id="q-fb"></div>
+<div class="btn-row"><button class="btn btn-ghost" onclick="newVolQ()">Nueva pregunta</button></div>
+</div>
+</div>
+
+<div class="section" style="animation-delay:320ms">
+<div class="question-box" style="background:linear-gradient(135deg,rgba(0,122,255,.06),rgba(0,122,255,.02));border:1px solid rgba(0,122,255,.15)">
+<h4>&#x1F3AC; Videos de apoyo</h4>
+<p style="color:var(--text-secondary);margin-bottom:12px;font-size:.9375rem">Agrega links de videos de YouTube para reforzar lo aprendido:</p>
+<div id="videos-container" style="display:flex;flex-direction:column;gap:12px;margin-bottom:12px">
+<div class="video-placeholder" style="border:2px dashed rgba(0,122,255,.25);border-radius:16px;padding:24px;text-align:center;color:var(--text-tertiary);font-size:.875rem;cursor:pointer;transition:border-color .2s,background .2s" onclick="addVideoSlot(this.parentElement)">
+<span style="font-size:1.5rem;display:block;margin-bottom:6px">&#x1F4F1;</span>
+Haz clic aquí para agregar un video de YouTube
+</div>
+</div>
+</div>
+</div>
+
+</div>
+
+<script>
+function drawVol(){
+var l=parseInt(document.getElementById('v-l').value)||1;
+var w=parseInt(document.getElementById('v-w').value)||1;
+var h=parseInt(document.getElementById('v-h').value)||1;
+var grid=document.getElementById('vol-grid');grid.innerHTML='';
+for(var z=0;z<h;z++){
+var layer=document.createElement('div');layer.style.marginBottom='6px';
+for(var y=0;y<w;y++){
+var row=document.createElement('div');row.className='vol-cube-row';
+for(var x=0;x<l;x++){
+var cube=document.createElement('div');cube.className='vol-cube';
+cube.style.animationDelay=(z*w*l+y*l+x)*15+'ms';
+cube.style.opacity=(z===h-1)?1:.4+z*0.2;
+row.appendChild(cube);
+}
+layer.appendChild(row);
+}
+grid.appendChild(layer);
+}
+document.getElementById('vol-result').classList.remove('show');
+}
+function fillVol(){
+var l=parseInt(document.getElementById('v-l').value)||1;
+var w=parseInt(document.getElementById('v-w').value)||1;
+var h=parseInt(document.getElementById('v-h').value)||1;
+var total=l*w*h;
+document.querySelectorAll('.vol-cube').forEach(function(c,i){
+setTimeout(function(){c.classList.add('filled')},i*20);
+});
+var res=document.getElementById('vol-result');
+res.textContent=l+'  '+w+'  '+h+' = '+total+' cm';
+res.classList.add('show');
+}
+function resetVol(){
+document.querySelectorAll('.vol-cube').forEach(function(c){c.classList.remove('filled')});
+document.getElementById('vol-result').classList.remove('show');
+}
+var qAnswer;
+function newVolQ(){
+var l=Math.floor(Math.random()*4)+2;
+var w=Math.floor(Math.random()*4)+2;
+var h=Math.floor(Math.random()*3)+1;
+qAnswer=l*w*h;
+document.getElementById('q-text').textContent='Un prisma rectangular mide '+l+' cm de largo, '+w+' cm de ancho y '+h+' cm de alto. ¿Cunto es su volumen?';
+document.getElementById('q-answer').value='';document.getElementById('q-fb').textContent='';document.getElementById('q-fb').className='feedback';
+}
+function checkVol(){
+var ans=parseInt(document.getElementById('q-answer').value);
+var fb=document.getElementById('q-fb');
+if(ans===qAnswer){fb.textContent='¿Correcto! '+qAnswer+' cm';fb.className='feedback correct';setTimeout(newVolQ,2000)}
+else if(isNaN(ans)){fb.textContent='Escribe un n';fb.className='feedback wrong'}
+else{fb.textContent='Recuerda: largo  ancho  alto';fb.className='feedback wrong'}
+}
+drawVol();newVolQ();
+
+function addVideoSlot(container){
+var existing=container.querySelector('.video-placeholder');
+if(existing)existing.remove();
+var div=document.createElement('div');
+div.className='video-slot';
+div.style.cssText='display:flex;gap:8px;align-items:center;background:rgba(0,122,255,.04);border:1px solid rgba(0,122,255,.12);border-radius:12px;padding:10px 12px';
+div.innerHTML='<input type="text" placeholder="Pega el link de YouTube aquí..." style="flex:1;font-family:var(--font-sans);font-size:.875rem;padding:8px 12px;border-radius:8px;border:1px solid rgba(0,0,0,.1);background:white;color:#1d1d1f;outline:none" onfocus="this.style.borderColor=\'#007aff\'" onblur="this.style.borderColor=\'rgba(0,0,0,1)\'"><button onclick="removeVideoSlot(this)" style="font-size:1.1rem;background:none;border:none;cursor:pointer;color:#ff3b30;padding:4px" title="Eliminar">&#x2715;</button>';
+container.appendChild(div);
+var addBtn=document.createElement('div');
+addBtn.className='video-placeholder';
+addBtn.style.cssText='border:2px dashed rgba(0,122,255,.25);border-radius:16px;padding:16px;text-align:center;color:var(--text-tertiary);font-size:.875rem;cursor:pointer;transition:border-color .2s,background .2s';
+addBtn.innerHTML='<span style="font-size:1.25rem;display:block;margin-bottom:4px">&#x2795;</span>Agregar otro video';
+addBtn.onclick=function(){addVideoSlot(container)};
+container.appendChild(addBtn);
+}
+function removeVideoSlot(btn){btn.closest('.video-slot').remove()}
+</script>
+</body>
+</html>

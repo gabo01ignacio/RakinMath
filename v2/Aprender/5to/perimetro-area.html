@@ -1,0 +1,187 @@
+<?﻿<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RakinMath " Perímetro y Área</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../apple-design.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"></script>
+<script defer src="../rk-utils.js"></script>
+<style>
+body{display:flex;flex-direction:column;min-height:100vh}
+.content{flex:1;max-width:820px;width:100%;margin:0 auto;padding:24px}
+.back-link{display:inline-flex;align-items:center;gap:6px;font-size:.875rem;font-weight:600;color:var(--text-secondary);text-decoration:none;padding:8px 16px;border-radius:980px;background:var(--bg-card);border:1px solid var(--border-strong);transition:transform .15s;margin-bottom:24px}
+.back-link:active{transform:scale(.95)}
+.section{margin-bottom:44px;opacity:0;animation:slideUp .5s var(--spring-default) both}
+.section:nth-child(2){animation-delay:80ms}.section:nth-child(3){animation-delay:160ms}.section:nth-child(4){animation-delay:240ms}.section:nth-child(5){animation-delay:320ms}
+.section-title{font-size:1.5rem;font-weight:700;letter-spacing:-.03em;margin-bottom:8px}
+.section-subtitle{font-size:1rem;color:var(--text-secondary);margin-bottom:20px;line-height:1.6}
+.concept-box{border-radius:var(--radius-md);padding:24px;margin-bottom:20px}
+.concept-box.green{background:linear-gradient(135deg,rgba(52,199,89,.06),rgba(52,199,89,.02));border:1px solid rgba(52,199,89,.15)}
+.concept-box h3{font-size:1.125rem;font-weight:700;margin-bottom:8px}
+.concept-box p{font-size:.9375rem;color:var(--text-secondary);line-height:1.7}
+.tip-box{background:linear-gradient(135deg,rgba(175,82,222,.06),rgba(175,82,222,.02));border:1px solid rgba(175,82,222,.15);border-radius:var(--radius-md);padding:20px;margin:16px 0}
+.tip-box h4{font-size:.9375rem;font-weight:700;color:var(--purple);margin-bottom:6px}
+.tip-box p{font-size:.875rem;color:var(--text-secondary);line-height:1.6}
+.card{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-lg);padding:28px 24px 24px;margin-bottom:20px}
+.card h3{font-size:1.125rem;font-weight:700;margin-bottom:16px}
+.quiz-box{background:linear-gradient(135deg,rgba(0,122,255,.06),rgba(0,122,255,.02));border:1px solid rgba(0,122,255,.15);border-radius:var(--radius-md);padding:24px}
+.quiz-box h4{font-size:1rem;font-weight:700;margin-bottom:12px}
+.quiz-problem{font-size:1.25rem;font-weight:700;text-align:center;margin:16px 0 4px}
+.quiz-row{display:flex;align-items:center;gap:12px;justify-content:center;flex-wrap:wrap;margin-top:12px}
+.quiz-input{width:100px;padding:10px;border-radius:var(--radius-sm);border:2px solid var(--border-strong);background:var(--bg-card-solid);font-family:var(--font-sans);font-size:1.125rem;font-weight:700;text-align:center;color:var(--text);outline:none}
+.quiz-input:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(0,122,255,.1)}
+.feedback{font-size:.875rem;font-weight:600;margin-top:10px;min-height:20px;text-align:center}
+.feedback.correct{color:var(--green)}.feedback.wrong{color:var(--red)}
+.btn{font-family:var(--font-sans);font-size:.875rem;font-weight:600;padding:8px 18px;border-radius:980px;border:none;cursor:pointer;transition:transform .12s,opacity .12s}
+.btn:active{transform:scale(.95)}
+.btn:disabled{opacity:.4;cursor:not-allowed;transform:none}
+.btn-primary{background:var(--accent);color:white}
+.btn-ghost{background:var(--bg-card-solid);color:var(--text);border:1px solid var(--border-strong)}
+.math-display{background:var(--bg-card-solid);border:1px solid var(--border);border-radius:var(--radius-md);padding:16px 24px;margin:16px 0;text-align:center;font-size:1.125rem}
+@keyframes slideUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+@media(max-width:640px){.content{padding:16px}.card{padding:20px 16px 16px}}
+</style>
+</head>
+<body>
+<nav style="display:flex;align-items:center;justify-content:space-between;padding:16px 24px;border-bottom:1px solid var(--border)">
+<img src="../../Recursos/LogoRakinMath.png" alt="RakinMath" style="height:32px">
+<a href="menu.html" class="btn btn-ghost">Volver</a>
+</nav>
+<div class="content">
+<a href="menu.html" class="back-link">? Volver al menú</a>
+
+<div class="section">
+<h1 class="section-title">Perímetro y Área</h1>
+<p class="section-subtitle">El perímetro es la distancia alrededor de una figura. El área es la cantidad de superficie que cubre. Son conceptos diferentes pero relacionados.</p>
+</div>
+
+<div class="section">
+<div class="concept-box green">
+<h3>Perímetro</h3>
+<p>Es la suma de todos los lados de una figura. Se mide en unidades de longitud (cm, m, km).</p>
+<div class="math-display">
+<strong>Cuadrado:</strong> $P = 4 \times L$<br><br>
+<strong>Rectángulo:</strong> $P = 2(l + a)$<br><br>
+<strong>Triángulo:</strong> $P = L_1 + L_2 + L_3$
+</div>
+</div>
+<div class="concept-box green">
+<h3>Área</h3>
+<p>Es la superficie que cubre una figura. Se mide en unidades cuadradas (cm², m², km²).</p>
+<div class="math-display">
+<strong>Cuadrado:</strong> $A = L^2$<br><br>
+<strong>Rectángulo:</strong> $A = l \times a$<br><br>
+<strong>Triángulo:</strong> $A = \frac{b \times h}{2}$<br><br>
+<strong>Trapecio:</strong> $A = \frac{(B + b) \times h}{2}$
+</div>
+</div>
+<div class="tip-box">
+<h4>Consejo</h4>
+<p>Piensa en el perímetro como el largo de una reja alrededor del jardín, y el área como la cantidad de césped que necesitas para cubrirlo.</p>
+</div>
+</div>
+
+<div class="section">
+<div class="card">
+<h3>Calculadora de perímetro y área</h3>
+<p style="color:var(--text-secondary);margin-bottom:16px">Selecciona una figura e ingresa las dimensiones.</p>
+<div style="text-align:center">
+<select id="shape-select" class="quiz-input" style="width:auto;padding:8px 16px;margin-bottom:16px" onchange="updateShapeInputs()">
+<option value="square">Cuadrado</option>
+<option value="rect">Rectángulo</option>
+<option value="triangle">Triángulo</option>
+</select>
+<div id="shape-inputs" style="display:flex;gap:10px;align-items:center;justify-content:center;flex-wrap:wrap;margin-bottom:16px">
+<input type="number" class="quiz-input" id="dim1" placeholder="Lado (cm)">
+</div>
+<button class="btn btn-primary" onclick="calculate()">Calcular</button>
+<div id="calc-results" style="margin-top:16px;font-size:1.125rem"></div>
+</div>
+</div>
+</div>
+
+<div class="section">
+<div class="quiz-box">
+<h4>Practica: Calcula perímetro y área</h4>
+<p class="quiz-problem" id="quiz-pa-problem"></p>
+<div style="display:flex;gap:20px;justify-content:center;flex-wrap:wrap;margin-top:12px">
+<div>
+<p style="font-size:.875rem;color:var(--text-secondary);margin-bottom:4px">Perímetro:</p>
+<input type="number" class="quiz-input" id="quiz-pa-perim" placeholder="cm">
+</div>
+<div>
+<p style="font-size:.875rem;color:var(--text-secondary);margin-bottom:4px">Área:</p>
+<input type="number" class="quiz-input" id="quiz-pa-area" placeholder="cm²">
+</div>
+</div>
+<div style="text-align:center;margin-top:12px">
+<button class="btn btn-primary" onclick="checkQuizPA()">Verificar</button>
+</div>
+<p class="feedback" id="quiz-pa-feedback"></p>
+</div>
+</div>
+
+<div class="section">
+<div class="videos-box" style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-md);padding:24px;text-align:center">
+<p style="color:var(--text-tertiary);font-size:.875rem">Próximamente: Videos explicativos sobre perímetro y área</p>
+</div>
+</div>
+</div>
+
+<script>
+function updateShapeInputs(){
+const shape=document.getElementById('shape-select').value;
+const c=document.getElementById('shape-inputs');
+if(shape==='square'){c.innerHTML='<input type="number" class="quiz-input" id="dim1" placeholder="Lado (cm)">';}
+else if(shape==='rect'){c.innerHTML='<input type="number" class="quiz-input" id="dim1" placeholder="Base (cm)"><input type="number" class="quiz-input" id="dim2" placeholder="Altura (cm)">';}
+else{c.innerHTML='<input type="number" class="quiz-input" id="dim1" placeholder="Lado 1 (cm)"><input type="number" class="quiz-input" id="dim2" placeholder="Lado 2 (cm)"><input type="number" class="quiz-input" id="dim3" placeholder="Lado 3 (cm)">';}
+}
+function calculate(){
+const shape=document.getElementById('shape-select').value;
+const d1=parseFloat(document.getElementById('dim1').value);
+const d2=document.getElementById('dim2')?parseFloat(document.getElementById('dim2').value):0;
+const res=document.getElementById('calc-results');
+let perim,area;
+if(shape==='square'){perim=4*d1;area=d1*d1;}
+else if(shape==='rect'){perim=2*(d1+d2);area=d1*d2;}
+else{const d3=document.getElementById('dim3')?parseFloat(document.getElementById('dim3').value):0;perim=d1+d2+d3;area=(d1*d2)/2;}
+res.innerHTML='<p style="color:var(--green);font-weight:700">Perímetro: '+perim.toFixed(1)+' cm</p><p style="color:var(--accent);font-weight:700">Área: '+area.toFixed(1)+' cm²</p>';
+}
+const quizShapes=['square','rect','rect'];
+let quizPAData={};
+function genQuizPA(){
+const shapes=['square','rect','rect'];
+const shape=shapes[Math.floor(Math.random()*shapes.length)];
+let problem,aPerim,aArea;
+if(shape==='square'){
+const l=Math.floor(Math.random()*10)+3;
+problem='Cuadrado de '+l+' cm de lado';
+aPerim=4*l;aArea=l*l;
+}else{
+const b=Math.floor(Math.random()*10)+3;
+const h=Math.floor(Math.random()*8)+2;
+problem='Rectángulo de '+b+' cm × '+h+' cm';
+aPerim=2*(b+h);aArea=b*h;
+}
+quizPAData={perim:aPerim,area:aArea};
+document.getElementById('quiz-pa-problem').textContent=problem;
+document.getElementById('quiz-pa-perim').value='';
+document.getElementById('quiz-pa-area').value='';
+document.getElementById('quiz-pa-feedback').textContent='';
+document.getElementById('quiz-pa-feedback').className='feedback';
+}
+function checkQuizPA(){
+const p=parseFloat(document.getElementById('quiz-pa-perim').value);
+const a=parseFloat(document.getElementById('quiz-pa-area').value);
+const fb=document.getElementById('quiz-pa-feedback');
+if(p===quizPAData.perim&&a===quizPAData.area){fb.textContent='\u00a1Excelente! Ambas respuestas correctas.';fb.className='feedback correct';}
+else{fb.textContent='Incorrecto. Perímetro: '+quizPAData.perim+' cm, Área: '+quizPAData.area+' cm²';fb.className='feedback wrong';}
+}
+genQuizPA();
+</script>
+</body>
+</html>

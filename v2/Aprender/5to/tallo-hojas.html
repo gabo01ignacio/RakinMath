@@ -1,0 +1,188 @@
+<?<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RakinMath " Diagrama de Tallo y Hojas</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../apple-design.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"></script>
+<script defer src="../rk-utils.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
+<style>
+body{display:flex;flex-direction:column;min-height:100vh}
+.content{flex:1;max-width:820px;width:100%;margin:0 auto;padding:24px}
+.back-link{display:inline-flex;align-items:center;gap:6px;font-size:.875rem;font-weight:600;color:var(--text-secondary);text-decoration:none;padding:8px 16px;border-radius:980px;background:var(--bg-card);border:1px solid var(--border-strong);transition:transform .15s;margin-bottom:24px}
+.back-link:active{transform:scale(.95)}
+.section{margin-bottom:44px;opacity:0;animation:slideUp .5s var(--spring-default) both}
+.section:nth-child(2){animation-delay:80ms}.section:nth-child(3){animation-delay:160ms}.section:nth-child(4){animation-delay:240ms}.section:nth-child(5){animation-delay:320ms}
+.section-title{font-size:1.5rem;font-weight:700;letter-spacing:-.03em;margin-bottom:8px}
+.section-subtitle{font-size:1rem;color:var(--text-secondary);margin-bottom:20px;line-height:1.6}
+.concept-box{border-radius:var(--radius-md);padding:24px;margin-bottom:20px}
+.concept-box.green{background:linear-gradient(135deg,rgba(52,199,89,.06),rgba(52,199,89,.02));border:1px solid rgba(52,199,89,.15)}
+.concept-box h3{font-size:1.125rem;font-weight:700;margin-bottom:8px}
+.concept-box p{font-size:.9375rem;color:var(--text-secondary);line-height:1.7}
+.tip-box{background:linear-gradient(135deg,rgba(175,82,222,.06),rgba(175,82,222,.02));border:1px solid rgba(175,82,222,.15);border-radius:var(--radius-md);padding:20px;margin:16px 0}
+.tip-box h4{font-size:.9375rem;font-weight:700;color:var(--purple);margin-bottom:6px}
+.tip-box p{font-size:.875rem;color:var(--text-secondary);line-height:1.6}
+.card{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-lg);padding:28px 24px 24px;margin-bottom:20px}
+.card h3{font-size:1.125rem;font-weight:700;margin-bottom:16px}
+.quiz-box{background:linear-gradient(135deg,rgba(0,122,255,.06),rgba(0,122,255,.02));border:1px solid rgba(0,122,255,.15);border-radius:var(--radius-md);padding:24px}
+.quiz-box h4{font-size:1rem;font-weight:700;margin-bottom:12px}
+.quiz-problem{font-size:1.125rem;font-weight:700;text-align:center;margin:16px 0 4px}
+.quiz-row{display:flex;align-items:center;gap:12px;justify-content:center;flex-wrap:wrap;margin-top:12px}
+.quiz-input{width:100px;padding:10px;border-radius:var(--radius-sm);border:2px solid var(--border-strong);background:var(--bg-card-solid);font-family:var(--font-sans);font-size:1.125rem;font-weight:700;text-align:center;color:var(--text);outline:none}
+.quiz-input:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(0,122,255,.1)}
+.feedback{font-size:.875rem;font-weight:600;margin-top:10px;min-height:20px;text-align:center}
+.feedback.correct{color:var(--green)}.feedback.wrong{color:var(--red)}
+.btn{font-family:var(--font-sans);font-size:.875rem;font-weight:600;padding:8px 18px;border-radius:980px;border:none;cursor:pointer;transition:transform .12s,opacity .12s}
+.btn:active{transform:scale(.95)}
+.btn:disabled{opacity:.4;cursor:not-allowed;transform:none}
+.btn-primary{background:var(--accent);color:white}
+.btn-ghost{background:var(--bg-card-solid);color:var(--text);border:1px solid var(--border-strong)}
+.stem-leaf{font-family:'Courier New',monospace;font-size:1.125rem;line-height:1.8;margin:16px 0}
+.stem{font-weight:700;color:var(--accent)}
+.leaf{color:var(--text-secondary)}
+@keyframes slideUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+@media(max-width:640px){.content{padding:16px}.card{padding:20px 16px 16px}}
+</style>
+</head>
+<body>
+<nav style="display:flex;align-items:center;justify-content:space-between;padding:16px 24px;border-bottom:1px solid var(--border)">
+<img src="../../Recursos/LogoRakinMath.png" alt="RakinMath" style="height:32px">
+<a href="menu.html" class="btn btn-ghost">Volver</a>
+</nav>
+<div class="content">
+<a href="menu.html" class="back-link">? Volver al menú</a>
+
+<div class="section">
+<h1 class="section-title">Diagrama de Tallo y Hojas</h1>
+<p class="section-subtitle">El diagrama de tallo y hojas organiza los números separando las decenas (tallo) de las unidades (hojas). Es una forma de ver la distribución de datos.</p>
+</div>
+
+<div class="section">
+<div class="concept-box green">
+<h3>¿Cómo se lee?</h3>
+<p><strong>Tallo:</strong> representa las decenas (el primer dígito)<br>
+<strong>Hojas:</strong> representan las unidades (el último dígito)</p>
+<div class="math-display">
+<strong>Ejemplo:</strong> Datos: $12, 13, 14, 22, 23, 25, 31$
+</div>
+<div class="stem-leaf" style="font-size:1.25rem;text-align:center">
+<span class="stem">1</span> | <span class="leaf">2 3 4</span><br>
+<span class="stem">2</span> | <span class="leaf">2 3 5</span><br>
+<span class="stem">3</span> | <span class="leaf">1</span>
+</div>
+<p style="color:var(--text-secondary);text-align:center;font-size:.875rem">Tallo $1$: hojas $2, 3, 4$ → números $12, 13, 14$</p>
+<p style="color:var(--text-secondary);text-align:center;font-size:.875rem">Tallo $2$: hojas $2, 3, 5$ → números $22, 23, 25$</p>
+<p style="color:var(--text-secondary);text-align:center;font-size:.875rem">Tallo $3$: hoja $1$ → número $31$</p>
+</div>
+<div class="concept-box green">
+<h3>¿Para qué sirve?</h3>
+<p>Para ver rápidamente:<br>
+• Cuáles son los valores más frecuentes<br>
+• Cómo se distribuyen los datos<br>
+• Si hay valores muy altos o muy bajos</p>
+</div>
+<div class="tip-box">
+<h4>Consejo</h4>
+<p>Para armar el diagrama, ordena los datos de menor a mayor primero. Luego separa cada número en decenas (tallo) y unidades (hoja).</p>
+</div>
+</div>
+
+<div class="section">
+<div class="card">
+<h3>Generador de diagrama</h3>
+<p style="color:var(--text-secondary);margin-bottom:16px">Ingresa datos separados por comas para generar el diagrama.</p>
+<div style="text-align:center">
+<input type="text" class="quiz-input" id="stem-input" style="width:300px" placeholder="Ej: 12,13,14,22,23,25,31">
+<button class="btn btn-primary" onclick="generateStemLeaf()" style="margin-left:8px">Generar</button>
+<div id="stem-display" class="stem-leaf" style="margin-top:16px;text-align:left;display:inline-block"></div>
+</div>
+</div>
+</div>
+
+<div class="section">
+<div class="quiz-box">
+<h4>Practica: Lee el diagrama</h4>
+<p style="color:var(--text-secondary);margin-bottom:12px;text-align:center">Observa el diagrama y responde:</p>
+<div id="quiz-stem-diagram" class="stem-leaf" style="text-align:center;margin-bottom:16px"></div>
+<p class="quiz-problem" id="quiz-stem-question"></p>
+<div class="quiz-row">
+<input type="number" class="quiz-input" id="quiz-stem-answer" placeholder="Respuesta">
+<button class="btn btn-primary" onclick="checkQuizStem()">Verificar</button>
+</div>
+<p class="feedback" id="quiz-stem-feedback"></p>
+</div>
+</div>
+
+<div class="section">
+<div class="videos-box" style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-md);padding:24px;text-align:center">
+<p style="color:var(--text-tertiary);font-size:.875rem">Próximamente: Videos explicativos sobre diagramas de tallo y hojas</p>
+</div>
+</div>
+</div>
+
+<script>
+function generateStemLeaf(){
+const input=document.getElementById('stem-input').value;
+const nums=input.split(',').map(n=>parseInt(n.trim())).filter(n=>!isNaN(n)).sort((a,b)=>a-b);
+if(nums.length===0){document.getElementById('stem-display').innerHTML='Ingresa números válidos';return;}
+const stems={};
+nums.forEach(n=>{
+const stem=Math.floor(n/10);
+const leaf=n%10;
+if(!stems[stem])stems[stem]=[];
+stems[stem].push(leaf);
+});
+let html='';
+Object.keys(stems).sort((a,b)=>a-b).forEach(stem=>{
+html+='<span class="stem">'+stem+'</span> | <span class="leaf">'+stems[stem].join(' ')+'</span><br>';
+});
+document.getElementById('stem-display').innerHTML=html;
+}
+let quizStemData={};
+function genQuizStem(){
+const nums=[];
+for(let i=0;i<7;i++)nums.push(Math.floor(Math.random()*30)+10);
+nums.sort((a,b)=>a-b);
+const stems={};
+nums.forEach(n=>{
+const stem=Math.floor(n/10);
+const leaf=n%10;
+if(!stems[stem])stems[stem]=[];
+stems[stem].push(leaf);
+});
+let diagram='';
+Object.keys(stems).sort((a,b)=>a-b).forEach(stem=>{
+diagram+='<span class="stem">'+stem+'</span> | <span class="leaf">'+stems[stem].join(' ')+'</span><br>';
+});
+document.getElementById('quiz-stem-diagram').innerHTML=diagram;
+const qType=Math.floor(Math.random()*2);
+let question,answer;
+if(qType===0){
+question='\u00bfCu\u00e1ntos datos hay en total?';
+answer=nums.length;
+}else{
+const stemQ=Object.keys(stems).sort((a,b)=>a-b)[Math.floor(Math.random()*Object.keys(stems).length)];
+question='\u00bfCu\u00e1ntos datos hay en el tallo '+stemQ+'?';
+answer=stems[stemQ].length;
+}
+quizStemData={answer};
+document.getElementById('quiz-stem-question').textContent=question;
+document.getElementById('quiz-stem-answer').value='';
+document.getElementById('quiz-stem-feedback').textContent='';
+document.getElementById('quiz-stem-feedback').className='feedback';
+}
+function checkQuizStem(){
+const ans=parseInt(document.getElementById('quiz-stem-answer').value);
+const fb=document.getElementById('quiz-stem-feedback');
+if(ans===quizStemData.answer){fb.textContent='\u00a1Correcto!';fb.className='feedback correct';}
+else{fb.textContent='Respuesta incorrecta. La respuesta es '+quizStemData.answer;fb.className='feedback wrong';}
+}
+genQuizStem();
+</script>
+</body>
+</html>

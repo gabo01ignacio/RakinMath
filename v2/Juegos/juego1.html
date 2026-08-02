@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="apple-design.css">
+    <script src="../auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
+    <script src="firebase-config.js"></script>
+    <script src="../stats/rk-stats.js"></script>
+    <title>Duelo de Números | RakinMath</title>
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            height: 100dvh;
+            overflow: hidden;
+        }
+
+        .game-wrap {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            padding: 12px 16px 16px;
+            gap: 12px;
+            overflow: hidden;
+        }
+
+        /* Teams row */
+        .teams {
+            display: grid;
+            grid-template-columns: 1fr auto 1fr;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .team {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-lg);
+            padding: 12px 16px;
+            text-align: center;
+            transition: border-color 0.25s ease, box-shadow 0.25s ease;
+        }
+
+        .team.active.team-a { border-color: #007aff; box-shadow: 0 0 0 3px rgba(0,122,255,0.12); }
+        .team.active.team-b { border-color: #ff2d55; box-shadow: 0 0 0 3px rgba(255,45,85,0.12); }
+
+        .team-label {
+            font-size: 0.6875rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            margin-bottom: 2px;
+        }
+        .team-a .team-label { color: #007aff; }
+        .team-b .team-label { color: #ff2d55; }
+
+        .team-score {
+            font-size: 2rem;
+            font-weight: 800;
+            font-variant-numeric: tabular-nums;
+            line-height: 1;
+        }
+
+        .team-hearts {
+            font-size: 0.75rem;
+            margin-top: 4px;
+            letter-spacing: 1px;
+        }
+
+        /* Timer pill */
+        .timer-pill {
+            width: 52px;
+            height: 52px;
+            border-radius: 50%;
+            background: var(--bg-card);
+            border: 2px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        .timer-pill svg {
+            position: absolute;
+            inset: 0;
+            transform: rotate(-90deg);
+        }
+
+        .timer-pill circle {
+            fill: none;
+            stroke-width: 3;
+            stroke-linecap: round;
+        }
+
+        .timer-track { stroke: var(--border); }
+
+        .timer-fill {
+            stroke: #ff9500;
+            stroke-dasharray: 138;
+            stroke-dashoffset: 0;
+            transition: stroke-dashoffset 1s linear;
+        }
+
+        .timer-num {
+            font-size: 1.125rem;
+            font-weight: 700;
+            font-variant-numeric: tabular-nums;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Center area */
+        .center {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 16px;
+        }
+
+        .turn-badge {
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            padding: 4px 14px;
+            border-radius: var(--radius-pill);
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+        }
+        .turn-badge.a { color: #007aff; }
+        .turn-badge.b { color: #ff2d55; }
+
+        .question {
+            font-size: clamp(2.5rem, 10vw, 4rem);
+            font-weight: 800;
+            letter-spacing: -0.03em;
+            font-variant-numeric: tabular-nums;
+            text-align: center;
+            color: var(--text);
+        }
+
+        .answer-row {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .answer-input {
+            width: 140px;
+            height: 56px;
+            font-family: var(--font-sans);
+            font-size: 1.75rem;
+            font-weight: 700;
+            text-align: center;
+            border: 2px solid var(--border-strong);
+            border-radius: var(--radius-md);
+            background: var(--bg-card-solid);
+            color: var(--text);
+            outline: none;
+            font-variant-numeric: tabular-nums;
+            transition: border-color 0.15s ease, box-shadow 0.15s ease;
+        }
+
+        .answer-input:focus {
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px rgba(0,122,255,0.12);
+        }
+
+        .submit-btn {
+            height: 56px;
+            padding: 0 28px;
+            border-radius: var(--radius-pill);
+            border: none;
+            background: var(--accent);
+            color: white;
+            font-family: var(--font-sans);
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.12s ease, background 0.15s ease;
+        }
+
+        .submit-btn:active { transform: scale(0.95); }
+        .submit-btn:hover { background: var(--accent-hover); }
+
+        /* End overlay */
+        .end-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(255,255,255,0.92);
+            backdrop-filter: blur(20px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 100;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+        }
+
+        .end-overlay.active { opacity: 1; pointer-events: all; }
+
+        .end-card {
+            background: var(--bg-card-solid);
+            border-radius: var(--radius-xl);
+            padding: 40px;
+            text-align: center;
+            box-shadow: var(--shadow-lg);
+            max-width: 380px;
+            width: 90%;
+            transform: scale(0.9);
+            transition: transform 0.4s var(--spring-default);
+        }
+
+        .end-overlay.active .end-card { transform: scale(1); }
+
+        .end-card h2 {
+            font-size: 1.5rem;
+            margin-bottom: 24px;
+        }
+
+        .end-scores {
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+            margin-bottom: 28px;
+        }
+
+        .end-scores .col { text-align: center; }
+        .end-scores .col h4 {
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 4px;
+        }
+        .end-scores .col .val {
+            font-size: 2.5rem;
+            font-weight: 800;
+            font-variant-numeric: tabular-nums;
+        }
+        .col.a { color: #007aff; }
+        .col.b { color: #ff2d55; }
+
+        .restart-btn {
+            padding: 12px 32px;
+            border-radius: var(--radius-pill);
+            border: none;
+            background: var(--accent);
+            color: white;
+            font-family: var(--font-sans);
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.12s ease;
+        }
+        .restart-btn:active { transform: scale(0.95); }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-6px); }
+            75% { transform: translateX(6px); }
+        }
+        .shake { animation: shake 0.3s ease; }
+
+        @media (max-width: 480px) {
+            .game-wrap { padding: 8px 10px 12px; gap: 8px; }
+            .team { padding: 8px 10px; }
+            .team-label { font-size: 0.625rem; }
+            .team-score { font-size: 1.5rem; }
+            .timer-pill { width: 44px; height: 44px; }
+            .timer-num { font-size: 0.9375rem; }
+            .question { font-size: clamp(2.75rem, 12vw, 4.5rem); }
+            .answer-input { width: 120px; height: 52px; font-size: 1.5rem; }
+            .submit-btn { height: 52px; padding: 0 22px; font-size: 0.9375rem; }
+        }
+    </style>
+</head>
+<body>
+
+<nav class="nav">
+    <a href="menu.html" class="nav-title">
+        <img src="../Recursos/LogoRakinMath.png" alt="RakinMath" style="height: 24px; width: auto;">
+        <span>Duelo de Números | Rakin<span class="brand">Math</span></span>
+    </a>
+    <a href="menu.html" class="exit-btn">Salir</a>
+</nav>
+
+<div class="game-wrap">
+    <div class="teams">
+        <div id="box-a" class="team team-a active">
+            <div class="team-label">Azul</div>
+            <div id="score-a" class="team-score">0</div>
+            <div id="lives-a" class="team-hearts">❤️❤️❤️</div>
+        </div>
+
+        <div class="timer-pill">
+            <svg viewBox="0 0 52 52">
+                <circle class="timer-track" cx="26" cy="26" r="22"/>
+                <circle id="timer-ring" class="timer-fill" cx="26" cy="26" r="22"/>
+            </svg>
+            <span id="timer-text" class="timer-num">30</span>
+        </div>
+
+        <div id="box-b" class="team team-b">
+            <div class="team-label">Rosa</div>
+            <div id="score-b" class="team-score">0</div>
+            <div id="lives-b" class="team-hearts">❤️❤️❤️</div>
+        </div>
+    </div>
+
+    <div class="center" id="center">
+        <div id="turn-badge" class="turn-badge a">Turno: Azul</div>
+        <div id="question-text" class="question">— × —</div>
+        <div class="answer-row">
+            <input type="number" id="input-answer" class="answer-input" placeholder="?" autofocus inputmode="numeric">
+            <button class="submit-btn" onclick="checkAnswer()">Responder</button>
+        </div>
+    </div>
+</div>
+
+<div id="end-overlay" class="end-overlay">
+    <div class="end-card">
+        <h2 id="winner-text">Partida terminada</h2>
+        <div class="end-scores">
+            <div class="col a"><h4>Azul</h4><div class="val" id="final-a">0</div></div>
+            <div class="col b"><h4>Rosa</h4><div class="val" id="final-b">0</div></div>
+        </div>
+        <button class="restart-btn" onclick="location.reload()">Volver a jugar</button>
+    </div>
+</div>
+
+<script>
+    const C = 2 * Math.PI * 22;
+    let game = { turn:'A', a:{score:0,lives:3}, b:{score:0,lives:3}, ans:0, time:30, tid:null, lastType:'' };
+    let sessionTotal = 0, sessionCorrect = 0, sessionWrong = 0, sessionTimer = 0, sessionErrors = [];
+
+    window.onload = function() {
+        RK.Stats.showRoundModal('Duelo de Números', '⚔️', function(rounds) {
+            sessionTotal = rounds;
+            sessionTimer = Date.now();
+            generate();
+        });
+    };
+
+    function generate() {
+        const t = ['p10','cent','m22','d31'][Math.floor(Math.random()*4)];
+        let q;
+        if (t==='p10') { let n=~~(Math.random()*89)+11, p=[10,100,1000][~~(Math.random()*3)]; game.ans=n*p; q=n+' × '+p; game.lastType='multiplicación por '+p; }
+        else if (t==='cent') { let n=~~(Math.random()*8)+2, c=(~~(Math.random()*9)+1)*100; game.ans=n*c; q=n+' × '+c; game.lastType='multiplicación por decenas'; }
+        else if (t==='m22') { let a=~~(Math.random()*20)+11, b=~~(Math.random()*15)+11; game.ans=a*b; q=a+' × '+b; game.lastType='multiplicación de dos cifras'; }
+        else { let d=~~(Math.random()*7)+2, r=~~(Math.random()*80)+12; game.ans=r; q=r*d+' ÷ '+d; game.lastType='división'; }
+        document.getElementById('question-text').textContent = q;
+        startTimer();
+    }
+
+    function startTimer() {
+        clearInterval(game.tid);
+        game.time = 30;
+        document.getElementById('timer-text').textContent = 30;
+        document.getElementById('timer-ring').style.strokeDashoffset = '0';
+        game.tid = setInterval(() => {
+            game.time--;
+            document.getElementById('timer-text').textContent = game.time;
+            document.getElementById('timer-ring').style.strokeDashoffset = C * (1 - game.time/30);
+            if (game.time <= 0) handleWrong();
+        }, 1000);
+    }
+
+    function checkAnswer() {
+        const v = document.getElementById('input-answer').value;
+        if (v === '') return;
+        if (parseInt(v) === game.ans) { game[game.turn.toLowerCase()].score++; sessionCorrect++; nextTurn(); }
+        else handleWrong();
+    }
+
+    function handleWrong() {
+        game[game.turn.toLowerCase()].lives--;
+        sessionWrong++;
+        sessionErrors.push(game.lastType);
+        document.getElementById('center').classList.add('shake');
+        setTimeout(() => document.getElementById('center').classList.remove('shake'), 300);
+        if (game.a.lives <= 0 || game.b.lives <= 0) endGame();
+        else nextTurn();
+    }
+
+    function nextTurn() {
+        game.turn = game.turn === 'A' ? 'B' : 'A';
+        document.getElementById('input-answer').value = '';
+        if (sessionTotal > 0) {
+            var played = sessionCorrect + sessionWrong;
+            if (played >= sessionTotal) { endGame(); return; }
+        }
+        updateUI();
+        generate();
+        document.getElementById('input-answer').focus();
+    }
+
+    function updateUI() {
+        document.getElementById('score-a').textContent = game.a.score;
+        document.getElementById('score-b').textContent = game.b.score;
+        document.getElementById('lives-a').textContent = '❤️'.repeat(Math.max(0,game.a.lives));
+        document.getElementById('lives-b').textContent = '❤️'.repeat(Math.max(0,game.b.lives));
+        const b = document.getElementById('turn-badge');
+        document.getElementById('box-a').classList.toggle('active', game.turn==='A');
+        document.getElementById('box-b').classList.toggle('active', game.turn==='B');
+        b.textContent = 'Turno: ' + (game.turn==='A'?'Azul':'Rosa');
+        b.className = 'turn-badge ' + game.turn.toLowerCase();
+    }
+
+    function endGame() {
+        clearInterval(game.tid);
+        var totalTime = Math.round((Date.now() - sessionTimer) / 1000);
+        var topErrors = {};
+        var lastIdx = sessionCorrect + sessionWrong;
+        for (var i = 0; i < lastIdx && i < sessionErrors.length; i++) {
+            topErrors[sessionErrors[i]] = (topErrors[sessionErrors[i]] || 0) + 1;
+        }
+        var sortedErrors = Object.keys(topErrors).sort(function(a,b){ return topErrors[b]-topErrors[a]; }).slice(0, 3);
+        RK.Stats.saveGameResult('juego1', {
+            score: game.a.score + game.b.score,
+            rounds: lastIdx,
+            totalTime: totalTime,
+            correct: sessionCorrect,
+            wrong: sessionWrong,
+            errors: sortedErrors
+        });
+        RK.Stats.showEndModal('Duelo de Números', {
+            score: game.a.score + game.b.score,
+            rounds: lastIdx,
+            totalTime: totalTime,
+            correct: sessionCorrect,
+            wrong: sessionWrong
+        });
+    }
+
+    document.getElementById('input-answer').addEventListener('keydown', e => { if (e.key==='Enter') checkAnswer(); });
+</script>
+</body>
+</html>

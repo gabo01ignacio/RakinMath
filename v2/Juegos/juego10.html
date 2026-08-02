@@ -1,0 +1,474 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../Juegos/apple-design.css">
+<script src="../auth.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
+<script src="firebase-config.js"></script>
+<script src="../stats/rk-stats.js"></script>
+<script src="rk-feedback.js"></script>
+<title>El Mercado Chileno | RakinMath</title>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0}
+body{font-family:var(--font-sans);height:100dvh;overflow:hidden;background:var(--bg);color:var(--text);-webkit-tap-highlight-color:transparent;user-select:none}
+
+.screen{display:none;flex-direction:column;height:100dvh;overflow:hidden;position:relative}
+.screen.active{display:flex}
+
+/* ═══ MENU ═══ */
+.menu-inner{flex:1;overflow-y:auto;padding:16px;display:flex;flex-direction:column;align-items:center;gap:14px}
+.menu-header{text-align:center}
+.menu-header .emoji{font-size:3rem;animation:popIn .6s var(--spring-default) both}
+.menu-header h1{font-size:1.5rem;font-weight:800;letter-spacing:-.03em;margin-top:8px}
+.menu-header p{font-size:.8125rem;color:var(--text-secondary);margin-top:4px;max-width:340px}
+.diff-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;width:100%;max-width:400px}
+.diff-card{background:var(--bg-card-solid);border:2px solid var(--border-strong);border-radius:var(--radius-sm);padding:16px 8px;text-align:center;cursor:pointer;transition:all .12s}
+.diff-card:active{transform:scale(.95)}
+.diff-card.sel{border-color:var(--accent);background:rgba(0,122,255,.04)}
+.diff-card .de{font-size:1.75rem;display:block;margin-bottom:4px}
+.diff-card h3{font-size:.875rem;font-weight:700}
+.diff-card p{font-size:.625rem;color:var(--text-tertiary);margin-top:2px}
+.play-btn{width:100%;max-width:400px;font-family:var(--font-sans);font-size:1rem;font-weight:700;padding:14px;border-radius:var(--radius-pill);border:none;background:var(--accent);color:#fff;cursor:pointer;box-shadow:0 4px 16px rgba(0,122,255,.3);transition:all .15s}
+.play-btn:active{transform:scale(.97)}
+.play-btn:disabled{opacity:.4;cursor:not-allowed}
+
+/* ═══ GAME ═══ */
+.game-top{padding:10px 14px 0;display:flex;flex-direction:column;gap:6px}
+.gt-row{display:flex;align-items:center;justify-content:space-between}
+.gt-pill{display:flex;align-items:center;gap:4px;font-size:.75rem;font-weight:700;background:var(--bg-card-solid);border:1px solid var(--border);border-radius:var(--radius-pill);padding:4px 12px}
+.gt-pill .v{color:var(--accent)}
+.gt-pill.budget .v{color:var(--green)}
+.timer-bar{width:100%;height:4px;border-radius:2px;background:var(--border);overflow:hidden}
+.timer-fill{height:100%;background:var(--green);transition:width .3s linear;border-radius:2px}
+.timer-fill.warn{background:var(--orange)}
+.timer-fill.danger{background:var(--red)}
+
+/* Cart */
+.cart-strip{display:flex;gap:8px;padding:8px 14px;overflow-x:auto;min-height:72px;align-items:center}
+.cart-item{flex-shrink:0;background:var(--bg-card-solid);border:1px solid var(--border);border-radius:var(--radius-sm);padding:8px 12px;text-align:center;animation:popIn .3s var(--spring-default) both;position:relative;min-width:80px}
+.cart-item .ci-e{font-size:1.5rem}
+.cart-item .ci-p{font-size:.75rem;font-weight:700;color:var(--accent);margin-top:2px}
+.cart-item .ci-r{position:absolute;top:-6px;right:-6px;width:20px;height:20px;border-radius:50%;background:var(--red);color:#fff;font-size:.625rem;font-weight:700;display:flex;align-items:center;justify-content:center;cursor:pointer;border:none}
+.cart-empty{font-size:.8125rem;color:var(--text-tertiary);text-align:center;width:100%}
+
+/* Shelf */
+.shelf-area{flex:1;overflow-y:auto;padding:8px 14px}
+.shelf-title{font-size:.6875rem;font-weight:700;color:var(--text-tertiary);text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px}
+.shelf-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(90px,1fr));gap:8px;margin-bottom:16px}
+.shelf-item{background:var(--bg-card-solid);border:1.5px solid var(--border);border-radius:var(--radius-sm);padding:10px 6px;text-align:center;cursor:pointer;transition:all .12s;position:relative}
+.shelf-item:active{transform:scale(.93);border-color:var(--accent)}
+.shelf-item.sold-out{opacity:.4;pointer-events:none}
+.shelf-item .si-e{font-size:2rem;display:block}
+.shelf-item .si-n{font-size:.6875rem;font-weight:600;margin-top:2px;color:var(--text)}
+.shelf-item .si-p{font-size:.8125rem;font-weight:800;color:var(--accent);margin-top:2px}
+
+/* Checkout */
+.checkout-bar{padding:10px 14px;border-top:1px solid var(--border);display:flex;gap:8px;align-items:center;background:var(--bg-card-solid)}
+.checkout-total{flex:1}
+.checkout-total .ct-lbl{font-size:.6875rem;color:var(--text-tertiary);font-weight:600}
+.checkout-total .ct-val{font-size:1.25rem;font-weight:800;color:var(--text)}
+.pay-btn{font-family:var(--font-sans);font-size:.875rem;font-weight:700;padding:10px 20px;border-radius:var(--radius-pill);border:none;background:var(--green);color:#fff;cursor:pointer;transition:all .12s;box-shadow:0 2px 8px rgba(52,199,89,.3)}
+.pay-btn:active{transform:scale(.95)}
+.pay-btn:disabled{opacity:.4;cursor:not-allowed}
+
+/* ═══ CHECKOUT MODAL ═══ */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);display:none;align-items:center;justify-content:center;z-index:100;padding:24px}
+.modal-overlay.open{display:flex}
+.modal{background:var(--bg-card-solid);border-radius:var(--radius-xl);padding:28px;max-width:400px;width:100%;box-shadow:0 25px 80px rgba(0,0,0,.2);animation:scaleIn .3s var(--spring-default) both}
+.modal h2{font-size:1.25rem;font-weight:800;text-align:center;margin-bottom:16px;letter-spacing:-.03em}
+.modal-items{max-height:200px;overflow-y:auto;margin-bottom:16px}
+.modal-row{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--border);font-size:.875rem}
+.modal-row:last-child{border-bottom:none}
+.modal-row .mr-name{display:flex;align-items:center;gap:8px}
+.modal-total{display:flex;justify-content:space-between;font-weight:800;font-size:1.125rem;padding-top:12px;border-top:2px solid var(--border-strong)}
+.pay-section{margin-top:16px}
+.pay-section label{font-size:.8125rem;font-weight:600;color:var(--text-secondary);display:block;margin-bottom:6px}
+.pay-input{width:100%;font-family:var(--font-sans);font-size:1.25rem;font-weight:700;padding:12px 16px;border-radius:var(--radius-md);border:2px solid var(--border-strong);background:var(--bg);color:var(--text);text-align:center;outline:none;transition:border-color .15s}
+.pay-input:focus{border-color:var(--accent)}
+.modal-btns{display:flex;gap:8px;margin-top:16px}
+.modal-btns button{flex:1;font-family:var(--font-sans);font-size:.9375rem;font-weight:700;padding:12px;border-radius:var(--radius-pill);border:none;cursor:pointer;transition:all .12s}
+.modal-btns .btn-cancel{background:var(--bg);border:1px solid var(--border-strong);color:var(--text-secondary)}
+.modal-btns .btn-pay{background:var(--green);color:#fff;box-shadow:0 2px 8px rgba(52,199,89,.3)}
+.modal-btns .btn-pay:active{transform:scale(.97)}
+
+/* ═══ CHANGE ANIMATION ═══ */
+.change-display{text-align:center;margin-top:16px;padding:20px;background:var(--bg);border-radius:var(--radius-md);animation:popIn .4s var(--spring-default) both}
+.change-display .cd-emoji{font-size:2.5rem;margin-bottom:8px}
+.change-display .cd-text{font-size:1rem;font-weight:700}
+.change-display .cd-val{font-size:1.5rem;font-weight:800;color:var(--green);margin-top:4px}
+
+/* ═══ RESULTS ═══ */
+.res-inner{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;padding:20px;text-align:center}
+.res-emoji{font-size:3.5rem;animation:popIn .5s var(--spring-default) both}
+.res-title{font-size:1.5rem;font-weight:800;letter-spacing:-.03em}
+.res-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;width:100%;max-width:300px}
+.rc{background:var(--bg-card-solid);border:1px solid var(--border);border-radius:var(--radius-sm);padding:14px 8px;text-align:center}
+.rc .rv{font-size:1.375rem;font-weight:800}
+.rc .rl{font-size:.625rem;font-weight:600;color:var(--text-tertiary);text-transform:uppercase;margin-top:2px}
+.rc.g .rv{color:var(--green)}.rc.r .rv{color:var(--red)}.rc.b .rv{color:var(--accent)}.rc.o .rv{color:var(--orange)}
+.res-btns{display:flex;gap:8px;margin-top:8px;flex-wrap:wrap;justify-content:center}
+.res-btns .play-btn{max-width:200px;font-size:.875rem;padding:11px 20px}
+.res-btns .btn-end{font-family:var(--font-sans);font-size:.875rem;font-weight:700;padding:11px 20px;border-radius:var(--radius-pill);border:1.5px solid var(--border-strong);background:var(--bg-card-solid);color:var(--text);cursor:pointer;transition:all .12s}
+
+/* ═══ FLOATING COINS ═══ */
+.coin{position:fixed;font-size:1.5rem;pointer-events:none;z-index:150;animation:coinFly 1s var(--spring-default) forwards}
+@keyframes coinFly{0%{transform:translateY(0) scale(1);opacity:1}100%{transform:translateY(-80px) scale(0);opacity:0}}
+
+@keyframes popIn{0%{opacity:0;transform:scale(.5)}100%{opacity:1;transform:scale(1)}}
+@keyframes scaleIn{from{opacity:0;transform:scale(.9)}to{opacity:1;transform:scale(1)}}
+</style>
+</head>
+<body>
+
+<!-- ═══════ MENU ═══════ -->
+<div class="screen active" id="scr-menu">
+<button class="exit-btn" onclick="window.location.href='menu.html'" style="position:absolute;top:12px;right:12px;z-index:10">Salir</button>
+<div class="menu-inner">
+<div class="menu-header">
+<div class="emoji">🛒</div>
+<h1>El Mercado Chileno</h1>
+<p>Compra productos, paga y recibe el vuelto correcto. ¡Aprende a manejar dinero chileno!</p>
+</div>
+
+<div class="sec" style="width:100%;max-width:400px">
+<div class="sec-title">Dificultad</div>
+<div class="diff-grid" id="diffGrid">
+<div class="diff-card sel" data-d="facil" onclick="setDiff(this)">
+<span class="de">🌱</span><h3>Fácil</h3><p>Sin vuelto, precios bajos</p>
+</div>
+<div class="diff-card" data-d="normal" onclick="setDiff(this)">
+<span class="de">🔥</span><h3>Normal</h3><p>Vuelto simple, propina</p>
+</div>
+<div class="diff-card" data-d="dificil" onclick="setDiff(this)">
+<span class="de">⚡</span><h3>Difícil</h3><p>Vuelto exacto, sin calculadora</p>
+</div>
+</div>
+</div>
+
+<button class="play-btn" onclick="goGame()">Comenzar a comprar 🛒</button>
+</div>
+</div>
+
+<!-- ═══════ GAME ═══════ -->
+<div class="screen" id="scr-game">
+<div class="game-top">
+<div class="gt-row">
+<div class="gt-pill budget"><span>💰</span><span class="v" id="g-budget">$5.000</span></div>
+<div class="gt-pill"><span>🛒</span><span class="v" id="g-items">0</span> items</div>
+<div class="gt-pill"><span>⏱️</span><span class="v" id="g-time">2:00</span></div>
+</div>
+<div class="timer-bar"><div class="timer-fill" id="t-fill" style="width:100%"></div></div>
+</div>
+
+<div class="cart-strip" id="cart-strip">
+<div class="cart-empty">Toca un producto para agregarlo al carro 🛒</div>
+</div>
+
+<div class="shelf-area" id="shelf-area"></div>
+
+<div class="checkout-bar">
+<div class="checkout-total">
+<div class="ct-lbl">Total</div>
+<div class="ct-val" id="cart-total">$0</div>
+</div>
+<button class="pay-btn" id="pay-btn" onclick="openCheckout()" disabled>Ir a pagar 💳</button>
+</div>
+</div>
+
+<!-- ═══════ CHECKOUT MODAL ═══════ -->
+<div class="modal-overlay" id="checkout-modal">
+<div class="modal">
+<h2>💳 Pagar</h2>
+<div class="modal-items" id="modal-items"></div>
+<div class="modal-total">
+<span>Total</span><span id="modal-total">$0</span>
+</div>
+
+<div class="pay-section" id="pay-section">
+<label>¿Cuánto pagas?</label>
+<input class="pay-input" type="number" id="pay-input" placeholder="$" inputmode="numeric">
+</div>
+
+<div class="change-display" id="change-display" style="display:none">
+<div class="cd-emoji">🎉</div>
+<div class="cd-text" id="cd-text">Vuelto</div>
+<div class="cd-val" id="cd-val">$0</div>
+</div>
+
+<div class="modal-btns" id="modal-btns">
+<button class="btn-cancel" onclick="closeCheckout()">Cancelar</button>
+<button class="btn-pay" id="btn-confirm" onclick="confirmPayment()">Pagar 💳</button>
+</div>
+</div>
+</div>
+
+<!-- ═══════ RESULTS ═══════ -->
+<div class="screen" id="scr-res">
+<div class="res-inner">
+<div class="res-emoji" id="r-em">🎉</div>
+<div class="res-title" id="r-ti">¡Excelente!</div>
+<div class="res-grid">
+<div class="rc g"><div class="rv" id="r-buy">0</div><div class="rl">Compraste</div></div>
+<div class="rc b"><div class="rv" id="r-acc">0%</div><div class="rl">Precisión</div></div>
+<div class="rc o"><div class="rv" id="r-chg">$0</div><div class="rl">Vuelto total</div></div>
+<div class="rc"><div class="rv" id="r-score">0</div><div class="rl">Puntaje</div></div>
+</div>
+<div class="res-btns">
+<button class="play-btn" onclick="goGame()">Jugar de nuevo</button>
+<button class="btn-end" onclick="goMenu()">Cambiar modo</button>
+</div>
+</div>
+</div>
+
+<script>
+/* ═══ PRODUCTS DATABASE ═══ */
+var products=[
+// Frutas y verduras
+{e:'🍌',n:'Plátano',p:290,cat:'Frutas'},
+{e:'🍎',n:'Manzana',p:350,cat:'Frutas'},
+{e:'🍊',n:'Naranja',p:400,cat:'Frutas'},
+{e:'🍇',n:'Uvas',p:890,cat:'Frutas'},
+{e:'🍓',n:'Fresas',p:1200,cat:'Frutas'},
+{e:'🥑',n:'Palta',p:790,cat:'Frutas'},
+{e:'🥕',n:'Zanahoria',p:250,cat:'Verduras'},
+{e:'🥔',n:'Papa',p:380,cat:'Verduras'},
+{e:'🍅',n:'Tomate',p:450,cat:'Verduras'},
+{e:'🧅',n:'Cebolla',p:320,cat:'Verduras'},
+{e:'🥦',n:'Brócoli',p:690,cat:'Verduras'},
+{e:'🌽',n:'Choclo',p:500,cat:'Verduras'},
+// Lácteos
+{e:'🥛',n:'Leche',p:850,cat:'Lácteos'},
+{e:'🧀',n:'Queso',p:1500,cat:'Lácteos'},
+{e:'🧈',n:'Mantequilla',p:1200,cat:'Lácteos'},
+{e:'🥚',n:'Huevos (12)',p:2200,cat:'Lácteos'},
+// Panadería
+{e:'🍞',n:'Pan',p:450,cat:'Panadería'},
+{e:'🥐',n:'Croissant',p:650,cat:'Panadería'},
+{e:'🥖',n:'Barra de pan',p:800,cat:'Panadería'},
+// Bebidas
+{e:'🧃',n:'Jugo',p:590,cat:'Bebidas'},
+{e:'🥤',n:'Agua',p:400,cat:'Bebidas'},
+{e:'☕',n:'Café',p:1500,cat:'Bebidas'},
+// Snacks
+{e:'🍪',n:'Galletas',p:650,cat:'Snacks'},
+{e:'🍫',n:'Chocolate',p:990,cat:'Snacks'},
+{e:'🍿',n:'Palomitas',p:750,cat:'Snacks'},
+// Otros
+{e:'🧻',n:'Papel',p:1100,cat:'Hogar'},
+{e:'🧼',n:'Jabón',p:690,cat:'Hogar'},
+{e:'✏️',n:'Lápices',p:450,cat:'Utiles'},
+{e:'📏',n:'Regla',p:350,cat:'Utiles'},
+{e:'📓',n:'Cuaderno',p:890,cat:'Utiles'}
+];
+
+/* ═══ STATE ═══ */
+var diff='facil',budget=5000,tL=120,tmr=null;
+var cart=[],totalBought=0,totalCorrect=0,totalChange=0,score=0;
+var roundNum=0,maxRounds=5;
+
+function setDiff(el){
+document.querySelectorAll('.diff-card').forEach(function(c){c.classList.remove('sel')});
+el.classList.add('sel');diff=el.dataset.d;
+if(diff==='facil'){budget=5000;maxRounds=5}
+else if(diff==='normal'){budget=10000;maxRounds=7}
+else{budget=15000;maxRounds=10}
+}
+
+/* ═══ SCREENS ═══ */
+function showScr(id){document.querySelectorAll('.screen').forEach(function(s){s.classList.remove('active')});document.getElementById(id).classList.add('active')}
+function goMenu(){showScr('scr-menu')}
+function goGame(){
+cart=[];totalBought=0;totalCorrect=0;totalChange=0;score=0;roundNum=0;
+RK.Feedback.reset();
+tL=diff==='facil'?120:diff==='normal'?90:75;
+showScr('scr-game');
+document.getElementById('g-budget').textContent='$'+formatNum(budget);
+buildShelf();
+startTimer();
+}
+function goRes(){
+clearInterval(tmr);
+var acc=totalBought>0?Math.round(totalCorrect/totalBought*100):0;
+document.getElementById('r-buy').textContent=totalBought;
+document.getElementById('r-acc').textContent=acc+'%';
+document.getElementById('r-chg').textContent='$'+formatNum(totalChange);
+document.getElementById('r-score').textContent=score;
+document.getElementById('r-em').textContent=acc>=80?'🎉':acc>=50?'👍':'💪';
+document.getElementById('r-ti').textContent=acc>=80?'¡Excelente comprador!':acc>=50?'¡Buen trabajo!':'Sigue practicando';
+try{if(typeof RK!=='undefined'&&RK.Stats)RK.Stats.saveGameResult('juego10',{score:score,rounds:totalBought,totalTime:(diff==='facil'?120:diff==='normal'?90:75)-tL,correct:totalCorrect,wrong:totalBought-totalCorrect,errors:['dinero','vuelto']})}catch(e){}
+showScr('scr-res');
+}
+
+/* ═══ TIMER ═══ */
+function startTimer(){
+uTime();
+tmr=setInterval(function(){tL-=1;if(tL<=0){tL=0;clearInterval(tmr);goRes();return}uTime()},1000);
+}
+function uTime(){
+var m=Math.floor(tL/60),s=tL%60;
+document.getElementById('g-time').textContent=m+':'+(s<10?'0':'')+s;
+var pct=tL/(diff==='facil'?120:diff==='normal'?90:75)*100;
+var f=document.getElementById('t-fill');
+f.style.width=pct+'%';
+f.className='timer-fill'+(tL<=10?' danger':tL<=20?' warn':'');
+}
+
+/* ═══ SHELF ═══ */
+function buildShelf(){
+var el=document.getElementById('shelf-area');
+var cats={};
+products.forEach(function(p,i){
+if(!cats[p.cat])cats[p.cat]=[];
+cats[p.cat].push(p);
+});
+var html='';
+var catNames=Object.keys(cats);
+catNames.forEach(function(cat){
+html+='<div class="shelf-title">'+cat+'</div><div class="shelf-grid">';
+cats[cat].forEach(function(p,i){
+var idx=products.indexOf(p);
+html+='<div class="shelf-item" id="pi-'+idx+'" onclick="addToCart('+idx+')">';
+html+='<span class="si-e">'+p.e+'</span>';
+html+='<div class="si-n">'+p.n+'</div>';
+html+='<div class="si-p">$'+formatNum(p.p)+'</div>';
+html+='</div>';
+});
+html+='</div>';
+});
+el.innerHTML=html;
+}
+
+/* ═══ CART ═══ */
+function addToCart(idx){
+var p=products[idx];
+var newTotal=getCartTotal()+p.p;
+if(newTotal>budget){RK.Feedback.show('error','Sin plata','💸');return}
+cart.push({idx:idx,price:p.p});
+updateCart();
+// floating coin
+spawnCoin(document.getElementById('pi-'+idx));
+}
+function removeFromCart(ci){
+cart.splice(ci,1);
+updateCart();
+}
+function getCartTotal(){var t=0;cart.forEach(function(c){t+=c.price});return t}
+function updateCart(){
+var strip=document.getElementById('cart-strip');
+var total=getCartTotal();
+if(cart.length===0){
+strip.innerHTML='<div class="cart-empty">Toca un producto para agregarlo al carro 🛒</div>';
+}else{
+var html='';
+cart.forEach(function(c,i){
+var p=products[c.idx];
+html+='<div class="cart-item">';
+html+='<span class="ci-e">'+p.e+'</span>';
+html+='<div class="ci-p">$'+formatNum(c.price)+'</div>';
+html+='<button class="ci-r" onclick="removeFromCart('+i+')">✕</button>';
+html+='</div>';
+});
+strip.innerHTML=html;
+strip.scrollLeft=strip.scrollWidth;
+}
+document.getElementById('g-items').textContent=cart.length;
+document.getElementById('cart-total').textContent='$'+formatNum(total);
+document.getElementById('pay-btn').disabled=cart.length===0;
+}
+
+/* ═══ CHECKOUT ═══ */
+function openCheckout(){
+if(cart.length===0)return;
+var modal=document.getElementById('checkout-modal');
+var itemsEl=document.getElementById('modal-items');
+var total=getCartTotal();
+var html='';
+cart.forEach(function(c){
+var p=products[c.idx];
+html+='<div class="modal-row"><span class="mr-name">'+p.e+' '+p.n+'</span><span>$'+formatNum(c.price)+'</span></div>';
+});
+itemsEl.innerHTML=html;
+document.getElementById('modal-total').textContent='$'+formatNum(total);
+document.getElementById('pay-input').value='';
+document.getElementById('change-display').style.display='none';
+document.getElementById('pay-section').style.display='block';
+document.getElementById('modal-btns').style.display='flex';
+document.getElementById('btn-confirm').textContent='Pagar 💳';
+document.getElementById('btn-confirm').onclick=confirmPayment;
+modal.classList.add('open');
+document.getElementById('pay-input').focus();
+}
+function closeCheckout(){document.getElementById('checkout-modal').classList.remove('open')}
+
+function confirmPayment(){
+var total=getCartTotal();
+var paid=parseInt(document.getElementById('pay-input').value);
+if(isNaN(paid)||paid<=0){RK.Feedback.show('info','Escribe cuánto pagas','💰');return}
+if(paid<total){RK.Feedback.show('error','No alcanza','💸');return}
+
+var change=paid-total;
+var isCorrect=false;
+
+if(diff==='facil'){
+// In easy mode, any payment >= total is correct
+isCorrect=true;
+}else if(diff==='normal'){
+// In normal mode, must pay with common bills and get reasonable change
+isCorrect=paid>=total;
+}else{
+// In hard mode, must pay exact or with a common bill
+var commonBills=[500,1000,2000,5000,10000,15000,20000];
+isCorrect=commonBills.indexOf(paid)>-1||paid===total;
+}
+
+totalBought++;
+if(isCorrect){totalCorrect++;score+=10;RK.Feedback.show('success')}
+else{score=Math.max(0,score-5);RK.Feedback.show('error','Pago incorrecto','💸')}
+totalChange+=change;
+
+// Show change
+document.getElementById('pay-section').style.display='none';
+document.getElementById('change-display').style.display='block';
+document.getElementById('cd-text').textContent=isCorrect?(change>0?'Tu vuelto: ¡Correcto! 🎉':'¡Pago exacto! 🎯'):'Vuelto calculado';
+document.getElementById('cd-val').textContent='$'+formatNum(change);
+document.getElementById('cd-val').style.color=isCorrect?'var(--green)':'var(--orange)';
+document.getElementById('btn-confirm').textContent='Siguiente →';
+document.getElementById('btn-confirm').onclick=function(){
+closeCheckout();
+roundNum++;
+if(roundNum>=maxRounds){goRes();return}
+// Reset cart and budget
+budget-=total;
+cart=[];
+updateCart();
+document.getElementById('g-budget').textContent='$'+formatNum(budget);
+};
+}
+
+/* ═══ HELPERS ═══ */
+function formatNum(n){return n.toString().replace(/\B(?=(\d{3})+(?!\d))/g,'.')}
+function spawnCoin(anchor){
+if(!anchor)return;
+var rect=anchor.getBoundingClientRect();
+var coin=document.createElement('div');
+coin.className='coin';
+coin.textContent='🪙';
+coin.style.left=(rect.left+rect.width/2-12)+'px';
+coin.style.top=(rect.top)+'px';
+document.body.appendChild(coin);
+setTimeout(function(){coin.remove()},1000);
+}
+
+/* ═══ KEYBOARD ═══ */
+document.getElementById('pay-input').addEventListener('keydown',function(e){if(e.key==='Enter')confirmPayment()});
+
+/* ═══ INIT ═══ */
+</script>
+</body>
+</html>

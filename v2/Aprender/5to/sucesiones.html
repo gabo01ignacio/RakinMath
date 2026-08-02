@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RakinMath " Sucesiones y Reglas</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../apple-design.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"></script>
+<script defer src="../rk-utils.js"></script>
+<style>
+body{display:flex;flex-direction:column;min-height:100vh}
+.content{flex:1;max-width:820px;width:100%;margin:0 auto;padding:24px}
+.back-link{display:inline-flex;align-items:center;gap:6px;font-size:.875rem;font-weight:600;color:var(--text-secondary);text-decoration:none;padding:8px 16px;border-radius:980px;background:var(--bg-card);border:1px solid var(--border-strong);transition:transform .15s;margin-bottom:24px}
+.back-link:active{transform:scale(.95)}
+.section{margin-bottom:44px;opacity:0;animation:slideUp .5s var(--spring-default) both}
+.section:nth-child(2){animation-delay:80ms}.section:nth-child(3){animation-delay:160ms}.section:nth-child(4){animation-delay:240ms}.section:nth-child(5){animation-delay:320ms}
+.section-title{font-size:1.5rem;font-weight:700;letter-spacing:-.03em;margin-bottom:8px}
+.section-subtitle{font-size:1rem;color:var(--text-secondary);margin-bottom:20px;line-height:1.6}
+.concept-box{border-radius:var(--radius-md);padding:24px;margin-bottom:20px}
+.concept-box.green{background:linear-gradient(135deg,rgba(52,199,89,.06),rgba(52,199,89,.02));border:1px solid rgba(52,199,89,.15)}
+.concept-box h3{font-size:1.125rem;font-weight:700;margin-bottom:8px}
+.concept-box p{font-size:.9375rem;color:var(--text-secondary);line-height:1.7}
+.tip-box{background:linear-gradient(135deg,rgba(175,82,222,.06),rgba(175,82,222,.02));border:1px solid rgba(175,82,222,.15);border-radius:var(--radius-md);padding:20px;margin:16px 0}
+.tip-box h4{font-size:.9375rem;font-weight:700;color:var(--purple);margin-bottom:6px}
+.tip-box p{font-size:.875rem;color:var(--text-secondary);line-height:1.6}
+.card{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-lg);padding:28px 24px 24px;margin-bottom:20px}
+.card h3{font-size:1.125rem;font-weight:700;margin-bottom:16px}
+.quiz-box{background:linear-gradient(135deg,rgba(0,122,255,.06),rgba(0,122,255,.02));border:1px solid rgba(0,122,255,.15);border-radius:var(--radius-md);padding:24px}
+.quiz-box h4{font-size:1rem;font-weight:700;margin-bottom:12px}
+.quiz-problem{font-size:1.75rem;font-weight:700;text-align:center;margin:16px 0 4px;font-variant-numeric:tabular-nums}
+.quiz-row{display:flex;align-items:center;gap:12px;justify-content:center;flex-wrap:wrap;margin-top:12px}
+.quiz-input{width:100px;padding:10px;border-radius:var(--radius-sm);border:2px solid var(--border-strong);background:var(--bg-card-solid);font-family:var(--font-sans);font-size:1.125rem;font-weight:700;text-align:center;color:var(--text);outline:none}
+.quiz-input:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(0,122,255,.1)}
+.feedback{font-size:.875rem;font-weight:600;margin-top:10px;min-height:20px;text-align:center}
+.feedback.correct{color:var(--green)}.feedback.wrong{color:var(--red)}
+.btn{font-family:var(--font-sans);font-size:.875rem;font-weight:600;padding:8px 18px;border-radius:980px;border:none;cursor:pointer;transition:transform .12s,opacity .12s}
+.btn:active{transform:scale(.95)}
+.btn:disabled{opacity:.4;cursor:not-allowed;transform:none}
+.btn-primary{background:var(--accent);color:white}
+.btn-ghost{background:var(--bg-card-solid);color:var(--text);border:1px solid var(--border-strong)}
+.math-display{background:var(--bg-card-solid);border:1px solid var(--border);border-radius:var(--radius-md);padding:16px 24px;margin:16px 0;text-align:center;font-size:1.125rem}
+@keyframes slideUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+@media(max-width:640px){.content{padding:16px}.card{padding:20px 16px 16px}}
+</style>
+</head>
+<body>
+<nav style="display:flex;align-items:center;justify-content:space-between;padding:16px 24px;border-bottom:1px solid var(--border)">
+<img src="../../Recursos/LogoRakinMath.png" alt="RakinMath" style="height:32px">
+<a href="menu.html" class="btn btn-ghost">Volver</a>
+</nav>
+<div class="content">
+<a href="menu.html" class="back-link">← Volver al menú</a>
+
+<div class="section">
+<h1 class="section-title">Sucesiones y Reglas</h1>
+<p class="section-subtitle">Una sucesión es una serie de números que siguen un patrón o regla. Encontrar la regla te permite predecir el siguiente número.</p>
+</div>
+
+<div class="section">
+<div class="concept-box green">
+<h3>¿Qué es una sucesión?</h3>
+<p>Es un conjunto ordenado de números donde cada uno se obtiene aplicando la misma operación al anterior. La regla es la operación que se repite.</p>
+</div>
+<div class="concept-box green">
+<h3>Ejemplos de reglas</h3>
+<p><strong>2, 4, 8, 16, 32...</strong> → Regla: multiplicar por $2$</p>
+<div class="math-display">$2 \to 4 \to 8 \to 16 \to 32 \to \cdots$</div>
+<p><strong>100, 90, 80, 70...</strong> → Regla: restar $10$</p>
+<div class="math-display">$100 \to 90 \to 80 \to 70 \to 60 \to \cdots$</div>
+<p><strong>5, 10, 15, 20...</strong> → Regla: sumar $5$</p>
+<div class="math-display">$5 \to 10 \to 15 \to 20 \to 25 \to \cdots$</div>
+</div>
+<div class="tip-box">
+<h4>Consejo</h4>
+<p>Para encontrar la regla, compara un número con el que le sigue. ¿Qué operación los relaciona? Prueba sumar, restar, multiplicar o dividir.</p>
+</div>
+</div>
+
+<div class="section">
+<div class="card">
+<h3>Encuentra el patrón</h3>
+<p style="color:var(--text-secondary);margin-bottom:16px">Observa la siguiente sucesión y descubre qué número falta.</p>
+<div id="interactive-sequence" style="text-align:center">
+<p class="quiz-problem" id="seq-display"></p>
+<div class="quiz-row">
+<input type="number" class="quiz-input" id="seq-answer" placeholder="?">
+<button class="btn btn-primary" onclick="checkSequence()">Verificar</button>
+<button class="btn btn-ghost" onclick="newSequence()">Nueva sucesión</button>
+</div>
+<p class="feedback" id="seq-feedback"></p>
+<p style="font-size:.8125rem;color:var(--text-tertiary);margin-top:8px" id="seq-rule"></p>
+<button class="btn btn-ghost" onclick="revealRule()" style="margin-top:6px;font-size:.75rem;padding:4px 12px">Mostrar regla</button>
+</div>
+</div>
+</div>
+
+<div class="section">
+<div class="quiz-box">
+<h4>Practica: Completa la sucesión</h4>
+<p class="quiz-problem" id="quiz-seq-problem"></p>
+<div class="quiz-row">
+<input type="number" class="quiz-input" id="quiz-seq-answer" placeholder="?">
+<button class="btn btn-primary" onclick="checkQuizSequence()">Verificar</button>
+</div>
+<p class="feedback" id="quiz-seq-feedback"></p>
+</div>
+</div>
+
+<div class="section">
+<div class="videos-box" style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-md);padding:24px;text-align:center">
+<p style="color:var(--text-tertiary);font-size:.875rem">Próximamente: Videos explicativos sobre sucesiones</p>
+</div>
+</div>
+</div>
+
+<script>
+let currentSeq={};
+const seqTypes=[
+{gen:()=>{const start=Math.floor(Math.random()*10)+1;const rule=Math.floor(Math.random()*5)+2;const vals=[];for(let i=0;i<5;i++)vals.push(start*Math.pow(rule,i));return{vals,ruleText:`\u00d7${rule}`,missing:4,answer:vals[4]};}},
+{gen:()=>{const start=Math.floor(Math.random()*50)+20;const rule=Math.floor(Math.random()*10)+5;const vals=[];for(let i=0;i<5;i++)vals.push(start+i*rule);return{vals,ruleText:`+${rule}`,missing:4,answer:vals[4]};}},
+{gen:()=>{const start=Math.floor(Math.random()*100)+50;const rule=Math.floor(Math.random()*10)+5;const vals=[];for(let i=0;i<5;i++)vals.push(start-i*rule);return{vals,ruleText:`-${rule}`,missing:4,answer:vals[4]};}}
+];
+function newSequence(){
+const type=seqTypes[Math.floor(Math.random()*seqTypes.length)];
+const data=type.gen();
+currentSeq=data;
+const display=data.vals.slice(0,4).join(', ')+', ?';
+document.getElementById('seq-display').textContent=display;
+document.getElementById('seq-rule').textContent='Piensa: ¿cuál es el patrón?';document.getElementById('seq-rule').dataset.rule=data.ruleText;
+document.getElementById('seq-answer').value='';
+document.getElementById('seq-feedback').textContent='';
+document.getElementById('seq-feedback').className='feedback';
+}
+function revealRule(){var r=document.getElementById('seq-rule');r.textContent='Regla: '+r.dataset.rule;r.style.color='var(--accent)';}function checkSequence(){
+const ans=parseInt(document.getElementById('seq-answer').value);
+const fb=document.getElementById('seq-feedback');
+if(ans===currentSeq.answer){fb.textContent='\u00a1Correcto!';fb.className='feedback correct';}
+else{fb.textContent='Intenta de nuevo';fb.className='feedback wrong';}
+}
+let quizSeqData={};
+function genQuizSeq(){
+const start=Math.floor(Math.random()*20)+1;
+const rule=Math.floor(Math.random()*8)+2;
+const vals=[];
+for(let i=0;i<5;i++)vals.push(start+i*rule);
+quizSeqData={answer:vals[4]};
+document.getElementById('quiz-seq-problem').textContent=vals.slice(0,4).join(', ')+', ?';
+document.getElementById('quiz-seq-answer').value='';
+document.getElementById('quiz-seq-feedback').textContent='';
+document.getElementById('quiz-seq-feedback').className='feedback';
+}
+function checkQuizSequence(){
+const ans=parseInt(document.getElementById('quiz-seq-answer').value);
+const fb=document.getElementById('quiz-seq-feedback');
+if(ans===quizSeqData.answer){fb.textContent='\u00a1Excelente!';fb.className='feedback correct';}
+else{fb.textContent='Respuesta incorrecta. Intenta otra vez.';fb.className='feedback wrong';}
+}
+newSequence();
+genQuizSeq();
+</script>
+</body>
+</html>
