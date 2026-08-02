@@ -282,30 +282,6 @@ body{
       </div>
     </div>
 
-    <!-- COURSE SELECT -->
-    <div class="course-select" id="courseSelect" style="display:none">
-      <div class="course-select-icon">🎓</div>
-      <h1 class="login-title">¿En qué curso estás?</h1>
-      <p class="login-subtitle">Selecciona tu curso para personalizar tu experiencia</p>
-      <div class="course-options">
-        <button class="course-btn" data-grade="4to">
-          <span class="course-emoji">🎒</span>
-          <span class="course-name">4° Básico</span>
-        </button>
-        <button class="course-btn" data-grade="5to">
-          <span class="course-emoji">🧠</span>
-          <span class="course-name">5° Básico</span>
-        </button>
-        <button class="course-btn" data-grade="6to">
-          <span class="course-emoji">🚀</span>
-          <span class="course-name">6° Básico</span>
-        </button>
-        <button class="course-btn" data-grade="profesor" style="display:none">
-          <span class="course-emoji">👨‍🏫</span>
-          <span class="course-name">Soy profesor</span>
-        </button>
-      </div>
-    </div>
   </div>
 </div>
 
@@ -447,15 +423,8 @@ body{
           return;
         }
 
-        // Estudiante: verificar si ya tiene curso
-        var userData = getUserData(result.user);
-        if(userData && userData.grade){
-          updateSession({ grade: userData.grade });
-          window.location.href = 'Juegos/menu.html';
-        } else {
-          loginForm.classList.add('hidden');
-          courseSelect.style.display = 'block';
-        }
+        // Estudiante: ir directo al menú
+        window.location.href = 'Juegos/menu.html';
       } else {
         showError(loginError, result.msg);
         shakeInput(loginPass);
@@ -512,20 +481,6 @@ body{
 
   // ─── AUTO FOCUS ───
   loginUser.focus();
-
-  // ─── COURSE SELECT ───
-  document.querySelectorAll('.course-btn').forEach(function(btn){
-    btn.addEventListener('click', function(){
-      var grade = this.getAttribute('data-grade');
-      if(pendingUser){
-        // Guardar curso en perfil del usuario
-        saveUserData(pendingUser, { grade: grade, ts: Date.now() });
-        // Guardar curso en sesión
-        updateSession({ grade: grade });
-      }
-      window.location.href = 'Juegos/menu.html';
-    });
-  });
 })();
 </script>
 <script>
