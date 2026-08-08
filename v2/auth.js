@@ -205,21 +205,39 @@ function authCheck(identifier, pass) {
     }
   }
 
-  // 2. Buscar en registrados
+  // 2. Buscar en registrados (localStorage)
   var reg = findRegisteredUser(id);
   if (reg && reg.password === p && reg.approved) {
     return Promise.resolve({ ok: true, user: reg.username, role: reg.role || 'student' });
   }
+
+  // 2b. Contraseña correcta pero no aprobado localmente: verificar Firebase
+  // (puede que el admin lo haya aprobado desde otro dispositivo)
   if (reg && reg.password === p && !reg.approved) {
+    if (typeof RegistrationsDB !== 'undefined' && typeof RegistrationsDB.getAll === 'function') {
+      return RegistrationsDB.getAll().then(function(fbUsers) {
+        var fbUser = null;
+        for (var j = 0; j < fbUsers.length; j++) {
+          if (fbUsers[j].username === reg.username) { fbUser = fbUsers[j]; break; }
+        }
+        if (fbUser && fbUser.approved) {
+          syncApprovedToLocalStorage(fbUser.username);
+          return { ok: true, user: fbUser.username, role: fbUser.role || 'student' };
+        }
+        return { ok: false, msg: 'Tu cuenta está pendiente de aprobación.' };
+      }).catch(function() {
+        return { ok: false, msg: 'Tu cuenta está pendiente de aprobación.' };
+      });
+    }
     return Promise.resolve({ ok: false, msg: 'Tu cuenta está pendiente de aprobación.' });
   }
 
-  // 3. No en localStorage, buscar en Firebase
+  // 3. No en localStorage, buscar en Firebase (por username o email)
   if (typeof RegistrationsDB !== 'undefined' && typeof RegistrationsDB.getAll === 'function') {
     return RegistrationsDB.getAll().then(function(fbUsers) {
       var fbUser = null;
       for (var j = 0; j < fbUsers.length; j++) {
-        if (fbUsers[j].username === id) { fbUser = fbUsers[j]; break; }
+        if (fbUsers[j].username === id || fbUsers[j].email === id) { fbUser = fbUsers[j]; break; }
       }
       if (fbUser && fbUser.password === p && fbUser.approved) {
         syncApprovedToLocalStorage(fbUser.username);

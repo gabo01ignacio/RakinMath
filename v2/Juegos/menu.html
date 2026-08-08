@@ -160,10 +160,9 @@ var $=function(id){return document.getElementById(id)};
 function ss(s,m){var r=s.querySelector('input[value="'+m+'"]');if(r)r.checked=true;s.classList.toggle('r',m==='practicar');s.querySelectorAll('label').forEach(function(l){l.classList.remove('on')});var a=s.querySelector('input:checked+label');if(a)a.classList.add('on')}
 function esc(s){var d=document.createElement('div');d.appendChild(document.createTextNode(s));return d.innerHTML}
 
-var hT=$('ht'),nI=$('ni'),nT=$('nt'),nW=$('nmw'),nB=$('nmb'),mS=$('mS'),nS=$('nS');
+var hT=$('ht'),nI=$('ni'),nT=$('nt'),nW=$('nmw'),nB=$('nmb'),nS=$('nS');
 
 // ─── MODE SELECTORS ───
-mS.querySelectorAll('input').forEach(function(r){r.addEventListener('change',function(){var v=mS.querySelector('input:checked').value;if(v==='aprender'){document.getElementById('modal-soon').classList.remove('hidden');mS.querySelector('input[value="practicar"]').checked=true;ss(mS,'practicar');return}ss(mS,mS.querySelector('input:checked').value)})});
 nS.querySelectorAll('input').forEach(function(r){r.addEventListener('change',function(){var v=nS.querySelector('input:checked').value;ss(nS,v);if(v==='aprender'){document.getElementById('modal-soon').classList.remove('hidden');nS.querySelector('input[value="practicar"]').checked=true;ss(nS,'practicar');return}if(v!==uM){uM=v;updateSession({mode:uM});ub()}})});
 
 // ─── NAV DROPDOWN ───
@@ -178,7 +177,7 @@ $('lb').addEventListener('click',function(){
 
 // ─── UI ───
 function ub(){if(uM==='aprender'){nI.textContent='\u{1F4DA}';nT.textContent='Aprender'}else{nI.textContent='\u{1F3AE}';nT.textContent='Practicar'}}
-function ui(){hT.innerHTML='Bienvenido <span class="brand">'+esc(uN)+'</span>';ub();ss(mS,uM);ss(nS,uM);if(uT){fg('all',document.querySelector('.sbtn[data-g="all"]'))}}
+function ui(){hT.innerHTML='Bienvenido <span class="brand">'+esc(uN)+'</span>';ub();ss(nS,uM);if(uT){fg('all',document.querySelector('.sbtn[data-g="all"]'))}}
 
 window.fg=function(g,b){document.querySelectorAll('.sbtn').forEach(function(x){x.classList.remove('active')});b.classList.add('active');document.querySelectorAll('.gc').forEach(function(c,i){var show=uT||g==='all'||c.dataset.g.split(',').indexOf(g)!==-1;if(show){c.classList.remove('hidden');c.style.animation='none';c.offsetHeight;c.style.animation='slideUp .4s cubic-bezier(.2,.9,.3,1.2) '+(i*50)+'ms both'}else{c.classList.add('hidden')}})};
 
