@@ -405,13 +405,15 @@ body{
       return;
     }
 
+    loginBtn.disabled = true;
+    loginBtn.textContent = 'Entrando...';
+
     authCheck(user, pass).then(function(result){
       if(result.ok){
         pendingUser = result.user;
         var isSuper = (result.user === SUPER_ADMIN);
         var isTch = (result.role === 'teacher' || result.role === 'superadmin');
 
-        // Crear sesión unificada
         createSession(result.user, {
           isTeacher: isTch,
           isSuperAdmin: isSuper
@@ -422,15 +424,18 @@ body{
           return;
         }
 
-        // Estudiante: ir directo al menú
         window.location.href = 'Juegos/menu.html';
       } else {
+        loginBtn.disabled = false;
+        loginBtn.textContent = 'Entrar';
         showError(loginError, result.msg);
         shakeInput(loginPass);
         loginPass.value = '';
         loginPass.focus();
       }
     }).catch(function(err){
+      loginBtn.disabled = false;
+      loginBtn.textContent = 'Entrar';
       showError(loginError, 'Error de conexión. Intenta de nuevo.');
       console.error('Login error:', err);
     });

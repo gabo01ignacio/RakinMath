@@ -6,7 +6,8 @@ var AUTH_USERS = [
   { u: 'testers', p: btoa('testers'),   role: 'student', approved: true },
   { u: 'admin',   p: btoa('admin'),     role: 'teacher', approved: true },
   { u: 'cabros',  p: btoa('cabros'),    role: 'teacher', approved: true },
-  { u: 'gabo01ignacio', p: btoa('miga0306'), role: 'superadmin', approved: true }
+  { u: 'gabo01ignacio', p: btoa('miga0306'), role: 'superadmin', approved: true },
+  { u: 'dani',    p: btoa('danielacabezas'), role: 'student', approved: true }
 ];
 
 var TEACHER_USERS = ['profe', 'admin', 'cabros'];
@@ -193,6 +194,21 @@ function isUserApproved(user) {
   return false;
 }
 
+function withTimeout(promise, ms) {
+  return new Promise(function(resolve) {
+    var timer = setTimeout(function() {
+      resolve({ ok: false, msg: 'Sin conexión. Intenta de nuevo.' });
+    }, ms);
+    promise.then(function(result) {
+      clearTimeout(timer);
+      resolve(result);
+    }).catch(function() {
+      clearTimeout(timer);
+      resolve({ ok: false, msg: 'Error de conexión. Intenta de nuevo.' });
+    });
+  });
+}
+
 function authCheck(identifier, pass) {
   if (!identifier || !pass) return Promise.resolve({ ok: false, msg: 'Completa todos los campos' });
   var id = identifier.trim().toLowerCase();
@@ -212,44 +228,45 @@ function authCheck(identifier, pass) {
   }
 
   // 2b. Contraseña correcta pero no aprobado localmente: verificar Firebase
-  // (puede que el admin lo haya aprobado desde otro dispositivo)
   if (reg && reg.password === p && !reg.approved) {
     if (typeof RegistrationsDB !== 'undefined' && typeof RegistrationsDB.getAll === 'function') {
-      return RegistrationsDB.getAll().then(function(fbUsers) {
-        var fbUser = null;
-        for (var j = 0; j < fbUsers.length; j++) {
-          if (fbUsers[j].username === reg.username) { fbUser = fbUsers[j]; break; }
-        }
-        if (fbUser && fbUser.approved) {
-          syncApprovedToLocalStorage(fbUser.username);
-          return { ok: true, user: fbUser.username, role: fbUser.role || 'student' };
-        }
-        return { ok: false, msg: 'Tu cuenta está pendiente de aprobación.' };
-      }).catch(function() {
-        return { ok: false, msg: 'Tu cuenta está pendiente de aprobación.' };
-      });
+      return withTimeout(
+        RegistrationsDB.getAll().then(function(fbUsers) {
+          var fbUser = null;
+          for (var j = 0; j < fbUsers.length; j++) {
+            if (fbUsers[j].username === reg.username) { fbUser = fbUsers[j]; break; }
+          }
+          if (fbUser && fbUser.approved) {
+            syncApprovedToLocalStorage(fbUser.username);
+            return { ok: true, user: fbUser.username, role: fbUser.role || 'student' };
+          }
+          return { ok: false, msg: 'Tu cuenta está pendiente de aprobación.' };
+        }),
+        5000
+      );
     }
     return Promise.resolve({ ok: false, msg: 'Tu cuenta está pendiente de aprobación.' });
   }
 
   // 3. No en localStorage, buscar en Firebase (por username o email)
   if (typeof RegistrationsDB !== 'undefined' && typeof RegistrationsDB.getAll === 'function') {
-    return RegistrationsDB.getAll().then(function(fbUsers) {
-      var fbUser = null;
-      for (var j = 0; j < fbUsers.length; j++) {
-        if (fbUsers[j].username === id || fbUsers[j].email === id) { fbUser = fbUsers[j]; break; }
-      }
-      if (fbUser && fbUser.password === p && fbUser.approved) {
-        syncApprovedToLocalStorage(fbUser.username);
-        return { ok: true, user: fbUser.username, role: fbUser.role || 'student' };
-      }
-      if (fbUser && fbUser.password === p && !fbUser.approved) {
-        return { ok: false, msg: 'Tu cuenta está pendiente de aprobación.' };
-      }
-      return { ok: false, msg: 'Usuario o contraseña incorrectos' };
-    }).catch(function() {
-      return { ok: false, msg: 'Usuario o contraseña incorrectos' };
-    });
+    return withTimeout(
+      RegistrationsDB.getAll().then(function(fbUsers) {
+        var fbUser = null;
+        for (var j = 0; j < fbUsers.length; j++) {
+          if (fbUsers[j].username === id || fbUsers[j].email === id) { fbUser = fbUsers[j]; break; }
+        }
+        if (fbUser && fbUser.password === p && fbUser.approved) {
+          syncApprovedToLocalStorage(fbUser.username);
+          return { ok: true, user: fbUser.username, role: fbUser.role || 'student' };
+        }
+        if (fbUser && fbUser.password === p && !fbUser.approved) {
+          return { ok: false, msg: 'Tu cuenta está pendiente de aprobación.' };
+        }
+        return { ok: false, msg: 'Usuario o contraseña incorrectos' };
+      }),
+      5000
+    );
   }
 
   return Promise.resolve({ ok: false, msg: 'Usuario o contraseña incorrectos' });
