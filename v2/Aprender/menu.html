@@ -75,6 +75,7 @@ body::after{content:'+';position:fixed;bottom:-80px;left:-60px;width:300px;heigh
 <div class="hero-emoji">&#x1F4DA;</div>
 <h1>Aprende Matemáticas</h1>
 <p>Basado en las Bases Curriculares del Ministerio de Educación de Chile. Elige tu nivel para comenzar.</p>
+<div style="margin-top:16px;display:inline-flex;align-items:center;gap:8px;padding:6px 16px;border-radius:980px;background:rgba(255,149,0,.1);border:1px solid rgba(255,149,0,.2);font-size:.8125rem;font-weight:600;color:#ff9500">&#x1F527; En producción — Contenido en desarrollo</div>
 </div>
 
 <div class="grade-grid">
@@ -99,9 +100,6 @@ body::after{content:'+';position:fixed;bottom:-80px;left:-60px;width:300px;heigh
 var SK='rakin_session';
 var currentUser='';
 try{var sr=localStorage.getItem(SK);var sv=sr?JSON.parse(sr):null;if(!sv||!sv.user){window.location.href='../login.html';return}currentUser=sv.user}catch(e){window.location.href='../login.html';return}
-
-window.location.href='../Juegos/menu.html';
-return;
 
 function ss(s,m){var r=s.querySelector('input[value="'+m+'"]');if(r)r.checked=true;s.classList.toggle('r',m==='practicar');s.querySelectorAll('label').forEach(function(l){l.classList.remove('on')});var a=s.querySelector('input:checked+label');if(a)a.classList.add('on')}
 
