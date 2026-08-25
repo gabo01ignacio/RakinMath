@@ -377,34 +377,103 @@ button, a, input, select, textarea, .btn, .choice-btn, .opt-btn, .game-btn, .nav
 </div>
 
 <!-- ESTUDIANTES -->
+<!-- ESTUDIANTES -->
 <div class="section" id="sec-estudiantes" style="display:none">
 <div class="main-header fade-in">
-<h1>&#x1F465; Estudiantes - Cálculo Mental</h1>
-<p>Estadísticas detalladas de cada estudiante en el juego Cálculo Mental.</p>
+<h1>&#x1F465; Rendimiento Detallado por Estudiante</h1>
+<p>Monitoreo individualizado, análisis de errores matemáticos y fichas de diagnóstico pedagógico.</p>
 </div>
 <div class="stat-grid">
 <div class="stat-card green fade-in">
 <div class="stat-icon">✅</div>
 <div class="stat-value" id="estTotal">0</div>
-<div class="stat-label">Total correctas</div>
+<div class="stat-label">Total respuestas correctas</div>
 </div>
 <div class="stat-card blue fade-in">
 <div class="stat-icon">🎮</div>
 <div class="stat-value" id="estGames">0</div>
-<div class="stat-label">Partidas jugadas</div>
+<div class="stat-label">Partidas totales</div>
 </div>
 <div class="stat-card orange fade-in">
 <div class="stat-icon">⏱️</div>
 <div class="stat-value" id="estTime">0m</div>
-<div class="stat-label">Tiempo total</div>
+<div class="stat-label">Tiempo total acumulado</div>
 </div>
 <div class="stat-card purple fade-in">
-<div class="stat-icon">🔥</div>
-<div class="stat-value" id="estStreak">0</div>
-<div class="stat-label">Mejor racha global</div>
+<div class="stat-icon">🎯</div>
+<div class="stat-value" id="estStreak">0%</div>
+<div class="stat-label">Precisión promedio</div>
 </div>
 </div>
-<div class="section-title">Detalles por estudiante</div>
+
+<!-- FILTERS & STUDENT SELECTOR TOOLBAR -->
+<div style="background:var(--bg-card);border:2px solid var(--border);border-radius:var(--r-lg);padding:16px;margin-bottom:20px;display:flex;flex-wrap:wrap;gap:12px;align-items:center;justify-content:space-between">
+  <div style="display:flex;gap:10px;flex-wrap:wrap;flex:1;min-width:280px">
+    <input type="text" id="studentSearchInput" placeholder="🔍 Buscar estudiante por nombre..." oninput="filterStudentList()" style="padding:9px 14px;border-radius:var(--r-md);border:1.5px solid var(--border-strong);background:var(--bg-subtle);color:var(--text);font-family:var(--font);font-size:.875rem;flex:1;min-width:180px">
+    <select id="studentGradeFilter" onchange="filterStudentList()" style="padding:9px 12px;border-radius:var(--r-md);border:1.5px solid var(--border-strong);background:var(--bg-subtle);color:var(--text);font-family:var(--font);font-size:.85rem;font-weight:600">
+      <option value="all">📚 Todos los Cursos</option>
+      <option value="4">4° Básico</option>
+      <option value="5">5° Básico</option>
+    </select>
+    <select id="studentSortOrder" onchange="filterStudentList()" style="padding:9px 12px;border-radius:var(--r-md);border:1.5px solid var(--border-strong);background:var(--bg-subtle);color:var(--text);font-family:var(--font);font-size:.85rem;font-weight:600">
+      <option value="score">⭐ Mayor Puntaje</option>
+      <option value="accuracy">🎯 Mayor Precisión</option>
+      <option value="sessions">🎮 Más Partidas</option>
+      <option value="wrong">⚠️ Más Errores</option>
+    </select>
+  </div>
+  <div>
+    <button onclick="exportAllStudentsCSV()" style="padding:9px 16px;border-radius:var(--r-full);border:1.5px solid var(--border-strong);background:var(--bg-subtle);color:var(--text);font-family:var(--font);font-size:.85rem;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:6px">
+      📥 Exportar Planilla
+    </button>
+  </div>
+</div>
+
+<!-- INDIVIDUAL STUDENT INSPECTOR MODAL/CONTAINER -->
+<div id="studentDetailModal" style="display:none;background:var(--bg-card);border:2.5px solid var(--accent);border-radius:var(--r-xl);padding:24px;margin-bottom:24px;box-shadow:var(--shadow-lg);position:relative">
+  <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:18px">
+    <div style="display:flex;align-items:center;gap:14px">
+      <div style="font-size:2.8rem;line-height:1;background:var(--bg-subtle);border-radius:20px;padding:10px;border:1px solid var(--border)">🧑‍🎓</div>
+      <div>
+        <h2 id="modalStudentName" style="font-size:1.5rem;font-weight:900;letter-spacing:-.03em">Nombre Estudiante</h2>
+        <div id="modalStudentMeta" style="font-size:.85rem;color:var(--text-secondary);font-weight:600">4° Básico · Última actividad: Hoy</div>
+      </div>
+    </div>
+    <div style="display:flex;gap:8px">
+      <button onclick="printStudentReport()" style="padding:8px 14px;border-radius:var(--r-full);border:none;background:var(--duo-blue);color:#fff;font-family:var(--font);font-weight:700;font-size:.85rem;cursor:pointer">🖨️ Imprimir Ficha</button>
+      <button onclick="closeStudentModal()" style="padding:8px 14px;border-radius:var(--r-full);border:1.5px solid var(--border-strong);background:var(--bg-subtle);color:var(--text);font-family:var(--font);font-weight:700;font-size:.85rem;cursor:pointer">✕ Cerrar</button>
+    </div>
+  </div>
+
+  <!-- INDIVIDUAL STATS ROW -->
+  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px;margin-bottom:20px" id="modalStudentKPIs"></div>
+
+  <!-- GAMES DETAILED BREAKDOWN TABLE -->
+  <div style="margin-bottom:20px">
+    <div style="font-size:.85rem;font-weight:800;text-transform:uppercase;color:var(--text-dim);margin-bottom:8px">📊 Rendimiento por Minijuego:</div>
+    <div id="modalStudentGamesTable" style="overflow-x:auto"></div>
+  </div>
+
+  <!-- ERRORS & PEDAGOGICAL DIAGNOSIS -->
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:20px" id="modalStudentDiagGrid">
+    <div style="background:rgba(255,75,75,.06);border:1.5px solid rgba(255,75,75,.2);border-radius:var(--r-lg);padding:14px">
+      <div style="font-size:.85rem;font-weight:800;color:var(--duo-red);margin-bottom:8px">⚠️ Puntos a Reforzar (Errores Recurrentes):</div>
+      <div id="modalStudentWeaknesses"></div>
+    </div>
+    <div style="background:rgba(88,204,2,.06);border:1.5px solid rgba(88,204,2,.2);border-radius:var(--r-lg);padding:14px">
+      <div style="font-size:.85rem;font-weight:800;color:var(--duo-green);margin-bottom:8px">✨ Fortalezas y Temas Dominados:</div>
+      <div id="modalStudentStrengths"></div>
+    </div>
+  </div>
+
+  <!-- RECENT SESSIONS -->
+  <div>
+    <div style="font-size:.85rem;font-weight:800;text-transform:uppercase;color:var(--text-dim);margin-bottom:8px">📅 Últimas Sesiones Jugadas:</div>
+    <div id="modalStudentHistory" style="max-height:220px;overflow-y:auto;display:flex;flex-direction:column;gap:6px"></div>
+  </div>
+</div>
+
+<div class="section-title">Lista General de Estudiantes</div>
 <div id="studentDetails" style="display:flex;flex-direction:column;gap:12px"></div>
 </div>
 
@@ -765,144 +834,387 @@ function renderProgressRing(pct,color){
   return'<div class="progress-ring"><svg width="64" height="64"><circle class="progress-ring-bg" cx="32" cy="32" r="'+r+'"/><circle class="progress-ring-fill" cx="32" cy="32" r="'+r+'" stroke="'+color+'" stroke-dasharray="'+c+'" stroke-dashoffset="'+offset+'"/></svg><div class="progress-ring-text" style="color:'+color+'">'+pct+'%</div></div>';
 }
 
+var allCachedStudentStats = [];
+var currentInspectedStudent = null;
+
+var gameNamesMap = {
+  juego1: 'Duelo de Números',
+  juego2: 'Estimaciones',
+  juego3: 'Chefs de Fracciones',
+  juego4: 'Arquitectas',
+  juego5: 'Buscatesoros',
+  juego6: 'El Caldero Mágico',
+  juego7: 'Misión Robot',
+  juego8: 'Cálculo Mental',
+  juego9: 'Laboratorio de Pociones',
+  juego10: 'El Mercado Chileno',
+  juego11: 'Pizza Master',
+  juego12: 'Geometrix Builder',
+  juego13: 'Ruta Matemática'
+};
+
 function loadStudentStats(){
-  if(typeof UserStatsDB==='undefined'){
-    document.getElementById('studentDetails').innerHTML='<div class="empty-state"><div class="empty-state-icon">&#128202;</div><div class="empty-state-text">UserStatsDB no disponible</div></div>';
+  var el = document.getElementById('studentDetails');
+  el.innerHTML = '<div style="text-align:center;padding:24px;color:var(--text-secondary)">Cargando rendimiento de estudiantes...</div>';
+
+  if(typeof UserStatsDB === 'undefined'){
+    el.innerHTML = '<div class="empty-state"><div class="empty-state-icon">&#128202;</div><div class="empty-state-text">Base de datos de estadísticas no disponible</div></div>';
     return;
   }
+
   UserStatsDB.getAllUserStats()
     .then(function(results){
-      if(!results||!results.length){
-        document.getElementById('studentDetails').innerHTML='<div class="empty-state"><div class="empty-state-icon">&#128202;</div><div class="empty-state-text">No hay datos de estudiantes aún</div></div>';
+      allCachedStudentStats = results || [];
+      if(!allCachedStudentStats.length){
+        el.innerHTML = '<div class="empty-state"><div class="empty-state-icon">&#128202;</div><div class="empty-state-text">No hay datos registrados aún. Los estudiantes aparecerán cuando jueguen.</div></div>';
         return;
       }
-      var totalCorrect=0,totalSessions=0,totalTime=0,bestScore=0;
-      results.forEach(function(r){
-        var games=r.games||{};
+
+      var totalCorrect = 0, totalWrong = 0, totalSessions = 0, totalTime = 0;
+      allCachedStudentStats.forEach(function(r){
+        var games = r.games || {};
         Object.keys(games).forEach(function(gid){
-          var g=games[gid];
-          totalCorrect+=g.totalCorrect||0;
-          totalSessions+=g.sessions||0;
-          totalTime+=g.totalTime||0;
-          if((g.bestScore||0)>bestScore)bestScore=g.bestScore;
+          var g = games[gid];
+          totalCorrect += g.totalCorrect || 0;
+          totalWrong += g.totalWrong || 0;
+          totalSessions += g.sessions || 0;
+          totalTime += g.totalTime || 0;
         });
       });
-      document.getElementById('estTotal').textContent=totalCorrect;
-      document.getElementById('estGames').textContent=totalSessions;
-      document.getElementById('estTime').textContent=Math.round(totalTime/60)+'m';
-      document.getElementById('estStreak').textContent=bestScore;
-      renderStudentDetails(results);
+
+      var avgAcc = (totalCorrect + totalWrong > 0) ? Math.round(totalCorrect / (totalCorrect + totalWrong) * 100) : 0;
+      document.getElementById('estTotal').textContent = totalCorrect.toLocaleString();
+      document.getElementById('estGames').textContent = totalSessions.toLocaleString();
+      document.getElementById('estTime').textContent = Math.round(totalTime / 60) + 'm';
+      document.getElementById('estStreak').textContent = avgAcc + '%';
+
+      filterStudentList();
     })
     .catch(function(err){
-      console.error('Error loading stats:',err);
-      document.getElementById('studentDetails').innerHTML='<div class="empty-state"><div class="empty-state-icon">&#9888;</div><div class="empty-state-text">Error al cargar datos</div></div>';
+      console.error('Error loading stats:', err);
+      el.innerHTML = '<div class="empty-state"><div class="empty-state-icon">&#9888;</div><div class="empty-state-text">Error al cargar datos</div></div>';
     });
 }
 
-function renderStudentDetails(results){
-  var el=document.getElementById('studentDetails');
-  var gameNames={juego1:'Duelo de Números',juego2:'Estimaciones',juego3:'Chefs de Fracciones',juego4:'Arquitectas',juego5:'Buscatesoros',juego6:'El Caldero Mágico',juego7:'Misión Robot',juego8:'Cálculo Mental',juego9:'Laboratorio de Pociones',juego10:'Tienda',juego11:'Pizza Master',juego12:'Geometría',juego13:'Ruta Matemática'};
-  var sorted=results.slice().sort(function(a,b){
-    var sa=0,sb=0;
-    Object.keys(a.games||{}).forEach(function(k){sa+=(a.games[k].totalScore||0)});
-    Object.keys(b.games||{}).forEach(function(k){sb+=(b.games[k].totalScore||0)});
-    return sb-sa;
+function filterStudentList(){
+  var search = (document.getElementById('studentSearchInput').value || '').toLowerCase().trim();
+  var gradeFilter = document.getElementById('studentGradeFilter').value;
+  var sortBy = document.getElementById('studentSortOrder').value;
+
+  var filtered = allCachedStudentStats.filter(function(r){
+    var name = (r.userName || '').toLowerCase();
+    var email = ((r.info && r.info.email) || '').toLowerCase();
+    var grade = (r.info && r.info.grade) ? String(r.info.grade) : '';
+
+    var matchSearch = !search || name.indexOf(search) !== -1 || email.indexOf(search) !== -1;
+    var matchGrade = gradeFilter === 'all' || grade === gradeFilter;
+    return matchSearch && matchGrade;
   });
-  var html='';
-  sorted.forEach(function(r,i){
-    var name=r.userName;
-    var info=r.info||{};
-    var games=r.games||{};
-    var totalGamesPlayed=0,totalCorrect=0,totalWrong=0,totalScore=0,totalTime=0;
-    var gameList=[];
-    var weakAreas=[],strongAreas=[];
-    Object.keys(games).forEach(function(gid){
-      var g=games[gid];
-      totalGamesPlayed+=g.sessions||0;
-      totalCorrect+=g.totalCorrect||0;
-      totalWrong+=g.totalWrong||0;
-      totalScore+=g.totalScore||0;
-      totalTime+=g.totalTime||0;
-      var acc=(g.totalCorrect||0)+(g.totalWrong||0)>0?Math.round((g.totalCorrect||0)/((g.totalCorrect||0)+(g.totalWrong||0))*100):0;
-      gameList.push({id:gid,name:gameNames[gid]||gid,sessions:g.sessions,bestScore:g.bestScore,accuracy:acc});
-      if(acc<60&&g.sessions>0)weakAreas.push({name:gameNames[gid]||gid,accuracy:acc});
-      if(acc>=80&&g.sessions>0)strongAreas.push({name:gameNames[gid]||gid,accuracy:acc});
+
+  filtered.sort(function(a, b){
+    var aScore = 0, bScore = 0;
+    var aC = 0, aW = 0, bC = 0, bW = 0;
+    var aSessions = 0, bSessions = 0;
+
+    Object.keys(a.games || {}).forEach(function(k){
+      var g = a.games[k];
+      aScore += g.totalScore || 0;
+      aC += g.totalCorrect || 0;
+      aW += g.totalWrong || 0;
+      aSessions += g.sessions || 0;
     });
-    gameList.sort(function(a,b){return(b.sessions||0)-(a.sessions||0)});
-    var grade=info.grade?info.grade+'° Básico':'Sin curso';
-    var rankColor=i===0?'#FFD700':i===1?'#C0C0C0':i===2?'#CD7F32':'var(--text-tertiary)';
-    var overallAcc=(totalCorrect+totalWrong)>0?Math.round(totalCorrect/(totalCorrect+totalWrong)*100):0;
 
-    html+='<div class="stat-card" style="padding:20px">';
-    html+='<div style="display:flex;align-items:center;gap:16px;margin-bottom:16px">';
-    html+='<div style="font-size:1.5rem;font-weight:800;color:'+rankColor+';width:36px;text-align:center">'+(i+1)+'</div>';
-    html+='<div style="flex:1">';
-    html+='<div style="font-weight:700;font-size:1rem">'+escHTML(name)+'</div>';
-    html+='<div style="font-size:.75rem;color:var(--text-tertiary)">'+grade+'</div>';
-    html+='</div>';
-    html+=renderProgressRing(overallAcc,overallAcc>=70?'#58cc02':overallAcc>=50?'#ff9600':'#ff4b4b');
-    html+='<div style="text-align:right">';
-    html+='<div style="font-weight:800;font-size:1.25rem;color:var(--accent)">'+totalScore+'</div>';
-    html+='<div style="font-size:.6875rem;color:var(--text-tertiary)">puntaje total</div>';
-    html+='</div>';
-    html+='</div>';
+    Object.keys(b.games || {}).forEach(function(k){
+      var g = b.games[k];
+      bScore += g.totalScore || 0;
+      bC += g.totalCorrect || 0;
+      bW += g.totalWrong || 0;
+      bSessions += g.sessions || 0;
+    });
 
-    html+='<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:16px">';
-    html+='<div style="text-align:center;padding:10px 8px;background:var(--bg-hover);border-radius:var(--radius-sm)">';
-    html+='<div style="font-weight:800;font-size:1.1rem">'+totalGamesPlayed+'</div>';
-    html+='<div style="font-size:.6875rem;color:var(--text-tertiary)">Partidas</div>';
-    html+='</div>';
-    html+='<div style="text-align:center;padding:10px 8px;background:rgba(88,204,2,.08);border-radius:var(--radius-sm)">';
-    html+='<div style="font-weight:800;font-size:1.1rem;color:var(--duo-green)">'+totalCorrect+'</div>';
-    html+='<div style="font-size:.6875rem;color:var(--text-tertiary)">Correctas</div>';
-    html+='</div>';
-    html+='<div style="text-align:center;padding:10px 8px;background:rgba(255,75,75,.08);border-radius:var(--radius-sm)">';
-    html+='<div style="font-weight:800;font-size:1.1rem;color:var(--duo-red)">'+totalWrong+'</div>';
-    html+='<div style="font-size:.6875rem;color:var(--text-tertiary)">Incorrectas</div>';
-    html+='</div>';
-    html+='<div style="text-align:center;padding:10px 8px;background:rgba(206,130,255,.08);border-radius:var(--radius-sm)">';
-    html+='<div style="font-weight:800;font-size:1.1rem;color:var(--duo-purple)">'+Math.round(totalTime/60)+'m</div>';
-    html+='<div style="font-size:.6875rem;color:var(--text-tertiary)">Tiempo</div>';
-    html+='</div>';
-    html+='</div>';
+    var aAcc = (aC + aW > 0) ? (aC / (aC + aW)) : 0;
+    var bAcc = (bC + bW > 0) ? (bC / (bC + bW)) : 0;
 
-    if(gameList.length>0){
-      html+='<div style="font-size:.75rem;font-weight:600;color:var(--text-tertiary);margin-bottom:8px">RENDIMIENTO POR JUEGO:</div>';
-      html+='<div style="display:flex;flex-direction:column;gap:6px;margin-bottom:16px">';
-      gameList.forEach(function(gl){
-        var barColor=gl.accuracy>=70?'var(--duo-green)':gl.accuracy>=50?'var(--duo-orange)':'var(--duo-red)';
-        html+='<div style="display:flex;align-items:center;gap:10px">';
-        html+='<div style="width:120px;font-size:.75rem;font-weight:500;color:var(--text-secondary);white-space:nowrap;overflow:hidden;text-overflow:ellipsis" title="'+escHTML(gl.name)+'">'+escHTML(gl.name)+'</div>';
-        html+='<div class="perf-bar" style="flex:1"><div class="perf-bar-fill" style="width:'+gl.accuracy+'%;background:'+barColor+'"></div></div>';
-        html+='<div style="width:40px;font-size:.75rem;font-weight:700;text-align:right;color:var(--text)">'+gl.accuracy+'%</div>';
-        html+='<div style="width:40px;font-size:.6875rem;color:var(--text-tertiary);text-align:right">'+gl.sessions+'x</div>';
-        html+='</div>';
-      });
-      html+='</div>';
-    }
-
-    if(weakAreas.length>0){
-      html+='<div style="margin-bottom:12px">';
-      html+='<div style="font-size:.75rem;font-weight:600;color:var(--duo-red);margin-bottom:6px">ZONAS DEBILES:</div>';
-      html+='<div style="display:flex;flex-wrap:wrap;gap:6px">';
-      weakAreas.forEach(function(w){
-        html+='<span class="weak-badge">&#9888; '+escHTML(w.name)+' ('+w.accuracy+'%)</span>';
-      });
-      html+='</div></div>';
-    }
-    if(strongAreas.length>0){
-      html+='<div style="margin-bottom:12px">';
-      html+='<div style="font-size:.75rem;font-weight:600;color:var(--duo-green);margin-bottom:6px">FORTALEZAS:</div>';
-      html+='<div style="display:flex;flex-wrap:wrap;gap:6px">';
-      strongAreas.forEach(function(s){
-        html+='<span class="strong-badge">&#10003; '+escHTML(s.name)+' ('+s.accuracy+'%)</span>';
-      });
-      html+='</div></div>';
-    }
-
-    html+='</div>';
+    if (sortBy === 'score') return bScore - aScore;
+    if (sortBy === 'accuracy') return bAcc - aAcc;
+    if (sortBy === 'sessions') return bSessions - aSessions;
+    if (sortBy === 'wrong') return bW - aW;
+    return bScore - aScore;
   });
-  el.innerHTML=html;
+
+  renderStudentDetails(filtered);
+}
+
+function renderStudentDetails(results){
+  var el = document.getElementById('studentDetails');
+  if (!results.length) {
+    el.innerHTML = '<div style="text-align:center;padding:24px;color:var(--text-dim)">No se encontraron estudiantes que coincidan con la búsqueda.</div>';
+    return;
+  }
+
+  var html = '';
+  results.forEach(function(r, i){
+    var name = r.userName;
+    var info = r.info || {};
+    var games = r.games || {};
+    var totalGamesPlayed = 0, totalCorrect = 0, totalWrong = 0, totalScore = 0, totalTime = 0;
+    var gameList = [];
+    var weakAreas = [], strongAreas = [];
+
+    Object.keys(games).forEach(function(gid){
+      var g = games[gid];
+      totalGamesPlayed += g.sessions || 0;
+      totalCorrect += g.totalCorrect || 0;
+      totalWrong += g.totalWrong || 0;
+      totalScore += g.totalScore || 0;
+      totalTime += g.totalTime || 0;
+      var acc = (g.totalCorrect || 0) + (g.totalWrong || 0) > 0 ? Math.round((g.totalCorrect || 0) / ((g.totalCorrect || 0) + (g.totalWrong || 0)) * 100) : 0;
+      var gname = gameNamesMap[gid] || gid;
+      gameList.push({ id: gid, name: gname, sessions: g.sessions || 0, bestScore: g.bestScore || 0, accuracy: acc });
+
+      if (acc < 60 && g.sessions > 0) weakAreas.push({ name: gname, accuracy: acc });
+      if (acc >= 80 && g.sessions > 0) strongAreas.push({ name: gname, accuracy: acc });
+    });
+
+    gameList.sort(function(a, b){ return (b.sessions || 0) - (a.sessions || 0); });
+    var grade = info.grade ? info.grade + '° Básico' : 'Sin curso';
+    var rankColor = i === 0 ? '#FFD700' : i === 1 ? '#C0C0C0' : i === 2 ? '#CD7F32' : 'var(--text-tertiary)';
+    var overallAcc = (totalCorrect + totalWrong) > 0 ? Math.round(totalCorrect / (totalCorrect + totalWrong) * 100) : 0;
+    var barColor = overallAcc >= 70 ? 'var(--duo-green)' : overallAcc >= 50 ? 'var(--duo-orange)' : 'var(--duo-red)';
+
+    html += '<div class="stat-card" style="padding:18px;border:2px solid var(--border);position:relative">';
+    html += '<div style="display:flex;align-items:center;gap:14px;margin-bottom:14px">';
+    html += '<div style="font-size:1.4rem;font-weight:900;color:' + rankColor + ';width:32px;text-align:center">' + (i + 1) + '</div>';
+    html += '<div style="flex:1">';
+    html += '<div style="font-weight:800;font-size:1.05rem;color:var(--text)">' + escHTML(name) + '</div>';
+    html += '<div style="font-size:.775rem;color:var(--text-secondary);font-weight:600">' + grade + ' · ' + totalGamesPlayed + ' partidas · ' + Math.round(totalTime/60) + 'm de juego</div>';
+    html += '</div>';
+    html += renderProgressRing(overallAcc, barColor);
+    html += '<div style="text-align:right">';
+    html += '<div style="font-weight:900;font-size:1.3rem;color:var(--accent)">' + totalScore.toLocaleString() + '</div>';
+    html += '<div style="font-size:.6875rem;color:var(--text-tertiary);font-weight:700">puntos totales</div>';
+    html += '</div>';
+    html += '</div>';
+
+    // Summary Quick Metrics
+    html += '<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:12px">';
+    html += '<div style="text-align:center;padding:8px;background:var(--bg-hover);border-radius:var(--r-sm)">';
+    html += '<div style="font-weight:800;font-size:1rem">' + totalGamesPlayed + '</div>';
+    html += '<div style="font-size:.65rem;color:var(--text-dim);font-weight:700">PARTIDAS</div>';
+    html += '</div>';
+    html += '<div style="text-align:center;padding:8px;background:rgba(88,204,2,.08);border-radius:var(--r-sm)">';
+    html += '<div style="font-weight:800;font-size:1rem;color:var(--duo-green)">' + totalCorrect + '</div>';
+    html += '<div style="font-size:.65rem;color:var(--text-dim);font-weight:700">CORRECTAS</div>';
+    html += '</div>';
+    html += '<div style="text-align:center;padding:8px;background:rgba(255,75,75,.08);border-radius:var(--r-sm)">';
+    html += '<div style="font-weight:800;font-size:1rem;color:var(--duo-red)">' + totalWrong + '</div>';
+    html += '<div style="font-size:.65rem;color:var(--text-dim);font-weight:700">INCORRECTAS</div>';
+    html += '</div>';
+    html += '<div style="text-align:center;padding:8px;background:rgba(206,130,255,.08);border-radius:var(--r-sm)">';
+    html += '<div style="font-weight:800;font-size:1rem;color:var(--duo-purple)">' + Math.round(totalTime / 60) + 'm</div>';
+    html += '<div style="font-size:.65rem;color:var(--text-dim);font-weight:700">TIEMPO</div>';
+    html += '</div>';
+    html += '</div>';
+
+    // Buttons & Weak/Strong Badges
+    html += '<div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px">';
+    html += '<div style="display:flex;flex-wrap:wrap;gap:6px">';
+    if (weakAreas.length > 0) {
+      weakAreas.slice(0, 2).forEach(function(w){
+        html += '<span class="weak-badge">&#9888; ' + escHTML(w.name) + ' (' + w.accuracy + '%)</span>';
+      });
+    }
+    if (strongAreas.length > 0) {
+      strongAreas.slice(0, 2).forEach(function(s){
+        html += '<span class="strong-badge">&#10003; ' + escHTML(s.name) + ' (' + s.accuracy + '%)</span>';
+      });
+    }
+    html += '</div>';
+
+    html += '<button onclick="inspectStudentDetails(\'' + escHTML(name) + '\')" style="padding:8px 16px;border-radius:var(--r-full);border:none;background:var(--accent);color:#ffffff;font-family:var(--font);font-weight:800;font-size:.825rem;cursor:pointer;box-shadow:0 3px 0 var(--duo-blue-dark)">';
+    html += '🔍 Ver Ficha Detallada';
+    html += '</button>';
+    html += '</div>';
+
+    html += '</div>';
+  });
+  el.innerHTML = html;
+}
+
+function inspectStudentDetails(userName){
+  var student = allCachedStudentStats.find(function(s){ return s.userName === userName; });
+  if (!student) return;
+  currentInspectedStudent = student;
+
+  var info = student.info || {};
+  var games = student.games || {};
+  var modal = document.getElementById('studentDetailModal');
+  modal.style.display = 'block';
+  modal.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+  document.getElementById('modalStudentName').textContent = student.userName;
+  var grade = info.grade ? info.grade + '° Básico' : 'Sin curso asignado';
+  var lastActive = info.lastActive ? new Date(info.lastActive).toLocaleDateString('es-CL', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' }) : 'Reciente';
+  document.getElementById('modalStudentMeta').textContent = grade + ' · ' + (info.email || 'Sin correo') + ' · Última sesión: ' + lastActive;
+
+  var totalScore = 0, totalCorrect = 0, totalWrong = 0, totalSessions = 0, totalTime = 0;
+  var gamesRows = '';
+  var weakAreas = [], strongAreas = [];
+  var allErrors = {};
+
+  for (var gid in gameNamesMap) {
+    var gname = gameNamesMap[gid];
+    var g = games[gid] || { sessions: 0, bestScore: 0, totalScore: 0, totalCorrect: 0, totalWrong: 0, totalTime: 0, accuracy: 0, bestLevel: 1 };
+    totalScore += g.totalScore || 0;
+    totalCorrect += g.totalCorrect || 0;
+    totalWrong += g.totalWrong || 0;
+    totalSessions += g.sessions || 0;
+    totalTime += g.totalTime || 0;
+
+    var acc = (g.totalCorrect + g.totalWrong > 0) ? Math.round(g.totalCorrect / (g.totalCorrect + g.totalWrong) * 100) : 0;
+    if (g.sessions > 0) {
+      if (acc < 60) weakAreas.push({ name: gname, accuracy: acc });
+      if (acc >= 80) strongAreas.push({ name: gname, accuracy: acc });
+    }
+
+    if (g.commonErrors) {
+      for (var err in g.commonErrors) {
+        allErrors[err] = (allErrors[err] || 0) + g.commonErrors[err];
+      }
+    }
+
+    var barColor = acc >= 80 ? 'var(--duo-green)' : acc >= 50 ? 'var(--duo-orange)' : 'var(--duo-red)';
+    gamesRows += '<tr style="border-bottom:1px solid var(--border)">';
+    gamesRows += '<td style="padding:8px 10px;font-weight:700;color:var(--text)">' + gname + '</td>';
+    gamesRows += '<td style="padding:8px 10px;text-align:center;font-weight:600">' + (g.sessions || 0) + '</td>';
+    gamesRows += '<td style="padding:8px 10px;text-align:center;font-weight:800;color:var(--accent)">' + (g.bestScore || 0) + '</td>';
+    gamesRows += '<td style="padding:8px 10px;text-align:center;font-weight:700;color:' + barColor + '">' + acc + '%</td>';
+    gamesRows += '<td style="padding:8px 10px;text-align:center;font-size:.775rem"><span style="color:var(--duo-green)">' + (g.totalCorrect || 0) + '✓</span> / <span style="color:var(--duo-red)">' + (g.totalWrong || 0) + '✗</span></td>';
+    gamesRows += '</tr>';
+  }
+
+  var overallAcc = (totalCorrect + totalWrong > 0) ? Math.round(totalCorrect / (totalCorrect + totalWrong) * 100) : 0;
+
+  // Render KPIs
+  var kpisHtml = '';
+  kpisHtml += '<div class="stat-card" style="padding:10px;text-align:center"><div style="font-size:1.25rem;font-weight:900;color:var(--accent)">' + totalScore.toLocaleString() + '</div><div style="font-size:.65rem;color:var(--text-dim);font-weight:800">PUNTAJE TOTAL</div></div>';
+  kpisHtml += '<div class="stat-card" style="padding:10px;text-align:center"><div style="font-size:1.25rem;font-weight:900;color:' + (overallAcc >= 70 ? 'var(--duo-green)' : 'var(--duo-red)') + '">' + overallAcc + '%</div><div style="font-size:.65rem;color:var(--text-dim);font-weight:800">PRECISIÓN GLOBAL</div></div>';
+  kpisHtml += '<div class="stat-card" style="padding:10px;text-align:center"><div style="font-size:1.25rem;font-weight:900">' + totalSessions + '</div><div style="font-size:.65rem;color:var(--text-dim);font-weight:800">PARTIDAS JUGADAS</div></div>';
+  kpisHtml += '<div class="stat-card" style="padding:10px;text-align:center"><div style="font-size:1.25rem;font-weight:900;color:var(--duo-purple)">' + Math.round(totalTime / 60) + 'm</div><div style="font-size:.65rem;color:var(--text-dim);font-weight:800">TIEMPO TOTAL</div></div>';
+  document.getElementById('modalStudentKPIs').innerHTML = kpisHtml;
+
+  // Render Games Table
+  var tableHtml = '<table style="width:100%;border-collapse:collapse;font-size:.825rem;background:var(--bg-subtle);border-radius:12px;overflow:hidden">';
+  tableHtml += '<thead><tr style="background:var(--bg-hover);color:var(--text-dim);font-weight:800;font-size:.7rem;text-transform:uppercase;text-align:left"><th style="padding:8px 10px">Minijuego</th><th style="padding:8px 10px;text-align:center">Partidas</th><th style="padding:8px 10px;text-align:center">Récord</th><th style="padding:8px 10px;text-align:center">Precisión</th><th style="padding:8px 10px;text-align:center">Aciertos / Fallos</th></tr></thead>';
+  tableHtml += '<tbody>' + gamesRows + '</tbody></table>';
+  document.getElementById('modalStudentGamesTable').innerHTML = tableHtml;
+
+  // Weaknesses / Errors
+  var weakHtml = '';
+  var sortedErrors = Object.keys(allErrors).sort(function(a, b){ return allErrors[b] - allErrors[a]; });
+  if (sortedErrors.length > 0) {
+    sortedErrors.forEach(function(err){
+      weakHtml += '<div style="font-size:.8rem;font-weight:700;color:#991b1b;margin-bottom:4px">⚠️ ' + escHTML(err.toUpperCase()) + ' (' + allErrors[err] + ' fallos registrados)</div>';
+    });
+  } else if (weakAreas.length > 0) {
+    weakAreas.forEach(function(w){
+      weakHtml += '<div style="font-size:.8rem;font-weight:700;color:#991b1b;margin-bottom:4px">⚠️ Reforzar ' + escHTML(w.name) + ' (' + w.accuracy + '% precisión)</div>';
+    });
+  } else {
+    weakHtml = '<div style="font-size:.8rem;color:var(--text-secondary);font-weight:600">No se registran errores críticos en sus sesiones recientes.</div>';
+  }
+  document.getElementById('modalStudentWeaknesses').innerHTML = weakHtml;
+
+  // Strengths
+  var strongHtml = '';
+  if (strongAreas.length > 0) {
+    strongAreas.forEach(function(s){
+      strongHtml += '<div style="font-size:.8rem;font-weight:700;color:#15803d;margin-bottom:4px">✓ ' + escHTML(s.name) + ' (' + s.accuracy + '% dominio)</div>';
+    });
+  } else {
+    strongHtml = '<div style="font-size:.8rem;color:var(--text-secondary);font-weight:600">En proceso de consolidación de aprendizajes.</div>';
+  }
+  document.getElementById('modalStudentStrengths').innerHTML = strongHtml;
+
+  // History
+  var histEl = document.getElementById('modalStudentHistory');
+  histEl.innerHTML = '<div style="font-size:.8rem;color:var(--text-dim)">Cargando historial de sesiones...</div>';
+
+  if (typeof userStatsRef !== 'undefined' && userStatsRef) {
+    userStatsRef.child(userName).child('history').limitToLast(15).once('value')
+      .then(function(snap){
+        var list = [];
+        snap.forEach(function(child){ list.unshift(child.val()); });
+        if (!list.length) {
+          histEl.innerHTML = '<div style="font-size:.8rem;color:var(--text-secondary)">No hay registros detallados de historial.</div>';
+          return;
+        }
+        var hHtml = '';
+        list.forEach(function(h){
+          var gName = gameNamesMap[h.gameId] || h.gameName || h.gameId;
+          var acc = h.accuracy || (h.rounds > 0 ? Math.round((h.correct || 0) / h.rounds * 100) : 0);
+          hHtml += '<div style="display:flex;justify-content:space-between;align-items:center;padding:6px 10px;background:var(--bg-subtle);border-radius:8px;font-size:.8rem">';
+          hHtml += '<div><b>' + escHTML(gName) + '</b> <span style="color:var(--text-dim)">· ' + (h.rounds || 0) + ' rondas</span></div>';
+          hHtml += '<div><span style="color:var(--accent);font-weight:800">' + (h.score || 0) + ' pts</span> · <span style="color:var(--duo-green);font-weight:800">' + acc + '%</span></div>';
+          hHtml += '</div>';
+        });
+        histEl.innerHTML = hHtml;
+      })
+      .catch(function(){
+        histEl.innerHTML = '<div style="font-size:.8rem;color:var(--text-secondary)">Historial sincronizado localmente.</div>';
+      });
+  } else {
+    histEl.innerHTML = '<div style="font-size:.8rem;color:var(--text-secondary)">Historial local registrado.</div>';
+  }
+}
+
+function closeStudentModal(){
+  document.getElementById('studentDetailModal').style.display = 'none';
+}
+
+function printStudentReport(){
+  window.print();
+}
+
+function exportAllStudentsCSV(){
+  if (!allCachedStudentStats.length) {
+    alert('No hay datos de estudiantes para exportar.');
+    return;
+  }
+  var csv = 'Estudiante,Curso,Correo,Partidas_Totales,Puntaje_Total,Respuestas_Correctas,Respuestas_Incorrectas,Precision_Global_Pct,Tiempo_Minutos\n';
+  allCachedStudentStats.forEach(function(s){
+    var info = s.info || {};
+    var games = s.games || {};
+    var tScore = 0, tC = 0, tW = 0, tSessions = 0, tTime = 0;
+    Object.keys(games).forEach(function(gid){
+      var g = games[gid];
+      tScore += g.totalScore || 0;
+      tC += g.totalCorrect || 0;
+      tW += g.totalWrong || 0;
+      tSessions += g.sessions || 0;
+      tTime += g.totalTime || 0;
+    });
+    var acc = (tC + tW > 0) ? Math.round(tC / (tC + tW) * 100) : 0;
+    var row = [
+      '"' + (s.userName || '') + '"',
+      '"' + (info.grade ? info.grade + ' Basico' : '') + '"',
+      '"' + (info.email || '') + '"',
+      tSessions,
+      tScore,
+      tC,
+      tW,
+      acc + '%',
+      Math.round(tTime / 60)
+    ];
+    csv += row.join(',') + '\n';
+  });
+
+  var blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+  var url = URL.createObjectURL(blob);
+  var a = document.createElement('a');
+  a.href = url;
+  a.download = 'RakinMath_Estadisticas_Estudiantes_' + new Date().toISOString().slice(0, 10) + '.csv';
+  a.click();
 }
 
 /* ═══ CALCULO MENTAL STATS ═══ */

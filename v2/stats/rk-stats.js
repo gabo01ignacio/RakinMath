@@ -348,6 +348,13 @@ RK.Stats = (function() {
     g.correct += result.correct || 0;
     g.wrong += result.wrong || 0;
 
+    if (result.level) {
+      g.bestLevel = Math.max(g.bestLevel || 1, result.level);
+    }
+    if (result.streak) {
+      g.bestStreak = Math.max(g.bestStreak || 0, result.streak);
+    }
+
     var totalAttempts = g.correct + g.wrong;
     g.avgScore = g.sessions > 0 ? Math.round(g.totalScore / g.sessions) : 0;
     g.avgTimePerRound = result.rounds > 0 ? Math.round((result.totalTime || 0) / result.rounds) : 0;
@@ -363,10 +370,13 @@ RK.Stats = (function() {
     g.history.unshift({
       date: new Date().toISOString(),
       score: result.score,
+      level: result.level || 1,
+      streak: result.streak || 0,
       rounds: result.rounds,
       totalTime: result.totalTime || 0,
       correct: result.correct || 0,
       wrong: result.wrong || 0,
+      errors: result.errors || [],
       accuracy: result.rounds > 0 ? Math.round((result.correct || 0) / result.rounds * 100) : 0
     });
 
@@ -388,17 +398,22 @@ RK.Stats = (function() {
         UserStatsDB.saveGame(user, {
           gameId: gameId,
           score: result.score,
+          level: result.level || 1,
+          streak: result.streak || 0,
           totalTime: result.totalTime || 0,
           correct: result.correct || 0,
-          wrong: result.wrong || 0
+          wrong: result.wrong || 0,
+          errors: result.errors || []
         });
         UserStatsDB.saveHistory(user, {
           gameId: gameId,
           gameName: gameId,
           score: result.score,
+          level: result.level || 1,
           rounds: result.rounds,
           correct: result.correct || 0,
           wrong: result.wrong || 0,
+          errors: result.errors || [],
           accuracy: totalAttempts > 0 ? Math.round(g.correct / totalAttempts * 100) : 0,
           totalTime: result.totalTime || 0
         });

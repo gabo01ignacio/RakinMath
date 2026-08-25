@@ -6,419 +6,629 @@
 <title>Mis Estadísticas | RakinMath</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@600;700;800;900&family=Nunito:wght@600;700;800;900&family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="Juegos/apple-design.css">
 <style>
 *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
-:root{--font:'Inter',-apple-system,system-ui,sans-serif;--ease:cubic-bezier(.16,1,.3,1);--spring:cubic-bezier(.34,1.56,.64,1);--spring-bounce:cubic-bezier(.68,-.55,.265,1.55);--r-sm:14px;--r-md:20px;--r-lg:28px;--r-xl:36px;--r-full:9999px;--duo-green:#58cc02;--duo-green-dark:#46a302;--duo-yellow:#ffc800;--duo-orange:#ff9600;--duo-blue:#1cb0f6;--duo-blue-dark:#1899d6;--duo-purple:#ce82ff;--duo-pink:#ff86d0;--duo-red:#ff4b4b;--duo-teal:#2ee5c9}
-[data-theme="light"]{--bg:#f0f4f8;--bg-card:#fff;--bg-nav:rgba(255,255,255,.88);--bg-subtle:#e8edf2;--text:#2d3748;--text-sec:#5a6577;--text-dim:#a0aec0;--accent:#1cb0f6;--border:rgba(0,0,0,.06);--border-strong:rgba(0,0,0,.12);--shadow-sm:0 2px 0 rgba(0,0,0,.03);--shadow-md:0 4px 0 rgba(0,0,0,.05);--shadow-lg:0 6px 0 rgba(0,0,0,.07);--hero-bg:linear-gradient(180deg,#fff8e1 0%,#e8f5e9 40%,#e3f2fd 70%,#f0f4f8 100%)}
-[data-theme="dark"]{--bg:#0d1117;--bg-card:#161b22;--bg-nav:rgba(13,17,23,.88);--bg-subtle:#1c2333;--text:#e6edf3;--text-sec:#8b949e;--text-dim:#484f58;--accent:#1cb0f6;--border:rgba(255,255,255,.06);--border-strong:rgba(255,255,255,.12);--shadow-sm:0 2px 0 rgba(0,0,0,.2);--shadow-md:0 4px 0 rgba(0,0,0,.3);--shadow-lg:0 6px 0 rgba(0,0,0,.4);--hero-bg:linear-gradient(180deg,#1a2332 0%,#0d1117 50%,#161b22 100%)}
-body{font-family:var(--font);background:var(--bg);color:var(--text);-webkit-font-smoothing:antialiased;line-height:1.5;min-height:100vh;display:flex;flex-direction:column;transition:background .4s var(--ease),color .4s var(--ease);animation:pageIn .4s ease both}
-@keyframes pageIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+:root{
+  --font:'Nunito',system-ui,sans-serif;
+  --font-title:'Outfit',sans-serif;
+  --font-num:'Inter',sans-serif;
+  --spring:cubic-bezier(.34,1.56,.64,1);
+  --r-sm:14px;--r-md:20px;--r-lg:28px;--r-xl:36px;--r-full:9999px;
+  --duo-green:#58cc02;--duo-green-dark:#46a302;
+  --duo-yellow:#ffc800;--duo-orange:#ff9600;
+  --duo-blue:#1cb0f6;--duo-purple:#ce82ff;
+  --duo-pink:#ff86d0;--duo-red:#ff4b4b;--duo-teal:#2ee5c9;
+}
+
+[data-theme="light"]{
+  --bg:#f8fafc;--bg-card:#ffffff;--bg-subtle:#f1f5f9;
+  --text:#0f172a;--text-sec:#475569;--text-dim:#64748b;
+  --border:rgba(0,0,0,.08);--border-strong:#cbd5e1;
+}
+[data-theme="dark"]{
+  --bg:#0b0f19;--bg-card:#151c2c;--bg-subtle:#1e293b;
+  --text:#f8fafc;--text-sec:#94a3b8;--text-dim:#64748b;
+  --border:rgba(255,255,255,.08);--border-strong:#334155;
+}
+
+body{
+  font-family:var(--font);
+  background:var(--bg);
+  color:var(--text);
+  min-height:100vh;
+  display:flex;
+  flex-direction:column;
+  -webkit-font-smoothing:antialiased;
+}
 
 /* Nav */
-.nav{position:sticky;top:0;height:64px;display:flex;align-items:center;justify-content:space-between;padding:0 24px;background:var(--bg-nav);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-bottom:1px solid var(--border);z-index:100}
-.nav-title{font-size:1.125rem;font-weight:900;color:var(--text);text-decoration:none;display:flex;align-items:center;gap:8px;letter-spacing:-.03em}
-.nav-right{display:flex;align-items:center;gap:10px}
-.nav-user{font-size:.8125rem;font-weight:600;color:var(--text-sec)}
-.nav-btn{font-family:var(--font);font-size:.8125rem;font-weight:600;padding:8px 16px;border-radius:var(--r-full);border:1px solid var(--border);background:var(--bg-subtle);color:var(--text-sec);cursor:pointer;transition:all .2s var(--spring);text-decoration:none}
-.nav-btn:hover{background:var(--border-strong);color:var(--text)}
-.nav-btn.danger{border-color:rgba(255,59,48,.2);color:var(--duo-red);background:rgba(255,59,48,.06)}
-.nav-btn.danger:hover{background:rgba(255,59,48,.12)}
+.nav{
+  position:sticky;
+  top:0;
+  height:56px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:0 20px;
+  background:rgba(255,255,255,.9);
+  backdrop-filter:blur(16px);
+  border-bottom:2px solid var(--border-strong);
+  z-index:100;
+}
+[data-theme="dark"] .nav{background:rgba(21,28,44,.9)}
 
-/* Main */
-.main{max-width:900px;width:100%;margin:0 auto;padding:24px}
+.nav-title{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  font-family:var(--font-title);
+  font-weight:800;
+  font-size:1.15rem;
+  color:var(--text);
+  text-decoration:none;
+}
+.nav-right{display:flex;align-items:center;gap:8px}
+.nav-user{font-size:.85rem;font-weight:800;color:var(--duo-blue)}
+.nav-btn{
+  font-family:var(--font-title);
+  font-size:.825rem;
+  font-weight:700;
+  padding:6px 14px;
+  border-radius:var(--r-full);
+  border:1.5px solid var(--border-strong);
+  background:var(--bg-subtle);
+  color:var(--text);
+  text-decoration:none;
+  cursor:pointer;
+  transition:all .15s ease;
+}
+.nav-btn:active{transform:scale(.96)}
+.nav-btn.danger{background:#fee2e2;color:#dc2626;border-color:#fca5a5}
 
-/* Hero */
-.hero{background:var(--hero-bg);border-radius:var(--r-xl);padding:32px;text-align:center;margin-bottom:24px;position:relative;overflow:hidden}
-.hero::before{content:'';position:absolute;top:-100px;left:50%;transform:translateX(-50%);width:600px;height:300px;background:radial-gradient(ellipse,rgba(88,204,2,.08) 0%,transparent 70%);pointer-events:none}
-.hero-mascot{width:64px;height:64px;filter:drop-shadow(0 4px 12px rgba(175,82,222,.25));animation:heroFloat 3s ease-in-out infinite}
-@keyframes heroFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
-.hero h1{font-size:clamp(1.5rem,4vw,2rem);font-weight:900;letter-spacing:-.04em;margin-bottom:8px}
-.hero h1 .brand{color:var(--duo-blue)}
-.hero-sub{font-size:1rem;color:var(--text-sec);max-width:480px;margin:0 auto}
+/* Main Container */
+.main{max-width:960px;width:100%;margin:0 auto;padding:16px;flex:1}
 
-/* Stats Grid */
-.stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:14px;margin-bottom:28px}
-.stat-card{background:var(--bg-card);border:2px solid var(--border);border-radius:var(--r-lg);padding:20px;text-align:center;transition:all .3s var(--spring);position:relative;overflow:hidden}
-.stat-card:hover{transform:translateY(-3px);box-shadow:var(--shadow-md)}
-.stat-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;opacity:0;transition:opacity .3s}
-.stat-card:hover::before{opacity:1}
-.stat-card:nth-child(1)::before{background:linear-gradient(90deg,var(--duo-blue),var(--duo-teal))}
-.stat-card:nth-child(2)::before{background:linear-gradient(90deg,var(--duo-green),var(--duo-teal))}
-.stat-card:nth-child(3)::before{background:linear-gradient(90deg,var(--duo-orange),var(--duo-yellow))}
-.stat-card:nth-child(4)::before{background:linear-gradient(90deg,var(--duo-purple),var(--duo-pink))}
-.stat-icon{width:48px;height:48px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:1.5rem;margin:0 auto 12px}
-.stat-icon.blue{background:linear-gradient(135deg,#e3f2fd,#bbdefb)}
-.stat-icon.green{background:linear-gradient(135deg,#e8f5e9,#c8e6c9)}
-.stat-icon.orange{background:linear-gradient(135deg,#fff3e0,#ffe0b2)}
-.stat-icon.purple{background:linear-gradient(135deg,#f3e5f5,#e1bee7)}
-.stat-val{font-size:1.75rem;font-weight:900;letter-spacing:-.03em;margin-bottom:2px}
-.stat-label{font-size:.8125rem;color:var(--text-dim);font-weight:600}
+/* Hero Header */
+.hero-card{
+  background:linear-gradient(135deg,#fef3c7 0%,#fde68a 50%,#e0f2fe 100%);
+  border:2.5px solid #f59e0b;
+  border-radius:24px;
+  padding:20px;
+  margin-bottom:16px;
+  box-shadow:0 4px 16px rgba(245,158,11,0.15),0 3px 0 #d97706;
+  display:flex;
+  align-items:center;
+  gap:16px;
+}
+[data-theme="dark"] .hero-card{
+  background:linear-gradient(135deg,#2e1065 0%,#1e1b4b 50%,#0f172a 100%);
+  border-color:#c084fc;
+  box-shadow:0 4px 16px rgba(192,132,252,0.15);
+}
 
-/* Streak Banner */
-.streak-banner{background:linear-gradient(135deg,rgba(255,150,0,.1),rgba(255,134,208,.1));border:1px solid rgba(255,150,0,.2);border-radius:var(--r-lg);padding:20px;margin-bottom:28px;display:flex;align-items:center;gap:16px}
-.streak-icon{font-size:2.5rem;animation:flamePulse 1.5s ease-in-out infinite}
-@keyframes flamePulse{0%,100%{transform:scale(1)}50%{transform:scale(1.1)}}
-.streak-info{flex:1}
-.streak-count{font-size:1.5rem;font-weight:800;color:var(--duo-orange)}
-.streak-text{font-size:.8125rem;color:var(--text-sec)}
+.hero-avatar{
+  font-size:3rem;
+  line-height:1;
+  background:#ffffff;
+  border:2px solid #cbd5e1;
+  border-radius:20px;
+  padding:10px;
+  box-shadow:0 4px 0 #cbd5e1;
+}
+[data-theme="dark"] .hero-avatar{background:#1e293b;border-color:#475569}
 
-/* Section */
-.section{margin-bottom:28px}
-.section-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
-.section-title{font-size:1.125rem;font-weight:800;display:flex;align-items:center;gap:8px}
-.section-title::before{content:'';width:4px;height:20px;background:linear-gradient(180deg,var(--duo-green),var(--duo-blue));border-radius:2px}
-.section-badge{font-size:.6875rem;font-weight:700;padding:4px 10px;background:var(--bg-subtle);border-radius:var(--r-full);border:1px solid var(--border);color:var(--text-dim)}
+.hero-info h1{
+  font-family:var(--font-title);
+  font-size:1.5rem;
+  font-weight:900;
+  color:#0f172a;
+}
+[data-theme="dark"] .hero-info h1{color:#f8fafc}
+.hero-info p{
+  font-size:.875rem;
+  font-weight:700;
+  color:#475569;
+  margin-top:2px;
+}
+[data-theme="dark"] .hero-info p{color:#94a3b8}
 
-/* Game Card */
-.games-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:14px}
-.game-card{background:var(--bg-card);border:2px solid var(--border);border-radius:var(--r-lg);padding:18px;transition:all .3s var(--spring)}
-.game-card:hover{transform:translateY(-3px);box-shadow:var(--shadow-md);border-color:var(--duo-blue)}
-.gc-header{display:flex;align-items:center;gap:12px;margin-bottom:14px}
-.gc-emoji{width:44px;height:44px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:1.5rem;background:var(--bg-subtle)}
-.gc-name{font-size:.9375rem;font-weight:700}
-.gc-sessions{font-size:.75rem;color:var(--text-dim)}
-.gc-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:12px}
-.gc-stat{text-align:center}
-.gc-stat-val{font-size:1rem;font-weight:800;color:var(--text)}
-.gc-stat-lbl{font-size:.6875rem;color:var(--text-dim);font-weight:600}
-.gc-bar{height:6px;background:var(--bg-subtle);border-radius:var(--r-full);overflow:hidden}
-.gc-bar-fill{height:100%;background:linear-gradient(90deg,var(--duo-green),var(--duo-teal));border-radius:var(--r-full);transition:width .8s var(--ease)}
+/* Top Stats Grid */
+.summary-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(140px,1fr));
+  gap:8px;
+  margin-bottom:16px;
+}
+.sum-card{
+  background:var(--bg-card);
+  border:2px solid var(--border-strong);
+  border-radius:18px;
+  padding:12px;
+  text-align:center;
+  box-shadow:0 3px 0 var(--border-strong);
+}
+.sum-icon{font-size:1.5rem;line-height:1;margin-bottom:4px}
+.sum-val{font-family:var(--font-num);font-size:1.4rem;font-weight:900;color:var(--text)}
+.sum-lbl{font-size:.7rem;font-weight:800;color:var(--text-dim);text-transform:uppercase;margin-top:2px}
 
-/* Activity Card */
-.activities-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:14px}
-.activity-card{background:var(--bg-card);border:2px solid var(--border);border-radius:var(--r-lg);padding:16px;display:flex;align-items:center;gap:14px;transition:all .3s var(--spring)}
-.activity-card:hover{transform:translateY(-3px);box-shadow:var(--shadow-md);border-color:var(--duo-green)}
-.ac-emoji{width:44px;height:44px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:1.5rem;background:var(--bg-subtle);flex-shrink:0}
-.ac-info{flex:1;min-width:0}
-.ac-name{font-size:.9375rem;font-weight:700}
-.ac-topic{font-size:.75rem;color:var(--text-dim)}
-.ac-stats{display:flex;gap:10px;flex-shrink:0}
-.ac-stat{font-size:.75rem;color:var(--text-sec)}
-.ac-stat b{font-weight:700;color:var(--text)}
+/* Filter Tabs */
+.tab-bar{
+  display:flex;
+  gap:6px;
+  background:var(--bg-subtle);
+  border:1.5px solid var(--border-strong);
+  border-radius:16px;
+  padding:4px;
+  margin-bottom:16px;
+  overflow-x:auto;
+}
+.tab-btn{
+  flex:1;
+  font-family:var(--font-title);
+  font-size:.85rem;
+  font-weight:800;
+  padding:8px 12px;
+  border-radius:12px;
+  border:none;
+  background:transparent;
+  color:var(--text-sec);
+  cursor:pointer;
+  transition:all .15s ease;
+  white-space:nowrap;
+  text-align:center;
+}
+.tab-btn.active{
+  background:var(--duo-blue);
+  color:#ffffff;
+  box-shadow:0 2px 8px rgba(28,176,246,0.3);
+}
 
-/* History */
-.history-list{display:flex;flex-direction:column;gap:8px}
-.hist-item{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--r-md);padding:14px 16px;display:flex;align-items:center;gap:12px;transition:background .15s}
-.hist-item:hover{background:var(--bg-subtle)}
-.hist-emoji{width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:1.1rem;background:var(--bg-subtle);flex-shrink:0}
-.hist-info{flex:1;min-width:0}
-.hist-name{font-size:.875rem;font-weight:700}
-.hist-date{font-size:.75rem;color:var(--text-dim)}
-.hist-stats{display:flex;gap:12px;flex-shrink:0}
-.hist-score{font-size:.8125rem;font-weight:700;color:var(--duo-yellow)}
-.hist-acc{font-size:.8125rem;font-weight:700;padding:2px 8px;border-radius:var(--r-full);background:rgba(88,204,2,.1);color:var(--duo-green)}
+/* Game Detailed Cards */
+.section-title{
+  font-family:var(--font-title);
+  font-size:1.15rem;
+  font-weight:900;
+  margin-bottom:10px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+}
 
-/* Errors */
-.errors-list{display:flex;flex-direction:column;gap:10px}
-.error-item{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--r-md);padding:14px 16px;display:flex;align-items:center;gap:12px}
-.error-name{font-size:.875rem;font-weight:600;min-width:120px}
-.error-bar{flex:1;height:8px;background:var(--bg-subtle);border-radius:var(--r-full);overflow:hidden}
-.error-bar-fill{height:100%;background:linear-gradient(90deg,var(--duo-orange),var(--duo-red));border-radius:var(--r-full);transition:width .8s var(--ease)}
-.error-count{font-size:.75rem;font-weight:700;color:var(--text-dim);min-width:60px;text-align:right}
+.games-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(280px,1fr));
+  gap:10px;
+  margin-bottom:20px;
+}
+.game-detail-card{
+  background:var(--bg-card);
+  border:2px solid var(--border-strong);
+  border-radius:20px;
+  padding:14px;
+  box-shadow:0 3px 0 var(--border-strong);
+  display:flex;
+  flex-direction:column;
+  gap:8px;
+}
+.gdc-head{
+  display:flex;
+  align-items:center;
+  gap:10px;
+}
+.gdc-icon{
+  width:42px;
+  height:42px;
+  border-radius:12px;
+  background:var(--bg-subtle);
+  border:1px solid var(--border-strong);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:1.4rem;
+  flex-shrink:0;
+}
+.gdc-name{
+  font-family:var(--font-title);
+  font-size:.95rem;
+  font-weight:800;
+  color:var(--text);
+}
+.gdc-cat{
+  font-size:.7rem;
+  font-weight:700;
+  color:var(--text-dim);
+}
 
-/* Empty State */
-.empty-state{text-align:center;padding:48px 24px;color:var(--text-dim)}
-.empty-state-emoji{font-size:3rem;margin-bottom:12px;opacity:.5}
-.empty-state h2{font-size:1.125rem;font-weight:700;color:var(--text);margin-bottom:8px}
-.empty-state p{font-size:.875rem;margin-bottom:20px}
-.empty-state-btn{display:inline-flex;align-items:center;gap:8px;padding:12px 24px;background:var(--duo-green);color:#fff;border:none;border-radius:var(--r-full);font-family:var(--font);font-size:.875rem;font-weight:700;cursor:pointer;text-decoration:none;box-shadow:0 4px 0 var(--duo-green-dark);transition:all .15s}
-.empty-state-btn:hover{filter:brightness(1.1);transform:translateY(-1px)}
-.empty-state-btn:active{transform:translateY(2px);box-shadow:0 2px 0 var(--duo-green-dark)}
+.gdc-metrics{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:6px;
+  background:var(--bg-subtle);
+  border-radius:12px;
+  padding:8px 6px;
+  text-align:center;
+}
+.gdc-val{font-family:var(--font-num);font-size:1.05rem;font-weight:900;color:var(--text)}
+.gdc-lbl{font-size:.625rem;font-weight:800;color:var(--text-dim);text-transform:uppercase}
 
-.footer{text-align:center;padding:24px;font-size:.8125rem;color:var(--text-dim);font-weight:500;margin-top:auto}
+.gdc-bar-box{display:flex;flex-direction:column;gap:3px}
+.gdc-bar-lbl{display:flex;justify-content:space-between;font-size:.7rem;font-weight:800;color:var(--text-sec)}
+.gdc-track{height:6px;background:var(--bg-subtle);border-radius:99px;overflow:hidden}
+.gdc-fill{height:100%;border-radius:99px;transition:width .4s ease}
+
+/* Pedagogical Diagnostic & Errors */
+.diag-card{
+  background:var(--bg-card);
+  border:2px solid var(--border-strong);
+  border-radius:20px;
+  padding:16px;
+  margin-bottom:16px;
+  box-shadow:0 3px 0 var(--border-strong);
+}
+.error-chip{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  background:#fee2e2;
+  border:1.5px solid #fca5a5;
+  border-radius:12px;
+  padding:8px 12px;
+  margin-bottom:6px;
+  color:#991b1b;
+  font-size:.825rem;
+  font-weight:800;
+}
+.error-chip b{color:#dc2626}
+.advice-box{
+  background:#eff6ff;
+  border:1.5px solid #bfdbfe;
+  border-radius:14px;
+  padding:10px 14px;
+  color:#1e40af;
+  font-size:.85rem;
+  font-weight:700;
+  margin-top:8px;
+}
+
+/* History List */
+.hist-item{
+  background:var(--bg-card);
+  border:1.5px solid var(--border-strong);
+  border-radius:14px;
+  padding:10px 14px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  margin-bottom:6px;
+  box-shadow:0 2px 0 var(--border-strong);
+}
+.hist-left{display:flex;align-items:center;gap:10px}
+.hist-emoji{font-size:1.3rem}
+.hist-title{font-size:.875rem;font-weight:800}
+.hist-date{font-size:.7rem;font-weight:700;color:var(--text-dim)}
+.hist-score{font-family:var(--font-num);font-size:1rem;font-weight:900;color:var(--duo-blue)}
+.hist-acc{font-size:.75rem;font-weight:800;padding:2px 8px;border-radius:99px;background:#dcfce7;color:#15803d}
 
 @media(max-width:480px){
-  .main{padding:16px}
-  .hero{padding:24px 16px}
-  .hero h1{font-size:1.375rem}
-  .stats-grid{grid-template-columns:repeat(2,1fr);gap:10px}
-  .stat-card{padding:14px}
-  .stat-val{font-size:1.375rem}
-  .games-grid,.activities-grid{grid-template-columns:1fr}
-  .gc-stats{grid-template-columns:repeat(2,1fr)}
-  .streak-banner{flex-direction:column;text-align:center}
-  .ac-stats{flex-direction:column;gap:4px}
+  .main{padding:10px}
+  .hero-card{padding:14px;gap:10px}
+  .hero-avatar{font-size:2.2rem;padding:6px}
+  .hero-info h1{font-size:1.25rem}
+  .summary-grid{grid-template-columns:repeat(2,1fr)}
+  .games-grid{grid-template-columns:1fr}
 }
 </style>
-
 <!-- SUPER RESPONSIVE MOBILE OPTIMIZATIONS — RAKINMATH -->
 <style id="rakin-mobile-responsiveness">
-* {
-  -webkit-tap-highlight-color: transparent;
-}
-html, body {
-  max-width: 100%;
-  overflow-x: hidden;
-}
-img, svg, video, canvas {
-  max-width: 100%;
-}
+* { -webkit-tap-highlight-color: transparent; }
+html, body { max-width: 100%; overflow-x: hidden; }
+img, svg, video, canvas { max-width: 100%; }
 button, a, input, select, textarea, .btn, .choice-btn, .opt-btn, .game-btn, .nav-btn, .action-btn {
   touch-action: manipulation;
 }
 @media (max-width: 600px) {
-  input, select, textarea {
-    font-size: 16px !important;
-  }
-  button, .btn, .choice-btn, .opt-btn, .game-btn, .nav-btn, .action-btn {
-    min-height: 44px;
-  }
+  input, select, textarea { font-size: 16px !important; }
+  button, .btn, .choice-btn, .opt-btn, .game-btn, .nav-btn, .action-btn { min-height: 44px; }
 }
 </style>
-
 </head>
 <body>
 
 <nav class="nav">
-  <a href="Juegos/menu.html" class="nav-title"><img src="Recursos/LogoRakinMath.png" alt="RakinMath" style="height:22px;width:auto"></a>
+  <a href="Juegos/menu.html" class="nav-title">
+    <img src="Recursos/LogoRakinMath.png" alt="RakinMath" style="height:22px;width:auto">
+    <span>Mis Estadísticas</span>
+  </a>
   <div class="nav-right">
-    <span class="nav-user" id="navUser"></span>
+    <span class="nav-user" id="navUser">Estudiante</span>
     <a href="Juegos/menu.html" class="nav-btn">← Volver</a>
     <button class="nav-btn danger" id="logoutBtn">Salir</button>
   </div>
 </nav>
 
 <div class="main">
-  <div class="hero">
-    <img src="Recursos/rakin-happy.svg" alt="Rakín" class="hero-mascot">
-    <h1>Mis <span class="brand">Estadísticas</span></h1>
-    <p class="hero-sub" id="heroSub">Cargando tus datos...</p>
+  <!-- HERO SUMMARY -->
+  <div class="hero-card">
+    <div class="hero-avatar">🦊</div>
+    <div class="hero-info">
+      <h1 id="hero-title">¡Hola, Estudiante!</h1>
+      <p id="hero-sub">Aquí tienes el diagnóstico completo de tus progresos en RakinMath.</p>
+    </div>
   </div>
 
-  <div id="statsContent" style="display:none">
-
-    <div class="stats-grid" id="statsGrid"></div>
-
-    <div id="streakBanner" class="streak-banner" style="display:none">
-      <div class="streak-icon">🔥</div>
-      <div class="streak-info">
-        <div class="streak-count" id="streakCount">0 días</div>
-        <div class="streak-text">¡Sigue así! No pierdas tu racha</div>
-      </div>
+  <!-- SUMMARY CARDS -->
+  <div class="summary-grid">
+    <div class="sum-card">
+      <div class="sum-icon">⭐</div>
+      <div class="sum-val" id="sum-score" style="color:#0284c7">0</div>
+      <div class="sum-lbl">Puntos Totales</div>
     </div>
-
-    <div id="gamesSection" class="section" style="display:none">
-      <div class="section-header">
-        <h2 class="section-title">🎮 Juegos</h2>
-        <span class="section-badge" id="gamesBadge"></span>
-      </div>
-      <div class="games-grid" id="gamesGrid"></div>
+    <div class="sum-card">
+      <div class="sum-icon">🎯</div>
+      <div class="sum-val" id="sum-accuracy" style="color:#16a34a">0%</div>
+      <div class="sum-lbl">Precisión Global</div>
     </div>
-
-    <div id="activitiesSection" class="section" style="display:none">
-      <div class="section-header">
-        <h2 class="section-title">📚 Actividades</h2>
-        <span class="section-badge" id="actBadge"></span>
-      </div>
-      <div class="activities-grid" id="activitiesGrid"></div>
+    <div class="sum-card">
+      <div class="sum-icon">🎮</div>
+      <div class="sum-val" id="sum-games" style="color:#ea580c">0</div>
+      <div class="sum-lbl">Partidas Jugadas</div>
     </div>
-
-    <div id="historySection" class="section" style="display:none">
-      <div class="section-header">
-        <h2 class="section-title">📅 Historial Reciente</h2>
-      </div>
-      <div class="history-list" id="historyList"></div>
+    <div class="sum-card">
+      <div class="sum-icon">⏱️</div>
+      <div class="sum-val" id="sum-time" style="color:#9333ea">0m</div>
+      <div class="sum-lbl">Tiempo Práctica</div>
     </div>
-
-    <div id="errorsSection" class="section" style="display:none">
-      <div class="section-header">
-        <h2 class="section-title">⚠️ Errores Comunes</h2>
-      </div>
-      <div class="errors-list" id="errorsList"></div>
+    <div class="sum-card">
+      <div class="sum-icon">🔥</div>
+      <div class="sum-val" id="sum-streak" style="color:#f59e0b">0</div>
+      <div class="sum-lbl">Días de Racha</div>
     </div>
-
   </div>
 
-  <div id="noData" class="empty-state" style="display:none">
-    <div class="empty-state-emoji">🕹️</div>
-    <h2>¡Aún no hay datos!</h2>
-    <p>Juega algunos juegos o completa actividades para ver tus estadísticas aquí.</p>
-    <a href="Juegos/menu.html" class="empty-state-btn">¡Empezar a jugar!</a>
+  <!-- TABS -->
+  <div class="tab-bar">
+    <button class="tab-btn active" onclick="showTab('tab-games', this)">🎮 Todos los Juegos</button>
+    <button class="tab-btn" onclick="showTab('tab-diag', this)">⚠️ Diagnóstico y Errores</button>
+    <button class="tab-btn" onclick="showTab('tab-history', this)">📅 Historial Completo</button>
+  </div>
+
+  <!-- ═══ TAB 1: DETALLE POR JUEGO ═══ -->
+  <div id="tab-games">
+    <div class="section-title">
+      <span>Rendimiento Detallado por Minijuego</span>
+      <span style="font-size:0.8rem;color:#64748b" id="games-count-lbl">13 Minijuegos</span>
+    </div>
+    <div class="games-grid" id="gamesGrid"></div>
+  </div>
+
+  <!-- ═══ TAB 2: DIAGNÓSTICO Y ERRORES ═══ -->
+  <div id="tab-diag" style="display:none">
+    <div class="diag-card">
+      <div class="section-title">⚠️ Errores Frecuentes Detectados</div>
+      <p style="font-size:0.85rem;color:#475569;margin-bottom:10px">Identificamos los conceptos matemáticos donde has tenido mayor dificultad para que puedas reforzarlos:</p>
+      <div id="errors-container"></div>
+      <div class="advice-box" id="advice-box">
+        💡 <b>Recomendación del Profesor:</b> Juega <i>Laboratorio de Pociones</i> y <i>El Mercado Chileno</i> para reforzar fracciones y cálculos con dinero.
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ TAB 3: HISTORIAL COMPLETO ═══ -->
+  <div id="tab-history" style="display:none">
+    <div class="section-title">📅 Línea de Tiempo de Sesiones</div>
+    <div id="history-container"></div>
   </div>
 </div>
 
-<div class="footer">RakinMath · Aprende matemáticas jugando</div>
-
 <script src="auth.js"></script>
 <script src="stats/rk-stats.js"></script>
-<script src="stats/rk-progress.js"></script>
-<script src="stats/rk-medals.js"></script>
 <script>
-(function(){
-  var $=function(id){return document.getElementById(id)};
+const gameMetadata = {
+  juego1: { name: 'Duelo de Números', emoji: '⚔️', topic: 'Cálculo Aritmético', grade: '3°–6°' },
+  juego2: { name: 'Estimaciones', emoji: '📐', topic: 'Redondeo y Aritmética', grade: '4°–5°' },
+  juego3: { name: 'Chefs de Fracciones', emoji: '🍕', topic: 'Representación de Fracciones', grade: '4°–5°' },
+  juego4: { name: 'Arquitectas', emoji: '🏗️', topic: 'Área y Perímetro en Grilla', grade: '4°–5°' },
+  juego5: { name: 'Buscatesoros', emoji: '💎', topic: 'Plano Cartesiano (X, Y)', grade: '4°–6°' },
+  juego6: { name: 'El Caldero Mágico', emoji: '🧪', topic: 'Álgebra y Ecuaciones', grade: '5°–6°' },
+  juego7: { name: 'Misión Robot', emoji: '🤖', topic: 'Multiplicación y División', grade: '4°–5°' },
+  juego8: { name: 'Cálculo Mental', emoji: '🧠', topic: 'Operaciones Rápidas', grade: '3°–6°' },
+  juego9: { name: 'Laboratorio de Pociones', emoji: '⚗️', topic: 'Suma y Resta de Fracciones', grade: '4°–6°' },
+  juego10: { name: 'El Mercado Chileno', emoji: '🛒', topic: 'Dinero Chileno y Presupuesto', grade: '3°–6°' },
+  juego11: { name: 'Pizza Master', emoji: '🍕', topic: 'Operaciones con Fracciones', grade: '4°–6°' },
+  juego12: { name: 'Geometrix Builder', emoji: '📐', topic: 'Construcción Geométrica', grade: '4°–6°' },
+  juego13: { name: 'Ruta Matemática', emoji: '🦉', topic: 'Speedrun y Racha Global', grade: '3°–6°' }
+};
 
-  // Auth
-  var session=getSession();
-  if(!session||!session.user){window.location.href='login.html';return}
-  var uN=session.user;
-  $('navUser').textContent=typeof formatUserName!=='undefined'?formatUserName(uN):(uN.charAt(0).toUpperCase()+uN.slice(1));
+window.onload = function() {
+  const session = getSession();
+  if (!session || !session.user) {
+    window.location.href = 'login.html';
+    return;
+  }
+  const uN = session.user;
+  document.getElementById('navUser').textContent = uN.toUpperCase();
+  document.getElementById('hero-title').textContent = `¡Hola, ${uN}!`;
 
-  // Theme
-  var theme=localStorage.getItem('rakin-theme')||'light';
-  document.documentElement.setAttribute('data-theme',theme);
+  document.getElementById('logoutBtn').onclick = function() {
+    destroySession();
+    window.location.href = 'login.html';
+  };
 
-  // Logout
-  $('logoutBtn').addEventListener('click',function(){destroySession();window.location.href='login.html'});
+  renderStudentStats(uN);
+};
 
-  // Load stats
-  var stats=RK.Stats.getAllStats();
-  var summary=RK.Stats.getSummary();
+function showTab(tabId, btn) {
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
 
-  var hasGames=stats&&stats.games&&Object.keys(stats.games).length>0;
-  var hasAct=stats&&stats.activities&&Object.keys(stats.activities).length>0;
+  ['tab-games', 'tab-diag', 'tab-history'].forEach(id => {
+    document.getElementById(id).style.display = (id === tabId) ? 'block' : 'none';
+  });
+}
 
-  if(!hasGames&&!hasAct){
-    $('noData').style.display='block';
-    $('heroSub').textContent='Aún no tienes datos — ¡empieza a jugar!';
+function renderStudentStats(userName) {
+  const stats = RK.Stats.getAllStats() || { games: {}, summary: {} };
+  const summary = stats.summary || {};
+  const games = stats.games || {};
+
+  // Summary Metrics
+  let totalScore = 0;
+  let totalCorrect = summary.overallCorrect || 0;
+  let totalWrong = summary.overallWrong || 0;
+  let totalSessions = summary.totalGamesPlayed || 0;
+  let totalSeconds = summary.totalTimeSpent || 0;
+
+  for (let gid in games) {
+    totalScore += games[gid].totalScore || 0;
+  }
+
+  const accuracy = (totalCorrect + totalWrong > 0) ? Math.round(totalCorrect / (totalCorrect + totalWrong) * 100) : 0;
+  const streak = RK.Stats.getDailyStreak().current || 0;
+
+  document.getElementById('sum-score').textContent = totalScore.toLocaleString();
+  document.getElementById('sum-accuracy').textContent = `${accuracy}%`;
+  document.getElementById('sum-games').textContent = totalSessions;
+  document.getElementById('sum-time').textContent = `${Math.round(totalSeconds / 60)}m`;
+  document.getElementById('sum-streak').textContent = streak;
+
+  renderGamesGrid(games);
+  renderErrorsAndDiagnostic(games);
+  renderHistory(games);
+}
+
+function renderGamesGrid(games) {
+  const container = document.getElementById('gamesGrid');
+  container.innerHTML = '';
+
+  for (let gid in gameMetadata) {
+    const meta = gameMetadata[gid];
+    const g = games[gid] || { sessions: 0, bestScore: 0, avgScore: 0, accuracy: 0, bestLevel: 1, bestStreak: 0, correct: 0, wrong: 0 };
+    const acc = g.accuracy || 0;
+    const barColor = acc >= 80 ? '#16a34a' : acc >= 50 ? '#ea580c' : '#dc2626';
+
+    const card = document.createElement('div');
+    card.className = 'game-detail-card';
+    card.innerHTML = `
+      <div class="gdc-head">
+        <div class="gdc-icon">${meta.emoji}</div>
+        <div style="flex:1">
+          <div class="gdc-name">${meta.name}</div>
+          <div class="gdc-cat">${meta.topic} · ${meta.grade}</div>
+        </div>
+      </div>
+      <div class="gdc-metrics">
+        <div>
+          <div class="gdc-val">${g.sessions}</div>
+          <div class="gdc-lbl">Partidas</div>
+        </div>
+        <div>
+          <div class="gdc-val" style="color:#0284c7">${g.bestScore}</div>
+          <div class="gdc-lbl">Récord</div>
+        </div>
+        <div>
+          <div class="gdc-val" style="color:${barColor}">${acc}%</div>
+          <div class="gdc-lbl">Precisión</div>
+        </div>
+      </div>
+      <div class="gdc-bar-box">
+        <div class="gdc-bar-lbl">
+          <span>Dominio del Tema</span>
+          <span>${g.correct} ✓ / ${g.wrong} ✗</span>
+        </div>
+        <div class="gdc-track"><div class="gdc-fill" style="width:${acc}%;background:${barColor}"></div></div>
+      </div>
+    `;
+    container.appendChild(card);
+  }
+}
+
+function renderErrorsAndDiagnostic(games) {
+  const container = document.getElementById('errors-container');
+  container.innerHTML = '';
+  const errorMap = {};
+
+  for (let gid in games) {
+    if (games[gid].commonErrors) {
+      for (let err in games[gid].commonErrors) {
+        errorMap[err] = (errorMap[err] || 0) + games[gid].commonErrors[err];
+      }
+    }
+  }
+
+  const sortedErrors = Object.keys(errorMap).sort((a, b) => errorMap[b] - errorMap[a]);
+
+  if (sortedErrors.length === 0) {
+    container.innerHTML = `
+      <div style="text-align:center;padding:16px;color:#16a34a;font-weight:800;font-size:0.95rem">
+        ✨ ¡Excelente trabajo! No tienes errores recurrentes registrados.
+      </div>
+    `;
     return;
   }
 
-  $('statsContent').style.display='block';
-  var nameFormatted=typeof formatUserName!=='undefined'?formatUserName(uN):(uN.charAt(0).toUpperCase()+uN.slice(1));
-  $('heroSub').textContent='¡Hola '+nameFormatted+'! Estos son tus progresos';
+  sortedErrors.forEach(err => {
+    const chip = document.createElement('div');
+    chip.className = 'error-chip';
+    chip.innerHTML = `
+      <span>⚠️ Concepto: <b>${err.toUpperCase()}</b></span>
+      <span>${errorMap[err]} errores cometidos</span>
+    `;
+    container.appendChild(chip);
+  });
+}
 
-  // Summary cards
-  var totalGames=summary.totalGamesPlayed||0;
-  var totalAct=summary.totalActivitiesCompleted||0;
-  var totalMin=Math.round((summary.totalTimeSpent||0)/60);
-  var accuracy=summary.overallAccuracy||0;
+function renderHistory(games) {
+  const container = document.getElementById('history-container');
+  container.innerHTML = '';
+  const historyList = [];
 
-  var streak=0;
-  try{var st=localStorage.getItem('rakin_stats_'+uN);if(st){var s=JSON.parse(st);streak=(s.dailyStreak&&s.dailyStreak.current)||0}}catch(e){}
-
-  var medals=0;
-  try{if(RK.Medals)medals=RK.Medals.getCount()}catch(e){}
-
-  var statsHtml='';
-  statsHtml+='<div class="stat-card"><div class="stat-icon blue">🎮</div><div class="stat-val">'+totalGames+'</div><div class="stat-label">Sesiones</div></div>';
-  statsHtml+='<div class="stat-card"><div class="stat-icon green">📚</div><div class="stat-val">'+totalAct+'</div><div class="stat-label">Actividades</div></div>';
-  statsHtml+='<div class="stat-card"><div class="stat-icon orange">⏱</div><div class="stat-val">'+(totalMin>0?totalMin+'m':'≤1m')+'</div><div class="stat-label">Tiempo total</div></div>';
-  statsHtml+='<div class="stat-card"><div class="stat-icon purple">🏅</div><div class="stat-val">'+medals+'</div><div class="stat-label">Medallas</div></div>';
-  $('statsGrid').innerHTML=statsHtml;
-
-  // Streak
-  if(streak>0){
-    $('streakBanner').style.display='flex';
-    $('streakCount').textContent=streak+' día'+(streak!==1?'s':'');
-  }
-
-  // Games
-  var gameNames={
-    juego1:{name:'Duelo de Números',emoji:'⚔️'},juego2:{name:'Estimaciones',emoji:'📐'},
-    juego3:{name:'Chefs de Fracciones',emoji:'🍕'},juego4:{name:'Arquitectas',emoji:'🏗️'},
-    juego5:{name:'Buscatesoros',emoji:'🏴‍☠️'},juego6:{name:'El Caldero Mágico',emoji:'🧪'},
-    juego7:{name:'Misión Robot',emoji:'🤖'},juego8:{name:'Cálculo Mental',emoji:'🧠'},
-    juego9:{name:'Laboratorio de Pociones',emoji:'🧪'},juego10:{name:'El Mercado Chileno',emoji:'🛒'},
-    juego11:{name:'Pizza Master',emoji:'🍕'},juego12:{name:'Geometrix Builder',emoji:'📐'}
-  };
-
-  if(hasGames){
-    $('gamesSection').style.display='block';
-    var gCount=Object.keys(stats.games).length;
-    $('gamesBadge').textContent=gCount+' juego'+(gCount!==1?'s':'');
-    var html='';
-    for(var gid in stats.games){
-      if(!stats.games.hasOwnProperty(gid))continue;
-      var g=stats.games[gid];
-      var gn=gameNames[gid]||{name:gid,emoji:'🎮'};
-      var acc=g.accuracy||0;
-      html+='<div class="game-card">';
-      html+='<div class="gc-header"><div class="gc-emoji">'+gn.emoji+'</div><div><div class="gc-name">'+gn.name+'</div><div class="gc-sessions">'+g.sessions+' sesiones</div></div></div>';
-      html+='<div class="gc-stats">';
-      html+='<div class="gc-stat"><div class="gc-stat-val">'+g.bestScore+'</div><div class="gc-stat-lbl">Mejor</div></div>';
-      html+='<div class="gc-stat"><div class="gc-stat-val">'+g.avgScore+'</div><div class="gc-stat-lbl">Promedio</div></div>';
-      html+='<div class="gc-stat"><div class="gc-stat-val">'+acc+'%</div><div class="gc-stat-lbl">Precisión</div></div>';
-      html+='<div class="gc-stat"><div class="gc-stat-val">'+(g.avgTimePerRound||0)+'s</div><div class="gc-stat-lbl">Tiempo/ronda</div></div>';
-      html+='</div>';
-      html+='<div class="gc-bar"><div class="gc-bar-fill" style="width:'+Math.min(acc,100)+'%"></div></div>';
-      html+='</div>';
-    }
-    $('gamesGrid').innerHTML=html;
-  }
-
-  // Activities
-  if(hasAct){
-    $('activitiesSection').style.display='block';
-    var aCount=Object.keys(stats.activities).length;
-    $('actBadge').textContent=aCount+' actividad'+(aCount!==1?'es':'');
-    var actNames={
-      'actividad-numeros-sumas':{name:'Suma Vertical',emoji:'➕',topic:'Números'},
-      'actividad-frac-suma':{name:'Suma de Fracciones',emoji:'🍕',topic:'Fracciones'},
-      'actividad-geo-cuadricula':{name:'Coordenadas',emoji:'🗺️',topic:'Geometría'},
-      'actividad-datos-barras':{name:'Gráficos de Barras',emoji:'📊',topic:'Datos'},
-      'actividad-alg-ecuaciones':{name:'Ecuaciones',emoji:'⚖️',topic:'Álgebra'}
-    };
-    var ah='';
-    for(var aid in stats.activities){
-      if(!stats.activities.hasOwnProperty(aid))continue;
-      var a=stats.activities[aid];
-      var an=actNames[aid]||{name:aid,emoji:'📝',topic:''};
-      var acc=a.accuracy||0;
-      ah+='<div class="activity-card">';
-      ah+='<div class="ac-emoji">'+an.emoji+'</div>';
-      ah+='<div class="ac-info"><div class="ac-name">'+an.name+'</div><div class="ac-topic">'+an.topic+'</div></div>';
-      ah+='<div class="ac-stats">';
-      ah+='<div class="ac-stat"><b>'+a.correct+'</b> correctas</div>';
-      ah+='<div class="ac-stat"><b>'+a.wrong+'</b> incorrectas</div>';
-      ah+='<div class="ac-stat"><b>'+acc+'%</b></div>';
-      ah+='</div></div>';
-    }
-    $('activitiesGrid').innerHTML=ah;
-  }
-
-  // History
-  var allHistory=[];
-  for(var hid in stats.games){
-    if(!stats.games[hid].history)continue;
-    stats.games[hid].history.forEach(function(h){
-      var gn2=gameNames[hid]||{name:hid,emoji:'🎮'};
-      allHistory.push({game:gn2.name,emoji:gn2.emoji,date:h.date,score:h.score,accuracy:h.accuracy});
-    });
-  }
-  allHistory.sort(function(a,b){return new Date(b.date)-new Date(a.date)});
-  allHistory=allHistory.slice(0,10);
-
-  if(allHistory.length>0){
-    $('historySection').style.display='block';
-    var hh='';
-    allHistory.forEach(function(h){
-      var d=new Date(h.date);
-      var dateStr=d.toLocaleDateString('es-CL',{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'});
-      hh+='<div class="hist-item">';
-      hh+='<div class="hist-emoji">'+h.emoji+'</div>';
-      hh+='<div class="hist-info"><div class="hist-name">'+h.game+'</div><div class="hist-date">'+dateStr+'</div></div>';
-      hh+='<div class="hist-stats"><span class="hist-score">⭐ '+h.score+'</span><span class="hist-acc">'+(h.accuracy||0)+'%</span></div>';
-      hh+='</div>';
-    });
-    $('historyList').innerHTML=hh;
-  }
-
-  // Errors
-  var errorCounts={};
-  for(var eid in stats.games){
-    if(!stats.games[eid].commonErrors)continue;
-    for(var err in stats.games[eid].commonErrors){
-      errorCounts[err]=(errorCounts[err]||0)+stats.games[eid].commonErrors[err];
+  for (let gid in games) {
+    if (games[gid].history) {
+      games[gid].history.forEach(h => {
+        historyList.push({
+          gameId: gid,
+          name: (gameMetadata[gid] && gameMetadata[gid].name) || gid,
+          emoji: (gameMetadata[gid] && gameMetadata[gid].emoji) || '🎮',
+          ...h
+        });
+      });
     }
   }
-  var sortedErrors=Object.keys(errorCounts).sort(function(a,b){return errorCounts[b]-errorCounts[a]}).slice(0,5);
 
-  if(sortedErrors.length>0){
-    $('errorsSection').style.display='block';
-    var eh='';
-    var maxErr=errorCounts[sortedErrors[0]]||1;
-    sortedErrors.forEach(function(err){
-      var pct=Math.round(errorCounts[err]/maxErr*100);
-      eh+='<div class="error-item">';
-      eh+='<div class="error-name">'+err+'</div>';
-      eh+='<div class="error-bar"><div class="error-bar-fill" style="width:'+pct+'%"></div></div>';
-      eh+='<div class="error-count">'+errorCounts[err]+' veces</div>';
-      eh+='</div>';
-    });
-    $('errorsList').innerHTML=eh;
+  historyList.sort((a, b) => new Date(b.date) - new Date(a.date));
+
+  if (historyList.length === 0) {
+    container.innerHTML = `
+      <div style="text-align:center;padding:24px;color:#64748b;font-weight:700">
+        Aún no hay partidas en el historial. ¡Comienza a jugar para registrar tus sesiones!
+      </div>
+    `;
+    return;
   }
-})();
+
+  historyList.slice(0, 20).forEach(h => {
+    const d = new Date(h.date);
+    const dateStr = d.toLocaleDateString('es-CL', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' });
+    const row = document.createElement('div');
+    row.className = 'hist-item';
+    row.innerHTML = `
+      <div class="hist-left">
+        <div class="hist-emoji">${h.emoji}</div>
+        <div>
+          <div class="hist-title">${h.name}</div>
+          <div class="hist-date">${dateStr} · ${h.rounds || 0} rondas</div>
+        </div>
+      </div>
+      <div style="display:flex;align-items:center;gap:8px">
+        <span class="hist-score">${h.score} pts</span>
+        <span class="hist-acc">${h.accuracy || 0}%</span>
+      </div>
+    `;
+    container.appendChild(row);
+  });
+}
 </script>
 </body>
 </html>
