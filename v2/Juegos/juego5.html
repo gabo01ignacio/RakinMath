@@ -1,485 +1,533 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="apple-design.css">
-    <script src="../auth.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
-    <script src="firebase-config.js"></script>
-    <script src="../stats/rk-stats.js"></script>
-    <title>Buscatesoros | RakinMath</title>
-    <style>
-        body {
-            display: flex;
-            flex-direction: column;
-            height: 100vh;
-            overflow: hidden;
-        }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, viewport-fit=cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700;14..32,800;14..32,900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="apple-design.css">
+<script src="../auth.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
+<script src="firebase-config.js"></script>
+<script src="../stats/rk-stats.js"></script>
+<script src="rk-feedback.js"></script>
+<title>Buscatesoros | RakinMath</title>
+<style>
+* { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+body {
+  display: flex;
+  flex-direction: column;
+  height: 100dvh;
+  overflow: hidden;
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Inter', system-ui, sans-serif;
+}
 
-        .top-bar {
-            padding: var(--space-4) var(--space-6);
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-        }
+.nav {
+  height: 52px;
+  padding: 0 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: var(--bg-card);
+  border-bottom: 1.5px solid var(--border);
+  flex-shrink: 0;
+}
 
-        .top-bar h1 {
-            font-size: 1.125rem;
-            font-weight: 700;
-        }
+.nav-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 800;
+  font-size: 1rem;
+  color: var(--text);
+}
 
-        .stats-row {
-            display: flex;
-            gap: var(--space-4);
-            font-size: 0.9375rem;
-            font-weight: 600;
-        }
+.exit-btn {
+  padding: 6px 14px;
+  border-radius: 99px;
+  background: rgba(255,59,48,0.1);
+  color: #ff3b30;
+  font-weight: 700;
+  font-size: 0.8125rem;
+  border: none;
+  cursor: pointer;
+}
 
-        .game-layout {
-            flex: 1;
-            display: grid;
-            grid-template-columns: 300px 1fr;
-            gap: var(--space-5);
-            padding: 0 var(--space-6) var(--space-6);
-            min-height: 0;
-        }
+.game-layout {
+  flex: 1;
+  display: grid;
+  grid-template-columns: 280px 1fr;
+  gap: 12px;
+  padding: 10px 16px env(safe-area-inset-bottom, 10px);
+  align-items: stretch;
+  min-height: 0;
+}
 
-        /* Sidebar */
-        .sidebar {
-            background: var(--bg-secondary);
-            border-radius: var(--radius-2xl);
-            padding: var(--space-5);
-            display: flex;
-            flex-direction: column;
-            gap: var(--space-4);
-            box-shadow: var(--shadow-md);
-            overflow-y: auto;
-            animation: slideUp 500ms var(--ease-spring-out) both;
-        }
+/* SIDEBAR */
+.sidebar {
+  background: var(--bg-card-solid);
+  border: 1.5px solid var(--border);
+  border-radius: 20px;
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  justify-content: space-between;
+  overflow-y: auto;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.03);
+}
 
-        .level-badge {
-            text-align: center;
-        }
+.top-stats {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
 
-        .level-badge .icon {
-            font-size: 2.5rem;
-            margin-bottom: var(--space-2);
-        }
+.stat-pill {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 12px;
+  border-radius: 99px;
+  background: var(--bg-card);
+  border: 1.5px solid var(--border);
+  font-weight: 800;
+  font-size: 0.85rem;
+}
 
-        .level-badge .text {
-            font-size: 0.875rem;
-            font-weight: 600;
-            color: var(--text-secondary);
-        }
+.mission-card {
+  background: linear-gradient(135deg, rgba(28,176,246,0.12) 0%, rgba(28,176,246,0.04) 100%);
+  border: 2px solid rgba(28,176,246,0.3);
+  border-radius: 18px;
+  padding: 12px;
+  text-align: center;
+}
 
-        .coord-input-card {
-            background: var(--bg-primary);
-            border-radius: var(--radius-xl);
-            padding: var(--space-4);
-            text-align: center;
-        }
+.mission-tag {
+  font-size: 0.725rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #0284c7;
+  margin-bottom: 4px;
+}
 
-        .coord-label {
-            font-size: 0.75rem;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 0.06em;
-            color: var(--indigo);
-            margin-bottom: var(--space-3);
-        }
+.mission-text {
+  font-size: 0.875rem;
+  font-weight: 700;
+  color: var(--text);
+  line-height: 1.35;
+}
 
-        .coord-fields {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: var(--space-2);
-            font-size: 1.25rem;
-            font-weight: 700;
-            color: var(--text-tertiary);
-        }
+.target-badge {
+  display: inline-block;
+  margin-top: 6px;
+  padding: 4px 14px;
+  border-radius: 99px;
+  background: #0284c7;
+  color: white;
+  font-size: 1.25rem;
+  font-weight: 900;
+  letter-spacing: 1px;
+}
 
-        .coord-input {
-            width: 64px;
-            height: 52px;
-            font-size: 1.25rem;
-            font-weight: 700;
-            text-align: center;
-            border: 2px solid var(--border-medium);
-            border-radius: var(--radius-md);
-            background: var(--bg-secondary);
-            color: var(--text-primary);
-            outline: none;
-            font-family: var(--font-body);
-            font-variant-numeric: tabular-nums;
-            transition: border-color 150ms var(--ease-smooth),
-                        box-shadow 150ms var(--ease-smooth);
-        }
+/* STEPPER CONTROLS */
+.coord-steppers {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  background: var(--bg-subtle, #f8fafc);
+  border: 1px solid var(--border);
+  padding: 10px;
+  border-radius: 16px;
+}
 
-        .coord-input:focus {
-            border-color: var(--indigo);
-            box-shadow: 0 0 0 3px rgba(88, 86, 214, 0.15);
-        }
+.stepper-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: var(--bg-card);
+  border: 1.5px solid var(--border);
+  border-radius: 12px;
+  padding: 3px 8px;
+}
 
-        .sail-btn {
-            width: 100%;
-            padding: var(--space-3) var(--space-4);
-            border-radius: var(--radius-xl);
-            border: none;
-            background: var(--green);
-            color: white;
-            font-family: var(--font-body);
-            font-size: 1rem;
-            font-weight: 700;
-            cursor: pointer;
-            transition: transform 100ms var(--ease-out),
-                        background 150ms var(--ease-smooth);
-        }
+.stepper-label {
+  font-size: 0.8125rem;
+  font-weight: 800;
+  color: var(--text-sec);
+  min-width: 65px;
+}
 
-        .sail-btn:active { transform: scale(0.97); }
-        .sail-btn:hover { background: #2a9d4e; }
+.stepper-btn {
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  background: #1cb0f6;
+  color: white;
+  font-size: 1.2rem;
+  font-weight: 900;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  touch-action: manipulation;
+}
+.stepper-btn:active { transform: scale(0.92); }
 
-        .history-box {
-            background: var(--bg-primary);
-            border-radius: var(--radius-lg);
-            padding: var(--space-3);
-            font-size: 0.8125rem;
-            color: var(--text-secondary);
-            max-height: 100px;
-            overflow-y: auto;
-            line-height: 1.6;
-        }
+.stepper-val {
+  font-size: 1.1rem;
+  font-weight: 900;
+  min-width: 32px;
+  text-align: center;
+}
 
-        .hint-text {
-            font-size: 0.75rem;
-            color: var(--text-tertiary);
-            line-height: 1.5;
-        }
+.sail-btn {
+  width: 100%;
+  padding: 12px;
+  min-height: 48px;
+  border-radius: 16px;
+  border: none;
+  background: linear-gradient(135deg, #34c759, #28a745);
+  color: #fff;
+  font-size: 1rem;
+  font-weight: 800;
+  cursor: pointer;
+  box-shadow: 0 4px 0 #1e7e34;
+  transition: transform 0.1s ease;
+  touch-action: manipulation;
+}
+.sail-btn:active { transform: translateY(2px); box-shadow: 0 2px 0 #1e7e34; }
 
-        /* Grid area */
-        .grid-container {
-            background: var(--bg-secondary);
-            border-radius: var(--radius-2xl);
-            position: relative;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: var(--space-5);
-            box-shadow: var(--shadow-sm);
-            animation: scaleIn 500ms var(--ease-spring-out) 100ms both;
-        }
+/* GRID WORLD CONTAINER */
+.grid-container {
+  background: #e0f2fe;
+  border-radius: 20px;
+  border: 2px solid #7dd3fc;
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  touch-action: none;
+}
 
-        .grid-world {
-            position: relative;
-            width: 600px;
-            height: 500px;
-            background: #e8f4f8;
-            border-left: 3px solid var(--text-primary);
-            border-bottom: 3px solid var(--text-primary);
-            background-image:
-                linear-gradient(rgba(0,0,0,0.04) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(0,0,0,0.04) 1px, transparent 1px);
-            background-size: 50px 50px;
-        }
+.grid-board {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  max-width: 500px;
+  max-height: 500px;
+  aspect-ratio: 1 / 1;
+  background: linear-gradient(180deg, #bae6fd 0%, #7dd3fc 100%);
+  border-left: 3px solid #0284c7;
+  border-bottom: 3px solid #0284c7;
+  border-radius: 12px;
+  box-shadow: inset 0 0 20px rgba(2,132,199,0.15);
+  cursor: crosshair;
+}
 
-        .axis-num {
-            position: absolute;
-            font-size: 0.6875rem;
-            font-weight: 600;
-            color: var(--text-tertiary);
-        }
+.grid-cell-line-x, .grid-cell-line-y {
+  position: absolute;
+  background: rgba(2,132,199,0.2);
+}
 
-        .game-entity {
-            position: absolute;
-            width: 50px;
-            height: 50px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transform: translate(-25px, 25px);
-            z-index: 5;
-        }
+.axis-label {
+  position: absolute;
+  font-size: 0.75rem;
+  font-weight: 800;
+  color: #0369a1;
+}
+.axis-label.x-axis { bottom: -22px; transform: translateX(-50%); }
+.axis-label.y-axis { left: -22px; transform: translateY(50%); }
 
-        .ship {
-            font-size: 2.25rem;
-            z-index: 10;
-            transition: left 500ms var(--ease-spring-out),
-                        bottom 500ms var(--ease-spring-out);
-        }
+.axis-title {
+  position: absolute;
+  font-size: 0.7rem;
+  font-weight: 900;
+  color: #0284c7;
+  text-transform: uppercase;
+}
+.axis-title.x { bottom: -28px; right: 0; }
+.axis-title.y { top: -16px; left: -20px; }
 
-        .treasure {
-            font-size: 2rem;
-            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.15));
-            animation: bounce 2s var(--ease-smooth) infinite;
-        }
+/* ENTITIES ON MAP */
+.map-entity {
+  position: absolute;
+  font-size: 1.75rem;
+  transform: translate(-50%, 50%);
+  transition: left 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), bottom 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+  filter: drop-shadow(0 2px 6px rgba(0,0,0,0.2));
+  pointer-events: none;
+  z-index: 10;
+}
 
-        .obstacle {
-            font-size: 1.5rem;
-        }
+.treasure-item {
+  animation: floatTreasure 1.8s ease-in-out infinite alternate;
+}
+@keyframes floatTreasure {
+  from { transform: translate(-50%, 50%) translateY(0); }
+  to { transform: translate(-50%, 50%) translateY(-6px); }
+}
 
-        @keyframes bounce {
-            0%, 100% { transform: translate(-25px, 25px) translateY(0); }
-            50% { transform: translate(-25px, 25px) translateY(-4px); }
-        }
+.target-marker {
+  position: absolute;
+  width: 24px;
+  height: 24px;
+  border: 2.5px dashed #ff9500;
+  border-radius: 50%;
+  transform: translate(-50%, 50%);
+  animation: pulseMarker 1s infinite alternate;
+  pointer-events: none;
+}
+@keyframes pulseMarker {
+  from { transform: translate(-50%, 50%) scale(0.9); opacity: 0.6; }
+  to { transform: translate(-50%, 50%) scale(1.3); opacity: 1; }
+}
 
-        .status-bubble {
-            position: absolute;
-            top: var(--space-4);
-            right: var(--space-4);
-            padding: var(--space-2) var(--space-4);
-            border-radius: var(--radius-pill);
-            font-size: 0.8125rem;
-            font-weight: 700;
-            display: none;
-            z-index: 100;
-            color: white;
-            box-shadow: var(--shadow-md);
-        }
-
-        .status-bubble.show {
-            display: block;
-            animation: popIn 300ms var(--ease-spring-out) both;
-        }
-
-        @media (max-width: 900px) {
-            .game-layout {
-                grid-template-columns: 1fr;
-                grid-template-rows: auto 1fr;
-                padding: 0 var(--space-4) var(--space-4);
-                gap: var(--space-3);
-            }
-            .sidebar {
-                display: grid;
-                grid-template-columns: 1fr 1fr;
-                gap: var(--space-3);
-                padding: var(--space-3);
-                max-height: none;
-            }
-            .level-badge { grid-column: 1 / -1; text-align: center; }
-            .coord-input-card { grid-column: 1 / -1; }
-            .sail-btn { grid-column: 1 / -1; }
-            .history-box { grid-column: 1 / -1; max-height: 80px; }
-            .hint-text { grid-column: 1 / -1; }
-            .grid-world { width: 100%; height: 300px; }
-            .top-bar { padding: var(--space-3) var(--space-4); }
-            .top-bar h1 { font-size: 1rem; }
-        }
-
-        @media (max-width: 480px) {
-            .sidebar { grid-template-columns: 1fr; }
-            .grid-world { height: 250px; }
-            .coord-input { width: 56px; height: 44px; font-size: 1.1rem; }
-        }
-    </style>
+@media (max-width: 768px) {
+  .game-layout {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto 1fr;
+    padding: 8px 10px env(safe-area-inset-bottom, 8px);
+    gap: 8px;
+  }
+  .sidebar { padding: 10px; gap: 8px; border-radius: 16px; }
+  .grid-container { padding: 16px 20px 20px 24px; }
+  .mission-card { padding: 8px 10px; }
+  .mission-text { font-size: 0.8rem; }
+  .target-badge { font-size: 1.1rem; padding: 2px 10px; }
+}
+</style>
+<!-- SUPER RESPONSIVE MOBILE OPTIMIZATIONS — RAKINMATH -->
+<style id="rakin-mobile-responsiveness">
+* { -webkit-tap-highlight-color: transparent; }
+html, body { max-width: 100%; overflow-x: hidden; }
+img, svg, video, canvas { max-width: 100%; }
+button, a, input, select, textarea, .btn, .choice-btn, .opt-btn, .game-btn, .nav-btn, .action-btn {
+  touch-action: manipulation;
+}
+@media (max-width: 600px) {
+  input, select, textarea { font-size: 16px !important; }
+  button, .btn, .choice-btn, .opt-btn, .game-btn, .nav-btn, .action-btn { min-height: 44px; }
+}
+</style>
 </head>
-<body>
+<body class="game-bg game-buscatesoros">
 
-    <nav class="nav">
-        <a href="menu.html" class="nav-title">
-            <img src="../Recursos/LogoRakinMath.png" alt="RakinMath" style="height: 24px; width: auto;">
-            <span>Buscatesoros | Rakin<span class="brand">Math</span></span>
-        </a>
-        <a href="menu.html" class="exit-btn">Salir</a>
-    </nav>
+<nav class="nav">
+  <div class="nav-title">
+    <img src="../Recursos/LogoRakinMath.png" alt="RakinMath" style="height:22px;width:auto">
+    <span>Buscatesoros</span>
+  </div>
+  <button class="exit-btn" onclick="window.location.href='menu-v3.html'">Salir</button>
+</nav>
 
-    <div class="top-bar">
-        <h1>🏴‍☠️ Buscatesoros</h1>
-        <div class="stats-row">
-            <span>💎 <span id="score">0</span></span>
-            <span>❤️ <span id="lives">3</span></span>
-        </div>
+<div class="game-layout">
+  <div class="sidebar">
+    <div class="top-stats">
+      <div class="stat-pill">💎 <span id="score">0</span></div>
+      <div class="stat-pill" id="lives-pill">❤️❤️❤️</div>
     </div>
 
-    <div class="game-layout">
-        <div class="sidebar">
-            <div class="level-badge">
-                <div class="icon">🗺️</div>
-                <div class="text" id="level-text"><b>Nivel 1: Aguas Tranquilas</b></div>
-            </div>
-
-            <div class="coord-input-card">
-                <div class="coord-label">Objetivo: <span id="mission-hint">? , ?</span></div>
-                <div class="coord-fields">
-                    (<input type="number" id="inpX" class="coord-input" min="0" max="12" value="0">,
-                    <input type="number" id="inpY" class="coord-input" min="0" max="10" value="0">)
-                </div>
-            </div>
-
-            <button class="sail-btn" onclick="moveToCoords()">¡Zarpar! ⛵</button>
-
-            <div class="history-box" id="history">
-                <div style="font-weight: 600; margin-bottom: var(--space-1);">Movimientos</div>
-            </div>
-
-            <div class="hint-text">
-                💡 Busca el diamante 💎 y escribe su posición (X, Y). Cuidado con las bombas 💣.
-            </div>
-        </div>
-
-        <div class="grid-container">
-            <div id="status-bubble" class="status-bubble"></div>
-            <div id="grid-world" class="grid-world">
-                <div id="ship" class="game-entity ship">⛵</div>
-                <div id="treasure" class="game-entity treasure">💎</div>
-            </div>
-        </div>
+    <div class="mission-card">
+      <div class="mission-tag">🎯 Misión de Navegación</div>
+      <div class="mission-text" id="mission-text">Navega hacia las coordenadas del tesoro o toca el mapa:</div>
+      <div class="target-badge" id="target-coords">(3, 4)</div>
     </div>
 
-    <script>
-        let score = 0;
-        let lives = 3;
-        let targetX = 0;
-        let targetY = 0;
-        let obstacles = [];
-        const step = 50;
-        let sessionTotal = 0, sessionCorrect = 0, sessionWrong = 0, sessionTimer = 0;
+    <div class="coord-steppers">
+      <div class="stepper-row">
+        <span class="stepper-label">➡️ Eje X</span>
+        <button class="stepper-btn" onclick="adjustX(-1)">-</button>
+        <span class="stepper-val" id="val-x">0</span>
+        <button class="stepper-btn" onclick="adjustX(1)">+</button>
+      </div>
+      <div class="stepper-row">
+        <span class="stepper-label">⬆️ Eje Y</span>
+        <button class="stepper-btn" onclick="adjustY(-1)">-</button>
+        <span class="stepper-val" id="val-y">0</span>
+        <button class="stepper-btn" onclick="adjustY(1)">+</button>
+      </div>
+    </div>
 
-        window.onload = function() {
-            RK.Stats.showRoundModal('Buscatesoros', '🏴‍☠️', function(rounds) {
-                sessionTotal = rounds;
-                sessionTimer = Date.now();
-                createNumbers();
-                spawnGameElements();
-                resetShip();
-            });
-        };
+    <button class="sail-btn" onclick="sailToCoords()">¡Zarpar a la Posición! ⛵</button>
+  </div>
 
-        function createNumbers() {
-            const grid = document.getElementById('grid-world');
-            for (let x = 0; x <= 12; x++) {
-                let n = document.createElement('div');
-                n.className = 'axis-num';
-                n.innerText = x;
-                n.style.left = (x * step - 5) + "px";
-                n.style.bottom = "-22px";
-                grid.appendChild(n);
-            }
-            for (let y = 0; y <= 10; y++) {
-                let n = document.createElement('div');
-                n.className = 'axis-num';
-                n.innerText = y;
-                n.style.left = "-20px";
-                n.style.bottom = (y * step - 8) + "px";
-                grid.appendChild(n);
-            }
-        }
+  <div class="grid-container">
+    <div class="grid-board" id="grid-board" onclick="onGridClick(event)">
+      <!-- Axis lines and numbers built via JS -->
+      <div class="map-entity treasure-item" id="treasure-el">💎</div>
+      <div class="map-entity" id="ship-el">⛵</div>
+      <div class="target-marker" id="marker-el"></div>
+    </div>
+  </div>
+</div>
 
-        function spawnGameElements() {
-            document.querySelectorAll('.obstacle').forEach(e => e.remove());
-            obstacles = [];
+<script>
+const GRID_SIZE = 6; // 0 to 6 on X and Y
+let currX = 0, currY = 0;
+let targetX = 3, targetY = 4;
+let score = 0, lives = 3;
+let sessionTotal = 0, sessionCorrect = 0, sessionWrong = 0, sessionTimer = 0, sessionRound = 0;
 
-            targetX = Math.floor(Math.random() * 12) + 1;
-            targetY = Math.floor(Math.random() * 10) + 1;
+window.onload = function() {
+  buildGridLines();
+  RK.Stats.showRoundModal('Buscatesoros', '🏴‍☠️', function(rounds) {
+    sessionTotal = rounds;
+    sessionTimer = Date.now();
+    newRound();
+  });
+};
 
-            const t = document.getElementById('treasure');
-            t.style.left = (targetX * step) + "px";
-            t.style.bottom = (targetY * step) + "px";
+function buildGridLines() {
+  const board = document.getElementById('grid-board');
+  // clear old lines & labels
+  board.querySelectorAll('.grid-cell-line-x, .grid-cell-line-y, .axis-label').forEach(e => e.remove());
 
-            if (score > 3) {
-                let numBombs = Math.min(score - 2, 5);
-                for (let i = 0; i < numBombs; i++) {
-                    let bx = Math.floor(Math.random() * 12) + 1;
-                    let by = Math.floor(Math.random() * 10) + 1;
-                    if ((bx !== targetX || by !== targetY) && (bx !== 0 || by !== 0)) {
-                        createObstacle(bx, by);
-                        obstacles.push({ x: bx, y: by });
-                    }
-                }
-                document.getElementById('level-text').innerHTML = "<b>Nivel 2: ¡Campo Minado! 💣</b>";
-            }
-        }
+  for (let i = 0; i <= GRID_SIZE; i++) {
+    const pct = (i / GRID_SIZE) * 100;
+    
+    // Vertical line
+    const vx = document.createElement('div');
+    vx.className = 'grid-cell-line-x';
+    vx.style.left = pct + '%';
+    vx.style.top = '0';
+    vx.style.bottom = '0';
+    vx.style.width = '1px';
+    board.appendChild(vx);
 
-        function createObstacle(x, y) {
-            const obs = document.createElement('div');
-            obs.className = 'game-entity obstacle';
-            obs.innerText = '💣';
-            obs.style.left = (x * step) + "px";
-            obs.style.bottom = (y * step) + "px";
-            document.getElementById('grid-world').appendChild(obs);
-        }
+    // Horizontal line
+    const hy = document.createElement('div');
+    hy.className = 'grid-cell-line-y';
+    hy.style.bottom = pct + '%';
+    hy.style.left = '0';
+    hy.style.right = '0';
+    hy.style.height = '1px';
+    board.appendChild(hy);
 
-        function moveToCoords() {
-            const x = parseInt(document.getElementById('inpX').value);
-            const y = parseInt(document.getElementById('inpY').value);
+    // X axis label
+    const lx = document.createElement('div');
+    lx.className = 'axis-label x-axis';
+    lx.textContent = i;
+    lx.style.left = pct + '%';
+    board.appendChild(lx);
 
-            if (isNaN(x) || isNaN(y) || x < 0 || x > 12 || y < 0 || y > 10) {
-                msg("¡Coordenadas fuera de rango!", "var(--red)");
-                return;
-            }
+    // Y axis label
+    const ly = document.createElement('div');
+    ly.className = 'axis-label y-axis';
+    ly.textContent = i;
+    ly.style.bottom = pct + '%';
+    board.appendChild(ly);
+  }
+}
 
-            const ship = document.getElementById('ship');
-            ship.style.left = (x * step) + "px";
-            ship.style.bottom = (y * step) + "px";
+function updateEntitiesDOM() {
+  const ship = document.getElementById('ship-el');
+  const treasure = document.getElementById('treasure-el');
+  const marker = document.getElementById('marker-el');
 
-            const hist = document.getElementById('history');
-            hist.innerHTML += `<div>→ (${x}, ${y})</div>`;
-            hist.scrollTop = hist.scrollHeight;
+  ship.style.left = ((currX / GRID_SIZE) * 100) + '%';
+  ship.style.bottom = ((currY / GRID_SIZE) * 100) + '%';
 
-            setTimeout(() => checkCollision(x, y), 600);
-        }
+  treasure.style.left = ((targetX / GRID_SIZE) * 100) + '%';
+  treasure.style.bottom = ((targetY / GRID_SIZE) * 100) + '%';
 
-        function checkCollision(x, y) {
-            const hitBomb = obstacles.some(obs => obs.x === x && obs.y === y);
+  marker.style.left = ((currX / GRID_SIZE) * 100) + '%';
+  marker.style.bottom = ((currY / GRID_SIZE) * 100) + '%';
 
-            if (x === targetX && y === targetY) {
-                score++;
-                sessionCorrect++;
-                document.getElementById('score').innerText = score;
-                msg("💎 ¡Tesoro encontrado!", "var(--green)");
-                if (sessionTotal > 0 && score >= sessionTotal) { endGame(); return; }
-                resetShip();
-                spawnGameElements();
-            } else if (hitBomb) {
-                lives--;
-                sessionWrong++;
-                document.getElementById('lives').innerText = "❤️".repeat(Math.max(0, lives));
-                msg("💥 ¡Boom! Chocaste", "var(--red)");
-                if (lives <= 0) { endGame(); }
-                else { resetShip(); }
-            } else {
-                msg("🌊 Solo agua aquí...", "var(--blue)");
-            }
-        }
+  document.getElementById('val-x').textContent = currX;
+  document.getElementById('val-y').textContent = currY;
+}
 
-        function resetShip() {
-            const ship = document.getElementById('ship');
-            ship.style.left = "0px";
-            ship.style.bottom = "0px";
-            document.getElementById('inpX').value = 0;
-            document.getElementById('inpY').value = 0;
-        }
+function adjustX(delta) {
+  currX = Math.max(0, Math.min(GRID_SIZE, currX + delta));
+  updateEntitiesDOM();
+}
 
-        function msg(txt, color) {
-            const b = document.getElementById('status-bubble');
-            b.innerText = txt;
-            b.style.backgroundColor = color;
-            b.className = 'status-bubble show';
-            setTimeout(() => b.className = 'status-bubble', 1800);
-        }
+function adjustY(delta) {
+  currY = Math.max(0, Math.min(GRID_SIZE, currY + delta));
+  updateEntitiesDOM();
+}
 
-        function endGame() {
-            var totalTime = Math.round((Date.now() - sessionTimer) / 1000);
-            var totalMoves = sessionCorrect + sessionWrong;
-            RK.Stats.saveGameResult('juego5', {
-                score: score,
-                rounds: totalMoves,
-                totalTime: totalTime,
-                correct: sessionCorrect,
-                wrong: sessionWrong,
-                errors: ['coordenadas', 'plano cartesiano']
-            });
-            RK.Stats.showEndModal('Buscatesoros', {
-                score: score,
-                rounds: totalMoves,
-                totalTime: totalTime,
-                correct: sessionCorrect,
-                wrong: sessionWrong
-            });
-        }
-    </script>
+function onGridClick(e) {
+  const board = document.getElementById('grid-board');
+  const rect = board.getBoundingClientRect();
+  const clickX = e.clientX - rect.left;
+  const clickY = e.clientY - rect.top;
+
+  // X goes left (0) to right (GRID_SIZE)
+  // Y goes bottom (0) to top (GRID_SIZE)
+  const gx = Math.max(0, Math.min(GRID_SIZE, Math.round((clickX / rect.width) * GRID_SIZE)));
+  const gy = Math.max(0, Math.min(GRID_SIZE, Math.round(((rect.height - clickY) / rect.height) * GRID_SIZE)));
+
+  currX = gx;
+  currY = gy;
+  updateEntitiesDOM();
+  sailToCoords();
+}
+
+function newRound() {
+  targetX = Math.floor(Math.random() * GRID_SIZE) + 1;
+  targetY = Math.floor(Math.random() * GRID_SIZE) + 1;
+  
+  // reset ship to 0,0
+  currX = 0;
+  currY = 0;
+
+  document.getElementById('target-coords').textContent = `(${targetX}, ${targetY})`;
+  updateEntitiesDOM();
+}
+
+function sailToCoords() {
+  sessionRound++;
+  if (currX === targetX && currY === targetY) {
+    score++;
+    sessionCorrect++;
+    document.getElementById('score').textContent = score;
+    RK.Feedback.show('success', `¡Tesoro alcanzado en (${targetX}, ${targetY})! 💎✨`);
+    
+    if (sessionTotal > 0 && sessionRound >= sessionTotal) {
+      setTimeout(endGame, 900);
+    } else {
+      setTimeout(newRound, 1200);
+    }
+  } else {
+    lives--;
+    sessionWrong++;
+    document.getElementById('lives-pill').textContent = '❤️'.repeat(Math.max(0, lives));
+    RK.Feedback.show('error', `Estás en (${currX}, ${currY}). El tesoro está en (${targetX}, ${targetY}) 🌊`);
+
+    if (lives <= 0 || (sessionTotal > 0 && sessionRound >= sessionTotal)) {
+      setTimeout(endGame, 900);
+    }
+  }
+}
+
+function endGame() {
+  const totalTime = Math.round((Date.now() - sessionTimer) / 1000);
+  RK.Stats.saveGameResult('juego5', {
+    score: score,
+    rounds: sessionRound,
+    totalTime: totalTime,
+    correct: sessionCorrect,
+    wrong: sessionWrong,
+    errors: ['plano cartesiano', 'coordenadas']
+  });
+  RK.Stats.showEndModal('Buscatesoros', {
+    score: score,
+    rounds: sessionRound,
+    totalTime: totalTime,
+    correct: sessionCorrect,
+    wrong: sessionWrong
+  });
+}
+</script>
 </body>
 </html>

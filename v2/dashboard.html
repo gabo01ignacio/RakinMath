@@ -1,281 +1,424 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="es" data-theme="light">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet">
-    <script src="auth.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
-    <script src="Juegos/firebase-config.js"></script>
-    <script src="stats/rk-stats.js"></script>
-    <title>Mis Estadísticas | RakinMath</title>
-    <link rel="stylesheet" href="stats/dashboard.css">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, viewport-fit=cover">
+<title>Mis Estadísticas | RakinMath</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+:root{--font:'Inter',-apple-system,system-ui,sans-serif;--ease:cubic-bezier(.16,1,.3,1);--spring:cubic-bezier(.34,1.56,.64,1);--spring-bounce:cubic-bezier(.68,-.55,.265,1.55);--r-sm:14px;--r-md:20px;--r-lg:28px;--r-xl:36px;--r-full:9999px;--duo-green:#58cc02;--duo-green-dark:#46a302;--duo-yellow:#ffc800;--duo-orange:#ff9600;--duo-blue:#1cb0f6;--duo-blue-dark:#1899d6;--duo-purple:#ce82ff;--duo-pink:#ff86d0;--duo-red:#ff4b4b;--duo-teal:#2ee5c9}
+[data-theme="light"]{--bg:#f0f4f8;--bg-card:#fff;--bg-nav:rgba(255,255,255,.88);--bg-subtle:#e8edf2;--text:#2d3748;--text-sec:#5a6577;--text-dim:#a0aec0;--accent:#1cb0f6;--border:rgba(0,0,0,.06);--border-strong:rgba(0,0,0,.12);--shadow-sm:0 2px 0 rgba(0,0,0,.03);--shadow-md:0 4px 0 rgba(0,0,0,.05);--shadow-lg:0 6px 0 rgba(0,0,0,.07);--hero-bg:linear-gradient(180deg,#fff8e1 0%,#e8f5e9 40%,#e3f2fd 70%,#f0f4f8 100%)}
+[data-theme="dark"]{--bg:#0d1117;--bg-card:#161b22;--bg-nav:rgba(13,17,23,.88);--bg-subtle:#1c2333;--text:#e6edf3;--text-sec:#8b949e;--text-dim:#484f58;--accent:#1cb0f6;--border:rgba(255,255,255,.06);--border-strong:rgba(255,255,255,.12);--shadow-sm:0 2px 0 rgba(0,0,0,.2);--shadow-md:0 4px 0 rgba(0,0,0,.3);--shadow-lg:0 6px 0 rgba(0,0,0,.4);--hero-bg:linear-gradient(180deg,#1a2332 0%,#0d1117 50%,#161b22 100%)}
+body{font-family:var(--font);background:var(--bg);color:var(--text);-webkit-font-smoothing:antialiased;line-height:1.5;min-height:100vh;display:flex;flex-direction:column;transition:background .4s var(--ease),color .4s var(--ease);animation:pageIn .4s ease both}
+@keyframes pageIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+
+/* Nav */
+.nav{position:sticky;top:0;height:64px;display:flex;align-items:center;justify-content:space-between;padding:0 24px;background:var(--bg-nav);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-bottom:1px solid var(--border);z-index:100}
+.nav-title{font-size:1.125rem;font-weight:900;color:var(--text);text-decoration:none;display:flex;align-items:center;gap:8px;letter-spacing:-.03em}
+.nav-right{display:flex;align-items:center;gap:10px}
+.nav-user{font-size:.8125rem;font-weight:600;color:var(--text-sec)}
+.nav-btn{font-family:var(--font);font-size:.8125rem;font-weight:600;padding:8px 16px;border-radius:var(--r-full);border:1px solid var(--border);background:var(--bg-subtle);color:var(--text-sec);cursor:pointer;transition:all .2s var(--spring);text-decoration:none}
+.nav-btn:hover{background:var(--border-strong);color:var(--text)}
+.nav-btn.danger{border-color:rgba(255,59,48,.2);color:var(--duo-red);background:rgba(255,59,48,.06)}
+.nav-btn.danger:hover{background:rgba(255,59,48,.12)}
+
+/* Main */
+.main{max-width:900px;width:100%;margin:0 auto;padding:24px}
+
+/* Hero */
+.hero{background:var(--hero-bg);border-radius:var(--r-xl);padding:32px;text-align:center;margin-bottom:24px;position:relative;overflow:hidden}
+.hero::before{content:'';position:absolute;top:-100px;left:50%;transform:translateX(-50%);width:600px;height:300px;background:radial-gradient(ellipse,rgba(88,204,2,.08) 0%,transparent 70%);pointer-events:none}
+.hero-mascot{width:64px;height:64px;filter:drop-shadow(0 4px 12px rgba(175,82,222,.25));animation:heroFloat 3s ease-in-out infinite}
+@keyframes heroFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+.hero h1{font-size:clamp(1.5rem,4vw,2rem);font-weight:900;letter-spacing:-.04em;margin-bottom:8px}
+.hero h1 .brand{color:var(--duo-blue)}
+.hero-sub{font-size:1rem;color:var(--text-sec);max-width:480px;margin:0 auto}
+
+/* Stats Grid */
+.stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:14px;margin-bottom:28px}
+.stat-card{background:var(--bg-card);border:2px solid var(--border);border-radius:var(--r-lg);padding:20px;text-align:center;transition:all .3s var(--spring);position:relative;overflow:hidden}
+.stat-card:hover{transform:translateY(-3px);box-shadow:var(--shadow-md)}
+.stat-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;opacity:0;transition:opacity .3s}
+.stat-card:hover::before{opacity:1}
+.stat-card:nth-child(1)::before{background:linear-gradient(90deg,var(--duo-blue),var(--duo-teal))}
+.stat-card:nth-child(2)::before{background:linear-gradient(90deg,var(--duo-green),var(--duo-teal))}
+.stat-card:nth-child(3)::before{background:linear-gradient(90deg,var(--duo-orange),var(--duo-yellow))}
+.stat-card:nth-child(4)::before{background:linear-gradient(90deg,var(--duo-purple),var(--duo-pink))}
+.stat-icon{width:48px;height:48px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:1.5rem;margin:0 auto 12px}
+.stat-icon.blue{background:linear-gradient(135deg,#e3f2fd,#bbdefb)}
+.stat-icon.green{background:linear-gradient(135deg,#e8f5e9,#c8e6c9)}
+.stat-icon.orange{background:linear-gradient(135deg,#fff3e0,#ffe0b2)}
+.stat-icon.purple{background:linear-gradient(135deg,#f3e5f5,#e1bee7)}
+.stat-val{font-size:1.75rem;font-weight:900;letter-spacing:-.03em;margin-bottom:2px}
+.stat-label{font-size:.8125rem;color:var(--text-dim);font-weight:600}
+
+/* Streak Banner */
+.streak-banner{background:linear-gradient(135deg,rgba(255,150,0,.1),rgba(255,134,208,.1));border:1px solid rgba(255,150,0,.2);border-radius:var(--r-lg);padding:20px;margin-bottom:28px;display:flex;align-items:center;gap:16px}
+.streak-icon{font-size:2.5rem;animation:flamePulse 1.5s ease-in-out infinite}
+@keyframes flamePulse{0%,100%{transform:scale(1)}50%{transform:scale(1.1)}}
+.streak-info{flex:1}
+.streak-count{font-size:1.5rem;font-weight:800;color:var(--duo-orange)}
+.streak-text{font-size:.8125rem;color:var(--text-sec)}
+
+/* Section */
+.section{margin-bottom:28px}
+.section-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
+.section-title{font-size:1.125rem;font-weight:800;display:flex;align-items:center;gap:8px}
+.section-title::before{content:'';width:4px;height:20px;background:linear-gradient(180deg,var(--duo-green),var(--duo-blue));border-radius:2px}
+.section-badge{font-size:.6875rem;font-weight:700;padding:4px 10px;background:var(--bg-subtle);border-radius:var(--r-full);border:1px solid var(--border);color:var(--text-dim)}
+
+/* Game Card */
+.games-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:14px}
+.game-card{background:var(--bg-card);border:2px solid var(--border);border-radius:var(--r-lg);padding:18px;transition:all .3s var(--spring)}
+.game-card:hover{transform:translateY(-3px);box-shadow:var(--shadow-md);border-color:var(--duo-blue)}
+.gc-header{display:flex;align-items:center;gap:12px;margin-bottom:14px}
+.gc-emoji{width:44px;height:44px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:1.5rem;background:var(--bg-subtle)}
+.gc-name{font-size:.9375rem;font-weight:700}
+.gc-sessions{font-size:.75rem;color:var(--text-dim)}
+.gc-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:12px}
+.gc-stat{text-align:center}
+.gc-stat-val{font-size:1rem;font-weight:800;color:var(--text)}
+.gc-stat-lbl{font-size:.6875rem;color:var(--text-dim);font-weight:600}
+.gc-bar{height:6px;background:var(--bg-subtle);border-radius:var(--r-full);overflow:hidden}
+.gc-bar-fill{height:100%;background:linear-gradient(90deg,var(--duo-green),var(--duo-teal));border-radius:var(--r-full);transition:width .8s var(--ease)}
+
+/* Activity Card */
+.activities-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:14px}
+.activity-card{background:var(--bg-card);border:2px solid var(--border);border-radius:var(--r-lg);padding:16px;display:flex;align-items:center;gap:14px;transition:all .3s var(--spring)}
+.activity-card:hover{transform:translateY(-3px);box-shadow:var(--shadow-md);border-color:var(--duo-green)}
+.ac-emoji{width:44px;height:44px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:1.5rem;background:var(--bg-subtle);flex-shrink:0}
+.ac-info{flex:1;min-width:0}
+.ac-name{font-size:.9375rem;font-weight:700}
+.ac-topic{font-size:.75rem;color:var(--text-dim)}
+.ac-stats{display:flex;gap:10px;flex-shrink:0}
+.ac-stat{font-size:.75rem;color:var(--text-sec)}
+.ac-stat b{font-weight:700;color:var(--text)}
+
+/* History */
+.history-list{display:flex;flex-direction:column;gap:8px}
+.hist-item{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--r-md);padding:14px 16px;display:flex;align-items:center;gap:12px;transition:background .15s}
+.hist-item:hover{background:var(--bg-subtle)}
+.hist-emoji{width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:1.1rem;background:var(--bg-subtle);flex-shrink:0}
+.hist-info{flex:1;min-width:0}
+.hist-name{font-size:.875rem;font-weight:700}
+.hist-date{font-size:.75rem;color:var(--text-dim)}
+.hist-stats{display:flex;gap:12px;flex-shrink:0}
+.hist-score{font-size:.8125rem;font-weight:700;color:var(--duo-yellow)}
+.hist-acc{font-size:.8125rem;font-weight:700;padding:2px 8px;border-radius:var(--r-full);background:rgba(88,204,2,.1);color:var(--duo-green)}
+
+/* Errors */
+.errors-list{display:flex;flex-direction:column;gap:10px}
+.error-item{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--r-md);padding:14px 16px;display:flex;align-items:center;gap:12px}
+.error-name{font-size:.875rem;font-weight:600;min-width:120px}
+.error-bar{flex:1;height:8px;background:var(--bg-subtle);border-radius:var(--r-full);overflow:hidden}
+.error-bar-fill{height:100%;background:linear-gradient(90deg,var(--duo-orange),var(--duo-red));border-radius:var(--r-full);transition:width .8s var(--ease)}
+.error-count{font-size:.75rem;font-weight:700;color:var(--text-dim);min-width:60px;text-align:right}
+
+/* Empty State */
+.empty-state{text-align:center;padding:48px 24px;color:var(--text-dim)}
+.empty-state-emoji{font-size:3rem;margin-bottom:12px;opacity:.5}
+.empty-state h2{font-size:1.125rem;font-weight:700;color:var(--text);margin-bottom:8px}
+.empty-state p{font-size:.875rem;margin-bottom:20px}
+.empty-state-btn{display:inline-flex;align-items:center;gap:8px;padding:12px 24px;background:var(--duo-green);color:#fff;border:none;border-radius:var(--r-full);font-family:var(--font);font-size:.875rem;font-weight:700;cursor:pointer;text-decoration:none;box-shadow:0 4px 0 var(--duo-green-dark);transition:all .15s}
+.empty-state-btn:hover{filter:brightness(1.1);transform:translateY(-1px)}
+.empty-state-btn:active{transform:translateY(2px);box-shadow:0 2px 0 var(--duo-green-dark)}
+
+.footer{text-align:center;padding:24px;font-size:.8125rem;color:var(--text-dim);font-weight:500;margin-top:auto}
+
+@media(max-width:480px){
+  .main{padding:16px}
+  .hero{padding:24px 16px}
+  .hero h1{font-size:1.375rem}
+  .stats-grid{grid-template-columns:repeat(2,1fr);gap:10px}
+  .stat-card{padding:14px}
+  .stat-val{font-size:1.375rem}
+  .games-grid,.activities-grid{grid-template-columns:1fr}
+  .gc-stats{grid-template-columns:repeat(2,1fr)}
+  .streak-banner{flex-direction:column;text-align:center}
+  .ac-stats{flex-direction:column;gap:4px}
+}
+</style>
+
+<!-- SUPER RESPONSIVE MOBILE OPTIMIZATIONS — RAKINMATH -->
+<style id="rakin-mobile-responsiveness">
+* {
+  -webkit-tap-highlight-color: transparent;
+}
+html, body {
+  max-width: 100%;
+  overflow-x: hidden;
+}
+img, svg, video, canvas {
+  max-width: 100%;
+}
+button, a, input, select, textarea, .btn, .choice-btn, .opt-btn, .game-btn, .nav-btn, .action-btn {
+  touch-action: manipulation;
+}
+@media (max-width: 600px) {
+  input, select, textarea {
+    font-size: 16px !important;
+  }
+  button, .btn, .choice-btn, .opt-btn, .game-btn, .nav-btn, .action-btn {
+    min-height: 44px;
+  }
+}
+</style>
+
 </head>
 <body>
 
 <nav class="nav">
-    <a href="Juegos/menu.html" class="nav-title">
-        <img src="Recursos/LogoRakinMath.png" alt="RakinMath" style="height: 24px; width: auto;">
-        <span>Mis Estadísticas | Rakin<span class="brand">Math</span></span>
-    </a>
-    <div style="display:flex;gap:8px;align-items:center">
-        <span id="nav-user" style="font-size:.8125rem;font-weight:600;color:#6e6e73"></span>
-        <a href="Juegos/menu.html" class="exit-btn">Volver</a>
-        <button class="exit-btn" id="logoutBtn" style="border-color:rgba(255,59,48,.2);color:#ff3b30">Cerrar sesión</button>
-    </div>
+  <a href="Juegos/menu.html" class="nav-title"><img src="Recursos/LogoRakinMath.png" alt="RakinMath" style="height:22px;width:auto"></a>
+  <div class="nav-right">
+    <span class="nav-user" id="navUser"></span>
+    <a href="Juegos/menu.html" class="nav-btn">← Volver</a>
+    <button class="nav-btn danger" id="logoutBtn">Salir</button>
+  </div>
 </nav>
 
-<div class="dashboard">
+<div class="main">
+  <div class="hero">
+    <img src="Recursos/rakin-happy.svg" alt="Rakín" class="hero-mascot">
+    <h1>Mis <span class="brand">Estadísticas</span></h1>
+    <p class="hero-sub" id="heroSub">Cargando tus datos...</p>
+  </div>
 
-    <div class="dash-hero">
-        <div class="dash-hero-emoji">📊</div>
-        <h1>Mis Estadísticas</h1>
-        <p id="user-name">Cargando...</p>
+  <div id="statsContent" style="display:none">
+
+    <div class="stats-grid" id="statsGrid"></div>
+
+    <div id="streakBanner" class="streak-banner" style="display:none">
+      <div class="streak-icon">🔥</div>
+      <div class="streak-info">
+        <div class="streak-count" id="streakCount">0 días</div>
+        <div class="streak-text">¡Sigue así! No pierdas tu racha</div>
+      </div>
     </div>
 
-    <!-- Summary Cards -->
-    <div class="summary-grid" id="summary-grid">
-        <div class="summary-card sc-blue">
-            <div class="sc-icon">🎮</div>
-            <div class="sc-val" id="sum-games">0</div>
-            <div class="sc-label">Sesiones de juego</div>
-        </div>
-        <div class="summary-card sc-green">
-            <div class="sc-icon">📚</div>
-            <div class="sc-val" id="sum-activities">0</div>
-            <div class="sc-label">Actividades</div>
-        </div>
-        <div class="summary-card sc-orange">
-            <div class="sc-icon">⏱️</div>
-            <div class="sc-val" id="sum-time">0m</div>
-            <div class="sc-label">Tiempo total</div>
-        </div>
-        <div class="summary-card sc-purple">
-            <div class="sc-icon">🎯</div>
-            <div class="sc-val" id="sum-accuracy">0%</div>
-            <div class="sc-label">Precisión general</div>
-        </div>
-    </div>
-
-    <!-- No Data Message -->
-    <div id="no-data" class="no-data" style="display:none">
-        <div class="no-data-emoji">🕹️</div>
-        <h2>¡Aún no hay datos!</h2>
-        <p>Juega algunos juegos o completa actividades para ver tus estadísticas aquí.</p>
-        <a href="Juegos/menu.html" class="no-data-btn">¡Empezar a jugar!</a>
-    </div>
-
-    <!-- Games Section -->
-    <div id="games-section" class="section" style="display:none">
+    <div id="gamesSection" class="section" style="display:none">
+      <div class="section-header">
         <h2 class="section-title">🎮 Juegos</h2>
-        <div class="games-grid" id="games-grid"></div>
+        <span class="section-badge" id="gamesBadge"></span>
+      </div>
+      <div class="games-grid" id="gamesGrid"></div>
     </div>
 
-    <!-- Activities Section -->
-    <div id="activities-section" class="section" style="display:none">
-        <h2 class="section-title">📚 Actividades de Aprender</h2>
-        <div class="activities-grid" id="activities-grid"></div>
+    <div id="activitiesSection" class="section" style="display:none">
+      <div class="section-header">
+        <h2 class="section-title">📚 Actividades</h2>
+        <span class="section-badge" id="actBadge"></span>
+      </div>
+      <div class="activities-grid" id="activitiesGrid"></div>
     </div>
 
-    <!-- Recent History -->
-    <div id="history-section" class="section" style="display:none">
+    <div id="historySection" class="section" style="display:none">
+      <div class="section-header">
         <h2 class="section-title">📅 Historial Reciente</h2>
-        <div class="history-list" id="history-list"></div>
+      </div>
+      <div class="history-list" id="historyList"></div>
     </div>
 
-    <!-- Common Errors -->
-    <div id="errors-section" class="section" style="display:none">
-        <h2 class="section-title">⚠️ Errores Más Comunes</h2>
-        <div class="errors-list" id="errors-list"></div>
+    <div id="errorsSection" class="section" style="display:none">
+      <div class="section-header">
+        <h2 class="section-title">⚠️ Errores Comunes</h2>
+      </div>
+      <div class="errors-list" id="errorsList"></div>
     </div>
 
+  </div>
+
+  <div id="noData" class="empty-state" style="display:none">
+    <div class="empty-state-emoji">🕹️</div>
+    <h2>¡Aún no hay datos!</h2>
+    <p>Juega algunos juegos o completa actividades para ver tus estadísticas aquí.</p>
+    <a href="Juegos/menu.html" class="empty-state-btn">¡Empezar a jugar!</a>
+  </div>
 </div>
 
+<div class="footer">RakinMath · Aprende matemáticas jugando</div>
+
+<script src="auth.js"></script>
+<script src="stats/rk-stats.js"></script>
+<script src="stats/rk-progress.js"></script>
+<script src="stats/rk-medals.js"></script>
 <script>
-(function() {
-    // ─── AUTH CHECK ───
-    var session = getSession();
-    if (!session || !session.user) {
-        window.location.href = 'login.html';
-        return;
-    }
+(function(){
+  var $=function(id){return document.getElementById(id)};
 
-    document.getElementById('nav-user').textContent = session.user;
-    document.getElementById('logoutBtn').addEventListener('click', function() {
-        destroySession();
-        window.location.href = 'login.html';
+  // Auth
+  var session=getSession();
+  if(!session||!session.user){window.location.href='login.html';return}
+  var uN=session.user;
+  $('navUser').textContent=typeof formatUserName!=='undefined'?formatUserName(uN):(uN.charAt(0).toUpperCase()+uN.slice(1));
+
+  // Theme
+  var theme=localStorage.getItem('rakin-theme')||'light';
+  document.documentElement.setAttribute('data-theme',theme);
+
+  // Logout
+  $('logoutBtn').addEventListener('click',function(){destroySession();window.location.href='login.html'});
+
+  // Load stats
+  var stats=RK.Stats.getAllStats();
+  var summary=RK.Stats.getSummary();
+
+  var hasGames=stats&&stats.games&&Object.keys(stats.games).length>0;
+  var hasAct=stats&&stats.activities&&Object.keys(stats.activities).length>0;
+
+  if(!hasGames&&!hasAct){
+    $('noData').style.display='block';
+    $('heroSub').textContent='Aún no tienes datos — ¡empieza a jugar!';
+    return;
+  }
+
+  $('statsContent').style.display='block';
+  var nameFormatted=typeof formatUserName!=='undefined'?formatUserName(uN):(uN.charAt(0).toUpperCase()+uN.slice(1));
+  $('heroSub').textContent='¡Hola '+nameFormatted+'! Estos son tus progresos';
+
+  // Summary cards
+  var totalGames=summary.totalGamesPlayed||0;
+  var totalAct=summary.totalActivitiesCompleted||0;
+  var totalMin=Math.round((summary.totalTimeSpent||0)/60);
+  var accuracy=summary.overallAccuracy||0;
+
+  var streak=0;
+  try{var st=localStorage.getItem('rakin_stats_'+uN);if(st){var s=JSON.parse(st);streak=(s.dailyStreak&&s.dailyStreak.current)||0}}catch(e){}
+
+  var medals=0;
+  try{if(RK.Medals)medals=RK.Medals.getCount()}catch(e){}
+
+  var statsHtml='';
+  statsHtml+='<div class="stat-card"><div class="stat-icon blue">🎮</div><div class="stat-val">'+totalGames+'</div><div class="stat-label">Sesiones</div></div>';
+  statsHtml+='<div class="stat-card"><div class="stat-icon green">📚</div><div class="stat-val">'+totalAct+'</div><div class="stat-label">Actividades</div></div>';
+  statsHtml+='<div class="stat-card"><div class="stat-icon orange">⏱</div><div class="stat-val">'+(totalMin>0?totalMin+'m':'≤1m')+'</div><div class="stat-label">Tiempo total</div></div>';
+  statsHtml+='<div class="stat-card"><div class="stat-icon purple">🏅</div><div class="stat-val">'+medals+'</div><div class="stat-label">Medallas</div></div>';
+  $('statsGrid').innerHTML=statsHtml;
+
+  // Streak
+  if(streak>0){
+    $('streakBanner').style.display='flex';
+    $('streakCount').textContent=streak+' día'+(streak!==1?'s':'');
+  }
+
+  // Games
+  var gameNames={
+    juego1:{name:'Duelo de Números',emoji:'⚔️'},juego2:{name:'Estimaciones',emoji:'📐'},
+    juego3:{name:'Chefs de Fracciones',emoji:'🍕'},juego4:{name:'Arquitectas',emoji:'🏗️'},
+    juego5:{name:'Buscatesoros',emoji:'🏴‍☠️'},juego6:{name:'El Caldero Mágico',emoji:'🧪'},
+    juego7:{name:'Misión Robot',emoji:'🤖'},juego8:{name:'Cálculo Mental',emoji:'🧠'},
+    juego9:{name:'Laboratorio de Pociones',emoji:'🧪'},juego10:{name:'El Mercado Chileno',emoji:'🛒'},
+    juego11:{name:'Pizza Master',emoji:'🍕'},juego12:{name:'Geometrix Builder',emoji:'📐'}
+  };
+
+  if(hasGames){
+    $('gamesSection').style.display='block';
+    var gCount=Object.keys(stats.games).length;
+    $('gamesBadge').textContent=gCount+' juego'+(gCount!==1?'s':'');
+    var html='';
+    for(var gid in stats.games){
+      if(!stats.games.hasOwnProperty(gid))continue;
+      var g=stats.games[gid];
+      var gn=gameNames[gid]||{name:gid,emoji:'🎮'};
+      var acc=g.accuracy||0;
+      html+='<div class="game-card">';
+      html+='<div class="gc-header"><div class="gc-emoji">'+gn.emoji+'</div><div><div class="gc-name">'+gn.name+'</div><div class="gc-sessions">'+g.sessions+' sesiones</div></div></div>';
+      html+='<div class="gc-stats">';
+      html+='<div class="gc-stat"><div class="gc-stat-val">'+g.bestScore+'</div><div class="gc-stat-lbl">Mejor</div></div>';
+      html+='<div class="gc-stat"><div class="gc-stat-val">'+g.avgScore+'</div><div class="gc-stat-lbl">Promedio</div></div>';
+      html+='<div class="gc-stat"><div class="gc-stat-val">'+acc+'%</div><div class="gc-stat-lbl">Precisión</div></div>';
+      html+='<div class="gc-stat"><div class="gc-stat-val">'+(g.avgTimePerRound||0)+'s</div><div class="gc-stat-lbl">Tiempo/ronda</div></div>';
+      html+='</div>';
+      html+='<div class="gc-bar"><div class="gc-bar-fill" style="width:'+Math.min(acc,100)+'%"></div></div>';
+      html+='</div>';
+    }
+    $('gamesGrid').innerHTML=html;
+  }
+
+  // Activities
+  if(hasAct){
+    $('activitiesSection').style.display='block';
+    var aCount=Object.keys(stats.activities).length;
+    $('actBadge').textContent=aCount+' actividad'+(aCount!==1?'es':'');
+    var actNames={
+      'actividad-numeros-sumas':{name:'Suma Vertical',emoji:'➕',topic:'Números'},
+      'actividad-frac-suma':{name:'Suma de Fracciones',emoji:'🍕',topic:'Fracciones'},
+      'actividad-geo-cuadricula':{name:'Coordenadas',emoji:'🗺️',topic:'Geometría'},
+      'actividad-datos-barras':{name:'Gráficos de Barras',emoji:'📊',topic:'Datos'},
+      'actividad-alg-ecuaciones':{name:'Ecuaciones',emoji:'⚖️',topic:'Álgebra'}
+    };
+    var ah='';
+    for(var aid in stats.activities){
+      if(!stats.activities.hasOwnProperty(aid))continue;
+      var a=stats.activities[aid];
+      var an=actNames[aid]||{name:aid,emoji:'📝',topic:''};
+      var acc=a.accuracy||0;
+      ah+='<div class="activity-card">';
+      ah+='<div class="ac-emoji">'+an.emoji+'</div>';
+      ah+='<div class="ac-info"><div class="ac-name">'+an.name+'</div><div class="ac-topic">'+an.topic+'</div></div>';
+      ah+='<div class="ac-stats">';
+      ah+='<div class="ac-stat"><b>'+a.correct+'</b> correctas</div>';
+      ah+='<div class="ac-stat"><b>'+a.wrong+'</b> incorrectas</div>';
+      ah+='<div class="ac-stat"><b>'+acc+'%</b></div>';
+      ah+='</div></div>';
+    }
+    $('activitiesGrid').innerHTML=ah;
+  }
+
+  // History
+  var allHistory=[];
+  for(var hid in stats.games){
+    if(!stats.games[hid].history)continue;
+    stats.games[hid].history.forEach(function(h){
+      var gn2=gameNames[hid]||{name:hid,emoji:'🎮'};
+      allHistory.push({game:gn2.name,emoji:gn2.emoji,date:h.date,score:h.score,accuracy:h.accuracy});
     });
+  }
+  allHistory.sort(function(a,b){return new Date(b.date)-new Date(a.date)});
+  allHistory=allHistory.slice(0,10);
 
-    var user = session.user;
-    document.getElementById('user-name').textContent = 'Jugador: ' + user;
+  if(allHistory.length>0){
+    $('historySection').style.display='block';
+    var hh='';
+    allHistory.forEach(function(h){
+      var d=new Date(h.date);
+      var dateStr=d.toLocaleDateString('es-CL',{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'});
+      hh+='<div class="hist-item">';
+      hh+='<div class="hist-emoji">'+h.emoji+'</div>';
+      hh+='<div class="hist-info"><div class="hist-name">'+h.game+'</div><div class="hist-date">'+dateStr+'</div></div>';
+      hh+='<div class="hist-stats"><span class="hist-score">⭐ '+h.score+'</span><span class="hist-acc">'+(h.accuracy||0)+'%</span></div>';
+      hh+='</div>';
+    });
+    $('historyList').innerHTML=hh;
+  }
 
-    var stats = RK.Stats.getAllStats();
-    var summary = RK.Stats.getSummary();
-
-    if (!stats || (Object.keys(stats.games || {}).length === 0 && Object.keys(stats.activities || {}).length === 0)) {
-        document.getElementById('no-data').style.display = 'block';
-        return;
+  // Errors
+  var errorCounts={};
+  for(var eid in stats.games){
+    if(!stats.games[eid].commonErrors)continue;
+    for(var err in stats.games[eid].commonErrors){
+      errorCounts[err]=(errorCounts[err]||0)+stats.games[eid].commonErrors[err];
     }
+  }
+  var sortedErrors=Object.keys(errorCounts).sort(function(a,b){return errorCounts[b]-errorCounts[a]}).slice(0,5);
 
-    // Summary
-    document.getElementById('sum-games').textContent = summary.totalGamesPlayed || 0;
-    document.getElementById('sum-activities').textContent = summary.totalActivitiesCompleted || 0;
-    var totalMin = Math.round((summary.totalTimeSpent || 0) / 60);
-    document.getElementById('sum-time').textContent = totalMin > 0 ? totalMin + 'm' : '≤1m';
-    document.getElementById('sum-accuracy').textContent = (summary.overallAccuracy || 0) + '%';
-
-    // Games
-    var gameNames = {
-        juego1: { name: 'Duelo de Números', emoji: '⚔️' },
-        juego2: { name: 'Estimaciones', emoji: '📐' },
-        juego3: { name: 'Chefs de Fracciones', emoji: '🍕' },
-        juego4: { name: 'Arquitectas', emoji: '🏗️' },
-        juego5: { name: 'Buscatesoros', emoji: '🏴‍☠️' },
-        juego6: { name: 'El Caldero Mágico', emoji: '🧪' },
-        juego7: { name: 'Misión Robot', emoji: '🤖' },
-        juego8: { name: 'Cálculo Mental', emoji: '🧠' },
-        juego9: { name: 'Laboratorio de Pociones', emoji: '🧪' },
-        juego10: { name: 'El Mercado Chileno', emoji: '🛒' },
-        juego11: { name: 'Pizza Master', emoji: '🍕' },
-        juego12: { name: 'Geometrix Builder', emoji: '📐' }
-    };
-
-    var gamesHtml = '';
-    var hasGames = false;
-    for (var gid in stats.games) {
-        if (!stats.games.hasOwnProperty(gid)) continue;
-        hasGames = true;
-        var g = stats.games[gid];
-        var gn = gameNames[gid] || { name: gid, emoji: '🎮' };
-        var avgTime = g.avgTimePerRound || 0;
-        var acc = g.accuracy || 0;
-        gamesHtml +=
-            '<div class="game-card">' +
-                '<div class="gc-header">' +
-                    '<span class="gc-emoji">' + gn.emoji + '</span>' +
-                    '<div><div class="gc-name">' + gn.name + '</div><div class="gc-sessions">' + g.sessions + ' sesiones</div></div>' +
-                '</div>' +
-                '<div class="gc-stats">' +
-                    '<div class="gc-stat"><div class="gc-stat-val">' + g.bestScore + '</div><div class="gc-stat-lbl">Mejor</div></div>' +
-                    '<div class="gc-stat"><div class="gc-stat-val">' + g.avgScore + '</div><div class="gc-stat-lbl">Promedio</div></div>' +
-                    '<div class="gc-stat"><div class="gc-stat-val">' + acc + '%</div><div class="gc-stat-lbl">Precisión</div></div>' +
-                    '<div class="gc-stat"><div class="gc-stat-val">' + avgTime + 's</div><div class="gc-stat-lbl">Tiempo/ronda</div></div>' +
-                '</div>' +
-                '<div class="gc-bar">' +
-                    '<div class="gc-bar-fill" style="width:' + Math.min(acc, 100) + '%"></div>' +
-                '</div>' +
-            '</div>';
-    }
-    if (hasGames) {
-        document.getElementById('games-section').style.display = 'block';
-        document.getElementById('games-grid').innerHTML = gamesHtml;
-    }
-
-    // Activities
-    var activityNames = {
-        'actividad-numeros-sumas': { name: 'Suma Vertical', emoji: '➕', topic: 'Números' },
-        'actividad-frac-suma': { name: 'Suma de Fracciones', emoji: '🍕', topic: 'Fracciones' },
-        'actividad-geo-cuadricula': { name: 'Coordenadas', emoji: '🗺️', topic: 'Geometría' },
-        'actividad-datos-barras': { name: 'Gráficos de Barras', emoji: '📊', topic: 'Datos' },
-        'actividad-alg-ecuaciones': { name: 'Ecuaciones', emoji: '⚖️', topic: 'Álgebra' }
-    };
-
-    var actHtml = '';
-    var hasAct = false;
-    for (var aid in stats.activities) {
-        if (!stats.activities.hasOwnProperty(aid)) continue;
-        hasAct = true;
-        var a = stats.activities[aid];
-        var an = activityNames[aid] || { name: aid, emoji: '📝', topic: '' };
-        var acc = a.accuracy || 0;
-        actHtml +=
-            '<div class="activity-card">' +
-                '<div class="ac-emoji">' + an.emoji + '</div>' +
-                '<div class="ac-info">' +
-                    '<div class="ac-name">' + an.name + '</div>' +
-                    '<div class="ac-topic">' + an.topic + '</div>' +
-                '</div>' +
-                '<div class="ac-stats">' +
-                    '<div class="ac-stat"><b>' + a.correct + '</b> correctas</div>' +
-                    '<div class="ac-stat"><b>' + a.wrong + '</b> incorrectas</div>' +
-                    '<div class="ac-stat"><b>' + acc + '%</b> precisión</div>' +
-                '</div>' +
-            '</div>';
-    }
-    if (hasAct) {
-        document.getElementById('activities-section').style.display = 'block';
-        document.getElementById('activities-grid').innerHTML = actHtml;
-    }
-
-    // History (last 10 sessions across all games)
-    var allHistory = [];
-    for (var hid in stats.games) {
-        if (!stats.games[hid].history) continue;
-        stats.games[hid].history.forEach(function(h) {
-            var gn2 = gameNames[hid] || { name: hid, emoji: '🎮' };
-            allHistory.push({ game: gn2.name, emoji: gn2.emoji, date: h.date, score: h.score, rounds: h.rounds, accuracy: h.accuracy });
-        });
-    }
-    allHistory.sort(function(a, b) { return new Date(b.date) - new Date(a.date); });
-    allHistory = allHistory.slice(0, 10);
-
-    if (allHistory.length > 0) {
-        document.getElementById('history-section').style.display = 'block';
-        var histHtml = '';
-        allHistory.forEach(function(h) {
-            var d = new Date(h.date);
-            var dateStr = d.toLocaleDateString('es-CL', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' });
-            histHtml +=
-                '<div class="hist-item">' +
-                    '<div class="hist-emoji">' + h.emoji + '</div>' +
-                    '<div class="hist-info">' +
-                        '<div class="hist-name">' + h.game + '</div>' +
-                        '<div class="hist-date">' + dateStr + '</div>' +
-                    '</div>' +
-                    '<div class="hist-stats">' +
-                        '<span class="hist-score">⭐ ' + h.score + '</span>' +
-                        '<span class="hist-acc">' + (h.accuracy || 0) + '%</span>' +
-                    '</div>' +
-                '</div>';
-        });
-        document.getElementById('history-list').innerHTML = histHtml;
-    }
-
-    // Common errors
-    var errorCounts = {};
-    for (var eid in stats.games) {
-        if (!stats.games[eid].commonErrors) continue;
-        for (var err in stats.games[eid].commonErrors) {
-            errorCounts[err] = (errorCounts[err] || 0) + stats.games[eid].commonErrors[err];
-        }
-    }
-    var sortedErrors = Object.keys(errorCounts).sort(function(a, b) { return errorCounts[b] - errorCounts[a]; }).slice(0, 5);
-
-    if (sortedErrors.length > 0) {
-        document.getElementById('errors-section').style.display = 'block';
-        var errHtml = '';
-        var maxErr = errorCounts[sortedErrors[0]] || 1;
-        sortedErrors.forEach(function(err) {
-            var pct = Math.round(errorCounts[err] / maxErr * 100);
-            errHtml +=
-                '<div class="error-item">' +
-                    '<div class="error-name">' + err + '</div>' +
-                    '<div class="error-bar"><div class="error-bar-fill" style="width:' + pct + '%"></div></div>' +
-                    '<div class="error-count">' + errorCounts[err] + ' veces</div>' +
-                '</div>';
-        });
-        document.getElementById('errors-list').innerHTML = errHtml;
-    }
-
-    // If no sections shown, show no-data
-    if (!hasGames && !hasAct) {
-        document.getElementById('no-data').style.display = 'block';
-    }
+  if(sortedErrors.length>0){
+    $('errorsSection').style.display='block';
+    var eh='';
+    var maxErr=errorCounts[sortedErrors[0]]||1;
+    sortedErrors.forEach(function(err){
+      var pct=Math.round(errorCounts[err]/maxErr*100);
+      eh+='<div class="error-item">';
+      eh+='<div class="error-name">'+err+'</div>';
+      eh+='<div class="error-bar"><div class="error-bar-fill" style="width:'+pct+'%"></div></div>';
+      eh+='<div class="error-count">'+errorCounts[err]+' veces</div>';
+      eh+='</div>';
+    });
+    $('errorsList').innerHTML=eh;
+  }
 })();
 </script>
-
 </body>
 </html>

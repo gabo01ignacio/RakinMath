@@ -1,8 +1,8 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="es" data-theme="light">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, viewport-fit=cover">
 <title>RakinMath – Gráfico de Barras</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -87,6 +87,32 @@ body{display:flex;flex-direction:column;min-height:100vh}
 .builder-inputs{grid-template-columns:repeat(3,1fr)}
 }
 </style>
+
+<!-- SUPER RESPONSIVE MOBILE OPTIMIZATIONS — RAKINMATH -->
+<style id="rakin-mobile-responsiveness">
+* {
+  -webkit-tap-highlight-color: transparent;
+}
+html, body {
+  max-width: 100%;
+  overflow-x: hidden;
+}
+img, svg, video, canvas {
+  max-width: 100%;
+}
+button, a, input, select, textarea, .btn, .choice-btn, .opt-btn, .game-btn, .nav-btn, .action-btn {
+  touch-action: manipulation;
+}
+@media (max-width: 600px) {
+  input, select, textarea {
+    font-size: 16px !important;
+  }
+  button, .btn, .choice-btn, .opt-btn, .game-btn, .nav-btn, .action-btn {
+    min-height: 44px;
+  }
+}
+</style>
+
 </head>
 <body>
 
@@ -192,7 +218,7 @@ body{display:flex;flex-direction:column;min-height:100vh}
 <div class="section" style="animation-delay:320ms">
 <div class="question-box" style="background:linear-gradient(135deg,rgba(0,122,255,.06),rgba(0,122,255,.02));border:1px solid rgba(0,122,255,.15)">
 <h4>&#x1F3AC; Videos de apoyo</h4>
-<p style="color:var(--text-secondary);margin-bottom:12px;font-size:.9375rem">Agrega links de videos de YouTube para reforzar lo aprendido:</p>
+<p style="color:var(--text-secondary);margin-bottom:12px;font-size:.9375rem">Material complementario para reforzar lo aprendido:</p>
 <div id="videos-container" style="display:flex;flex-direction:column;gap:12px;margin-bottom:12px">
 <div class="video-placeholder" style="border:2px dashed rgba(0,122,255,.25);border-radius:16px;padding:24px;text-align:center;color:var(--text-tertiary);font-size:.875rem;cursor:pointer;transition:border-color .2s,background .2s" onclick="addVideoSlot(this.parentElement)">
 <span style="font-size:1.5rem;display:block;margin-bottom:6px">&#x1F4F1;</span>
@@ -282,7 +308,7 @@ var minIdx=vals.indexOf(Math.min.apply(null,vals));
 if(q.indexOf(labels[maxIdx])>-1){correct=ans===vals[maxIdx]}
 else if(q.indexOf(labels[minIdx])>-1){correct=ans===vals[minIdx]}
 }
-if(correct){fb.textContent='¡Correcto!';fb.className='feedback correct';RK.Stats.saveActivityResult('actividad-datos-barras',{correct:true,time:Math.round((Date.now()-activityStartTime)/1000),topic:'gr\u00e1ficos de barras'});activityStartTime=Date.now();setTimeout(updateQuiz,1500)}
+if(correct){fb.textContent='¡Correcto!';fb.className='feedback correct';if(typeof RK!=='undefined'&&RK.Progress){RK.Progress.markPageComplete('datos-barras','4to','datos')};RK.Stats.saveActivityResult('actividad-datos-barras',{correct:true,time:Math.round((Date.now()-activityStartTime)/1000),topic:'gr\u00e1ficos de barras'});activityStartTime=Date.now();setTimeout(updateQuiz,1500)}
 else if(isNaN(ans)){fb.textContent='Escribe un n\u00famero';fb.className='feedback wrong';RK.Stats.saveActivityResult('actividad-datos-barras',{correct:false,time:Math.round((Date.now()-activityStartTime)/1000),topic:'gr\u00e1ficos de barras'});activityStartTime=Date.now()}
 else{fb.textContent='Revisa el gr\u00e1fico e intenta de nuevo';fb.className='feedback wrong';RK.Stats.saveActivityResult('actividad-datos-barras',{correct:false,time:Math.round((Date.now()-activityStartTime)/1000),topic:'gr\u00e1ficos de barras'});activityStartTime=Date.now()}
 }
@@ -307,6 +333,14 @@ addBtn.onclick=function(){addVideoSlot(container)};
 container.appendChild(addBtn);
 }
 function removeVideoSlot(btn){btn.closest('.video-slot').remove()}
-</script>
-</body>
+</script>
+<script src="../../stats/rk-progress.js"></script>
+<script src="../video-embed.js"></script>
+<script>
+(function(){
+  var t=localStorage.getItem('rakin-theme')||'light';
+  document.documentElement.setAttribute('data-theme',t);
+})();
+</script>
+</body>
 </html>

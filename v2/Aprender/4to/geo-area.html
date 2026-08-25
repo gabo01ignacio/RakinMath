@@ -1,8 +1,8 @@
-<?<!DOCTYPE html>
-<html lang="es">
+<!DOCTYPE html>
+<html lang="es" data-theme="light">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, viewport-fit=cover">
 <title>RakinMath – Área de Rectángulos</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -40,6 +40,32 @@ body{display:flex;flex-direction:column;min-height:100vh}.content{flex:1;max-wid
 @keyframes scaleIn{from{opacity:0;transform:scale(.9)}to{opacity:1;transform:scale(1)}}
 @media(max-width:640px){.content{padding:16px}.area-cell{width:24px;height:24px}}
 </style>
+
+<!-- SUPER RESPONSIVE MOBILE OPTIMIZATIONS — RAKINMATH -->
+<style id="rakin-mobile-responsiveness">
+* {
+  -webkit-tap-highlight-color: transparent;
+}
+html, body {
+  max-width: 100%;
+  overflow-x: hidden;
+}
+img, svg, video, canvas {
+  max-width: 100%;
+}
+button, a, input, select, textarea, .btn, .choice-btn, .opt-btn, .game-btn, .nav-btn, .action-btn {
+  touch-action: manipulation;
+}
+@media (max-width: 600px) {
+  input, select, textarea {
+    font-size: 16px !important;
+  }
+  button, .btn, .choice-btn, .opt-btn, .game-btn, .nav-btn, .action-btn {
+    min-height: 44px;
+  }
+}
+</style>
+
 </head>
 <body>
 <nav class="nav"><a href="menu.html" class="nav-title"><img src="../../Recursos/LogoRakinMath.png" alt="RakinMath" style="height: 24px; width: auto;"></a><a href="menu.html" class="exit-btn">Volver</a></nav>
@@ -87,7 +113,7 @@ body{display:flex;flex-direction:column;min-height:100vh}.content{flex:1;max-wid
 <div class="section" style="animation-delay:320ms">
 <div class="question-box" style="background:linear-gradient(135deg,rgba(0,122,255,.06),rgba(0,122,255,.02));border:1px solid rgba(0,122,255,.15)">
 <h4>&#x1F3AC; Videos de apoyo</h4>
-<p style="color:var(--text-secondary);margin-bottom:12px;font-size:.9375rem">Agrega links de videos de YouTube para reforzar lo aprendido:</p>
+<p style="color:var(--text-secondary);margin-bottom:12px;font-size:.9375rem">Material complementario para reforzar lo aprendido:</p>
 <div id="videos-container" style="display:flex;flex-direction:column;gap:12px;margin-bottom:12px">
 <div class="video-placeholder" style="border:2px dashed rgba(0,122,255,.25);border-radius:16px;padding:24px;text-align:center;color:var(--text-tertiary);font-size:.875rem;cursor:pointer;transition:border-color .2s,background .2s" onclick="addVideoSlot(this.parentElement)">
 <span style="font-size:1.5rem;display:block;margin-bottom:6px">&#x1F4F1;</span>
@@ -129,7 +155,7 @@ document.getElementById('a-result').classList.remove('show');
 }
 var qL,qW;
 function newQ(){qL=Math.floor(Math.random()*8)+2;qW=Math.floor(Math.random()*6)+2;document.getElementById('q-text').textContent='Un rect\u00e1ngulo mide '+qL+' de largo y '+qW+' de ancho. \u00bfCu\u00e1l es su \u00e1rea?';document.getElementById('q-answer').value='';document.getElementById('q-fb').textContent='';document.getElementById('q-fb').className='feedback'}
-function checkQ(){var ans=parseInt(document.getElementById('q-answer').value);var fb=document.getElementById('q-fb');if(ans===qL*qW){fb.textContent='\u00a1Correcto! '+qL+' \u00d7 '+qW+' = '+(qL*qW);fb.className='feedback correct';setTimeout(newQ,2000)}else if(isNaN(ans)){fb.textContent='Escribe un n\u00famero';fb.className='feedback wrong'}else{fb.textContent='Recuerda: largo \u00d7 ancho';fb.className='feedback wrong'}}
+function checkQ(){var ans=parseInt(document.getElementById('q-answer').value);var fb=document.getElementById('q-fb');if(ans===qL*qW){fb.textContent='\u00a1Correcto! '+qL+' \u00d7 '+qW+' = '+(qL*qW);fb.className='feedback correct';if(typeof RK!=='undefined'&&RK.Progress){RK.Progress.markPageComplete('geo-area','4to','geometria')};setTimeout(newQ,2000)}else if(isNaN(ans)){fb.textContent='Escribe un n\u00famero';fb.className='feedback wrong'}else{fb.textContent='Recuerda: largo \u00d7 ancho';fb.className='feedback wrong'}}
 drawGrid();newQ();
 
 function addVideoSlot(container){
@@ -149,5 +175,6 @@ container.appendChild(addBtn);
 }
 function removeVideoSlot(btn){btn.closest('.video-slot').remove()}
 </script>
+<script src="../../stats/rk-progress.js"></script>
 </body>
 </html>

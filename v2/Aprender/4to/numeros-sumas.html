@@ -1,8 +1,8 @@
-<?<!DOCTYPE html>
-<html lang="es">
+<!DOCTYPE html>
+<html lang="es" data-theme="light">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, viewport-fit=cover">
 <title>RakinMath – Sumas hasta 1000</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -74,11 +74,37 @@ body{display:flex;flex-direction:column;min-height:100vh}
 @keyframes slideUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
 @media(max-width:640px){.content{padding:16px}.math-input{width:64px;font-size:1.1rem;padding:6px}.board .cell{width:36px;height:40px;font-size:1.5rem}.card{padding:20px 16px 16px}}
 </style>
+
+<!-- SUPER RESPONSIVE MOBILE OPTIMIZATIONS — RAKINMATH -->
+<style id="rakin-mobile-responsiveness">
+* {
+  -webkit-tap-highlight-color: transparent;
+}
+html, body {
+  max-width: 100%;
+  overflow-x: hidden;
+}
+img, svg, video, canvas {
+  max-width: 100%;
+}
+button, a, input, select, textarea, .btn, .choice-btn, .opt-btn, .game-btn, .nav-btn, .action-btn {
+  touch-action: manipulation;
+}
+@media (max-width: 600px) {
+  input, select, textarea {
+    font-size: 16px !important;
+  }
+  button, .btn, .choice-btn, .opt-btn, .game-btn, .nav-btn, .action-btn {
+    min-height: 44px;
+  }
+}
+</style>
+
 </head>
 <body>
 <nav class="nav"><a href="menu.html" class="nav-title"><img src="../../Recursos/LogoRakinMath.png" alt="RakinMath" style="height:24px;width:auto"></a><a href="menu.html" class="exit-btn">Volver</a></nav>
 <div class="content">
-<a href="menu.html" class="back-link">? Volver a Números</a>
+<a href="menu.html" class="back-link">← Volver a Números</a>
 
 <div class="section">
 <div class="section-title">? Sumas hasta 1000 con canje</div>
@@ -150,7 +176,7 @@ body{display:flex;flex-direction:column;min-height:100vh}
 <div class="section">
 <div class="videos-box">
 <h4>?? Videos de apoyo</h4>
-<p style="color:var(--text-secondary);margin-bottom:14px;font-size:.875rem">Agrega links de YouTube para reforzar lo aprendido:</p>
+<p style="color:var(--text-secondary);margin-bottom:14px;font-size:.875rem">Material complementario para reforzar lo aprendido:</p>
 <div id="videosContainer">
 <div class="video-placeholder" onclick="addVideoSlot()">
 <span style="font-size:1.5rem;display:block;margin-bottom:6px">??</span>
@@ -257,7 +283,7 @@ document.getElementById('resetBtn').addEventListener('click',function(){currentS
 
 var qA,qB;
 function newQuiz(){qA=Math.floor(Math.random()*800)+100;qB=Math.floor(Math.random()*800)+100;document.getElementById('qProblem').textContent=qA+' + '+qB+' = ?';document.getElementById('qAnswer').value='';document.getElementById('qFeedback').textContent='';document.getElementById('qFeedback').className='feedback'}
-function checkQuiz(){var ans=parseInt(document.getElementById('qAnswer').value);var fb=document.getElementById('qFeedback');if(ans===qA+qB){fb.textContent='\u00a1Correcto! '+qA+' + '+qB+' = '+(qA+qB);fb.className='feedback correct';RK.Stats.saveActivityResult('actividad-numeros-sumas',{correct:true,time:Math.round((Date.now()-activityStartTime)/1000),topic:'suma vertical'});activityStartTime=Date.now();setTimeout(newQuiz,2000)}else if(isNaN(ans)){fb.textContent='Escribe un n\u00famero';fb.className='feedback wrong';RK.Stats.saveActivityResult('actividad-numeros-sumas',{correct:false,time:Math.round((Date.now()-activityStartTime)/1000),topic:'suma vertical'});activityStartTime=Date.now()}else{fb.textContent='Revisa tu suma. \u00bfEmpezaste a sumar por la columna de la DERECHA (Unidades) y sumaste las reservas que anotaste arriba?';fb.className='feedback wrong';RK.Stats.saveActivityResult('actividad-numeros-sumas',{correct:false,time:Math.round((Date.now()-activityStartTime)/1000),topic:'suma vertical'});activityStartTime=Date.now()}}
+function checkQuiz(){var ans=parseInt(document.getElementById('qAnswer').value);var fb=document.getElementById('qFeedback');if(ans===qA+qB){fb.textContent='\u00a1Correcto! '+qA+' + '+qB+' = '+(qA+qB);fb.className='feedback correct';if(typeof RK!=='undefined'&&RK.Progress){RK.Progress.markPageComplete('numeros-sumas','4to','numeros')};RK.Stats.saveActivityResult('actividad-numeros-sumas',{correct:true,time:Math.round((Date.now()-activityStartTime)/1000),topic:'suma vertical'});activityStartTime=Date.now();setTimeout(newQuiz,2000)}else if(isNaN(ans)){fb.textContent='Escribe un n\u00famero';fb.className='feedback wrong';RK.Stats.saveActivityResult('actividad-numeros-sumas',{correct:false,time:Math.round((Date.now()-activityStartTime)/1000),topic:'suma vertical'});activityStartTime=Date.now()}else{fb.textContent='Revisa tu suma. \u00bfEmpezaste a sumar por la columna de la DERECHA (Unidades) y sumaste las reservas que anotaste arriba?';fb.className='feedback wrong';RK.Stats.saveActivityResult('actividad-numeros-sumas',{correct:false,time:Math.round((Date.now()-activityStartTime)/1000),topic:'suma vertical'});activityStartTime=Date.now()}}
 
 function addVideoSlot(){var c=document.getElementById('videosContainer');var ph=c.querySelector('.video-placeholder');if(ph)ph.remove();var slot=document.createElement('div');slot.className='video-slot';slot.innerHTML='<input type="text" placeholder="Pega el link de YouTube aqu\u00ed..."><button class="remove-btn" onclick="this.parentElement.remove();if(!document.querySelector(\'#videosContainer .video-slot\'))resetVideos()">\u00d7</button>';c.appendChild(slot);var addBtn=document.createElement('div');addBtn.className='add-video-btn';addBtn.textContent='+ Agregar otro video';addBtn.onclick=addVideoSlot;c.appendChild(addBtn)}
 function resetVideos(){document.getElementById('videosContainer').innerHTML='<div class="video-placeholder" onclick="addVideoSlot()"><span style="font-size:1.5rem;display:block;margin-bottom:6px">\ud83c\udfac</span>Haz clic aqu\u00ed para agregar un video de YouTube</div>'}
@@ -265,6 +291,14 @@ function resetVideos(){document.getElementById('videosContainer').innerHTML='<di
 var a0=parseInt(document.getElementById('numA').value)||487;
 var b0=parseInt(document.getElementById('numB').value)||356;
 buildBoard(a0,b0);steps=buildSteps(a0,b0);currentStep=0;renderStep();newQuiz();
+</script>
+<script src="../../stats/rk-progress.js"></script>
+<script src="../video-embed.js"></script>
+<script>
+(function(){
+  var t=localStorage.getItem('rakin-theme')||'light';
+  document.documentElement.setAttribute('data-theme',t);
+})();
 </script>
 </body>
 </html>

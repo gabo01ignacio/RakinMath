@@ -1,12 +1,12 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="es" data-theme="light">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, viewport-fit=cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="../Juegos/apple-design.css">
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@600;700;800;900&family=Outfit:wght@600;700;800;900&family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="apple-design.css">
 <script src="../auth.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
@@ -15,460 +15,1476 @@
 <script src="rk-feedback.js"></script>
 <title>El Mercado Chileno | RakinMath</title>
 <style>
-*,*::before,*::after{box-sizing:border-box;margin:0}
-body{font-family:var(--font-sans);height:100dvh;overflow:hidden;background:var(--bg);color:var(--text);-webkit-tap-highlight-color:transparent;user-select:none}
+* { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
 
-.screen{display:none;flex-direction:column;height:100dvh;overflow:hidden;position:relative}
-.screen.active{display:flex}
+body {
+  display: flex;
+  flex-direction: column;
+  height: 100dvh;
+  overflow: hidden;
+  background: #f8fafc;
+  color: #0f172a;
+  font-family: 'Nunito', system-ui, sans-serif;
+  user-select: none;
+}
 
-/* ═══ MENU ═══ */
-.menu-inner{flex:1;overflow-y:auto;padding:16px;display:flex;flex-direction:column;align-items:center;gap:14px}
-.menu-header{text-align:center}
-.menu-header .emoji{font-size:3rem;animation:popIn .6s var(--spring-default) both}
-.menu-header h1{font-size:1.5rem;font-weight:800;letter-spacing:-.03em;margin-top:8px}
-.menu-header p{font-size:.8125rem;color:var(--text-secondary);margin-top:4px;max-width:340px}
-.diff-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;width:100%;max-width:400px}
-.diff-card{background:var(--bg-card-solid);border:2px solid var(--border-strong);border-radius:var(--radius-sm);padding:16px 8px;text-align:center;cursor:pointer;transition:all .12s}
-.diff-card:active{transform:scale(.95)}
-.diff-card.sel{border-color:var(--accent);background:rgba(0,122,255,.04)}
-.diff-card .de{font-size:1.75rem;display:block;margin-bottom:4px}
-.diff-card h3{font-size:.875rem;font-weight:700}
-.diff-card p{font-size:.625rem;color:var(--text-tertiary);margin-top:2px}
-.play-btn{width:100%;max-width:400px;font-family:var(--font-sans);font-size:1rem;font-weight:700;padding:14px;border-radius:var(--radius-pill);border:none;background:var(--accent);color:#fff;cursor:pointer;box-shadow:0 4px 16px rgba(0,122,255,.3);transition:all .15s}
-.play-btn:active{transform:scale(.97)}
-.play-btn:disabled{opacity:.4;cursor:not-allowed}
+/* ══════════════════════════════════════════
+   NAV & TOP FERIA BANNER
+   ══════════════════════════════════════════ */
+.nav {
+  height: 48px;
+  padding: 0 14px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: #ffffff;
+  border-bottom: 2px solid #cbd5e1;
+  position: relative;
+  z-index: 20;
+  flex-shrink: 0;
+}
 
-/* ═══ GAME ═══ */
-.game-top{padding:10px 14px 0;display:flex;flex-direction:column;gap:6px}
-.gt-row{display:flex;align-items:center;justify-content:space-between}
-.gt-pill{display:flex;align-items:center;gap:4px;font-size:.75rem;font-weight:700;background:var(--bg-card-solid);border:1px solid var(--border);border-radius:var(--radius-pill);padding:4px 12px}
-.gt-pill .v{color:var(--accent)}
-.gt-pill.budget .v{color:var(--green)}
-.timer-bar{width:100%;height:4px;border-radius:2px;background:var(--border);overflow:hidden}
-.timer-fill{height:100%;background:var(--green);transition:width .3s linear;border-radius:2px}
-.timer-fill.warn{background:var(--orange)}
-.timer-fill.danger{background:var(--red)}
+.market-awning {
+  position: absolute;
+  top: 46px;
+  left: 0;
+  right: 0;
+  height: 10px;
+  background: repeating-linear-gradient(
+    90deg,
+    #dc2626,
+    #dc2626 22px,
+    #ffffff 22px,
+    #ffffff 44px
+  );
+  box-shadow: 0 3px 8px rgba(0,0,0,0.12);
+  z-index: 19;
+}
 
-/* Cart */
-.cart-strip{display:flex;gap:8px;padding:8px 14px;overflow-x:auto;min-height:72px;align-items:center}
-.cart-item{flex-shrink:0;background:var(--bg-card-solid);border:1px solid var(--border);border-radius:var(--radius-sm);padding:8px 12px;text-align:center;animation:popIn .3s var(--spring-default) both;position:relative;min-width:80px}
-.cart-item .ci-e{font-size:1.5rem}
-.cart-item .ci-p{font-size:.75rem;font-weight:700;color:var(--accent);margin-top:2px}
-.cart-item .ci-r{position:absolute;top:-6px;right:-6px;width:20px;height:20px;border-radius:50%;background:var(--red);color:#fff;font-size:.625rem;font-weight:700;display:flex;align-items:center;justify-content:center;cursor:pointer;border:none}
-.cart-empty{font-size:.8125rem;color:var(--text-tertiary);text-align:center;width:100%}
+.nav-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-family: 'Outfit', sans-serif;
+  font-weight: 800;
+  font-size: 1.15rem;
+  color: #0f172a;
+}
 
-/* Shelf */
-.shelf-area{flex:1;overflow-y:auto;padding:8px 14px}
-.shelf-title{font-size:.6875rem;font-weight:700;color:var(--text-tertiary);text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px}
-.shelf-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(90px,1fr));gap:8px;margin-bottom:16px}
-.shelf-item{background:var(--bg-card-solid);border:1.5px solid var(--border);border-radius:var(--radius-sm);padding:10px 6px;text-align:center;cursor:pointer;transition:all .12s;position:relative}
-.shelf-item:active{transform:scale(.93);border-color:var(--accent)}
-.shelf-item.sold-out{opacity:.4;pointer-events:none}
-.shelf-item .si-e{font-size:2rem;display:block}
-.shelf-item .si-n{font-size:.6875rem;font-weight:600;margin-top:2px;color:var(--text)}
-.shelf-item .si-p{font-size:.8125rem;font-weight:800;color:var(--accent);margin-top:2px}
+.exit-btn {
+  padding: 5px 12px;
+  border-radius: 99px;
+  background: #fee2e2;
+  color: #dc2626;
+  font-family: 'Outfit', sans-serif;
+  font-weight: 700;
+  font-size: 0.8rem;
+  border: 1.5px solid #fca5a5;
+  cursor: pointer;
+  box-shadow: 0 2px 0 #f87171;
+  transition: transform 0.1s;
+}
+.exit-btn:active { transform: translateY(1px); box-shadow: none; }
 
-/* Checkout */
-.checkout-bar{padding:10px 14px;border-top:1px solid var(--border);display:flex;gap:8px;align-items:center;background:var(--bg-card-solid)}
-.checkout-total{flex:1}
-.checkout-total .ct-lbl{font-size:.6875rem;color:var(--text-tertiary);font-weight:600}
-.checkout-total .ct-val{font-size:1.25rem;font-weight:800;color:var(--text)}
-.pay-btn{font-family:var(--font-sans);font-size:.875rem;font-weight:700;padding:10px 20px;border-radius:var(--radius-pill);border:none;background:var(--green);color:#fff;cursor:pointer;transition:all .12s;box-shadow:0 2px 8px rgba(52,199,89,.3)}
-.pay-btn:active{transform:scale(.95)}
-.pay-btn:disabled{opacity:.4;cursor:not-allowed}
+/* SCREENS */
+.screen {
+  display: none;
+  flex-direction: column;
+  height: calc(100dvh - 58px);
+  overflow: hidden;
+  margin-top: 10px;
+}
+.screen.active { display: flex; }
 
-/* ═══ CHECKOUT MODAL ═══ */
-.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);display:none;align-items:center;justify-content:center;z-index:100;padding:24px}
-.modal-overlay.open{display:flex}
-.modal{background:var(--bg-card-solid);border-radius:var(--radius-xl);padding:28px;max-width:400px;width:100%;box-shadow:0 25px 80px rgba(0,0,0,.2);animation:scaleIn .3s var(--spring-default) both}
-.modal h2{font-size:1.25rem;font-weight:800;text-align:center;margin-bottom:16px;letter-spacing:-.03em}
-.modal-items{max-height:200px;overflow-y:auto;margin-bottom:16px}
-.modal-row{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--border);font-size:.875rem}
-.modal-row:last-child{border-bottom:none}
-.modal-row .mr-name{display:flex;align-items:center;gap:8px}
-.modal-total{display:flex;justify-content:space-between;font-weight:800;font-size:1.125rem;padding-top:12px;border-top:2px solid var(--border-strong)}
-.pay-section{margin-top:16px}
-.pay-section label{font-size:.8125rem;font-weight:600;color:var(--text-secondary);display:block;margin-bottom:6px}
-.pay-input{width:100%;font-family:var(--font-sans);font-size:1.25rem;font-weight:700;padding:12px 16px;border-radius:var(--radius-md);border:2px solid var(--border-strong);background:var(--bg);color:var(--text);text-align:center;outline:none;transition:border-color .15s}
-.pay-input:focus{border-color:var(--accent)}
-.modal-btns{display:flex;gap:8px;margin-top:16px}
-.modal-btns button{flex:1;font-family:var(--font-sans);font-size:.9375rem;font-weight:700;padding:12px;border-radius:var(--radius-pill);border:none;cursor:pointer;transition:all .12s}
-.modal-btns .btn-cancel{background:var(--bg);border:1px solid var(--border-strong);color:var(--text-secondary)}
-.modal-btns .btn-pay{background:var(--green);color:#fff;box-shadow:0 2px 8px rgba(52,199,89,.3)}
-.modal-btns .btn-pay:active{transform:scale(.97)}
+/* ══════════════════════════════════════════
+   MENU SCREEN
+   ══════════════════════════════════════════ */
+.menu-inner {
+  flex: 1;
+  overflow-y: auto;
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  max-width: 480px;
+  margin: 0 auto;
+  width: 100%;
+}
 
-/* ═══ CHANGE ANIMATION ═══ */
-.change-display{text-align:center;margin-top:16px;padding:20px;background:var(--bg);border-radius:var(--radius-md);animation:popIn .4s var(--spring-default) both}
-.change-display .cd-emoji{font-size:2.5rem;margin-bottom:8px}
-.change-display .cd-text{font-size:1rem;font-weight:700}
-.change-display .cd-val{font-size:1.5rem;font-weight:800;color:var(--green);margin-top:4px}
+.menu-banner {
+  background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+  border: 2.5px solid #f59e0b;
+  border-radius: 22px;
+  padding: 16px 18px;
+  text-align: center;
+  width: 100%;
+  box-shadow: 0 6px 16px rgba(245,158,11,0.2), 0 4px 0 #d97706;
+}
 
-/* ═══ RESULTS ═══ */
-.res-inner{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;padding:20px;text-align:center}
-.res-emoji{font-size:3.5rem;animation:popIn .5s var(--spring-default) both}
-.res-title{font-size:1.5rem;font-weight:800;letter-spacing:-.03em}
-.res-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;width:100%;max-width:300px}
-.rc{background:var(--bg-card-solid);border:1px solid var(--border);border-radius:var(--radius-sm);padding:14px 8px;text-align:center}
-.rc .rv{font-size:1.375rem;font-weight:800}
-.rc .rl{font-size:.625rem;font-weight:600;color:var(--text-tertiary);text-transform:uppercase;margin-top:2px}
-.rc.g .rv{color:var(--green)}.rc.r .rv{color:var(--red)}.rc.b .rv{color:var(--accent)}.rc.o .rv{color:var(--orange)}
-.res-btns{display:flex;gap:8px;margin-top:8px;flex-wrap:wrap;justify-content:center}
-.res-btns .play-btn{max-width:200px;font-size:.875rem;padding:11px 20px}
-.res-btns .btn-end{font-family:var(--font-sans);font-size:.875rem;font-weight:700;padding:11px 20px;border-radius:var(--radius-pill);border:1.5px solid var(--border-strong);background:var(--bg-card-solid);color:var(--text);cursor:pointer;transition:all .12s}
+.menu-banner .emoji {
+  font-size: 3.2rem;
+  line-height: 1;
+  margin-bottom: 4px;
+  animation: floatMarket 2s ease-in-out infinite alternate;
+}
+@keyframes floatMarket { from { transform: translateY(0); } to { transform: translateY(-6px); } }
 
-/* ═══ FLOATING COINS ═══ */
-.coin{position:fixed;font-size:1.5rem;pointer-events:none;z-index:150;animation:coinFly 1s var(--spring-default) forwards}
-@keyframes coinFly{0%{transform:translateY(0) scale(1);opacity:1}100%{transform:translateY(-80px) scale(0);opacity:0}}
+.menu-banner h1 {
+  font-family: 'Outfit', sans-serif;
+  font-size: 1.6rem;
+  color: #78350f;
+  font-weight: 800;
+}
+.menu-banner p {
+  font-size: 0.9rem;
+  color: #92400e;
+  font-weight: 700;
+  margin-top: 4px;
+  line-height: 1.3;
+}
 
-@keyframes popIn{0%{opacity:0;transform:scale(.5)}100%{opacity:1;transform:scale(1)}}
-@keyframes scaleIn{from{opacity:0;transform:scale(.9)}to{opacity:1;transform:scale(1)}}
+.mode-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  width: 100%;
+}
+
+.mode-card {
+  background: #ffffff;
+  border: 2.5px solid #cbd5e1;
+  border-radius: 20px;
+  padding: 14px 10px;
+  text-align: center;
+  cursor: pointer;
+  box-shadow: 0 4px 0 #cbd5e1;
+  transition: all 0.15s ease;
+}
+.mode-card:active { transform: translateY(2px); box-shadow: 0 1px 0 #cbd5e1; }
+.mode-card.sel {
+  border-color: #0284c7;
+  background: #f0f9ff;
+  box-shadow: 0 4px 0 #0284c7;
+}
+.mode-card .m-icon { font-size: 2rem; display: block; margin-bottom: 4px; }
+.mode-card h3 { font-family: 'Outfit', sans-serif; font-size: 1.05rem; font-weight: 800; color: #0f172a; }
+.mode-card p { font-size: 0.775rem; color: #475569; margin-top: 3px; line-height: 1.25; font-weight: 700; }
+
+.play-btn {
+  width: 100%;
+  font-family: 'Outfit', sans-serif;
+  font-size: 1.2rem;
+  font-weight: 800;
+  padding: 13px;
+  border-radius: 99px;
+  border: none;
+  background: linear-gradient(135deg, #16a34a, #15803d);
+  color: #ffffff;
+  cursor: pointer;
+  box-shadow: 0 5px 0 #14532d, 0 8px 20px rgba(22,163,74,0.3);
+  margin-top: 4px;
+  touch-action: manipulation;
+}
+.play-btn:active { transform: translateY(3px); box-shadow: 0 2px 0 #14532d; }
+
+/* ══════════════════════════════════════════
+   MAIN GAMEPLAY CONTAINER (Compact & Elevated)
+   ══════════════════════════════════════════ */
+.game-wrap {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  padding: 4px 10px 10px;
+  max-width: 500px;
+  margin: 0 auto;
+  width: 100%;
+  gap: 6px;
+  min-height: 0;
+}
+
+/* TOP STATUS BAR (Alcancía, Modo, Puntos, Vidas) */
+.top-bar {
+  display: grid;
+  grid-template-columns: auto 1fr auto auto;
+  gap: 5px;
+  align-items: center;
+}
+
+.stat-badge {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 8px;
+  border-radius: 99px;
+  background: #ffffff;
+  border: 1.5px solid #cbd5e1;
+  font-size: 0.8rem;
+  color: #0f172a;
+  box-shadow: 0 2px 0 #cbd5e1;
+  font-weight: 800;
+  white-space: nowrap;
+}
+.stat-badge b { font-family: 'Inter', sans-serif; font-weight: 900; }
+.stat-badge.savings {
+  background: #fffbeb;
+  border-color: #f59e0b;
+  color: #b45309;
+}
+
+/* ══════════════════════════════════════════
+   STORYTELLING ENCARGO / NOTE BANNER
+   ══════════════════════════════════════════ */
+.story-card {
+  background: #ffffff;
+  border: 2px solid #38bdf8;
+  border-radius: 16px;
+  padding: 8px 12px;
+  box-shadow: 0 3px 0 #0284c7;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.story-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.story-sender {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-family: 'Outfit', sans-serif;
+  font-size: 0.85rem;
+  font-weight: 800;
+  color: #0369a1;
+  text-transform: uppercase;
+}
+
+.story-budget-pill {
+  font-family: 'Inter', sans-serif;
+  font-size: 0.85rem;
+  font-weight: 900;
+  color: #15803d;
+  background: #dcfce7;
+  padding: 2px 8px;
+  border-radius: 8px;
+  border: 1px solid #86efac;
+}
+
+.story-dialogue {
+  font-family: 'Nunito', sans-serif;
+  font-size: 0.975rem;
+  line-height: 1.35;
+  color: #0f172a;
+  font-weight: 800;
+}
+
+/* ══════════════════════════════════════════
+   STEP PROGRESS BAR
+   ══════════════════════════════════════════ */
+.step-bar {
+  display: flex;
+  gap: 4px;
+  background: #ffffff;
+  border: 1.5px solid #cbd5e1;
+  border-radius: 10px;
+  padding: 2px;
+  box-shadow: 0 1.5px 0 #e2e8f0;
+}
+
+.step-item {
+  flex: 1;
+  text-align: center;
+  font-family: 'Outfit', sans-serif;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #64748b;
+  padding: 3px 2px;
+  border-radius: 7px;
+  transition: all 0.15s ease;
+}
+.step-item.active {
+  background: #0284c7;
+  color: #ffffff;
+  box-shadow: 0 2px 0 #0369a1;
+}
+.step-item.done {
+  background: #dcfce7;
+  color: #15803d;
+}
+
+/* ══════════════════════════════════════════
+   STAGE PANELS
+   ══════════════════════════════════════════ */
+.stage-panel {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  min-height: 0;
+  gap: 6px;
+}
+
+/* 1. STORE SHELF */
+.shelf-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-family: 'Outfit', sans-serif;
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: #475569;
+}
+
+.shelf-scroll-area {
+  flex: 1;
+  overflow-y: auto;
+  max-height: 220px;
+  background: #fed7aa;
+  border: 2.5px solid #ea580c;
+  border-radius: 16px;
+  padding: 6px;
+  box-shadow: inset 0 3px 6px rgba(0,0,0,0.08);
+}
+
+.shelf-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 6px;
+}
+
+.shelf-item {
+  background: #ffffff;
+  border: 1.5px solid #cbd5e1;
+  border-radius: 12px;
+  padding: 6px 4px;
+  text-align: center;
+  cursor: pointer;
+  position: relative;
+  box-shadow: 0 2.5px 0 #cbd5e1;
+  transition: all 0.12s ease;
+  touch-action: manipulation;
+}
+.shelf-item:active { transform: translateY(1.5px); box-shadow: none; }
+.shelf-item.in-cart {
+  background: #dbeafe;
+  border-color: #0284c7;
+  box-shadow: 0 2.5px 0 #0284c7;
+}
+.shelf-item.treat-item {
+  background: #fdf4ff;
+  border-color: #d946ef;
+}
+.shelf-item .si-emoji { font-size: 1.6rem; line-height: 1; }
+.shelf-item .si-name { font-size: 0.725rem; font-weight: 800; color: #0f172a; margin-top: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; padding: 0 2px; }
+.shelf-item .si-price { font-size: 0.825rem; font-weight: 900; color: #16a34a; font-family: 'Inter', sans-serif; margin-top: 1px; }
+.shelf-item .si-qty {
+  position: absolute;
+  top: -4px;
+  right: -4px;
+  background: #0284c7;
+  color: #ffffff;
+  font-size: 0.7rem;
+  font-weight: 900;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* 2. MATH NOTEPAD (Suma interactiva) */
+.math-notepad {
+  background: #ffffff;
+  border: 2px dashed #0284c7;
+  border-radius: 14px;
+  padding: 8px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  box-shadow: 0 3px 0 #e2e8f0;
+}
+
+.math-title {
+  font-family: 'Outfit', sans-serif;
+  font-size: 0.85rem;
+  font-weight: 800;
+  color: #0369a1;
+  text-align: center;
+}
+
+.math-items-list {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  max-height: 80px;
+  overflow-y: auto;
+}
+
+.math-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.825rem;
+  font-weight: 800;
+  padding: 2px 4px;
+  border-bottom: 1px solid #f1f5f9;
+}
+
+.math-input-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 2px;
+  padding-top: 3px;
+  border-top: 2px solid #cbd5e1;
+}
+
+.math-input-lbl { font-family: 'Outfit', sans-serif; font-size: 0.85rem; font-weight: 800; color: #0f172a; }
+.math-input-val {
+  font-family: 'Inter', sans-serif;
+  font-size: 1.15rem;
+  font-weight: 900;
+  color: #0284c7;
+  background: #f0f9ff;
+  border: 2px solid #0284c7;
+  border-radius: 8px;
+  padding: 3px 8px;
+  text-align: center;
+  width: 110px;
+}
+
+/* 3. CASHIER CUSTOMER MAT (Modo Cajero) */
+.customer-mat {
+  background: #ffffff;
+  border: 2px solid #cbd5e1;
+  border-radius: 14px;
+  padding: 8px 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  box-shadow: 0 3px 0 #cbd5e1;
+}
+
+.customer-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.customer-avatar { font-size: 2rem; line-height: 1; }
+.customer-speech { font-family: 'Nunito', sans-serif; font-size: 0.95rem; font-weight: 800; color: #0f172a; line-height: 1.25; }
+
+.customer-breakdown-box {
+  background: #f8fafc;
+  border: 1.5px solid #e2e8f0;
+  border-radius: 10px;
+  padding: 5px 8px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  align-items: center;
+}
+.breakdown-chip {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  background: #ffffff;
+  border: 1px solid #cbd5e1;
+  border-radius: 6px;
+  padding: 2px 6px;
+  font-size: 0.75rem;
+  font-weight: 800;
+  color: #0f172a;
+}
+
+/* ══════════════════════════════════════════
+   AUTHENTIC CHILEAN CASH REGISTER (CAJA REGISTRADORA)
+   ══════════════════════════════════════════ */
+.till-box {
+  background: #ffffff;
+  border: 2px solid #cbd5e1;
+  border-radius: 14px;
+  padding: 6px 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  box-shadow: 0 3px 0 #cbd5e1;
+}
+
+.till-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 4px;
+}
+.till-title { font-family: 'Outfit', sans-serif; font-size: 0.775rem; font-weight: 800; color: #475569; text-transform: uppercase; }
+.tray-total-display { font-family: 'Inter', sans-serif; font-size: 1.15rem; font-weight: 900; color: #0284c7; }
+
+.till-row {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 4px;
+}
+
+.money-btn {
+  background: #ffffff;
+  border: 1.5px solid #cbd5e1;
+  border-radius: 10px;
+  padding: 5px 1px;
+  text-align: center;
+  cursor: pointer;
+  position: relative;
+  touch-action: manipulation;
+  box-shadow: 0 2.5px 0 #cbd5e1;
+  transition: all 0.1s ease;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+.money-btn:active { transform: translateY(1.5px); box-shadow: 0 1px 0 #cbd5e1; }
+.money-btn.depleted {
+  opacity: 0.3;
+  pointer-events: none;
+  background: #f1f5f9;
+}
+
+/* CHILEAN CURRENCY STYLES */
+.money-btn.coin-10 {
+  background: linear-gradient(135deg, #fff7ed 0%, #ffedd5 100%);
+  border-color: #b45309;
+  box-shadow: 0 2.5px 0 #78350f;
+  color: #78350f;
+}
+.money-btn.coin-50 {
+  background: linear-gradient(135deg, #fefce8 0%, #fef08a 100%);
+  border-color: #ca8a04;
+  box-shadow: 0 2.5px 0 #a16207;
+  color: #854d0e;
+}
+.money-btn.coin-100 {
+  background: linear-gradient(135deg, #fffbeb 0%, #fde68a 100%);
+  border-color: #d97706;
+  box-shadow: 0 2.5px 0 #b45309;
+  color: #78350f;
+}
+.money-btn.coin-500 {
+  background: linear-gradient(135deg, #fef9c3 0%, #e2e8f0 100%);
+  border-color: #eab308;
+  box-shadow: 0 2.5px 0 #ca8a04;
+  color: #713f12;
+}
+
+.money-btn.bill-1000 {
+  background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);
+  border-color: #16a34a;
+  box-shadow: 0 2.5px 0 #15803d;
+  color: #14532d;
+}
+.money-btn.bill-2000 {
+  background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+  border-color: #0284c7;
+  box-shadow: 0 2.5px 0 #0369a1;
+  color: #0c4a6e;
+}
+.money-btn.bill-5000 {
+  background: linear-gradient(135deg, #fff1f2 0%, #ffe4e6 100%);
+  border-color: #e11d48;
+  box-shadow: 0 2.5px 0 #be123c;
+  color: #881337;
+}
+
+.m-icon { font-size: 1.1rem; line-height: 1; }
+.m-val { font-family: 'Inter', sans-serif; font-size: 0.75rem; font-weight: 900; margin-top: 1px; }
+.m-badge {
+  font-family: 'Inter', sans-serif;
+  font-size: 0.625rem;
+  font-weight: 900;
+  background: #0f172a;
+  color: #ffffff;
+  padding: 0 4px;
+  border-radius: 4px;
+  margin-top: 1px;
+}
+
+/* ══════════════════════════════════════════
+   NUMERIC KEYPAD
+   ══════════════════════════════════════════ */
+.numpad-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 4px;
+}
+.numpad-btn {
+  font-family: 'Outfit', sans-serif;
+  font-size: 1.25rem;
+  font-weight: 700;
+  padding: 7px 0;
+  border-radius: 10px;
+  background: #ffffff;
+  border: 1.5px solid #cbd5e1;
+  box-shadow: 0 2.5px 0 #cbd5e1;
+  color: #0f172a;
+  cursor: pointer;
+  touch-action: manipulation;
+}
+.numpad-btn:active { transform: translateY(1.5px); box-shadow: 0 1px 0 #cbd5e1; }
+
+/* ══════════════════════════════════════════
+   ELEVATED & PROMINENT ACTION ROW (NO AT THE VERY BOTTOM)
+   ══════════════════════════════════════════ */
+.action-row {
+  display: grid;
+  grid-template-columns: 1fr 2fr;
+  gap: 6px;
+  margin-top: 4px;
+}
+
+.btn-sec {
+  background: #fee2e2;
+  border: 1.5px solid #fca5a5;
+  color: #dc2626;
+  font-family: 'Outfit', sans-serif;
+  font-weight: 700;
+  font-size: 0.95rem;
+  border-radius: 14px;
+  cursor: pointer;
+  box-shadow: 0 3px 0 #f87171;
+  touch-action: manipulation;
+  padding: 10px 4px;
+}
+.btn-sec:active { transform: translateY(2px); box-shadow: 0 1px 0 #f87171; }
+
+.btn-main {
+  padding: 11px 8px;
+  min-height: 46px;
+  background: linear-gradient(135deg, #16a34a, #15803d);
+  color: #ffffff;
+  font-family: 'Outfit', sans-serif;
+  font-weight: 800;
+  font-size: 1.05rem;
+  border-radius: 14px;
+  border: none;
+  cursor: pointer;
+  box-shadow: 0 4px 0 #14532d;
+  touch-action: manipulation;
+}
+.btn-main:active { transform: translateY(2px); box-shadow: 0 2px 0 #14532d; }
+
+@media (max-width: 480px) {
+  .game-wrap { padding: 4px 6px 8px; gap: 4px; }
+  .story-dialogue { font-size: 0.9rem; }
+  .shelf-scroll-area { max-height: 190px; }
+  .shelf-item .si-emoji { font-size: 1.35rem; }
+  .money-btn { padding: 3px 1px; }
+  .m-val { font-size: 0.725rem; }
+}
+</style>
+<!-- SUPER RESPONSIVE MOBILE OPTIMIZATIONS — RAKINMATH -->
+<style id="rakin-mobile-responsiveness">
+* { -webkit-tap-highlight-color: transparent; }
+html, body { max-width: 100%; overflow-x: hidden; }
+img, svg, video, canvas { max-width: 100%; }
+button, a, input, select, textarea, .btn, .choice-btn, .opt-btn, .game-btn, .nav-btn, .action-btn {
+  touch-action: manipulation;
+}
+@media (max-width: 600px) {
+  input, select, textarea { font-size: 16px !important; }
+  button, .btn, .choice-btn, .opt-btn, .game-btn, .nav-btn, .action-btn { min-height: 44px; }
+}
 </style>
 </head>
-<body>
+<body class="game-bg game-mercado">
 
-<!-- ═══════ MENU ═══════ -->
+<nav class="nav">
+  <div class="nav-title">
+    <img src="../Recursos/LogoRakinMath.png" alt="RakinMath" style="height:22px;width:auto">
+    <span>El Mercado Chileno</span>
+  </div>
+  <button class="exit-btn" onclick="window.location.href='menu-v3.html'">Salir</button>
+</nav>
+<div class="market-awning"></div>
+
+<!-- ═══ MENU ═══ -->
 <div class="screen active" id="scr-menu">
-<button class="exit-btn" onclick="window.location.href='menu.html'" style="position:absolute;top:12px;right:12px;z-index:10">Salir</button>
-<div class="menu-inner">
-<div class="menu-header">
-<div class="emoji">🛒</div>
-<h1>El Mercado Chileno</h1>
-<p>Compra productos, paga y recibe el vuelto correcto. ¡Aprende a manejar dinero chileno!</p>
+  <div class="menu-inner">
+    <div class="menu-banner">
+      <div class="emoji">🏪</div>
+      <h1>El Mercado Chileno</h1>
+      <p>Aprende a comprar con presupuesto, sumar en tu libreta y dar vuelto con monedas y billetes reales.</p>
+    </div>
+
+    <div class="mode-grid">
+      <div class="mode-card sel" data-m="cliente" onclick="pickMode(this)">
+        <span class="m-icon">🛍️</span>
+        <h3>Modo Cliente</h3>
+        <p>Cumple los encargos, calcula tus sumas y ¡quédate con lo que sobre en tu alcancía!</p>
+      </div>
+      <div class="mode-card" data-m="cajero" onclick="pickMode(this)">
+        <span class="m-icon">🧮</span>
+        <h3>Modo Cajero</h3>
+        <p>Los clientes pagan con monedas y billetes mezclados. ¡Calcula y entrega el vuelto con stock limitado!</p>
+      </div>
+    </div>
+
+    <button class="play-btn" onclick="startGame()">🛒 ¡Comenzar a Jugar!</button>
+  </div>
 </div>
 
-<div class="sec" style="width:100%;max-width:400px">
-<div class="sec-title">Dificultad</div>
-<div class="diff-grid" id="diffGrid">
-<div class="diff-card sel" data-d="facil" onclick="setDiff(this)">
-<span class="de">🌱</span><h3>Fácil</h3><p>Sin vuelto, precios bajos</p>
-</div>
-<div class="diff-card" data-d="normal" onclick="setDiff(this)">
-<span class="de">🔥</span><h3>Normal</h3><p>Vuelto simple, propina</p>
-</div>
-<div class="diff-card" data-d="dificil" onclick="setDiff(this)">
-<span class="de">⚡</span><h3>Difícil</h3><p>Vuelto exacto, sin calculadora</p>
-</div>
-</div>
-</div>
-
-<button class="play-btn" onclick="goGame()">Comenzar a comprar 🛒</button>
-</div>
-</div>
-
-<!-- ═══════ GAME ═══════ -->
+<!-- ═══ GAME SCREEN ═══ -->
 <div class="screen" id="scr-game">
-<div class="game-top">
-<div class="gt-row">
-<div class="gt-pill budget"><span>💰</span><span class="v" id="g-budget">$5.000</span></div>
-<div class="gt-pill"><span>🛒</span><span class="v" id="g-items">0</span> items</div>
-<div class="gt-pill"><span>⏱️</span><span class="v" id="g-time">2:00</span></div>
-</div>
-<div class="timer-bar"><div class="timer-fill" id="t-fill" style="width:100%"></div></div>
-</div>
+  <div class="game-wrap">
+    <!-- TOP STATUS -->
+    <div class="top-bar">
+      <div class="stat-badge savings">🐷 Alcancía: <b id="savings-txt">$2.000</b></div>
+      <div class="stat-badge" style="justify-content:center" id="mode-badge">🛍️ Modo Cliente</div>
+      <div class="stat-badge">⭐ <b id="score-txt" style="color:#0284c7">0</b></div>
+      <div class="stat-badge" id="lives-badge">❤️❤️❤️</div>
+    </div>
 
-<div class="cart-strip" id="cart-strip">
-<div class="cart-empty">Toca un producto para agregarlo al carro 🛒</div>
-</div>
+    <!-- STORYTELLING / MISSION CARD -->
+    <div class="story-card">
+      <div class="story-header">
+        <span class="story-sender" id="story-sender">👩 Mamá te encargó:</span>
+        <span class="story-budget-pill" id="story-budget-pill">Presupuesto: $8.000</span>
+      </div>
+      <div class="story-dialogue" id="story-dialogue">
+        "¡Hola mi niño! Por favor ve al almacén y tráeme: 2 Kilos de Tomates, 1 Jugo y 3 Empanadas. Te paso $8.000. Si te sobra plata, ¡puedes comprarte un dulce o helado para ti!"
+      </div>
+    </div>
 
-<div class="shelf-area" id="shelf-area"></div>
+    <!-- STEP PROGRESS BAR -->
+    <div class="step-bar">
+      <div class="step-item active" id="step-1">1. Elegir en Repisas</div>
+      <div class="step-item" id="step-2">2. Sumar en Libreta</div>
+      <div class="step-item" id="step-3">3. Pagar en Caja</div>
+    </div>
 
-<div class="checkout-bar">
-<div class="checkout-total">
-<div class="ct-lbl">Total</div>
-<div class="ct-val" id="cart-total">$0</div>
-</div>
-<button class="pay-btn" id="pay-btn" onclick="openCheckout()" disabled>Ir a pagar 💳</button>
-</div>
-</div>
+    <!-- ═══ STAGE 1: SHELF SELECTION (MODO CLIENTE) ═══ -->
+    <div class="stage-panel" id="panel-shelf">
+      <div class="shelf-header">
+        <span>🏪 Mira los precios en las repisas y carga al carro:</span>
+        <span id="shelf-cart-summary" style="color:#0284c7;font-weight:900">0 en carro</span>
+      </div>
+      <div class="shelf-scroll-area">
+        <div class="shelf-grid" id="shelf-container"></div>
+      </div>
+    </div>
 
-<!-- ═══════ CHECKOUT MODAL ═══════ -->
-<div class="modal-overlay" id="checkout-modal">
-<div class="modal">
-<h2>💳 Pagar</h2>
-<div class="modal-items" id="modal-items"></div>
-<div class="modal-total">
-<span>Total</span><span id="modal-total">$0</span>
-</div>
+    <!-- ═══ STAGE 2: MATH NOTEPAD (SUMAR PRECIOS O CALCULAR VUELTO) ═══ -->
+    <div class="stage-panel" id="panel-math" style="display:none">
+      <div class="math-notepad">
+        <div class="math-title" id="math-title">🧮 Libreta de Cuentas: Suma los productos de tu carro</div>
+        <div class="math-items-list" id="math-items-list"></div>
+        <div class="math-input-row">
+          <span class="math-input-lbl" id="math-input-lbl">Total Calculado:</span>
+          <div class="math-input-val" id="math-typed-val">$0</div>
+        </div>
+      </div>
+      <!-- NUMPAD -->
+      <div class="numpad-grid">
+        <button class="numpad-btn" onclick="numpadPress('1')">1</button>
+        <button class="numpad-btn" onclick="numpadPress('2')">2</button>
+        <button class="numpad-btn" onclick="numpadPress('3')">3</button>
+        <button class="numpad-btn" onclick="numpadPress('4')">4</button>
+        <button class="numpad-btn" onclick="numpadPress('5')">5</button>
+        <button class="numpad-btn" onclick="numpadPress('6')">6</button>
+        <button class="numpad-btn" onclick="numpadPress('7')">7</button>
+        <button class="numpad-btn" onclick="numpadPress('8')">8</button>
+        <button class="numpad-btn" onclick="numpadPress('9')">9</button>
+        <button class="numpad-btn" onclick="numpadPress('0')">0</button>
+        <button class="numpad-btn" onclick="numpadPress('00')">00</button>
+        <button class="numpad-btn" style="background:#fee2e2;color:#dc2626" onclick="numpadPress('DEL')">⌫</button>
+      </div>
+    </div>
 
-<div class="pay-section" id="pay-section">
-<label>¿Cuánto pagas?</label>
-<input class="pay-input" type="number" id="pay-input" placeholder="$" inputmode="numeric">
-</div>
+    <!-- ═══ STAGE 3: CASHIER PAYMENT MAT (MODO CAJERO) ═══ -->
+    <div class="stage-panel" id="panel-cashier-mat" style="display:none">
+      <div class="customer-mat">
+        <div class="customer-header">
+          <div class="customer-avatar" id="c-avatar">🦊</div>
+          <div class="customer-speech" id="c-speech">"¡Hola vecino! Aquí tienes mi dinero..."</div>
+        </div>
+        <div class="customer-breakdown-box" id="c-breakdown"></div>
+      </div>
+    </div>
 
-<div class="change-display" id="change-display" style="display:none">
-<div class="cd-emoji">🎉</div>
-<div class="cd-text" id="cd-text">Vuelto</div>
-<div class="cd-val" id="cd-val">$0</div>
-</div>
+    <!-- ═══ CASH REGISTER DRAWER (PAGO O VUELTO) ═══ -->
+    <div class="till-box" id="panel-till" style="display:none">
+      <div class="till-header">
+        <span class="till-title" id="till-title">💵 Bandeja de Dinero:</span>
+        <span class="tray-total-display" id="tray-sum">$0</span>
+      </div>
 
-<div class="modal-btns" id="modal-btns">
-<button class="btn-cancel" onclick="closeCheckout()">Cancelar</button>
-<button class="btn-pay" id="btn-confirm" onclick="confirmPayment()">Pagar 💳</button>
-</div>
-</div>
-</div>
+      <!-- Monedas -->
+      <div class="till-row">
+        <button class="money-btn coin-10" id="btn-coin-10" onclick="clickCurrency(10)">
+          <span class="m-icon">🪙</span>
+          <span class="m-val">$10</span>
+          <span class="m-badge" id="badge-10">×5</span>
+        </button>
+        <button class="money-btn coin-50" id="btn-coin-50" onclick="clickCurrency(50)">
+          <span class="m-icon">🪙</span>
+          <span class="m-val">$50</span>
+          <span class="m-badge" id="badge-50">×5</span>
+        </button>
+        <button class="money-btn coin-100" id="btn-coin-100" onclick="clickCurrency(100)">
+          <span class="m-icon">🪙</span>
+          <span class="m-val">$100</span>
+          <span class="m-badge" id="badge-100">×8</span>
+        </button>
+        <button class="money-btn coin-500" id="btn-coin-500" onclick="clickCurrency(500)">
+          <span class="m-icon">🪙</span>
+          <span class="m-val">$500</span>
+          <span class="m-badge" id="badge-500">×4</span>
+        </button>
+      </div>
 
-<!-- ═══════ RESULTS ═══════ -->
-<div class="screen" id="scr-res">
-<div class="res-inner">
-<div class="res-emoji" id="r-em">🎉</div>
-<div class="res-title" id="r-ti">¡Excelente!</div>
-<div class="res-grid">
-<div class="rc g"><div class="rv" id="r-buy">0</div><div class="rl">Compraste</div></div>
-<div class="rc b"><div class="rv" id="r-acc">0%</div><div class="rl">Precisión</div></div>
-<div class="rc o"><div class="rv" id="r-chg">$0</div><div class="rl">Vuelto total</div></div>
-<div class="rc"><div class="rv" id="r-score">0</div><div class="rl">Puntaje</div></div>
-</div>
-<div class="res-btns">
-<button class="play-btn" onclick="goGame()">Jugar de nuevo</button>
-<button class="btn-end" onclick="goMenu()">Cambiar modo</button>
-</div>
-</div>
+      <!-- Billetes -->
+      <div class="till-row" style="grid-template-columns: repeat(3, 1fr)">
+        <button class="money-btn bill-1000" id="btn-bill-1000" onclick="clickCurrency(1000)">
+          <span class="m-icon">💵</span>
+          <span class="m-val">$1.000</span>
+          <span class="m-badge" id="badge-1000">×5</span>
+        </button>
+        <button class="money-btn bill-2000" id="btn-bill-2000" onclick="clickCurrency(2000)">
+          <span class="m-icon">💵</span>
+          <span class="m-val">$2.000</span>
+          <span class="m-badge" id="badge-2000">×3</span>
+        </button>
+        <button class="money-btn bill-5000" id="btn-bill-5000" onclick="clickCurrency(5000)">
+          <span class="m-icon">💵</span>
+          <span class="m-val">$5.000</span>
+          <span class="m-badge" id="badge-5000">×2</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- ELEVATED ACTION ROW -->
+    <div class="action-row">
+      <button class="btn-sec" id="btn-sec-action" onclick="handleSecondaryAction()">🗑️ Vaciar</button>
+      <button class="btn-main" id="btn-main-action" onclick="handleMainAction()">✓ Ir a Sumar</button>
+    </div>
+  </div>
 </div>
 
 <script>
-/* ═══ PRODUCTS DATABASE ═══ */
-var products=[
-// Frutas y verduras
-{e:'🍌',n:'Plátano',p:290,cat:'Frutas'},
-{e:'🍎',n:'Manzana',p:350,cat:'Frutas'},
-{e:'🍊',n:'Naranja',p:400,cat:'Frutas'},
-{e:'🍇',n:'Uvas',p:890,cat:'Frutas'},
-{e:'🍓',n:'Fresas',p:1200,cat:'Frutas'},
-{e:'🥑',n:'Palta',p:790,cat:'Frutas'},
-{e:'🥕',n:'Zanahoria',p:250,cat:'Verduras'},
-{e:'🥔',n:'Papa',p:380,cat:'Verduras'},
-{e:'🍅',n:'Tomate',p:450,cat:'Verduras'},
-{e:'🧅',n:'Cebolla',p:320,cat:'Verduras'},
-{e:'🥦',n:'Brócoli',p:690,cat:'Verduras'},
-{e:'🌽',n:'Choclo',p:500,cat:'Verduras'},
-// Lácteos
-{e:'🥛',n:'Leche',p:850,cat:'Lácteos'},
-{e:'🧀',n:'Queso',p:1500,cat:'Lácteos'},
-{e:'🧈',n:'Mantequilla',p:1200,cat:'Lácteos'},
-{e:'🥚',n:'Huevos (12)',p:2200,cat:'Lácteos'},
-// Panadería
-{e:'🍞',n:'Pan',p:450,cat:'Panadería'},
-{e:'🥐',n:'Croissant',p:650,cat:'Panadería'},
-{e:'🥖',n:'Barra de pan',p:800,cat:'Panadería'},
-// Bebidas
-{e:'🧃',n:'Jugo',p:590,cat:'Bebidas'},
-{e:'🥤',n:'Agua',p:400,cat:'Bebidas'},
-{e:'☕',n:'Café',p:1500,cat:'Bebidas'},
-// Snacks
-{e:'🍪',n:'Galletas',p:650,cat:'Snacks'},
-{e:'🍫',n:'Chocolate',p:990,cat:'Snacks'},
-{e:'🍿',n:'Palomitas',p:750,cat:'Snacks'},
-// Otros
-{e:'🧻',n:'Papel',p:1100,cat:'Hogar'},
-{e:'🧼',n:'Jabón',p:690,cat:'Hogar'},
-{e:'✏️',n:'Lápices',p:450,cat:'Utiles'},
-{e:'📏',n:'Regla',p:350,cat:'Utiles'},
-{e:'📓',n:'Cuaderno',p:890,cat:'Utiles'}
+/* ══════════════════════════════════════════
+   WEB AUDIO SOUND EFFECTS
+   ══════════════════════════════════════════ */
+const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+
+function playSound(type) {
+  if (!audioCtx) return;
+  const now = audioCtx.currentTime;
+
+  if (type === 'coin') {
+    const osc = audioCtx.createOscillator();
+    const gain = audioCtx.createGain();
+    osc.type = 'sine';
+    osc.frequency.setValueAtTime(1400, now);
+    osc.frequency.exponentialRampToValueAtTime(2200, now + 0.08);
+    gain.gain.setValueAtTime(0.3, now);
+    gain.gain.exponentialRampToValueAtTime(0.01, now + 0.15);
+    osc.connect(gain);
+    gain.connect(audioCtx.destination);
+    osc.start(now);
+    osc.stop(now + 0.15);
+  } else if (type === 'cash') {
+    const osc = audioCtx.createOscillator();
+    const gain = audioCtx.createGain();
+    osc.type = 'triangle';
+    osc.frequency.setValueAtTime(800, now);
+    osc.frequency.setValueAtTime(1200, now + 0.06);
+    osc.frequency.setValueAtTime(1600, now + 0.12);
+    gain.gain.setValueAtTime(0.4, now);
+    gain.gain.exponentialRampToValueAtTime(0.01, now + 0.3);
+    osc.connect(gain);
+    gain.connect(audioCtx.destination);
+    osc.start(now);
+    osc.stop(now + 0.3);
+  }
+}
+
+/* ══════════════════════════════════════════
+   EXTENSIVE CHILEAN STORE CATALOG (OVER 20 PRODUCTS)
+   ══════════════════════════════════════════ */
+let gameMode = 'cliente';
+let currentStep = 1;
+let score = 0, lives = 3;
+let playerSavings = 2000;
+let sessionTotal = 0, sessionCorrect = 0, sessionWrong = 0, sessionTimer = 0, sessionRound = 0;
+
+const fullGroceries = [
+  { id: 'tomate', icon: '🍅', name: 'Kilo de Tomates', price: 1500 },
+  { id: 'pan_m', icon: '🥖', name: 'Pan Marraqueta', price: 1800 },
+  { id: 'pan_h', icon: '🍞', name: 'Pan Hallulla', price: 1600 },
+  { id: 'empanada_p', icon: '🥟', name: 'Empanada Pino', price: 2000 },
+  { id: 'empanada_q', icon: '🧀', name: 'Empanada Queso', price: 1800 },
+  { id: 'palta', icon: '🥑', name: 'Kilo de Palta Hass', price: 3500 },
+  { id: 'papas', icon: '🥔', name: 'Malla de Papas', price: 2200 },
+  { id: 'cebollas', icon: '🧅', name: 'Kilo de Cebollas', price: 1100 },
+  { id: 'zanahorias', icon: '🥕', name: 'Kilo de Zanahorias', price: 900 },
+  { id: 'mote', icon: '🥤', name: 'Mote con Huesillo', price: 1500 },
+  { id: 'sandia', icon: '🍉', name: 'Trozo de Sandía', price: 2500 },
+  { id: 'manzanas', icon: '🍎', name: 'Kilo de Manzanas', price: 1300 },
+  { id: 'platanos', icon: '🍌', name: 'Kilo de Plátanos', price: 1400 },
+  { id: 'leche', icon: '🥛', name: 'Litro de Leche', price: 1100 },
+  { id: 'mantequilla', icon: '🧈', name: 'Mantequilla', price: 1700 },
+  { id: 'jugo', icon: '🧃', name: 'Jugo Natural', price: 1200 },
+  { id: 'huevos', icon: '🥚', name: 'Bandeja de Huevos', price: 2800 }
 ];
 
-/* ═══ STATE ═══ */
-var diff='facil',budget=5000,tL=120,tmr=null;
-var cart=[],totalBought=0,totalCorrect=0,totalChange=0,score=0;
-var roundNum=0,maxRounds=5;
+const fullTreats = [
+  { id: 'helado', icon: '🍦', name: 'Helado Chocolate', price: 800, isTreat: true },
+  { id: 'super8', icon: '🍫', name: 'Super Ocho', price: 400, isTreat: true },
+  { id: 'chupetin', icon: '🍭', name: 'Dulce Chupetín', price: 300, isTreat: true },
+  { id: 'galletas', icon: '🍪', name: 'Galletas Champaña', price: 700, isTreat: true },
+  { id: 'donut', icon: '🍩', name: 'Donut Glaseada', price: 900, isTreat: true }
+];
 
-function setDiff(el){
-document.querySelectorAll('.diff-card').forEach(function(c){c.classList.remove('sel')});
-el.classList.add('sel');diff=el.dataset.d;
-if(diff==='facil'){budget=5000;maxRounds=5}
-else if(diff==='normal'){budget=10000;maxRounds=7}
-else{budget=15000;maxRounds=10}
+// Rich Pool of Family Senders and Situations (Buyer Mode)
+const familySenders = [
+  {
+    sender: '👩 Mamá te encargó:',
+    templates: [
+      '¡Hola mi niño! Por favor ve al almacén y tráeme: {items}. Te paso {budget}. Si te sobra plata, ¡cómprate un rico dulce o helado para ti! 🍦',
+      '¡Hola corazón! Necesito para cocinar hoy: {items}. Llevas {budget}, recuerda guardar en tu alcancía lo que te sobre.'
+    ]
+  },
+  {
+    sender: '👨 Papá te pidió:',
+    templates: [
+      '¡Hola campeón! Pásate a la feria y tráeme: {items}. Te doy {budget}. Si te alcanza para un dulce, ¡te lo compras!',
+      '¡Holi! ¿Me ayudas con la once? Necesito: {items}. Te paso {budget}, ¡cuida bien el vuelto que te sobre!'
+    ]
+  },
+  {
+    sender: '👵 Abuelita te mandó:',
+    templates: [
+      '¡Hola tesoro! Se me acabaron las cosas para el almuerzo: {items}. Te entrego {budget}, ¡lo que sobre es tu premio para la alcancía! 🐷',
+      '¡Hola regalón! Ve rapidito al negocio y tráeme: {items}. Aquí tienes {budget}, puedes comprarte un heladito si te sobra plata.'
+    ]
+  },
+  {
+    sender: '👦 Hermano mayor:',
+    templates: [
+      '¡Hola! Hazme la paleteada de ir a comprar: {items}. Te paso {budget}, quédate con el vuelto para tus ahorros 🚀',
+      '¡Buenas! Necesitamos urgente para la once: {items}. Toma {budget}, ¡aprovecha de comprarte algo rico si te alcanza!'
+    ]
+  }
+];
+
+const customerAvatars = [
+  { icon: '🦊', name: 'Don Zorro', phrase: '¡Hola vecino! Vengo por mi encargo del día.' },
+  { icon: '🐼', name: 'Doña Panda', phrase: '¡Buenas tardes! Vengo a comprar estas cositas.' },
+  { icon: '🦁', name: 'Don León', phrase: '¡Hola amigo! Por favor cóbrame estos productos.' },
+  { icon: '🐶', name: 'Perrito Vecino', phrase: '¡Hola! Llevo esto para el almuerzo en casa.' },
+  { icon: '🐰', name: 'Conejita', phrase: '¡Hola! Aquí tienes mi dinero, ¿cuánto vuelto me das?' }
+];
+
+// Round State
+let currentShelfItems = [];
+let requiredItems = []; // [{ item, qty }]
+let cartItems = [];     // [{ item, qty }]
+let actualGroceryTotal = 0;
+let budgetGiven = 0;
+let typedMathVal = '';
+let targetVuelto = 0;
+let customerPaidTotal = 0;
+let customerPaidBreakdown = [];
+
+// Currency Stock
+let currencyStock = { 10: 5, 50: 5, 100: 8, 500: 4, 1000: 5, 2000: 3, 5000: 2 };
+let currencyUsed = { 10: 0, 50: 0, 100: 0, 500: 0, 1000: 0, 2000: 0, 5000: 0 };
+let currentTraySum = 0;
+
+function formatCLP(n) {
+  return '$' + n.toLocaleString('es-CL');
 }
 
-/* ═══ SCREENS ═══ */
-function showScr(id){document.querySelectorAll('.screen').forEach(function(s){s.classList.remove('active')});document.getElementById(id).classList.add('active')}
-function goMenu(){showScr('scr-menu')}
-function goGame(){
-cart=[];totalBought=0;totalCorrect=0;totalChange=0;score=0;roundNum=0;
-RK.Feedback.reset();
-tL=diff==='facil'?120:diff==='normal'?90:75;
-showScr('scr-game');
-document.getElementById('g-budget').textContent='$'+formatNum(budget);
-buildShelf();
-startTimer();
-}
-function goRes(){
-clearInterval(tmr);
-var acc=totalBought>0?Math.round(totalCorrect/totalBought*100):0;
-document.getElementById('r-buy').textContent=totalBought;
-document.getElementById('r-acc').textContent=acc+'%';
-document.getElementById('r-chg').textContent='$'+formatNum(totalChange);
-document.getElementById('r-score').textContent=score;
-document.getElementById('r-em').textContent=acc>=80?'🎉':acc>=50?'👍':'💪';
-document.getElementById('r-ti').textContent=acc>=80?'¡Excelente comprador!':acc>=50?'¡Buen trabajo!':'Sigue practicando';
-try{if(typeof RK!=='undefined'&&RK.Stats)RK.Stats.saveGameResult('juego10',{score:score,rounds:totalBought,totalTime:(diff==='facil'?120:diff==='normal'?90:75)-tL,correct:totalCorrect,wrong:totalBought-totalCorrect,errors:['dinero','vuelto']})}catch(e){}
-showScr('scr-res');
+function pickMode(el) {
+  document.querySelectorAll('.mode-card').forEach(c => c.classList.remove('sel'));
+  el.classList.add('sel');
+  gameMode = el.dataset.m;
 }
 
-/* ═══ TIMER ═══ */
-function startTimer(){
-uTime();
-tmr=setInterval(function(){tL-=1;if(tL<=0){tL=0;clearInterval(tmr);goRes();return}uTime()},1000);
-}
-function uTime(){
-var m=Math.floor(tL/60),s=tL%60;
-document.getElementById('g-time').textContent=m+':'+(s<10?'0':'')+s;
-var pct=tL/(diff==='facil'?120:diff==='normal'?90:75)*100;
-var f=document.getElementById('t-fill');
-f.style.width=pct+'%';
-f.className='timer-fill'+(tL<=10?' danger':tL<=20?' warn':'');
-}
+function startGame() {
+  document.getElementById('scr-menu').classList.remove('active');
+  document.getElementById('scr-game').classList.add('active');
 
-/* ═══ SHELF ═══ */
-function buildShelf(){
-var el=document.getElementById('shelf-area');
-var cats={};
-products.forEach(function(p,i){
-if(!cats[p.cat])cats[p.cat]=[];
-cats[p.cat].push(p);
-});
-var html='';
-var catNames=Object.keys(cats);
-catNames.forEach(function(cat){
-html+='<div class="shelf-title">'+cat+'</div><div class="shelf-grid">';
-cats[cat].forEach(function(p,i){
-var idx=products.indexOf(p);
-html+='<div class="shelf-item" id="pi-'+idx+'" onclick="addToCart('+idx+')">';
-html+='<span class="si-e">'+p.e+'</span>';
-html+='<div class="si-n">'+p.n+'</div>';
-html+='<div class="si-p">$'+formatNum(p.p)+'</div>';
-html+='</div>';
-});
-html+='</div>';
-});
-el.innerHTML=html;
+  RK.Stats.showRoundModal('El Mercado Chileno', '🛒', function(rounds) {
+    sessionTotal = rounds;
+    sessionTimer = Date.now();
+    playerSavings = 2000;
+    updateSavingsDOM();
+    startNewRound();
+  });
 }
 
-/* ═══ CART ═══ */
-function addToCart(idx){
-var p=products[idx];
-var newTotal=getCartTotal()+p.p;
-if(newTotal>budget){RK.Feedback.show('error','Sin plata','💸');return}
-cart.push({idx:idx,price:p.p});
-updateCart();
-// floating coin
-spawnCoin(document.getElementById('pi-'+idx));
-}
-function removeFromCart(ci){
-cart.splice(ci,1);
-updateCart();
-}
-function getCartTotal(){var t=0;cart.forEach(function(c){t+=c.price});return t}
-function updateCart(){
-var strip=document.getElementById('cart-strip');
-var total=getCartTotal();
-if(cart.length===0){
-strip.innerHTML='<div class="cart-empty">Toca un producto para agregarlo al carro 🛒</div>';
-}else{
-var html='';
-cart.forEach(function(c,i){
-var p=products[c.idx];
-html+='<div class="cart-item">';
-html+='<span class="ci-e">'+p.e+'</span>';
-html+='<div class="ci-p">$'+formatNum(c.price)+'</div>';
-html+='<button class="ci-r" onclick="removeFromCart('+i+')">✕</button>';
-html+='</div>';
-});
-strip.innerHTML=html;
-strip.scrollLeft=strip.scrollWidth;
-}
-document.getElementById('g-items').textContent=cart.length;
-document.getElementById('cart-total').textContent='$'+formatNum(total);
-document.getElementById('pay-btn').disabled=cart.length===0;
+function updateSavingsDOM() {
+  document.getElementById('savings-txt').textContent = formatCLP(playerSavings);
 }
 
-/* ═══ CHECKOUT ═══ */
-function openCheckout(){
-if(cart.length===0)return;
-var modal=document.getElementById('checkout-modal');
-var itemsEl=document.getElementById('modal-items');
-var total=getCartTotal();
-var html='';
-cart.forEach(function(c){
-var p=products[c.idx];
-html+='<div class="modal-row"><span class="mr-name">'+p.e+' '+p.n+'</span><span>$'+formatNum(c.price)+'</span></div>';
-});
-itemsEl.innerHTML=html;
-document.getElementById('modal-total').textContent='$'+formatNum(total);
-document.getElementById('pay-input').value='';
-document.getElementById('change-display').style.display='none';
-document.getElementById('pay-section').style.display='block';
-document.getElementById('modal-btns').style.display='flex';
-document.getElementById('btn-confirm').textContent='Pagar 💳';
-document.getElementById('btn-confirm').onclick=confirmPayment;
-modal.classList.add('open');
-document.getElementById('pay-input').focus();
-}
-function closeCheckout(){document.getElementById('checkout-modal').classList.remove('open')}
-
-function confirmPayment(){
-var total=getCartTotal();
-var paid=parseInt(document.getElementById('pay-input').value);
-if(isNaN(paid)||paid<=0){RK.Feedback.show('info','Escribe cuánto pagas','💰');return}
-if(paid<total){RK.Feedback.show('error','No alcanza','💸');return}
-
-var change=paid-total;
-var isCorrect=false;
-
-if(diff==='facil'){
-// In easy mode, any payment >= total is correct
-isCorrect=true;
-}else if(diff==='normal'){
-// In normal mode, must pay with common bills and get reasonable change
-isCorrect=paid>=total;
-}else{
-// In hard mode, must pay exact or with a common bill
-var commonBills=[500,1000,2000,5000,10000,15000,20000];
-isCorrect=commonBills.indexOf(paid)>-1||paid===total;
+function initCurrencyStock() {
+  currencyStock = {
+    10: Math.floor(Math.random() * 4) + 4,
+    50: Math.floor(Math.random() * 4) + 3,
+    100: Math.floor(Math.random() * 5) + 6,
+    500: Math.floor(Math.random() * 3) + 3,
+    1000: Math.floor(Math.random() * 3) + 4,
+    2000: Math.floor(Math.random() * 2) + 2,
+    5000: 2
+  };
+  currencyUsed = { 10: 0, 50: 0, 100: 0, 500: 0, 1000: 0, 2000: 0, 5000: 0 };
+  currentTraySum = 0;
+  updateCurrencyDOM();
 }
 
-totalBought++;
-if(isCorrect){totalCorrect++;score+=10;RK.Feedback.show('success')}
-else{score=Math.max(0,score-5);RK.Feedback.show('error','Pago incorrecto','💸')}
-totalChange+=change;
-
-// Show change
-document.getElementById('pay-section').style.display='none';
-document.getElementById('change-display').style.display='block';
-document.getElementById('cd-text').textContent=isCorrect?(change>0?'Tu vuelto: ¡Correcto! 🎉':'¡Pago exacto! 🎯'):'Vuelto calculado';
-document.getElementById('cd-val').textContent='$'+formatNum(change);
-document.getElementById('cd-val').style.color=isCorrect?'var(--green)':'var(--orange)';
-document.getElementById('btn-confirm').textContent='Siguiente →';
-document.getElementById('btn-confirm').onclick=function(){
-closeCheckout();
-roundNum++;
-if(roundNum>=maxRounds){goRes();return}
-// Reset cart and budget
-budget-=total;
-cart=[];
-updateCart();
-document.getElementById('g-budget').textContent='$'+formatNum(budget);
-};
+function updateCurrencyDOM() {
+  for (let val in currencyStock) {
+    const left = currencyStock[val] - currencyUsed[val];
+    const badge = document.getElementById(`badge-${val}`);
+    if (badge) badge.textContent = `×${left}`;
+    const btn = document.getElementById(val < 1000 ? `btn-coin-${val}` : `btn-bill-${val}`);
+    if (btn) btn.classList.toggle('depleted', left <= 0);
+  }
+  document.getElementById('tray-sum').textContent = formatCLP(currentTraySum);
 }
 
-/* ═══ HELPERS ═══ */
-function formatNum(n){return n.toString().replace(/\B(?=(\d{3})+(?!\d))/g,'.')}
-function spawnCoin(anchor){
-if(!anchor)return;
-var rect=anchor.getBoundingClientRect();
-var coin=document.createElement('div');
-coin.className='coin';
-coin.textContent='🪙';
-coin.style.left=(rect.left+rect.width/2-12)+'px';
-coin.style.top=(rect.top)+'px';
-document.body.appendChild(coin);
-setTimeout(function(){coin.remove()},1000);
+/* ══════════════════════════════════════════
+   START ROUND DISPATCHER
+   ══════════════════════════════════════════ */
+function startNewRound() {
+  initCurrencyStock();
+  typedMathVal = '';
+
+  if (gameMode === 'cliente') {
+    startBuyerRound();
+  } else {
+    startCashierRound();
+  }
 }
 
-/* ═══ KEYBOARD ═══ */
-document.getElementById('pay-input').addEventListener('keydown',function(e){if(e.key==='Enter')confirmPayment()});
+// ══════════════════════════════════════════
+// 1. MODO CLIENTE (Sin decir los precios en la frase!)
+// ══════════════════════════════════════════
+function startBuyerRound() {
+  currentStep = 1;
+  document.getElementById('mode-badge').textContent = '🛍️ Modo Cliente';
+  document.getElementById('step-1').textContent = '1. Elegir en Repisas';
+  document.getElementById('step-2').textContent = '2. Sumar en Libreta';
+  document.getElementById('step-3').textContent = '3. Pagar en Caja';
 
-/* ═══ INIT ═══ */
+  // Randomize shelf items (mix of 8-10 groceries + 2 treats)
+  const shuffledGroceries = [...fullGroceries].sort(() => Math.random() - 0.5);
+  const shelfGroceries = shuffledGroceries.slice(0, 9);
+  const shuffledTreats = [...fullTreats].sort(() => Math.random() - 0.5);
+  const shelfTreats = shuffledTreats.slice(0, 3);
+  currentShelfItems = [...shelfGroceries, ...shelfTreats].sort(() => Math.random() - 0.5);
+
+  // Pick 2 or 3 items from the shelf for the mission
+  const count = Math.random() < 0.5 ? 2 : 3;
+  requiredItems = [];
+  cartItems = [];
+  actualGroceryTotal = 0;
+
+  for (let i = 0; i < count; i++) {
+    const item = shelfGroceries[i];
+    const qty = Math.random() < 0.4 ? 2 : 1;
+    requiredItems.push({ item: item, qty: qty });
+    actualGroceryTotal += item.price * qty;
+  }
+
+  // Budget given is greater than total to allow surplus/treats
+  const surplus = Math.floor(Math.random() * 3 + 1) * 500;
+  budgetGiven = Math.ceil((actualGroceryTotal + surplus) / 1000) * 1000;
+
+  // Build the list of names WITHOUT prices (Player MUST look at shelf!)
+  const itemNamesList = requiredItems.map(req => {
+    return req.qty > 1 ? `${req.qty} ${req.item.name}` : req.item.name;
+  }).join(', ');
+
+  // Pick random family sender and random phrase template
+  const family = familySenders[~~(Math.random() * familySenders.length)];
+  const template = family.templates[~~(Math.random() * family.templates.length)];
+  const renderedDialogue = template
+    .replace('{items}', `<b>${itemNamesList}</b>`)
+    .replace('{budget}', `<b>${formatCLP(budgetGiven)}</b>`);
+
+  document.getElementById('story-sender').textContent = family.sender;
+  document.getElementById('story-budget-pill').textContent = `Presupuesto: ${formatCLP(budgetGiven)}`;
+  document.getElementById('story-dialogue').innerHTML = renderedDialogue;
+
+  setStepUI(1);
+  renderShelf();
+}
+
+function renderShelf() {
+  const container = document.getElementById('shelf-container');
+  container.innerHTML = '';
+
+  currentShelfItems.forEach(item => {
+    const cartEntry = cartItems.find(it => it.item.id === item.id);
+    const inCartQty = cartEntry ? cartEntry.qty : 0;
+
+    const card = document.createElement('div');
+    card.className = `shelf-item ${inCartQty > 0 ? 'in-cart' : ''} ${item.isTreat ? 'treat-item' : ''}`;
+    card.innerHTML = `
+      <div class="si-emoji">${item.icon}</div>
+      <div class="si-name">${item.name}</div>
+      <div class="si-price">${formatCLP(item.price)}</div>
+      ${inCartQty > 0 ? `<div class="si-qty">${inCartQty}</div>` : ''}
+    `;
+    card.onclick = () => {
+      playSound('coin');
+      addOrToggleCart(item);
+    };
+    container.appendChild(card);
+  });
+
+  const totalInCart = cartItems.reduce((acc, it) => acc + it.qty, 0);
+  document.getElementById('shelf-cart-summary').textContent = `${totalInCart} en carro`;
+}
+
+function addOrToggleCart(item) {
+  const req = requiredItems.find(it => it.item.id === item.id);
+  const cartEntry = cartItems.find(it => it.item.id === item.id);
+
+  if (item.isTreat) {
+    if (cartEntry) {
+      cartItems = cartItems.filter(it => it.item.id !== item.id);
+    } else {
+      cartItems.push({ item: item, qty: 1 });
+    }
+  } else {
+    if (!cartEntry) {
+      cartItems.push({ item: item, qty: 1 });
+    } else if (req && cartEntry.qty < req.qty) {
+      cartEntry.qty++;
+    } else {
+      cartItems = cartItems.filter(it => it.item.id !== item.id);
+    }
+  }
+  renderShelf();
+}
+
+// ══════════════════════════════════════════
+// 2. MODO CAJERO (Variedad de personajes y frases)
+// ══════════════════════════════════════════
+function startCashierRound() {
+  currentStep = 1;
+  document.getElementById('mode-badge').textContent = '🧮 Modo Cajero';
+  document.getElementById('step-1').textContent = '1. Revisar Compra';
+  document.getElementById('step-2').textContent = '2. Calcular Vuelto';
+  document.getElementById('step-3').textContent = '3. Entregar Vuelto';
+
+  const customer = customerAvatars[~~(Math.random() * customerAvatars.length)];
+  const shuffled = [...fullGroceries].sort(() => Math.random() - 0.5);
+  const p1 = shuffled[0];
+  const p2 = shuffled[1];
+
+  requiredItems = [{ item: p1, qty: 1 }, { item: p2, qty: 1 }];
+  actualGroceryTotal = p1.price + p2.price;
+
+  // Mixed realistic payment
+  customerPaidBreakdown = [];
+  if (actualGroceryTotal <= 4000) {
+    const b1000 = Math.floor(actualGroceryTotal / 1000) + 1;
+    const c100 = 3;
+    customerPaidTotal = b1000 * 1000 + c100 * 100;
+    customerPaidBreakdown.push({ label: `${b1000}× Billetes de $1.000`, icon: '💵' });
+    customerPaidBreakdown.push({ label: `${c100}× Monedas de $100`, icon: '🪙' });
+  } else {
+    customerPaidTotal = 10000;
+    customerPaidBreakdown.push({ label: '1× Billete de $5.000', icon: '💵' });
+    customerPaidBreakdown.push({ label: '5× Billetes de $1.000', icon: '💵' });
+  }
+
+  targetVuelto = customerPaidTotal - actualGroceryTotal;
+
+  document.getElementById('story-sender').textContent = `${customer.icon} ${customer.name}:`;
+  document.getElementById('story-budget-pill').textContent = `Total Compra: ${formatCLP(actualGroceryTotal)}`;
+  document.getElementById('story-dialogue').innerHTML = 
+    `"${customer.phrase} Llevo <b>${p1.name}</b> y <b>${p2.name}</b>. Te pago con <b>${formatCLP(customerPaidTotal)}</b>."`;
+
+  document.getElementById('c-avatar').textContent = customer.icon;
+  document.getElementById('c-speech').textContent = `"Aquí tienes mi pago. ¿Cuánto vuelto me corresponde?"`;
+
+  const breakdownContainer = document.getElementById('c-breakdown');
+  breakdownContainer.innerHTML = '';
+  customerPaidBreakdown.forEach(b => {
+    const chip = document.createElement('div');
+    chip.className = 'breakdown-chip';
+    chip.innerHTML = `${b.icon} ${b.label}`;
+    breakdownContainer.appendChild(chip);
+  });
+
+  setStepUI(1);
+}
+
+/* ══════════════════════════════════════════
+   STEP UI CONTROLLER
+   ══════════════════════════════════════════ */
+function setStepUI(step) {
+  currentStep = step;
+  ['step-1', 'step-2', 'step-3'].forEach((id, idx) => {
+    const el = document.getElementById(id);
+    el.classList.toggle('active', idx + 1 === step);
+    el.classList.toggle('done', idx + 1 < step);
+  });
+
+  document.getElementById('panel-shelf').style.display = 'none';
+  document.getElementById('panel-math').style.display = 'none';
+  document.getElementById('panel-cashier-mat').style.display = 'none';
+  document.getElementById('panel-till').style.display = 'none';
+
+  if (gameMode === 'cliente') {
+    if (step === 1) {
+      document.getElementById('panel-shelf').style.display = 'flex';
+      document.getElementById('btn-sec-action').textContent = '🗑️ Vaciar';
+      document.getElementById('btn-main-action').textContent = '✓ Ir a Sumar';
+    } else if (step === 2) {
+      document.getElementById('panel-math').style.display = 'flex';
+      setupMathNotepadBuyer();
+      document.getElementById('btn-sec-action').textContent = '⬅️ Volver';
+      document.getElementById('btn-main-action').textContent = '✓ Comprobar Suma';
+    } else if (step === 3) {
+      document.getElementById('panel-till').style.display = 'flex';
+      const grandTotal = cartItems.reduce((acc, it) => acc + it.item.price * it.qty, 0);
+      document.getElementById('till-title').textContent = `💵 Paga en caja (${formatCLP(grandTotal)}):`;
+      document.getElementById('btn-sec-action').textContent = '⌫ Borrar';
+      document.getElementById('btn-main-action').textContent = '✓ Pagar al Cajero';
+    }
+  } else {
+    // Modo Cajero
+    if (step === 1) {
+      document.getElementById('panel-cashier-mat').style.display = 'flex';
+      document.getElementById('btn-sec-action').textContent = '🔄 Reiniciar';
+      document.getElementById('btn-main-action').textContent = '✓ Ir a Calcular Vuelto';
+    } else if (step === 2) {
+      document.getElementById('panel-math').style.display = 'flex';
+      setupMathNotepadCashier();
+      document.getElementById('btn-sec-action').textContent = '⬅️ Volver';
+      document.getElementById('btn-main-action').textContent = '✓ Comprobar Vuelto';
+    } else if (step === 3) {
+      document.getElementById('panel-till').style.display = 'flex';
+      document.getElementById('till-title').textContent = `💵 Entrega el Vuelto (${formatCLP(targetVuelto)}):`;
+      document.getElementById('btn-sec-action').textContent = '⌫ Borrar';
+      document.getElementById('btn-main-action').textContent = '✓ Entregar Vuelto';
+    }
+  }
+}
+
+function setupMathNotepadBuyer() {
+  document.getElementById('math-title').textContent = '🧮 Suma el total de los productos en tu carro:';
+  document.getElementById('math-input-lbl').textContent = 'Total a Pagar:';
+  typedMathVal = '';
+  updateTypedMath();
+
+  const list = document.getElementById('math-items-list');
+  list.innerHTML = '';
+  cartItems.forEach(it => {
+    const row = document.createElement('div');
+    row.className = 'math-row';
+    const subtotal = it.item.price * it.qty;
+    row.innerHTML = `<span>${it.item.icon} ${it.qty > 1 ? it.qty + '× ' : ''}${it.item.name}</span><span style="color:#16a34a">${formatCLP(subtotal)}</span>`;
+    list.appendChild(row);
+  });
+}
+
+function setupMathNotepadCashier() {
+  document.getElementById('math-title').textContent = '🧮 Resta: Dinero Pagado − Total Compra = Vuelto';
+  document.getElementById('math-input-lbl').textContent = 'Vuelto Exacto:';
+  typedMathVal = '';
+  updateTypedMath();
+
+  const list = document.getElementById('math-items-list');
+  list.innerHTML = `
+    <div class="math-row"><span>💵 Dinero Entregado por Cliente</span><span style="color:#0284c7">${formatCLP(customerPaidTotal)}</span></div>
+    <div class="math-row"><span>🛒 Total de la Compra</span><span style="color:#dc2626">− ${formatCLP(actualGroceryTotal)}</span></div>
+  `;
+}
+
+function numpadPress(val) {
+  playSound('coin');
+  if (val === 'DEL') {
+    typedMathVal = typedMathVal.slice(0, -1);
+  } else {
+    if (typedMathVal.length < 6) typedMathVal += val;
+  }
+  updateTypedMath();
+}
+
+function updateTypedMath() {
+  const n = parseInt(typedMathVal) || 0;
+  document.getElementById('math-typed-val').textContent = formatCLP(n);
+}
+
+/* ══════════════════════════════════════════
+   CURRENCY DRAWER INTERACTIONS
+   ══════════════════════════════════════════ */
+function clickCurrency(val) {
+  if (currencyStock[val] - currencyUsed[val] <= 0) {
+    RK.Feedback.show('error', `¡Se agotaron los de ${formatCLP(val)}! Usa otra combinación`);
+    return;
+  }
+  playSound('coin');
+  currencyUsed[val]++;
+  currentTraySum += val;
+  updateCurrencyDOM();
+}
+
+function resetCurrencyTray() {
+  currencyUsed = { 10: 0, 50: 0, 100: 0, 500: 0, 1000: 0, 2000: 0, 5000: 0 };
+  currentTraySum = 0;
+  updateCurrencyDOM();
+}
+
+/* ══════════════════════════════════════════
+   BUTTON ACTIONS DISPATCHER
+   ══════════════════════════════════════════ */
+function handleSecondaryAction() {
+  if (currentStep === 1) {
+    if (gameMode === 'cliente') {
+      cartItems = [];
+      renderShelf();
+    }
+  } else if (currentStep === 2) {
+    setStepUI(1);
+  } else if (currentStep === 3) {
+    resetCurrencyTray();
+  }
+}
+
+function handleMainAction() {
+  if (currentStep === 1) {
+    if (gameMode === 'cliente') {
+      // Check that all required grocery items are present with exact qty
+      let missing = false;
+      requiredItems.forEach(req => {
+        const cartEntry = cartItems.find(it => it.item.id === req.item.id);
+        if (!cartEntry || cartEntry.qty < req.qty) missing = true;
+      });
+
+      if (missing) {
+        RK.Feedback.show('error', 'Revisa el encargo 📋: Faltan productos requeridos de la lista');
+        return;
+      }
+      setStepUI(2);
+    } else {
+      setStepUI(2);
+    }
+  } else if (currentStep === 2) {
+    // Validate Math Calculation
+    const typed = parseInt(typedMathVal) || 0;
+    const grandTotal = cartItems.reduce((acc, it) => acc + it.item.price * it.qty, 0);
+    const targetMath = gameMode === 'cliente' ? grandTotal : targetVuelto;
+
+    if (typed === targetMath) {
+      playSound('cash');
+      RK.Feedback.show('success', '¡Cálculo matemático perfecto! 🧮✨');
+      setTimeout(() => setStepUI(3), 600);
+    } else {
+      lives--;
+      sessionWrong++;
+      document.getElementById('lives-badge').textContent = '❤️'.repeat(Math.max(0, lives));
+      RK.Feedback.show('error', `Cálculo incorrecto. El resultado era ${formatCLP(targetMath)}`);
+      if (lives <= 0) setTimeout(endGame, 900);
+    }
+  } else if (currentStep === 3) {
+    // Validate Payment or Vuelto
+    sessionRound++;
+
+    if (gameMode === 'cliente') {
+      const grandTotal = cartItems.reduce((acc, it) => acc + it.item.price * it.qty, 0);
+      
+      if (currentTraySum !== grandTotal) {
+        lives--;
+        sessionWrong++;
+        document.getElementById('lives-badge').textContent = '❤️'.repeat(Math.max(0, lives));
+        RK.Feedback.show('error', `Monto incorrecto. Tu compra suma ${formatCLP(grandTotal)} y pusiste ${formatCLP(currentTraySum)}`);
+        checkGameStatus();
+        return;
+      }
+
+      // Evaluate Budget Surplus / Deficit vs Alcancía!
+      playSound('cash');
+      const diff = budgetGiven - grandTotal;
+
+      if (diff >= 0) {
+        // Surplus: Wins savings into piggy bank!
+        playerSavings += diff;
+        score += 15;
+        sessionCorrect++;
+        updateSavingsDOM();
+        document.getElementById('score-txt').textContent = score;
+        RK.Feedback.show('success', `¡Excelente! Te sobraron ${formatCLP(diff)} y los guardaste en tu alcancía 🐷🎉`);
+      } else {
+        // Deficit: Lost money from own piggy bank!
+        const deficit = Math.abs(diff);
+        playerSavings = Math.max(0, playerSavings - deficit);
+        updateSavingsDOM();
+        score += 5;
+        sessionCorrect++;
+        document.getElementById('score-txt').textContent = score;
+        RK.Feedback.show('error', `¡Te pasaste por ${formatCLP(deficit)} del presupuesto! Tuviste que pagarlo de tu alcancía 💸`);
+      }
+
+      checkGameStatus(true);
+
+    } else {
+      // Modo Cajero: Validate change delivered
+      if (currentTraySum === targetVuelto) {
+        playSound('cash');
+        score += 15;
+        sessionCorrect++;
+        document.getElementById('score-txt').textContent = score;
+        RK.Feedback.show('success', `¡Vuelto perfecto! Entregaste ${formatCLP(targetVuelto)} al cliente 🏪✨`);
+        checkGameStatus(true);
+      } else {
+        lives--;
+        sessionWrong++;
+        document.getElementById('lives-badge').textContent = '❤️'.repeat(Math.max(0, lives));
+        RK.Feedback.show('error', `Vuelto incorrecto. El vuelto exacto era ${formatCLP(targetVuelto)} y diste ${formatCLP(currentTraySum)}`);
+        checkGameStatus();
+      }
+    }
+  }
+}
+
+function checkGameStatus(isSuccess = false) {
+  if (lives <= 0 || (sessionTotal > 0 && sessionRound >= sessionTotal)) {
+    setTimeout(endGame, 1000);
+  } else if (isSuccess) {
+    setTimeout(startNewRound, 1400);
+  }
+}
+
+function endGame() {
+  const totalTime = Math.round((Date.now() - sessionTimer) / 1000);
+  RK.Stats.saveGameResult('juego10', {
+    score: score,
+    rounds: sessionRound,
+    totalTime: totalTime,
+    correct: sessionCorrect,
+    wrong: sessionWrong,
+    errors: ['dinero chileno', 'compras, presupuesto y alcancia']
+  });
+  RK.Stats.showEndModal('El Mercado Chileno', {
+    score: score,
+    rounds: sessionRound,
+    totalTime: totalTime,
+    correct: sessionCorrect,
+    wrong: sessionWrong
+  });
+}
 </script>
 </body>
 </html>

@@ -1,0 +1,47 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" fill="none">
+  <!-- Rakín - Búho con lentes (Normal) -->
+  <!-- Cuerpo -->
+  <ellipse cx="60" cy="68" rx="38" ry="40" fill="#af52de"/>
+  <ellipse cx="60" cy="68" rx="38" ry="40" fill="url(#bodyGrad)" opacity="0.3"/>
+  
+  <!-- Panza -->
+  <ellipse cx="60" cy="78" rx="24" ry="26" fill="#f5f0ff"/>
+  
+  <!-- Orejas/plumas -->
+  <path d="M30 38 L22 18 L40 32 Z" fill="#9333ea"/>
+  <path d="M90 38 L98 18 L80 32 Z" fill="#9333ea"/>
+  
+  <!-- Ojos (atrás de lentes) -->
+  <circle cx="46" cy="52" r="10" fill="white"/>
+  <circle cx="74" cy="52" r="10" fill="white"/>
+  <circle cx="47" cy="52" r="5" fill="#1d1d1f"/>
+  <circle cx="75" cy="52" r="5" fill="#1d1d1f"/>
+  <circle cx="48.5" cy="50.5" r="2" fill="white"/>
+  <circle cx="76.5" cy="50.5" r="2" fill="white"/>
+  
+  <!-- Lentes -->
+  <circle cx="46" cy="52" r="13" fill="none" stroke="#007aff" stroke-width="3"/>
+  <circle cx="74" cy="52" r="13" fill="none" stroke="#007aff" stroke-width="3"/>
+  <path d="M59 52 L61 52" stroke="#007aff" stroke-width="3" stroke-linecap="round"/>
+  <path d="M33 50 L26 46" stroke="#007aff" stroke-width="2.5" stroke-linecap="round"/>
+  <path d="M87 50 L94 46" stroke="#007aff" stroke-width="2.5" stroke-linecap="round"/>
+  
+  <!-- Pico -->
+  <path d="M56 62 L60 68 L64 62 Z" fill="#ff9500"/>
+  
+  <!-- Alas -->
+  <ellipse cx="24" cy="72" rx="8" ry="18" fill="#9333ea" transform="rotate(-10 24 72)"/>
+  <ellipse cx="96" cy="72" rx="8" ry="18" fill="#9333ea" transform="rotate(10 96 72)"/>
+  
+  <!-- Patas -->
+  <path d="M46 104 L40 114 M46 104 L46 114 M46 104 L52 114" stroke="#ff9500" stroke-width="2.5" stroke-linecap="round"/>
+  <path d="M74 104 L68 114 M74 104 L74 114 M74 104 L80 114" stroke="#ff9500" stroke-width="2.5" stroke-linecap="round"/>
+  
+  <!-- Defs -->
+  <defs>
+    <linearGradient id="bodyGrad" x1="60" y1="28" x2="60" y2="108" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="white" stop-opacity="0.4"/>
+      <stop offset="1" stop-color="black" stop-opacity="0.1"/>
+    </linearGradient>
+  </defs>
+</svg>

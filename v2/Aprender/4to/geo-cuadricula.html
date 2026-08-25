@@ -1,8 +1,8 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="es" data-theme="light">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, viewport-fit=cover">
 <title>RakinMath  Localización en Cuadrícula</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -13,7 +13,7 @@
 body{display:flex;flex-direction:column;min-height:100vh}.content{flex:1;max-width:800px;width:100%;margin:0 auto;padding:24px}.back-link{display:inline-flex;align-items:center;gap:6px;font-family:var(--font-sans);font-size:.875rem;font-weight:600;color:var(--text-secondary);text-decoration:none;padding:8px 16px;border-radius:980px;background:var(--bg-card);border:1px solid var(--border-strong);transition:transform .15s;margin-bottom:24px}.back-link:active{transform:scale(.95)}.section{margin-bottom:40px;opacity:0;animation:slideUp .5s var(--spring-default) both}.section:nth-child(2){animation-delay:80ms}.section:nth-child(3){animation-delay:160ms}.section-title{font-size:1.5rem;font-weight:700;letter-spacing:-.03em;margin-bottom:8px}.section-subtitle{font-size:1rem;color:var(--text-secondary);margin-bottom:20px;line-height:1.5}
 .concept-box{border-radius:20px;padding:24px;margin-bottom:20px}.concept-box.teal{background:linear-gradient(135deg,rgba(90,200,250,.06),rgba(90,200,250,.02));border:1px solid rgba(90,200,250,.15)}.concept-box h3{font-size:1.125rem;font-weight:700;margin-bottom:8px}.concept-box p{font-size:.9375rem;color:var(--text-secondary);line-height:1.6}
 .tip-box{background:linear-gradient(135deg,rgba(175,82,222,.06),rgba(175,82,222,.02));border:1px solid rgba(175,82,222,.15);border-radius:20px;padding:20px;margin:16px 0}.tip-box h4{font-size:.9375rem;font-weight:700;color:var(--purple);margin-bottom:6px}.tip-box p{font-size:.875rem;color:var(--text-secondary);line-height:1.5}
-.grid-area{background:var(--bg-card);border:1px solid var(--border);border-radius:24px;padding:24px;margin-bottom:20px}
+.grid-area{background:var(--bg-card);border:1px solid var(--border);border-radius:24px;padding:24px;margin-bottom:20px;overflow:hidden}
 .coord-grid{position:relative;width:280px;height:280px;margin:16px auto;background:white;border:2px solid var(--text);border-radius:8px}
 .coord-cell{position:absolute;border:1px solid rgba(0,0,0,.1);transition:background .15s;cursor:pointer}
 .coord-cell:hover{background:rgba(0,122,255,.1)}
@@ -32,6 +32,32 @@ body{display:flex;flex-direction:column;min-height:100vh}.content{flex:1;max-wid
 @keyframes slideUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
 @media(max-width:640px){.content{padding:16px}.coord-grid{width:240px;height:240px}}
 </style>
+
+<!-- SUPER RESPONSIVE MOBILE OPTIMIZATIONS — RAKINMATH -->
+<style id="rakin-mobile-responsiveness">
+* {
+  -webkit-tap-highlight-color: transparent;
+}
+html, body {
+  max-width: 100%;
+  overflow-x: hidden;
+}
+img, svg, video, canvas {
+  max-width: 100%;
+}
+button, a, input, select, textarea, .btn, .choice-btn, .opt-btn, .game-btn, .nav-btn, .action-btn {
+  touch-action: manipulation;
+}
+@media (max-width: 600px) {
+  input, select, textarea {
+    font-size: 16px !important;
+  }
+  button, .btn, .choice-btn, .opt-btn, .game-btn, .nav-btn, .action-btn {
+    min-height: 44px;
+  }
+}
+</style>
+
 </head>
 <body>
 <nav class="nav"><a href="menu.html" class="nav-title"><img src="../../Recursos/LogoRakinMath.png" alt="RakinMath" style="height: 24px; width: auto;"></a><a href="menu.html" class="exit-btn">Volver</a></nav>
@@ -87,7 +113,7 @@ body{display:flex;flex-direction:column;min-height:100vh}.content{flex:1;max-wid
 <div class="section" style="animation-delay:320ms">
 <div class="question-box" style="background:linear-gradient(135deg,rgba(0,122,255,.06),rgba(0,122,255,.02));border:1px solid rgba(0,122,255,.15)">
 <h4>&#x1F3AC; Videos de apoyo</h4>
-<p style="color:var(--text-secondary);margin-bottom:12px;font-size:.9375rem">Agrega links de videos de YouTube para reforzar lo aprendido:</p>
+<p style="color:var(--text-secondary);margin-bottom:12px;font-size:.9375rem">Material complementario para reforzar lo aprendido:</p>
 <div id="videos-container" style="display:flex;flex-direction:column;gap:12px;margin-bottom:12px">
 <div class="video-placeholder" style="border:2px dashed rgba(0,122,255,.25);border-radius:16px;padding:24px;text-align:center;color:var(--text-tertiary);font-size:.875rem;cursor:pointer;transition:border-color .2s,background .2s" onclick="addVideoSlot(this.parentElement)">
 <span style="font-size:1.5rem;display:block;margin-bottom:6px">&#x1F4F1;</span>
@@ -136,7 +162,7 @@ else{fb.textContent='Sigue buscando...';fb.className='feedback wrong'}
 }
 var qPX,qPY;
 function newCoordQ(){qPX=Math.floor(Math.random()*SIZE)+1;qPY=Math.floor(Math.random()*SIZE)+1;pirateX=qPX;pirateY=qPY;updatePirate();document.getElementById('q-x').value='';document.getElementById('q-y').value='';document.getElementById('q-fb').textContent='';document.getElementById('q-fb').className='feedback'}
-function checkCoord(){var x=parseInt(document.getElementById('q-x').value);var y=parseInt(document.getElementById('q-y').value);var fb=document.getElementById('q-fb');if(x===qPX&&y===qPY){fb.textContent='¡Correcto! ('+qPX+', '+qPY+')';fb.className='feedback correct';RK.Stats.saveActivityResult('actividad-geo-cuadricula',{correct:true,time:Math.round((Date.now()-activityStartTime)/1000),topic:'coordenadas'});activityStartTime=Date.now();setTimeout(newCoordQ,2000)}else if(isNaN(x)||isNaN(y)){fb.textContent='Escribe ambos números';fb.className='feedback wrong';RK.Stats.saveActivityResult('actividad-geo-cuadricula',{correct:false,time:Math.round((Date.now()-activityStartTime)/1000),topic:'coordenadas'});activityStartTime=Date.now()}else{fb.textContent='Revisa: el pirata está en ('+qPX+', '+qPY+')';fb.className='feedback wrong';RK.Stats.saveActivityResult('actividad-geo-cuadricula',{correct:false,time:Math.round((Date.now()-activityStartTime)/1000),topic:'coordenadas'});activityStartTime=Date.now()}}
+function checkCoord(){var x=parseInt(document.getElementById('q-x').value);var y=parseInt(document.getElementById('q-y').value);var fb=document.getElementById('q-fb');if(x===qPX&&y===qPY){fb.textContent='¡Correcto! ('+qPX+', '+qPY+')';fb.className='feedback correct';if(typeof RK!=='undefined'&&RK.Progress){RK.Progress.markPageComplete('geo-cuadricula','4to','geometria')};RK.Stats.saveActivityResult('actividad-geo-cuadricula',{correct:true,time:Math.round((Date.now()-activityStartTime)/1000),topic:'coordenadas'});activityStartTime=Date.now();setTimeout(newCoordQ,2000)}else if(isNaN(x)||isNaN(y)){fb.textContent='Escribe ambos números';fb.className='feedback wrong';RK.Stats.saveActivityResult('actividad-geo-cuadricula',{correct:false,time:Math.round((Date.now()-activityStartTime)/1000),topic:'coordenadas'});activityStartTime=Date.now()}else{fb.textContent='Revisa: el pirata está en ('+qPX+', '+qPY+')';fb.className='feedback wrong';RK.Stats.saveActivityResult('actividad-geo-cuadricula',{correct:false,time:Math.round((Date.now()-activityStartTime)/1000),topic:'coordenadas'});activityStartTime=Date.now()}}
 initGrid();newCoordQ();
 
 function addVideoSlot(container){
@@ -155,6 +181,14 @@ addBtn.onclick=function(){addVideoSlot(container)};
 container.appendChild(addBtn);
 }
 function removeVideoSlot(btn){btn.closest('.video-slot').remove()}
+</script>
+<script src="../../stats/rk-progress.js"></script>
+<script src="../video-embed.js"></script>
+<script>
+(function(){
+  var t=localStorage.getItem('rakin-theme')||'light';
+  document.documentElement.setAttribute('data-theme',t);
+})();
 </script>
 </body>
 </html>

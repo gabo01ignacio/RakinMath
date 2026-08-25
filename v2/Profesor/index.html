@@ -2,7 +2,7 @@
 <html lang="es" data-theme="light">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, viewport-fit=cover">
 <meta name="theme-color" content="#007aff">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <link rel="manifest" href="../manifest.json">
@@ -18,127 +18,253 @@
 <title>Panel Profesor | RakinMath</title>
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0}
+
 :root{
   --sidebar-w:260px;
-  --font-sans:'Inter',-apple-system,BlinkMacSystemFont,system-ui,sans-serif;
-  --spring-default:cubic-bezier(0.2,0.9,0.3,1.2);
-  --spring-smooth:cubic-bezier(0.25,0.1,0.15,1);
-  --radius-sm:12px;--radius-md:16px;--radius-lg:20px;--radius-xl:24px;
+  --font:'Inter',-apple-system,BlinkMacSystemFont,system-ui,sans-serif;
+  --spring:cubic-bezier(0.34,1.56,0.64,1);
+  --spring-bounce:cubic-bezier(0.68,-0.55,0.265,1.55);
+  --ease:cubic-bezier(0.16,1,0.3,1);
+  --r-sm:14px;--r-md:20px;--r-lg:28px;--r-xl:36px;--r-full:9999px;
+
+  --duo-green:#58cc02;--duo-green-dark:#46a302;
+  --duo-yellow:#ffc800;--duo-orange:#ff9600;
+  --duo-blue:#1cb0f6;--duo-blue-dark:#1899d6;
+  --duo-purple:#ce82ff;--duo-pink:#ff86d0;
+  --duo-red:#ff4b4b;--duo-teal:#2ee5c9;
 }
+
 [data-theme="light"]{
-  --bg:#f5f5f7;--bg-card:rgba(255,255,255,0.85);--bg-card-solid:#fff;
-  --bg-sidebar:#fff;--bg-hover:rgba(0,0,0,0.04);
-  --text:#1d1d1f;--text-secondary:#6e6e73;--text-tertiary:#86868b;
-  --accent:#007aff;--accent-hover:#0056b3;
-  --green:#34c759;--orange:#ff9500;--purple:#af52de;--red:#ff3b30;--pink:#ff2d55;--blue:#5ac8fa;
-  --border:rgba(0,0,0,0.06);--border-strong:rgba(0,0,0,0.1);
-  --shadow-sm:0 1px 3px rgba(0,0,0,0.04);--shadow-md:0 8px 30px rgba(0,0,0,0.06);
-  --glass-blur:blur(30px) saturate(180%);
+  --bg:#f0f4f8;--bg-card:#fff;--bg-sidebar:#fff;
+  --bg-hover:rgba(0,0,0,0.04);--bg-subtle:#f7f8fa;
+  --text:#2d3748;--text-secondary:#5a6577;--text-dim:#a0aec0;
+  --accent:#1cb0f6;--accent-hover:#1899d6;
+  --green:#58cc02;--orange:#ff9600;--purple:#ce82ff;
+  --red:#ff4b4b;--pink:#ff86d0;--blue:#1cb0f6;
+  --border:rgba(0,0,0,0.06);--border-strong:rgba(0,0,0,0.12);
+  --shadow-sm:0 2px 0 rgba(0,0,0,0.03);--shadow-md:0 4px 12px rgba(0,0,0,0.06);--shadow-lg:0 8px 24px rgba(0,0,0,0.08);
 }
+
 [data-theme="dark"]{
-  --bg:#0a0a0a;--bg-card:rgba(28,28,30,0.75);--bg-card-solid:#1c1c1e;
-  --bg-sidebar:#111113;--bg-hover:rgba(255,255,255,0.06);
-  --text:#f5f5f7;--text-secondary:#a1a1a6;--text-tertiary:#8e8e93;
-  --accent:#0a84ff;--accent-hover:#409cff;
-  --green:#30d158;--orange:#ff9f0a;--purple:#bf5af2;--red:#ff453a;--pink:#ff375f;--blue:#64d2ff;
-  --border:rgba(255,255,255,0.08);--border-strong:rgba(255,255,255,0.12);
-  --shadow-sm:0 1px 3px rgba(0,0,0,0.3);--shadow-md:0 8px 30px rgba(0,0,0,0.4);
-  --glass-blur:blur(30px) saturate(180%);
+  --bg:#0d1117;--bg-card:#161b22;--bg-sidebar:#0d1117;
+  --bg-hover:rgba(255,255,255,0.04);--bg-subtle:#1c2333;
+  --text:#e6edf3;--text-secondary:#8b949e;--text-dim:#484f58;
+  --accent:#1cb0f6;--accent-hover:#40c4ff;
+  --green:#58cc02;--orange:#ff9600;--purple:#ce82ff;
+  --red:#ff4b4b;--pink:#ff86d0;--blue:#1cb0f6;
+  --border:rgba(255,255,255,0.06);--border-strong:rgba(255,255,255,0.12);
+  --shadow-sm:0 2px 0 rgba(0,0,0,0.2);--shadow-md:0 4px 12px rgba(0,0,0,0.3);--shadow-lg:0 8px 24px rgba(0,0,0,0.4);
 }
-body{font-family:var(--font-sans);background:var(--bg);color:var(--text);min-height:100vh;display:flex;transition:background .3s,color .3s}
+
+body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:100vh;display:flex;transition:background .4s var(--ease),color .4s var(--ease);background-image:radial-gradient(circle at 15% 25%,rgba(88,204,2,0.03) 0%,transparent 50%),radial-gradient(circle at 85% 75%,rgba(28,176,246,0.03) 0%,transparent 50%);background-attachment:fixed}
 
 /* ═══ SIDEBAR ═══ */
-.sidebar{width:var(--sidebar-w);height:100vh;position:fixed;left:0;top:0;background:var(--bg-sidebar);border-right:1px solid var(--border);display:flex;flex-direction:column;z-index:100;transition:transform .3s var(--spring-default)}
-.sidebar-header{padding:20px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:12px}
-.sidebar-logo{width:36px;height:36px;border-radius:10px;background:var(--accent);display:flex;align-items:center;justify-content:center}
-.sidebar-logo svg{width:20px;height:20px;fill:#fff}
-.sidebar-brand{font-size:1.1rem;font-weight:700;letter-spacing:-.02em}
-.sidebar-brand span{color:var(--accent)}
-.sidebar-nav{flex:1;padding:12px;overflow-y:auto}
+.sidebar{width:var(--sidebar-w);height:100vh;position:fixed;left:0;top:0;background:var(--bg-sidebar);border-right:2px solid var(--border);display:flex;flex-direction:column;z-index:100;transition:transform .4s var(--spring);overflow:hidden}
+.sidebar::after{content:'';position:absolute;bottom:0;left:0;right:0;height:120px;background:linear-gradient(180deg,transparent,rgba(88,204,2,0.03));pointer-events:none}
+
+.sidebar-header{padding:20px;border-bottom:2px solid var(--border);display:flex;align-items:center;gap:12px;position:relative;z-index:1}
+.sidebar-logo{width:40px;height:40px;border-radius:var(--r-md);background:linear-gradient(135deg,var(--duo-green),var(--duo-teal));display:flex;align-items:center;justify-content:center;box-shadow:0 4px 0 var(--duo-green-dark);transition:all .3s var(--spring)}
+.sidebar-logo:hover{transform:translateY(-2px) rotate(-5deg);box-shadow:0 6px 0 var(--duo-green-dark)}
+.sidebar-logo svg{width:22px;height:22px;fill:#fff}
+.sidebar-brand{font-size:1.15rem;font-weight:800;letter-spacing:-.03em}
+.sidebar-brand span{color:var(--duo-green)}
+
+.sidebar-nav{flex:1;padding:12px;overflow-y:auto;position:relative;z-index:1}
 .nav-section{margin-bottom:20px}
-.nav-label{font-size:.6875rem;font-weight:700;color:var(--text-tertiary);text-transform:uppercase;letter-spacing:.06em;padding:8px 12px 4px}
-.nav-item{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:var(--radius-sm);color:var(--text-secondary);text-decoration:none;font-size:.875rem;font-weight:500;cursor:pointer;transition:all .15s}
-.nav-item:hover{background:var(--bg-hover);color:var(--text)}
-.nav-item.active{background:rgba(0,122,255,.08);color:var(--accent);font-weight:600}
-.nav-item .icon{width:20px;text-align:center;font-size:1rem}
-.sidebar-footer{padding:16px;border-top:1px solid var(--border)}
-.sidebar-user{display:flex;align-items:center;gap:10px;padding:8px 12px;border-radius:var(--radius-sm);background:var(--bg-hover)}
-.sidebar-avatar{width:32px;height:32px;border-radius:50%;background:var(--accent);color:#fff;display:flex;align-items:center;justify-content:center;font-size:.75rem;font-weight:700;flex-shrink:0}
+.nav-label{font-size:.65rem;font-weight:800;color:var(--text-dim);text-transform:uppercase;letter-spacing:.1em;padding:8px 12px 6px}
+.nav-item{display:flex;align-items:center;gap:10px;padding:11px 14px;border-radius:var(--r-sm);color:var(--text-secondary);text-decoration:none;font-size:.875rem;font-weight:600;cursor:pointer;transition:all .2s var(--spring);position:relative;overflow:hidden}
+.nav-item:hover{background:var(--bg-hover);color:var(--text);transform:translateX(4px)}
+.nav-item.active{background:linear-gradient(135deg,rgba(88,204,2,0.1),rgba(28,176,246,0.08));color:var(--duo-green);font-weight:700;box-shadow:inset 0 0 0 2px rgba(88,204,2,0.15)}
+.nav-item.active::before{content:'';position:absolute;left:0;top:20%;bottom:20%;width:3px;background:var(--duo-green);border-radius:0 3px 3px 0}
+.nav-item .icon{width:22px;text-align:center;font-size:1.05rem;transition:transform .2s var(--spring)}
+.nav-item:hover .icon{transform:scale(1.15)}
+.nav-item:active{transform:scale(0.97) translateX(2px)}
+
+.sidebar-footer{padding:16px;border-top:2px solid var(--border);position:relative;z-index:1}
+.sidebar-user{display:flex;align-items:center;gap:10px;padding:10px 14px;border-radius:var(--r-md);background:linear-gradient(135deg,rgba(88,204,2,0.06),rgba(28,176,246,0.04));border:1px solid rgba(88,204,2,0.1)}
+.sidebar-avatar{width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,var(--duo-green),var(--duo-teal));color:#fff;display:flex;align-items:center;justify-content:center;font-size:.8rem;font-weight:800;flex-shrink:0;box-shadow:0 3px 0 var(--duo-green-dark);transition:all .2s var(--spring)}
+.sidebar-user:hover .sidebar-avatar{transform:scale(1.1) rotate(-5deg)}
 .sidebar-user-info{flex:1;min-width:0}
-.sidebar-user-name{font-size:.8125rem;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.sidebar-user-role{font-size:.6875rem;color:var(--text-tertiary)}
-.sidebar-logout{background:none;border:none;color:var(--text-tertiary);cursor:pointer;padding:6px;border-radius:8px;transition:all .15s;font-size:1rem}
-.sidebar-logout:hover{background:rgba(255,59,48,.08);color:var(--red)}
+.sidebar-user-name{font-size:.8125rem;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sidebar-user-role{font-size:.6875rem;color:var(--duo-green);font-weight:600}
+.sidebar-logout{background:none;border:2px solid rgba(255,75,75,0.2);color:var(--duo-red);cursor:pointer;padding:6px 10px;border-radius:var(--r-sm);transition:all .2s var(--spring);font-size:.85rem;font-weight:600}
+.sidebar-logout:hover{background:var(--duo-red);color:#fff;border-color:var(--duo-red);transform:scale(1.05)}
 
 /* ═══ MAIN ═══ */
-.main{margin-left:var(--sidebar-w);flex:1;min-height:100vh;padding:24px 32px}
-.main-header{margin-bottom:28px}
-.main-header h1{font-size:1.75rem;font-weight:800;letter-spacing:-.03em;margin-bottom:4px}
-.main-header p{font-size:.9375rem;color:var(--text-secondary)}
-.section-title{font-size:.6875rem;font-weight:700;color:var(--text-tertiary);text-transform:uppercase;letter-spacing:.06em;margin-bottom:12px;margin-top:28px}
+.main{margin-left:var(--sidebar-w);flex:1;min-height:100vh;padding:28px 36px}
+.main-header{margin-bottom:32px;position:relative}
+.main-header h1{font-size:2rem;font-weight:900;letter-spacing:-.04em;margin-bottom:6px;line-height:1.1}
+.main-header p{font-size:1rem;color:var(--text-secondary);font-weight:500}
+.section-title{font-size:.7rem;font-weight:800;color:var(--text-dim);text-transform:uppercase;letter-spacing:.1em;margin-bottom:14px;margin-top:32px;padding-left:4px}
 
 /* ═══ STAT CARDS ═══ */
-.stat-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:24px}
-.stat-card{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-lg);padding:20px;backdrop-filter:var(--glass-blur);-webkit-backdrop-filter:var(--glass-blur);transition:transform .2s var(--spring-default),box-shadow .2s}
-.stat-card:hover{transform:translateY(-2px);box-shadow:var(--shadow-md)}
-.stat-icon{width:40px;height:40px;border-radius:var(--radius-sm);display:flex;align-items:center;justify-content:center;font-size:1.25rem;margin-bottom:12px}
-.stat-icon.blue{background:rgba(0,122,255,.1)}
-.stat-icon.green{background:rgba(52,199,89,.1)}
-.stat-icon.orange{background:rgba(255,149,0,.1)}
-.stat-icon.purple{background:rgba(175,82,222,.1)}
-.stat-value{font-size:1.75rem;font-weight:800;letter-spacing:-.02em;line-height:1}
-.stat-label{font-size:.75rem;font-weight:600;color:var(--text-tertiary);text-transform:uppercase;letter-spacing:.03em;margin-top:4px}
+.stat-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:28px}
+.stat-card{border-radius:var(--r-lg);padding:22px;transition:all .3s var(--spring);position:relative;overflow:hidden;border:2px solid transparent}
+.stat-card:hover{transform:translateY(-4px) scale(1.01);box-shadow:var(--shadow-lg)}
+
+/* Colored stat card backgrounds */
+.stat-card.blue{background:linear-gradient(145deg,#e3f2fd,#bbdefb);border-color:rgba(28,176,246,0.2)}
+.stat-card.blue:hover{box-shadow:0 8px 24px rgba(28,176,246,0.2)}
+.stat-card.green{background:linear-gradient(145deg,#e8f5e9,#c8e6c9);border-color:rgba(88,204,2,0.2)}
+.stat-card.green:hover{box-shadow:0 8px 24px rgba(88,204,2,0.2)}
+.stat-card.orange{background:linear-gradient(145deg,#fff3e0,#ffe0b2);border-color:rgba(255,150,0,0.2)}
+.stat-card.orange:hover{box-shadow:0 8px 24px rgba(255,150,0,0.2)}
+.stat-card.purple{background:linear-gradient(145deg,#f3e5f5,#e1bee7);border-color:rgba(206,130,255,0.2)}
+.stat-card.purple:hover{box-shadow:0 8px 24px rgba(206,130,255,0.2)}
+
+[data-theme="dark"] .stat-card.blue{background:linear-gradient(145deg,#0d2a3a,#0a2030);border-color:rgba(28,176,246,0.25)}
+[data-theme="dark"] .stat-card.green{background:linear-gradient(145deg,#0f251a,#0a1f14);border-color:rgba(88,204,2,0.25)}
+[data-theme="dark"] .stat-card.orange{background:linear-gradient(145deg,#2a1f10,#1f1a0a);border-color:rgba(255,150,0,0.25)}
+[data-theme="dark"] .stat-card.purple{background:linear-gradient(145deg,#2a1530,#1f1025);border-color:rgba(206,130,255,0.25)}
+
+.stat-icon{width:44px;height:44px;border-radius:var(--r-md);display:flex;align-items:center;justify-content:center;font-size:1.3rem;margin-bottom:14px;background:rgba(255,255,255,0.6);border:2px solid rgba(255,255,255,0.4);box-shadow:0 2px 8px rgba(0,0,0,0.06);transition:all .3s var(--spring)}
+[data-theme="dark"] .stat-icon{background:rgba(255,255,255,0.08);border-color:rgba(255,255,255,0.1)}
+.stat-card:hover .stat-icon{transform:scale(1.15) rotate(-5deg)}
+.stat-value{font-size:2rem;font-weight:900;letter-spacing:-.03em;line-height:1;color:#1a202c}
+[data-theme="dark"] .stat-value{color:#f0f4f8}
+.stat-label{font-size:.7rem;font-weight:700;color:#4a5568;text-transform:uppercase;letter-spacing:.05em;margin-top:4px}
+[data-theme="dark"] .stat-label{color:#8b949e}
 
 /* ═══ GAME CARDS ═══ */
-.games-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:14px}
-.game-card{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-lg);padding:18px;text-decoration:none;color:var(--text);transition:all .2s var(--spring-default);display:flex;flex-direction:column;gap:10px}
-.game-card:hover{transform:translateY(-3px);box-shadow:var(--shadow-md);border-color:var(--accent)}
-.game-card:active{transform:scale(.97)}
-.game-card-header{display:flex;align-items:center;gap:12px}
-.game-card-icon{width:44px;height:44px;border-radius:var(--radius-sm);display:flex;align-items:center;justify-content:center;font-size:1.25rem;flex-shrink:0;transition:transform .2s var(--spring-default)}
-.game-card:hover .game-card-icon{transform:scale(1.1)}
-.game-card-title{font-size:.9375rem;font-weight:600;letter-spacing:-.01em}
-.game-card-desc{font-size:.8125rem;color:var(--text-secondary);line-height:1.4}
-.game-card-badge{display:inline-flex;align-items:center;gap:4px;font-size:.6875rem;font-weight:600;padding:4px 10px;border-radius:var(--radius-sm);background:rgba(0,122,255,.08);color:var(--accent);width:fit-content}
+.games-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:16px}
+.game-card{border-radius:var(--r-lg);padding:20px;text-decoration:none;color:var(--text);transition:all .3s var(--spring);display:flex;flex-direction:column;gap:12px;border:2px solid var(--border);background:var(--bg-card);box-shadow:var(--shadow-sm);position:relative;overflow:hidden}
+.game-card::after{content:'';position:absolute;top:-50%;left:-50%;width:200%;height:200%;background:linear-gradient(45deg,transparent 40%,rgba(255,255,255,0.1) 50%,transparent 60%);transform:rotate(45deg) translateX(-100%);transition:transform .5s ease;pointer-events:none;z-index:1}
+.game-card:hover::after{transform:rotate(45deg) translateX(100%)}
+.game-card:hover{transform:translateY(-6px) scale(1.02);box-shadow:var(--shadow-lg);border-color:var(--accent)}
+.game-card:active{transform:scale(0.97) translateY(-2px);transition-duration:.1s}
+.game-card-header{display:flex;align-items:center;gap:14px;position:relative;z-index:2}
+.game-card-icon{width:48px;height:48px;border-radius:var(--r-md);display:flex;align-items:center;justify-content:center;font-size:1.3rem;flex-shrink:0;transition:all .3s var(--spring-bounce);background:rgba(255,255,255,0.5);border:2px solid rgba(255,255,255,0.4);box-shadow:0 2px 8px rgba(0,0,0,0.06)}
+[data-theme="dark"] .game-card-icon{background:rgba(255,255,255,0.06);border-color:rgba(255,255,255,0.08)}
+.game-card:hover .game-card-icon{transform:scale(1.15) rotate(-8deg);box-shadow:0 4px 12px rgba(0,0,0,0.1)}
+.game-card-title{font-size:.95rem;font-weight:700;letter-spacing:-.02em;position:relative;z-index:2}
+.game-card-desc{font-size:.8125rem;color:var(--text-secondary);line-height:1.4;position:relative;z-index:2}
+.game-card-badge{display:inline-flex;align-items:center;gap:4px;font-size:.6875rem;font-weight:700;padding:5px 12px;border-radius:var(--r-full);background:rgba(88,204,2,0.1);color:var(--duo-green);width:fit-content;position:relative;z-index:2;transition:all .2s var(--spring)}
+.game-card:hover .game-card-badge{transform:scale(1.05);background:rgba(88,204,2,0.15)}
 
 /* ═══ LEARNING CARDS ═══ */
-.learn-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:14px}
-.learn-card{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-lg);padding:18px;text-decoration:none;color:var(--text);transition:all .2s var(--spring-default)}
-.learn-card:hover{transform:translateY(-2px);box-shadow:var(--shadow-md)}
-.learn-card-header{display:flex;align-items:center;gap:12px;margin-bottom:10px}
-.learn-card-icon{width:40px;height:40px;border-radius:var(--radius-sm);display:flex;align-items:center;justify-content:center;font-size:1.1rem;flex-shrink:0}
-.learn-card-title{font-size:.9375rem;font-weight:600}
+.learn-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:16px}
+.learn-card{background:var(--bg-card);border:2px solid var(--border);border-radius:var(--r-lg);padding:20px;text-decoration:none;color:var(--text);transition:all .3s var(--spring);position:relative;overflow:hidden}
+.learn-card::after{content:'';position:absolute;bottom:0;left:0;right:0;height:4px;background:linear-gradient(90deg,var(--duo-green),var(--duo-blue),var(--duo-purple));opacity:0;transition:opacity .3s}
+.learn-card:hover::after{opacity:1}
+.learn-card:hover{transform:translateY(-4px);box-shadow:var(--shadow-lg)}
+.learn-card-header{display:flex;align-items:center;gap:14px;margin-bottom:12px}
+.learn-card-icon{width:44px;height:44px;border-radius:var(--r-md);display:flex;align-items:center;justify-content:center;font-size:1.2rem;flex-shrink:0;background:rgba(255,255,255,0.5);border:2px solid rgba(255,255,255,0.4);transition:all .3s var(--spring)}
+.learn-card:hover .learn-card-icon{transform:scale(1.1) rotate(-5deg)}
+.learn-card-title{font-size:1rem;font-weight:700}
 .learn-card-topics{display:flex;flex-wrap:wrap;gap:6px}
-.learn-topic{font-size:.6875rem;font-weight:500;padding:4px 8px;border-radius:var(--radius-sm);background:var(--bg-hover);color:var(--text-secondary)}
+.learn-topic{font-size:.6875rem;font-weight:600;padding:5px 10px;border-radius:var(--r-full);background:var(--bg-hover);color:var(--text-secondary);transition:all .2s var(--spring)}
+.learn-topic:hover{background:var(--duo-green);color:#fff;transform:scale(1.05)}
 
 /* ═══ THEME TOGGLE ═══ */
-.theme-toggle{position:fixed;top:20px;right:20px;width:36px;height:36px;border-radius:50%;border:1px solid var(--border-strong);background:var(--bg-card-solid);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:1rem;color:var(--text);transition:transform .2s;z-index:110}
-.theme-toggle:hover{transform:scale(1.1)}
+.theme-toggle{position:fixed;top:20px;right:20px;width:40px;height:40px;border-radius:50%;border:2px solid var(--border-strong);background:var(--bg-card);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:1.1rem;color:var(--text);transition:all .3s var(--spring);z-index:110;box-shadow:var(--shadow-sm)}
+.theme-toggle:hover{transform:scale(1.1) rotate(15deg);box-shadow:var(--shadow-md)}
 
 /* ═══ MOBILE ═══ */
-.menu-toggle{display:none;position:fixed;top:16px;left:16px;width:40px;height:40px;border-radius:var(--radius-sm);border:1px solid var(--border-strong);background:var(--bg-card-solid);cursor:pointer;z-index:110;align-items:center;justify-content:center;font-size:1.1rem;color:var(--text)}
-.sidebar-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:99}
+.menu-toggle{display:none;position:fixed;top:16px;left:16px;width:44px;height:44px;border-radius:var(--r-md);border:2px solid var(--border-strong);background:var(--bg-card);cursor:pointer;z-index:110;align-items:center;justify-content:center;font-size:1.2rem;color:var(--text);box-shadow:var(--shadow-sm);transition:all .2s var(--spring)}
+.menu-toggle:hover{transform:scale(1.05)}
+.sidebar-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);backdrop-filter:blur(4px);z-index:99}
 @media(max-width:900px){
   .sidebar{transform:translateX(-100%)}
-  .sidebar.open{transform:translateX(0)}
+  .sidebar.open{transform:translateX(0);box-shadow:4px 0 24px rgba(0,0,0,0.2)}
   .sidebar-overlay.show{display:block}
-  .main{margin-left:0;padding:16px;padding-top:64px}
+  .main{margin-left:0;padding:16px;padding-top:72px}
   .menu-toggle{display:flex}
   .stat-grid{grid-template-columns:repeat(2,1fr)}
   .games-grid{grid-template-columns:1fr}
 }
 @media(max-width:480px){
   .stat-grid{grid-template-columns:1fr}
+  .main{padding:12px;padding-top:68px}
 }
 
 /* ═══ ANIMATIONS ═══ */
-@keyframes fadeIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
-.fade-in{animation:fadeIn .4s var(--spring-default) both}
+@keyframes fadeIn{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+@keyframes slideIn{from{opacity:0;transform:translateX(-20px)}to{opacity:1;transform:translateX(0)}}
+@keyframes popIn{0%{opacity:0;transform:scale(0.8)}70%{transform:scale(1.05)}100%{opacity:1;transform:scale(1)}}
+@keyframes shimmer{0%{background-position:-200% 0}100%{background-position:200% 0}}
+
+.fade-in{animation:fadeIn .5s var(--spring) both}
 .fade-in:nth-child(1){animation-delay:0ms}
-.fade-in:nth-child(2){animation-delay:50ms}
-.fade-in:nth-child(3){animation-delay:100ms}
-.fade-in:nth-child(4){animation-delay:150ms}
+.fade-in:nth-child(2){animation-delay:60ms}
+.fade-in:nth-child(3){animation-delay:120ms}
+.fade-in:nth-child(4){animation-delay:180ms}
+
+/* ═══ SCROLLBAR ═══ */
+::-webkit-scrollbar{width:8px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:linear-gradient(180deg,var(--duo-green),var(--duo-blue));border-radius:4px;border:2px solid var(--bg)}
+::-webkit-scrollbar-thumb:hover{background:linear-gradient(180deg,var(--duo-green-dark),var(--duo-blue-dark))}
+
+/* ═══ SELECTION ═══ */
+::selection{background:var(--duo-green);color:#fff}
+
+/* ═══ ENHANCED STATS STYLES ═══ */
+.trend-up{color:var(--duo-green);font-weight:700}
+.trend-down{color:var(--duo-red);font-weight:700}
+.trend-flat{color:var(--text-dim);font-weight:600}
+
+.sparkline{display:flex;align-items:flex-end;gap:2px;height:32px}
+.sparkline-bar{flex:1;min-width:4px;border-radius:2px 2px 0 0;transition:height .4s var(--spring);cursor:pointer;position:relative}
+.sparkline-bar:hover{opacity:.8}
+.sparkline-bar::after{content:attr(data-val);position:absolute;top:-18px;left:50%;transform:translateX(-50%);font-size:.6rem;font-weight:700;color:var(--text);opacity:0;transition:opacity .15s;white-space:nowrap}
+.sparkline-bar:hover::after{opacity:1}
+
+.perf-bar{height:8px;background:var(--bg-hover);border-radius:var(--r-full);overflow:hidden;position:relative}
+.perf-bar-fill{height:100%;border-radius:var(--r-full);transition:width .6s var(--spring);position:relative}
+.perf-bar-fill::after{content:'';position:absolute;inset:0;background:linear-gradient(90deg,transparent,rgba(255,255,255,.3));border-radius:inherit}
+
+.weak-badge{display:inline-flex;align-items:center;gap:4px;font-size:.65rem;font-weight:700;padding:3px 8px;border-radius:var(--r-full);background:rgba(255,75,75,.1);color:var(--duo-red);border:1px solid rgba(255,75,75,.15)}
+.strong-badge{display:inline-flex;align-items:center;gap:4px;font-size:.65rem;font-weight:700;padding:3px 8px;border-radius:var(--r-full);background:rgba(88,204,2,.1);color:var(--duo-green);border:1px solid rgba(88,204,2,.15)}
+
+.metric-row{display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--border)}
+.metric-row:last-child{border-bottom:none}
+.metric-label{font-size:.8125rem;color:var(--text-secondary);font-weight:500}
+.metric-value{font-size:1rem;font-weight:800;color:var(--text)}
+
+.compare-table{width:100%;border-collapse:separate;border-spacing:0;font-size:.8125rem}
+.compare-table th{font-size:.65rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--text-dim);padding:8px 12px;text-align:left;border-bottom:2px solid var(--border)}
+.compare-table td{padding:10px 12px;border-bottom:1px solid var(--border);font-weight:500}
+.compare-table tr:hover td{background:var(--bg-hover)}
+.compare-table .rank-1{color:var(--duo-green);font-weight:800}
+.compare-table .rank-2{color:var(--duo-blue);font-weight:700}
+.compare-table .rank-3{color:var(--duo-orange);font-weight:700}
+
+.empty-state{text-align:center;padding:48px 20px;color:var(--text-dim)}
+.empty-state-icon{font-size:3rem;margin-bottom:12px;opacity:.5}
+.empty-state-text{font-size:.95rem;font-weight:500}
+
+.progress-ring{position:relative;width:64px;height:64px}
+.progress-ring svg{transform:rotate(-90deg)}
+.progress-ring-bg{fill:none;stroke:var(--bg-hover);stroke-width:6}
+.progress-ring-fill{fill:none;stroke-width:6;stroke-linecap:round;transition:stroke-dashoffset .8s var(--spring)}
+.progress-ring-text{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:.85rem;font-weight:800}
 </style>
+
+<!-- SUPER RESPONSIVE MOBILE OPTIMIZATIONS — RAKINMATH -->
+<style id="rakin-mobile-responsiveness">
+* {
+  -webkit-tap-highlight-color: transparent;
+}
+html, body {
+  max-width: 100%;
+  overflow-x: hidden;
+}
+img, svg, video, canvas {
+  max-width: 100%;
+}
+button, a, input, select, textarea, .btn, .choice-btn, .opt-btn, .game-btn, .nav-btn, .action-btn {
+  touch-action: manipulation;
+}
+@media (max-width: 600px) {
+  input, select, textarea {
+    font-size: 16px !important;
+  }
+  button, .btn, .choice-btn, .opt-btn, .game-btn, .nav-btn, .action-btn {
+    min-height: 44px;
+  }
+}
+</style>
+
 </head>
 <body>
 
@@ -157,26 +283,26 @@ body{font-family:var(--font-sans);background:var(--bg);color:var(--text);min-hei
 <nav class="sidebar-nav">
 <div class="nav-section">
 <div class="nav-label">Principal</div>
-<a class="nav-item active" onclick="showSection('dashboard')"><span class="icon">&#x1F4CA;</span>Dashboard</a>
-<a class="nav-item" onclick="showSection('juegos')"><span class="icon">&#x1F3AE;</span>Juegos</a>
-<a class="nav-item" onclick="showSection('aprender')"><span class="icon">&#x1F4DA;</span>Aprender</a>
+<a class="nav-item active" onclick="showSection('dashboard')"><span class="icon">🏠</span>Dashboard</a>
+<a class="nav-item" onclick="showSection('juegos')"><span class="icon">🎮</span>Juegos</a>
+<a class="nav-item" onclick="showSection('aprender')"><span class="icon">📚</span>Aprender</a>
 </div>
 <div class="nav-section">
 <div class="nav-label">Gestión</div>
-<a class="nav-item" onclick="showSection('usuarios')"><span class="icon">&#x1F464;</span>Usuarios<span id="pendingBadge" style="display:none;margin-left:auto;background:var(--red);color:#fff;font-size:.625rem;font-weight:700;padding:2px 6px;border-radius:10px"></span></a>
-<a class="nav-item" onclick="showSection('cursos')"><span class="icon">&#x1F392;</span>Cursos</a>
+<a class="nav-item" onclick="showSection('usuarios')"><span class="icon">👥</span>Usuarios<span id="pendingBadge" style="display:none;margin-left:auto;background:var(--duo-red);color:#fff;font-size:.625rem;font-weight:800;padding:2px 8px;border-radius:var(--r-full);min-width:20px;text-align:center"></span></a>
+<a class="nav-item" onclick="showSection('cursos')"><span class="icon">🎒</span>Cursos</a>
 </div>
 <div class="nav-section">
 <div class="nav-label">Análisis</div>
-<a class="nav-item" onclick="showSection('estudiantes')"><span class="icon">&#x1F465;</span>Estudiantes</a>
-<a class="nav-item" onclick="showSection('calculo')"><span class="icon">&#x1F9EE;</span>Cálculo Mental</a>
-<a class="nav-item" onclick="showSection('globalstats')"><span class="icon">&#x1F4CA;</span>Stats Globales</a>
-<a class="nav-item" onclick="showSection('ranking')"><span class="icon">&#x1F3C6;</span>Rankings</a>
+<a class="nav-item" onclick="showSection('estudiantes')"><span class="icon">📊</span>Estudiantes</a>
+<a class="nav-item" onclick="showSection('calculo')"><span class="icon">🧮</span>Cálculo Mental</a>
+<a class="nav-item" onclick="showSection('globalstats')"><span class="icon">📈</span>Stats Globales</a>
+<a class="nav-item" onclick="showSection('ranking')"><span class="icon">🏆</span>Rankings</a>
 </div>
 <div class="nav-section">
 <div class="nav-label">Herramientas</div>
-<a class="nav-item" href="../Juegos/menu.html"><span class="icon">&#x1F3AE;</span>Ir a Juegos</a>
-<a class="nav-item" href="../Aprender/menu.html"><span class="icon">&#x1F4DA;</span>Ir a Aprender</a>
+<a class="nav-item" href="../Juegos/menu.html"><span class="icon">🎮</span>Ir a Juegos</a>
+<a class="nav-item" href="../Aprender/menu.html"><span class="icon">📚</span>Ir a Aprender</a>
 </div>
 </nav>
 
@@ -187,7 +313,7 @@ body{font-family:var(--font-sans);background:var(--bg);color:var(--text);min-hei
 <div class="sidebar-user-name" id="userName">Profesor</div>
 <div class="sidebar-user-role">Administrador</div>
 </div>
-<button class="sidebar-logout" onclick="logout()" title="Cerrar sesión">&#x2190;</button>
+<button class="sidebar-logout" onclick="logout()" title="Cerrar sesión">Salir</button>
 </div>
 </div>
 </aside>
@@ -199,27 +325,27 @@ body{font-family:var(--font-sans);background:var(--bg);color:var(--text);min-hei
 <div class="section active" id="sec-dashboard">
 <div class="main-header fade-in">
 <h1>&#x1F3EB; Panel del Profesor</h1>
-<p>Bienvenido. Accede rápidamente a todos los recursos educativos.</p>
+<p>Bienvenido/a. Accede rápidamente a todos los recursos educativos.</p>
 </div>
 
 <div class="stat-grid" id="statGrid">
-<div class="stat-card fade-in">
-<div class="stat-icon blue">&#x1F3AE;</div>
+<div class="stat-card blue fade-in">
+<div class="stat-icon">🎮</div>
 <div class="stat-value" id="statGames">8</div>
 <div class="stat-label">Juegos disponibles</div>
 </div>
-<div class="stat-card fade-in">
-<div class="stat-icon green">&#x1F4DA;</div>
+<div class="stat-card green fade-in">
+<div class="stat-icon">📚</div>
 <div class="stat-value" id="statTopics">38</div>
 <div class="stat-label">Temas de aprendizaje</div>
 </div>
-<div class="stat-card fade-in">
-<div class="stat-icon orange">&#x1F465;</div>
+<div class="stat-card orange fade-in">
+<div class="stat-icon">👥</div>
 <div class="stat-value" id="statStudents">0</div>
 <div class="stat-label">Estudiantes activos</div>
 </div>
-<div class="stat-card fade-in" style="cursor:pointer" onclick="showSection('usuarios')">
-<div class="stat-icon purple">&#x23F3;</div>
+<div class="stat-card purple fade-in" style="cursor:pointer" onclick="showSection('usuarios')">
+<div class="stat-icon">⏳</div>
 <div class="stat-value" id="statPending">0</div>
 <div class="stat-label">Pendientes de aprobación</div>
 </div>
@@ -257,23 +383,23 @@ body{font-family:var(--font-sans);background:var(--bg);color:var(--text);min-hei
 <p>Estadísticas detalladas de cada estudiante en el juego Cálculo Mental.</p>
 </div>
 <div class="stat-grid">
-<div class="stat-card fade-in">
-<div class="stat-icon green">&#x2705;</div>
+<div class="stat-card green fade-in">
+<div class="stat-icon">✅</div>
 <div class="stat-value" id="estTotal">0</div>
 <div class="stat-label">Total correctas</div>
 </div>
-<div class="stat-card fade-in">
-<div class="stat-icon blue">&#x1F3AE;</div>
+<div class="stat-card blue fade-in">
+<div class="stat-icon">🎮</div>
 <div class="stat-value" id="estGames">0</div>
 <div class="stat-label">Partidas jugadas</div>
 </div>
-<div class="stat-card fade-in">
-<div class="stat-icon orange">&#x23F1;</div>
+<div class="stat-card orange fade-in">
+<div class="stat-icon">⏱️</div>
 <div class="stat-value" id="estTime">0m</div>
 <div class="stat-label">Tiempo total</div>
 </div>
-<div class="stat-card fade-in">
-<div class="stat-icon purple">&#x1F525;</div>
+<div class="stat-card purple fade-in">
+<div class="stat-icon">🔥</div>
 <div class="stat-value" id="estStreak">0</div>
 <div class="stat-label">Mejor racha global</div>
 </div>
@@ -289,23 +415,23 @@ body{font-family:var(--font-sans);background:var(--bg);color:var(--text);min-hei
 <p>Estadísticas individuales de cada estudiante en Cálculo Mental.</p>
 </div>
 <div class="stat-grid">
-<div class="stat-card fade-in">
-<div class="stat-icon blue">&#x1F465;</div>
+<div class="stat-card blue fade-in">
+<div class="stat-icon">👥</div>
 <div class="stat-value" id="calcUsers">0</div>
 <div class="stat-label">Estudiantes</div>
 </div>
-<div class="stat-card fade-in">
-<div class="stat-icon green">&#x2705;</div>
+<div class="stat-card green fade-in">
+<div class="stat-icon">✅</div>
 <div class="stat-value" id="calcTotalCorrect">0</div>
 <div class="stat-label">Total correctas</div>
 </div>
-<div class="stat-card fade-in">
-<div class="stat-icon orange">&#x23F1;</div>
+<div class="stat-card orange fade-in">
+<div class="stat-icon">⏱️</div>
 <div class="stat-value" id="calcAvgScore">0</div>
 <div class="stat-label">Promedio ej/min</div>
 </div>
-<div class="stat-card fade-in">
-<div class="stat-icon purple">&#x1F3C6;</div>
+<div class="stat-card purple fade-in">
+<div class="stat-icon">🏆</div>
 <div class="stat-value" id="calcBestScore">0</div>
 <div class="stat-label">Mejor puntaje</div>
 </div>
@@ -320,10 +446,10 @@ body{font-family:var(--font-sans);background:var(--bg);color:var(--text);min-hei
 <h1>&#x1F3C6; Rankings</h1>
 <p>Mejores resultados en modo Speedrun.</p>
 </div>
-<div style="display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap">
-<button class="nav-item active" id="rk-all" onclick="loadProfRankings('all')">Todos</button>
-<button class="nav-item" id="rk-full" onclick="loadProfRankings('full')">Full (Mixto)</button>
-<button class="nav-item" id="rk-custom" onclick="loadProfRankings('custom')">Personalizado</button>
+<div style="display:flex;gap:10px;margin-bottom:20px;flex-wrap:wrap">
+<button class="nav-item active" id="rk-all" onclick="loadProfRankings('all')" style="border:2px solid transparent;box-shadow:0 3px 0 rgba(0,0,0,0.06)">✨ Todos</button>
+<button class="nav-item" id="rk-full" onclick="loadProfRankings('full')" style="border:2px solid var(--border);box-shadow:0 3px 0 rgba(0,0,0,0.04)">🎯 Full (Mixto)</button>
+<button class="nav-item" id="rk-custom" onclick="loadProfRankings('custom')" style="border:2px solid var(--border);box-shadow:0 3px 0 rgba(0,0,0,0.04)">⚙️ Personalizado</button>
 </div>
 <div id="profRankingList" style="display:flex;flex-direction:column;gap:8px"></div>
 </div>
@@ -335,21 +461,21 @@ body{font-family:var(--font-sans);background:var(--bg);color:var(--text);min-hei
 <p>Aprueba, rechaza y gestiona cuentas de usuarios.</p>
 </div>
 <div style="margin-bottom:16px">
-<button onclick="openAddUser()" style="font-family:var(--font-sans);font-size:.8125rem;font-weight:600;padding:8px 16px;border-radius:980px;border:none;background:var(--accent);color:#fff;cursor:pointer">+ Nuevo usuario</button>
+<button onclick="openAddUser()" style="font-family:var(--font);font-size:.875rem;font-weight:700;padding:10px 22px;border-radius:var(--r-full);border:none;background:var(--duo-green);color:#fff;cursor:pointer;box-shadow:0 4px 0 var(--duo-green-dark);transition:all .2s var(--spring);display:inline-flex;align-items:center;gap:8px" onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform='none'">+ Nuevo usuario</button>
 </div>
 <div class="stat-grid">
-<div class="stat-card fade-in">
-<div class="stat-icon orange">&#x23F3;</div>
+<div class="stat-card orange fade-in">
+<div class="stat-icon">⏳</div>
 <div class="stat-value" id="usrPending">0</div>
 <div class="stat-label">Pendientes</div>
 </div>
-<div class="stat-card fade-in">
-<div class="stat-icon green">&#x2705;</div>
+<div class="stat-card green fade-in">
+<div class="stat-icon">✅</div>
 <div class="stat-value" id="usrApproved">0</div>
 <div class="stat-label">Aprobados</div>
 </div>
-<div class="stat-card fade-in">
-<div class="stat-icon blue">&#x1F465;</div>
+<div class="stat-card blue fade-in">
+<div class="stat-icon">👥</div>
 <div class="stat-value" id="usrTotal">0</div>
 <div class="stat-label">Total</div>
 </div>
@@ -367,23 +493,23 @@ body{font-family:var(--font-sans);background:var(--bg);color:var(--text);min-hei
 <p>Asigna y administra cursos de los estudiantes.</p>
 </div>
 <div class="stat-grid">
-<div class="stat-card fade-in">
-<div class="stat-icon blue">&#x1F392;</div>
+<div class="stat-card blue fade-in">
+<div class="stat-icon">🎒</div>
 <div class="stat-value" id="stat4to">0</div>
 <div class="stat-label">4° Básico</div>
 </div>
-<div class="stat-card fade-in">
-<div class="stat-icon purple">&#x1F9E0;</div>
+<div class="stat-card purple fade-in">
+<div class="stat-icon">🧠</div>
 <div class="stat-value" id="stat5to">0</div>
 <div class="stat-label">5° Básico</div>
 </div>
-<div class="stat-card fade-in">
-<div class="stat-icon green">&#x1F680;</div>
+<div class="stat-card green fade-in">
+<div class="stat-icon">🚀</div>
 <div class="stat-value" id="stat6to">0</div>
 <div class="stat-label">6° Básico</div>
 </div>
-<div class="stat-card fade-in">
-<div class="stat-icon orange">&#x1F4CB;</div>
+<div class="stat-card orange fade-in">
+<div class="stat-icon">📋</div>
 <div class="stat-value" id="statSin">0</div>
 <div class="stat-label">Sin curso</div>
 </div>
@@ -399,23 +525,23 @@ body{font-family:var(--font-sans);background:var(--bg);color:var(--text);min-hei
 <p>Vista general de actividad de todos los usuarios en todos los juegos.</p>
 </div>
 <div class="stat-grid">
-<div class="stat-card fade-in">
-<div class="stat-icon blue">&#x1F3AE;</div>
+<div class="stat-card blue fade-in">
+<div class="stat-icon">🎮</div>
 <div class="stat-value" id="gStatGames">0</div>
 <div class="stat-label">Partidas jugadas</div>
 </div>
-<div class="stat-card fade-in">
-<div class="stat-icon green">&#x2705;</div>
+<div class="stat-card green fade-in">
+<div class="stat-icon">✅</div>
 <div class="stat-value" id="gStatCorrect">0</div>
 <div class="stat-label">Total correctas</div>
 </div>
-<div class="stat-card fade-in">
-<div class="stat-icon orange">&#x23F1;</div>
+<div class="stat-card orange fade-in">
+<div class="stat-icon">⏱️</div>
 <div class="stat-value" id="gStatTime">0m</div>
 <div class="stat-label">Tiempo total</div>
 </div>
-<div class="stat-card fade-in">
-<div class="stat-icon purple">&#x1F525;</div>
+<div class="stat-card purple fade-in">
+<div class="stat-icon">🔥</div>
 <div class="stat-value" id="gStatAccuracy">0%</div>
 <div class="stat-label">Precisión global</div>
 </div>
@@ -427,68 +553,71 @@ body{font-family:var(--font-sans);background:var(--bg);color:var(--text);min-hei
 </main>
 
 <!-- MODAL: ADD/EDIT USER -->
-<div class="modal-overlay" id="modalUser" style="position:fixed;inset:0;background:rgba(0,0,0,.45);backdrop-filter:blur(8px);display:none;align-items:center;justify-content:center;z-index:9999;padding:24px">
-<div style="background:var(--bg-card-solid);border-radius:var(--radius-lg);padding:28px;max-width:420px;width:100%;box-shadow:0 25px 80px rgba(0,0,0,.15)">
-<div style="font-size:1.25rem;font-weight:700;margin-bottom:4px" id="modalUserTitle">Nuevo usuario</div>
-<div style="font-size:.875rem;color:var(--text-secondary);margin-bottom:20px" id="modalUserSub">Crea una cuenta manualmente</div>
-<div style="margin-bottom:16px">
-<label style="display:block;font-size:.75rem;font-weight:600;color:var(--text-secondary);margin-bottom:6px">Nombre de usuario</label>
-<input class="form-input" type="text" id="modalUsername" placeholder="usuario" style="width:100%;font-family:var(--font-sans);font-size:.875rem;padding:10px 14px;border-radius:12px;border:1.5px solid var(--border-strong);background:var(--bg);color:var(--text);outline:none">
+<div class="modal-overlay" id="modalUser" style="position:fixed;inset:0;background:rgba(0,0,0,0.55);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);display:none;align-items:center;justify-content:center;z-index:99999;padding:12px;overflow-y:auto">
+<div style="background:var(--bg-card);border:2px solid var(--border);border-radius:var(--r-xl);padding:clamp(18px,4vw,32px);max-width:min(420px,94vw);width:100%;max-height:calc(100dvh - 24px);overflow-y:auto;box-shadow:0 25px 60px rgba(0,0,0,0.2);position:relative;margin:auto">
+<div style="position:absolute;top:0;left:0;right:0;height:4px;background:linear-gradient(90deg,var(--duo-green),var(--duo-blue),var(--duo-purple),var(--duo-pink));background-size:200% 100%;animation:shimmer 3s ease infinite"></div>
+<div style="font-size:1.3rem;font-weight:800;margin-bottom:4px;letter-spacing:-.03em" id="modalUserTitle">Nuevo usuario</div>
+<div style="font-size:.875rem;color:var(--text-secondary);margin-bottom:24px" id="modalUserSub">Crea una cuenta manualmente</div>
+<div style="margin-bottom:18px">
+<label style="display:block;font-size:.7rem;font-weight:700;color:var(--text-secondary);margin-bottom:6px;text-transform:uppercase;letter-spacing:.05em">Nombre de usuario</label>
+<input class="form-input" type="text" id="modalUsername" placeholder="usuario" style="width:100%;font-family:var(--font);font-size:.875rem;padding:12px 16px;border-radius:var(--r-md);border:2px solid var(--border-strong);background:var(--bg-subtle);color:var(--text);outline:none;transition:border-color .2s,box-shadow .2s">
 </div>
-<div style="margin-bottom:16px">
-<label style="display:block;font-size:.75rem;font-weight:600;color:var(--text-secondary);margin-bottom:6px">Correo electrónico</label>
-<input class="form-input" type="email" id="modalEmail" placeholder="correo@ejemplo.cl" style="width:100%;font-family:var(--font-sans);font-size:.875rem;padding:10px 14px;border-radius:12px;border:1.5px solid var(--border-strong);background:var(--bg);color:var(--text);outline:none">
+<div style="margin-bottom:18px">
+<label style="display:block;font-size:.7rem;font-weight:700;color:var(--text-secondary);margin-bottom:6px;text-transform:uppercase;letter-spacing:.05em">Correo electrónico</label>
+<input class="form-input" type="email" id="modalEmail" placeholder="correo@ejemplo.cl" style="width:100%;font-family:var(--font);font-size:.875rem;padding:12px 16px;border-radius:var(--r-md);border:2px solid var(--border-strong);background:var(--bg-subtle);color:var(--text);outline:none;transition:border-color .2s,box-shadow .2s">
 </div>
-<div style="margin-bottom:16px">
-<label style="display:block;font-size:.75rem;font-weight:600;color:var(--text-secondary);margin-bottom:6px">Contraseña</label>
-<input class="form-input" type="password" id="modalPassword" placeholder="Contraseña" style="width:100%;font-family:var(--font-sans);font-size:.875rem;padding:10px 14px;border-radius:12px;border:1.5px solid var(--border-strong);background:var(--bg);color:var(--text);outline:none">
+<div style="margin-bottom:18px">
+<label style="display:block;font-size:.7rem;font-weight:700;color:var(--text-secondary);margin-bottom:6px;text-transform:uppercase;letter-spacing:.05em">Contraseña</label>
+<input class="form-input" type="password" id="modalPassword" placeholder="Contraseña" style="width:100%;font-family:var(--font);font-size:.875rem;padding:12px 16px;border-radius:var(--r-md);border:2px solid var(--border-strong);background:var(--bg-subtle);color:var(--text);outline:none;transition:border-color .2s,box-shadow .2s">
 </div>
-<div style="margin-bottom:16px">
-<label style="display:block;font-size:.75rem;font-weight:600;color:var(--text-secondary);margin-bottom:6px">Rol</label>
-<select id="modalRole" style="width:100%;font-family:var(--font-sans);font-size:.875rem;padding:10px 14px;border-radius:12px;border:1.5px solid var(--border-strong);background:var(--bg);color:var(--text);outline:none">
+<div style="margin-bottom:18px">
+<label style="display:block;font-size:.7rem;font-weight:700;color:var(--text-secondary);margin-bottom:6px;text-transform:uppercase;letter-spacing:.05em">Rol</label>
+<select id="modalRole" style="width:100%;font-family:var(--font);font-size:.875rem;padding:12px 16px;border-radius:var(--r-md);border:2px solid var(--border-strong);background:var(--bg-subtle);color:var(--text);outline:none;transition:border-color .2s,box-shadow .2s">
 <option value="student">Estudiante</option>
 <option value="teacher">Profesor</option>
 </select>
 </div>
-<div style="margin-bottom:16px">
-<label style="display:block;font-size:.75rem;font-weight:600;color:var(--text-secondary);margin-bottom:6px">Curso</label>
-<select id="modalGrade" style="width:100%;font-family:var(--font-sans);font-size:.875rem;padding:10px 14px;border-radius:12px;border:1.5px solid var(--border-strong);background:var(--bg);color:var(--text);outline:none">
+<div style="margin-bottom:22px">
+<label style="display:block;font-size:.7rem;font-weight:700;color:var(--text-secondary);margin-bottom:6px;text-transform:uppercase;letter-spacing:.05em">Curso</label>
+<select id="modalGrade" style="width:100%;font-family:var(--font);font-size:.875rem;padding:12px 16px;border-radius:var(--r-md);border:2px solid var(--border-strong);background:var(--bg-subtle);color:var(--text);outline:none;transition:border-color .2s,box-shadow .2s">
 <option value="">Sin curso</option>
 <option value="4to">4° Básico</option>
 <option value="5to">5° Básico</option>
 <option value="6to">6° Básico</option>
 </select>
 </div>
-<div style="display:flex;gap:8px;justify-content:flex-end;margin-top:20px">
-<button onclick="closeModal('modalUser')" style="font-family:var(--font-sans);font-size:.8125rem;font-weight:600;padding:8px 16px;border-radius:980px;border:1.5px solid var(--border-strong);background:var(--bg-card-solid);color:var(--text-secondary);cursor:pointer">Cancelar</button>
-<button onclick="saveUser()" id="modalUserSave" style="font-family:var(--font-sans);font-size:.8125rem;font-weight:600;padding:8px 16px;border-radius:980px;border:none;background:var(--accent);color:#fff;cursor:pointer">Crear usuario</button>
+<div style="display:flex;gap:10px;justify-content:flex-end">
+<button onclick="closeModal('modalUser')" style="font-family:var(--font);font-size:.8125rem;font-weight:700;padding:10px 20px;border-radius:var(--r-full);border:2px solid var(--border-strong);background:var(--bg-card);color:var(--text-secondary);cursor:pointer;transition:all .2s var(--spring)">Cancelar</button>
+<button onclick="saveUser()" id="modalUserSave" style="font-family:var(--font);font-size:.8125rem;font-weight:700;padding:10px 20px;border-radius:var(--r-full);border:none;background:var(--duo-green);color:#fff;cursor:pointer;box-shadow:0 4px 0 var(--duo-green-dark);transition:all .2s var(--spring)">Crear usuario</button>
 </div>
 </div>
 </div>
 
 <!-- MODAL: CHANGE PASSWORD -->
-<div class="modal-overlay" id="modalPass" style="position:fixed;inset:0;background:rgba(0,0,0,.45);backdrop-filter:blur(8px);display:none;align-items:center;justify-content:center;z-index:9999;padding:24px">
-<div style="background:var(--bg-card-solid);border-radius:var(--radius-lg);padding:28px;max-width:420px;width:100%;box-shadow:0 25px 80px rgba(0,0,0,.15)">
-<div style="font-size:1.25rem;font-weight:700;margin-bottom:4px">Cambiar contraseña</div>
-<div style="font-size:.875rem;color:var(--text-secondary);margin-bottom:20px" id="modalPassUser">Para: usuario</div>
-<div style="margin-bottom:16px">
-<label style="display:block;font-size:.75rem;font-weight:600;color:var(--text-secondary);margin-bottom:6px">Nueva contraseña</label>
-<input type="text" id="modalNewPass" placeholder="Nueva contraseña" style="width:100%;font-family:var(--font-sans);font-size:.875rem;padding:10px 14px;border-radius:12px;border:1.5px solid var(--border-strong);background:var(--bg);color:var(--text);outline:none">
+<div class="modal-overlay" id="modalPass" style="position:fixed;inset:0;background:rgba(0,0,0,0.55);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);display:none;align-items:center;justify-content:center;z-index:99999;padding:12px;overflow-y:auto">
+<div style="background:var(--bg-card);border:2px solid var(--border);border-radius:var(--r-xl);padding:clamp(18px,4vw,32px);max-width:min(420px,94vw);width:100%;max-height:calc(100dvh - 24px);overflow-y:auto;box-shadow:0 25px 60px rgba(0,0,0,0.2);position:relative;margin:auto">
+<div style="position:absolute;top:0;left:0;right:0;height:4px;background:linear-gradient(90deg,var(--duo-orange),var(--duo-red),var(--duo-pink));background-size:200% 100%;animation:shimmer 3s ease infinite"></div>
+<div style="font-size:1.3rem;font-weight:800;margin-bottom:4px;letter-spacing:-.03em">Cambiar contraseña</div>
+<div style="font-size:.875rem;color:var(--text-secondary);margin-bottom:24px" id="modalPassUser">Para: usuario</div>
+<div style="margin-bottom:22px">
+<label style="display:block;font-size:.7rem;font-weight:700;color:var(--text-secondary);margin-bottom:6px;text-transform:uppercase;letter-spacing:.05em">Nueva contraseña</label>
+<input type="text" id="modalNewPass" placeholder="Nueva contraseña" style="width:100%;font-family:var(--font);font-size:.875rem;padding:12px 16px;border-radius:var(--r-md);border:2px solid var(--border-strong);background:var(--bg-subtle);color:var(--text);outline:none;transition:border-color .2s,box-shadow .2s">
 </div>
-<div style="display:flex;gap:8px;justify-content:flex-end;margin-top:20px">
-<button onclick="closeModal('modalPass')" style="font-family:var(--font-sans);font-size:.8125rem;font-weight:600;padding:8px 16px;border-radius:980px;border:1.5px solid var(--border-strong);background:var(--bg-card-solid);color:var(--text-secondary);cursor:pointer">Cancelar</button>
-<button onclick="savePassword()" style="font-family:var(--font-sans);font-size:.8125rem;font-weight:600;padding:8px 16px;border-radius:980px;border:none;background:var(--accent);color:#fff;cursor:pointer">Guardar</button>
+<div style="display:flex;gap:10px;justify-content:flex-end">
+<button onclick="closeModal('modalPass')" style="font-family:var(--font);font-size:.8125rem;font-weight:700;padding:10px 20px;border-radius:var(--r-full);border:2px solid var(--border-strong);background:var(--bg-card);color:var(--text-secondary);cursor:pointer;transition:all .2s var(--spring)">Cancelar</button>
+<button onclick="savePassword()" style="font-family:var(--font);font-size:.8125rem;font-weight:700;padding:10px 20px;border-radius:var(--r-full);border:none;background:var(--duo-orange);color:#fff;cursor:pointer;box-shadow:0 4px 0 #e58700;transition:all .2s var(--spring)">Guardar</button>
 </div>
 </div>
 </div>
 
-<button class="theme-toggle" id="themeToggle" onclick="toggleTheme()">&#x263C;</button>
+<button class="theme-toggle" id="themeToggle" onclick="toggleTheme()">☀️</button>
 
 <script>
 /* ═══ THEME ═══ */
 function setTheme(t){
   document.documentElement.setAttribute('data-theme',t);
   localStorage.setItem('rakin-theme',t);
+  document.getElementById('themeToggle').textContent=t==='dark'?'🌙':'☀️';
 }
 function toggleTheme(){
   var c=document.documentElement.getAttribute('data-theme');
@@ -504,8 +633,9 @@ if(!session||!session.user){window.location.href='../login.html';throw'No sessio
 if(!isTeacher()){window.location.href='../Juegos/menu.html';throw'Not teacher'}
 
 var currentUser=session.user;
-document.getElementById('userName').textContent=currentUser.charAt(0).toUpperCase()+currentUser.slice(1);
-document.getElementById('userAvatar').textContent=currentUser.charAt(0).toUpperCase();
+var formattedName=typeof formatUserName!=='undefined'?formatUserName(currentUser):(currentUser.charAt(0).toUpperCase()+currentUser.slice(1));
+document.getElementById('userName').textContent=formattedName;
+document.getElementById('userAvatar').textContent=formattedName.charAt(0).toUpperCase();
 
 function logout(){
   destroySession();
@@ -549,7 +679,11 @@ var games=[
   {id:'juego6',name:'El Caldero Mágico',desc:'Orden de operaciones (PAPOMUDAS)',icon:'🧪',color:'#ff2d55',grade:'5°-6°'},
   {id:'juego7',name:'Misión Robot',desc:'Cálculo mental rápido',icon:'🤖',color:'#5ac8fa',grade:'4°'},
   {id:'juego8',name:'Cálculo Mental',desc:'7 operaciones, 3 modos, estadísticas',icon:'🧮',color:'#5856d6',grade:'4°-5°'},
-  {id:'juego9',name:'Laboratorio de Pociones',desc:'Suma y resta de fracciones',icon:'🧪',color:'#af52de',grade:'4°-5°'}
+  {id:'juego9',name:'Laboratorio de Pociones',desc:'Suma y resta de fracciones',icon:'🧪',color:'#af52de',grade:'4°-5°'},
+  {id:'juego10',name:'El Mercado Chileno',desc:'Dinero, precios y vueltos',icon:'🛒',color:'#34c759',grade:'4°-5°'},
+  {id:'juego11',name:'Pizza Master',desc:'Fracciones con pizza',icon:'🍕',color:'#ff9500',grade:'4°-5°'},
+{id:'juego12',name:'Geometrix Builder',desc:'Construye figuras y calcula área y perímetro',icon:'📐',color:'#5856d6',grade:'4°-5°'},
+{id:'juego13',name:'Ruta Matemática',desc:'Matemáticas con animales y racha diaria',icon:'🦉',color:'#58cc02',grade:'4°-6°'}
 ];
 
 function renderGameCards(containerId,full){
@@ -598,18 +732,51 @@ function renderLearnCards(containerId,full){
 }
 
 /* ═══ STUDENT STATS ═══ */
+function renderTrend(history,field){
+  if(!history||history.length<2)return'<span class="trend-flat">—</span>';
+  var recent=history.slice(-5);
+  var older=history.slice(0,Math.max(1,history.length-5));
+  var rSum=0,oSum=0;
+  recent.forEach(function(h){rSum+=h[field]||0});
+  older.forEach(function(h){oSum+=h[field]||0});
+  var rAvg=rSum/recent.length;
+  var oAvg=oSum/older.length;
+  if(rAvg>oAvg*1.05)return'<span class="trend-up">&#9650;</span>';
+  if(rAvg<oAvg*0.95)return'<span class="trend-down">&#9660;</span>';
+  return'<span class="trend-flat">&#9644;</span>';
+}
+
+function renderSparkline(history,field,color){
+  if(!history||!history.length)return'<div class="sparkline" style="height:32px"></div>';
+  var vals=history.slice(-10).map(function(h){return h[field]||0});
+  var max=Math.max.apply(null,vals)||1;
+  var html='<div class="sparkline">';
+  vals.forEach(function(v){
+    var pct=Math.round(v/max*100);
+    html+='<div class="sparkline-bar" data-val="'+v+'" style="height:'+Math.max(4,pct)+'%;background:'+color+'"></div>';
+  });
+  html+='</div>';
+  return html;
+}
+
+function renderProgressRing(pct,color){
+  var r=26,c=2*Math.PI*r;
+  var offset=c-(pct/100)*c;
+  return'<div class="progress-ring"><svg width="64" height="64"><circle class="progress-ring-bg" cx="32" cy="32" r="'+r+'"/><circle class="progress-ring-fill" cx="32" cy="32" r="'+r+'" stroke="'+color+'" stroke-dasharray="'+c+'" stroke-dashoffset="'+offset+'"/></svg><div class="progress-ring-text" style="color:'+color+'">'+pct+'%</div></div>';
+}
+
 function loadStudentStats(){
   if(typeof UserStatsDB==='undefined'){
-    document.getElementById('studentDetails').innerHTML='<div style="text-align:center;color:var(--text-tertiary);padding:40px 0">UserStatsDB no disponible</div>';
+    document.getElementById('studentDetails').innerHTML='<div class="empty-state"><div class="empty-state-icon">&#128202;</div><div class="empty-state-text">UserStatsDB no disponible</div></div>';
     return;
   }
   UserStatsDB.getAllUserStats()
     .then(function(results){
       if(!results||!results.length){
-        document.getElementById('studentDetails').innerHTML='<div style="text-align:center;color:var(--text-tertiary);padding:40px 0">No hay datos de estudiantes aún</div>';
+        document.getElementById('studentDetails').innerHTML='<div class="empty-state"><div class="empty-state-icon">&#128202;</div><div class="empty-state-text">No hay datos de estudiantes aún</div></div>';
         return;
       }
-      var totalCorrect=0, totalSessions=0, totalTime=0, bestScore=0;
+      var totalCorrect=0,totalSessions=0,totalTime=0,bestScore=0;
       results.forEach(function(r){
         var games=r.games||{};
         Object.keys(games).forEach(function(gid){
@@ -628,13 +795,13 @@ function loadStudentStats(){
     })
     .catch(function(err){
       console.error('Error loading stats:',err);
-      document.getElementById('studentDetails').innerHTML='<div style="text-align:center;color:var(--text-tertiary);padding:40px 0">Error al cargar datos</div>';
+      document.getElementById('studentDetails').innerHTML='<div class="empty-state"><div class="empty-state-icon">&#9888;</div><div class="empty-state-text">Error al cargar datos</div></div>';
     });
 }
 
 function renderStudentDetails(results){
   var el=document.getElementById('studentDetails');
-  var gameNames={juego1:'Duelo de Números',juego2:'Estimaciones',juego3:'Chefs de Fracciones',juego4:'Arquitectas',juego5:'Buscatesoros',juego6:'El Caldero Mágico',juego7:'Misión Robot',juego8:'Cálculo Mental',juego9:'Laboratorio de Pociones',juego10:'Tienda',juego11:'Pizza Master',juego12:'Geometría'};
+  var gameNames={juego1:'Duelo de Números',juego2:'Estimaciones',juego3:'Chefs de Fracciones',juego4:'Arquitectas',juego5:'Buscatesoros',juego6:'El Caldero Mágico',juego7:'Misión Robot',juego8:'Cálculo Mental',juego9:'Laboratorio de Pociones',juego10:'Tienda',juego11:'Pizza Master',juego12:'Geometría',juego13:'Ruta Matemática'};
   var sorted=results.slice().sort(function(a,b){
     var sa=0,sb=0;
     Object.keys(a.games||{}).forEach(function(k){sa+=(a.games[k].totalScore||0)});
@@ -648,6 +815,7 @@ function renderStudentDetails(results){
     var games=r.games||{};
     var totalGamesPlayed=0,totalCorrect=0,totalWrong=0,totalScore=0,totalTime=0;
     var gameList=[];
+    var weakAreas=[],strongAreas=[];
     Object.keys(games).forEach(function(gid){
       var g=games[gid];
       totalGamesPlayed+=g.sessions||0;
@@ -655,87 +823,141 @@ function renderStudentDetails(results){
       totalWrong+=g.totalWrong||0;
       totalScore+=g.totalScore||0;
       totalTime+=g.totalTime||0;
-      gameList.push({id:gid,name:gameNames[gid]||gid,sessions:g.sessions,bestScore:g.bestScore,accuracy:g.accuracy});
+      var acc=(g.totalCorrect||0)+(g.totalWrong||0)>0?Math.round((g.totalCorrect||0)/((g.totalCorrect||0)+(g.totalWrong||0))*100):0;
+      gameList.push({id:gid,name:gameNames[gid]||gid,sessions:g.sessions,bestScore:g.bestScore,accuracy:acc});
+      if(acc<60&&g.sessions>0)weakAreas.push({name:gameNames[gid]||gid,accuracy:acc});
+      if(acc>=80&&g.sessions>0)strongAreas.push({name:gameNames[gid]||gid,accuracy:acc});
     });
     gameList.sort(function(a,b){return(b.sessions||0)-(a.sessions||0)});
     var grade=info.grade?info.grade+'° Básico':'Sin curso';
     var rankColor=i===0?'#FFD700':i===1?'#C0C0C0':i===2?'#CD7F32':'var(--text-tertiary)';
-    html+='<div class="stat-card" style="padding:16px 20px">';
-    html+='<div style="display:flex;align-items:center;gap:16px;margin-bottom:14px">';
+    var overallAcc=(totalCorrect+totalWrong)>0?Math.round(totalCorrect/(totalCorrect+totalWrong)*100):0;
+
+    html+='<div class="stat-card" style="padding:20px">';
+    html+='<div style="display:flex;align-items:center;gap:16px;margin-bottom:16px">';
     html+='<div style="font-size:1.5rem;font-weight:800;color:'+rankColor+';width:36px;text-align:center">'+(i+1)+'</div>';
     html+='<div style="flex:1">';
     html+='<div style="font-weight:700;font-size:1rem">'+escHTML(name)+'</div>';
     html+='<div style="font-size:.75rem;color:var(--text-tertiary)">'+grade+'</div>';
     html+='</div>';
+    html+=renderProgressRing(overallAcc,overallAcc>=70?'#58cc02':overallAcc>=50?'#ff9600':'#ff4b4b');
     html+='<div style="text-align:right">';
     html+='<div style="font-weight:800;font-size:1.25rem;color:var(--accent)">'+totalScore+'</div>';
     html+='<div style="font-size:.6875rem;color:var(--text-tertiary)">puntaje total</div>';
     html+='</div>';
     html+='</div>';
-    html+='<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:12px">';
-    html+='<div style="text-align:center;padding:8px;background:var(--bg-hover);border-radius:var(--radius-sm)">';
+
+    html+='<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:16px">';
+    html+='<div style="text-align:center;padding:10px 8px;background:var(--bg-hover);border-radius:var(--radius-sm)">';
     html+='<div style="font-weight:800;font-size:1.1rem">'+totalGamesPlayed+'</div>';
     html+='<div style="font-size:.6875rem;color:var(--text-tertiary)">Partidas</div>';
     html+='</div>';
-    html+='<div style="text-align:center;padding:8px;background:rgba(52,199,89,.08);border-radius:var(--radius-sm)">';
-    html+='<div style="font-weight:800;font-size:1.1rem;color:var(--green)">'+totalCorrect+'</div>';
+    html+='<div style="text-align:center;padding:10px 8px;background:rgba(88,204,2,.08);border-radius:var(--radius-sm)">';
+    html+='<div style="font-weight:800;font-size:1.1rem;color:var(--duo-green)">'+totalCorrect+'</div>';
     html+='<div style="font-size:.6875rem;color:var(--text-tertiary)">Correctas</div>';
     html+='</div>';
-    html+='<div style="text-align:center;padding:8px;background:rgba(255,59,48,.08);border-radius:var(--radius-sm)">';
-    html+='<div style="font-weight:800;font-size:1.1rem;color:var(--red)">'+totalWrong+'</div>';
+    html+='<div style="text-align:center;padding:10px 8px;background:rgba(255,75,75,.08);border-radius:var(--radius-sm)">';
+    html+='<div style="font-weight:800;font-size:1.1rem;color:var(--duo-red)">'+totalWrong+'</div>';
     html+='<div style="font-size:.6875rem;color:var(--text-tertiary)">Incorrectas</div>';
     html+='</div>';
-    html+='<div style="text-align:center;padding:8px;background:rgba(175,82,222,.08);border-radius:var(--radius-sm)">';
-    html+='<div style="font-weight:800;font-size:1.1rem;color:var(--purple)">'+Math.round(totalTime/60)+'m</div>';
+    html+='<div style="text-align:center;padding:10px 8px;background:rgba(206,130,255,.08);border-radius:var(--radius-sm)">';
+    html+='<div style="font-weight:800;font-size:1.1rem;color:var(--duo-purple)">'+Math.round(totalTime/60)+'m</div>';
     html+='<div style="font-size:.6875rem;color:var(--text-tertiary)">Tiempo</div>';
     html+='</div>';
     html+='</div>';
+
     if(gameList.length>0){
-      html+='<div style="font-size:.75rem;font-weight:600;color:var(--text-tertiary);margin-bottom:6px">JUGADOS:</div>';
-      html+='<div style="display:flex;flex-wrap:wrap;gap:6px">';
+      html+='<div style="font-size:.75rem;font-weight:600;color:var(--text-tertiary);margin-bottom:8px">RENDIMIENTO POR JUEGO:</div>';
+      html+='<div style="display:flex;flex-direction:column;gap:6px;margin-bottom:16px">';
       gameList.forEach(function(gl){
-        html+='<span style="font-size:.6875rem;font-weight:500;padding:4px 10px;border-radius:var(--radius-sm);background:var(--bg-hover);color:var(--text-secondary)">'+escHTML(gl.name)+' ('+gl.sessions+'x)</span>';
+        var barColor=gl.accuracy>=70?'var(--duo-green)':gl.accuracy>=50?'var(--duo-orange)':'var(--duo-red)';
+        html+='<div style="display:flex;align-items:center;gap:10px">';
+        html+='<div style="width:120px;font-size:.75rem;font-weight:500;color:var(--text-secondary);white-space:nowrap;overflow:hidden;text-overflow:ellipsis" title="'+escHTML(gl.name)+'">'+escHTML(gl.name)+'</div>';
+        html+='<div class="perf-bar" style="flex:1"><div class="perf-bar-fill" style="width:'+gl.accuracy+'%;background:'+barColor+'"></div></div>';
+        html+='<div style="width:40px;font-size:.75rem;font-weight:700;text-align:right;color:var(--text)">'+gl.accuracy+'%</div>';
+        html+='<div style="width:40px;font-size:.6875rem;color:var(--text-tertiary);text-align:right">'+gl.sessions+'x</div>';
+        html+='</div>';
       });
       html+='</div>';
     }
+
+    if(weakAreas.length>0){
+      html+='<div style="margin-bottom:12px">';
+      html+='<div style="font-size:.75rem;font-weight:600;color:var(--duo-red);margin-bottom:6px">ZONAS DEBILES:</div>';
+      html+='<div style="display:flex;flex-wrap:wrap;gap:6px">';
+      weakAreas.forEach(function(w){
+        html+='<span class="weak-badge">&#9888; '+escHTML(w.name)+' ('+w.accuracy+'%)</span>';
+      });
+      html+='</div></div>';
+    }
+    if(strongAreas.length>0){
+      html+='<div style="margin-bottom:12px">';
+      html+='<div style="font-size:.75rem;font-weight:600;color:var(--duo-green);margin-bottom:6px">FORTALEZAS:</div>';
+      html+='<div style="display:flex;flex-wrap:wrap;gap:6px">';
+      strongAreas.forEach(function(s){
+        html+='<span class="strong-badge">&#10003; '+escHTML(s.name)+' ('+s.accuracy+'%)</span>';
+      });
+      html+='</div></div>';
+    }
+
     html+='</div>';
   });
   el.innerHTML=html;
 }
 
-/* ═══ CÁLCULO MENTAL STATS ═══ */
+/* ═══ CALCULO MENTAL STATS ═══ */
 function loadCalcStats(){
   var el=document.getElementById('calcUserList');
   el.innerHTML='<div style="text-align:center;color:var(--text-tertiary);padding:20px">Cargando...</div>';
-  if(typeof UserStatsDB==='undefined'){el.innerHTML='<div style="text-align:center;color:var(--text-tertiary);padding:20px">Firebase no configurado</div>';return}
+  if(typeof UserStatsDB==='undefined'){el.innerHTML='<div class="empty-state"><div class="empty-state-icon">&#128202;</div><div class="empty-state-text">Firebase no configurado</div></div>';return}
   UserStatsDB.getAllUserStats()
   .then(function(results){
     if(!results.length){
-      el.innerHTML='<div style="text-align:center;color:var(--text-tertiary);padding:40px 0">No hay datos de estudiantes aún.<br>Los estudiantes aparecerán cuando jueguen.</div>';
+      el.innerHTML='<div class="empty-state"><div class="empty-state-icon">&#128202;</div><div class="empty-state-text">No hay datos de estudiantes aun.<br>Los estudiantes apareceran cuando jueguen.</div></div>';
       document.getElementById('calcUsers').textContent='0';
       document.getElementById('calcTotalCorrect').textContent='0';
       document.getElementById('calcAvgScore').textContent='0';
       document.getElementById('calcBestScore').textContent='0';
       return;
     }
-    var totalCorrect=0,totalScore=0,bestScore=0;
+    var totalCorrect=0,totalScore=0,bestScore=0,totalWrong=0;
     results.forEach(function(r){
       var games=r.games||{};
       Object.keys(games).forEach(function(gid){
         var g=games[gid];
         totalCorrect+=g.totalCorrect||0;
+        totalWrong+=g.totalWrong||0;
         totalScore+=g.totalScore||0;
         if((g.bestScore||0)>bestScore)bestScore=g.bestScore;
       });
     });
+    var overallAcc=(totalCorrect+totalWrong)>0?Math.round(totalCorrect/(totalCorrect+totalWrong)*100):0;
     document.getElementById('calcUsers').textContent=results.length;
     document.getElementById('calcTotalCorrect').textContent=totalCorrect;
     document.getElementById('calcAvgScore').textContent=results.length>0?Math.round(totalScore/results.length):'0';
     document.getElementById('calcBestScore').textContent=bestScore;
 
-    var gameNames={juego1:'Duelo de Números',juego2:'Estimaciones',juego3:'Chefs de Fracciones',juego4:'Arquitectas',juego5:'Buscatesoros',juego6:'El Caldero Mágico',juego7:'Misión Robot',juego8:'Cálculo Mental',juego9:'Laboratorio de Pociones',juego10:'Tienda',juego11:'Pizza Master',juego12:'Geometría'};
-    var html='';
-    results.forEach(function(r,i){
+    var gameNames={juego1:'Duelo de Números',juego2:'Estimaciones',juego3:'Chefs de Fracciones',juego4:'Arquitectas',juego5:'Buscatesoros',juego6:'El Caldero Mágico',juego7:'Misión Robot',juego8:'Cálculo Mental',juego9:'Laboratorio de Pociones',juego10:'Tienda',juego11:'Pizza Master',juego12:'Geometría',juego13:'Ruta Matemática'};
+
+    var sorted=results.slice().sort(function(a,b){
+      var aAcc=0,bAcc=0,aC=0,aW=0,bC=0,bW=0;
+      Object.keys(a.games||{}).forEach(function(k){aC+=a.games[k].totalCorrect||0;aW+=a.games[k].totalWrong||0});
+      Object.keys(b.games||{}).forEach(function(k){bC+=b.games[k].totalCorrect||0;bW+=b.games[k].totalWrong||0});
+      aAcc=(aC+aW)>0?aC/(aC+aW):0;
+      bAcc=(bC+bW)>0?bC/(bC+bW):0;
+      return bAcc-aAcc;
+    });
+
+    var html='<div style="margin-bottom:16px">';
+    html+='<div class="metric-row"><span class="metric-label">Promedio de precisión global</span><span class="metric-value" style="color:'+(overallAcc>=70?'var(--duo-green)':overallAcc>=50?'var(--duo-orange)':'var(--duo-red)')+'">'+overallAcc+'%</span></div>';
+    html+='<div class="metric-row"><span class="metric-label">Total respuestas correctas</span><span class="metric-value" style="color:var(--duo-green)">'+totalCorrect+'</span></div>';
+    html+='<div class="metric-row"><span class="metric-label">Total respuestas incorrectas</span><span class="metric-value" style="color:var(--duo-red)">'+totalWrong+'</span></div>';
+    html+='<div class="metric-row"><span class="metric-label">Mejor puntaje individual</span><span class="metric-value" style="color:var(--duo-orange)">'+bestScore+'</span></div>';
+    html+='</div>';
+
+    html+='<div style="font-size:.75rem;font-weight:700;color:var(--text-tertiary);margin-bottom:10px;text-transform:uppercase;letter-spacing:.05em">Ranking por precisión</div>';
+
+    sorted.forEach(function(r,i){
       var name=r.userName;
       var info=r.info||{};
       var games=r.games||{};
@@ -747,34 +969,48 @@ function loadCalcStats(){
         uCorrect+=g.totalCorrect||0;
         uWrong+=g.totalWrong||0;
         uScore+=g.totalScore||0;
-        gameList.push({id:gid,name:gameNames[gid]||gid,sessions:g.sessions,bestScore:g.bestScore,accuracy:g.accuracy});
+        var acc=(g.totalCorrect||0)+(g.totalWrong||0)>0?Math.round((g.totalCorrect||0)/((g.totalCorrect||0)+(g.totalWrong||0))*100):0;
+        gameList.push({id:gid,name:gameNames[gid]||gid,sessions:g.sessions,bestScore:g.bestScore,accuracy:acc});
       });
-      gameList.sort(function(a,b){return(b.sessions||0)-(a.sessions||0)});
+      gameList.sort(function(a,b){return b.accuracy-a.accuracy});
       var grade=info.grade?info.grade+'° Básico':'Sin curso';
       var accuracy=(uCorrect+uWrong)>0?Math.round(uCorrect/(uCorrect+uWrong)*100):0;
-      html+='<div class="stat-card" style="display:flex;align-items:center;gap:16px">';
-      html+='<div style="font-size:1.25rem;font-weight:800;color:'+(i<3?'var(--accent)':'var(--text-tertiary)')+';width:32px;text-align:center">'+(i+1)+'</div>';
+      var barColor=accuracy>=70?'var(--duo-green)':accuracy>=50?'var(--duo-orange)':'var(--duo-red)';
+
+      html+='<div class="stat-card" style="padding:16px 20px;margin-bottom:10px">';
+      html+='<div style="display:flex;align-items:center;gap:14px">';
+      html+='<div style="font-size:1.25rem;font-weight:800;color:'+(i===0?'#FFD700':i===1?'#C0C0C0':i===2?'#CD7F32':'var(--text-tertiary)')+';width:32px;text-align:center">'+(i+1)+'</div>';
       html+='<div style="flex:1">';
-      html+='<div style="font-weight:600;font-size:.9375rem">'+escHTML(name)+'</div>';
-      html+='<div style="font-size:.75rem;color:var(--text-tertiary)">'+grade+' · '+totalSessions+' partidas · '+accuracy+'% precisión</div>';
+      html+='<div style="font-weight:700;font-size:.9375rem">'+escHTML(name)+'</div>';
+      html+='<div style="font-size:.75rem;color:var(--text-tertiary)">'+grade+' &#183; '+totalSessions+' partidas &#183; '+uScore+' pts</div>';
       html+='</div>';
-      html+='<div style="display:flex;gap:16px;text-align:right">';
-      html+='<div><div style="font-weight:800;color:var(--green)">'+uCorrect+'</div><div style="font-size:.625rem;color:var(--text-tertiary)">correctas</div></div>';
-      html+='<div><div style="font-weight:800;color:var(--accent)">'+uScore+'</div><div style="font-size:.625rem;color:var(--text-tertiary)">puntaje</div></div>';
+      html+=renderProgressRing(accuracy,barColor);
+      html+='</div>';
+
+      html+='<div style="margin-top:12px">';
+      html+='<div style="display:flex;align-items:center;gap:8px;margin-bottom:4px">';
+      html+='<span style="font-size:.6875rem;font-weight:600;color:var(--text-tertiary)">Precisión</span>';
+      html+='<div class="perf-bar" style="flex:1"><div class="perf-bar-fill" style="width:'+accuracy+'%;background:'+barColor+'"></div></div>';
+      html+='<span style="font-size:.75rem;font-weight:700;color:var(--text)">'+accuracy+'%</span>';
       html+='</div></div>';
-      if(gameList.length>0){
-        html+='<div style="grid-column:1/-1;display:flex;flex-wrap:wrap;gap:6px;margin-top:8px">';
-        gameList.forEach(function(gl){
-          html+='<span style="font-size:.6875rem;font-weight:500;padding:3px 8px;border-radius:var(--radius-sm);background:var(--bg-hover);color:var(--text-secondary)">'+escHTML(gl.name)+' ('+gl.sessions+'x)</span>';
+
+      if(gameList.length>1){
+        html+='<div style="margin-top:10px">';
+        html+='<div style="font-size:.6875rem;font-weight:600;color:var(--text-tertiary);margin-bottom:6px">MEJORES JUEGOS:</div>';
+        html+='<div style="display:flex;flex-wrap:wrap;gap:6px">';
+        gameList.slice(0,3).forEach(function(gl){
+          var badgeClass=gl.accuracy>=70?'strong-badge':gl.accuracy>=50?'weak-badge':'weak-badge';
+          html+='<span class="'+badgeClass+'">'+escHTML(gl.name)+' '+gl.accuracy+'%</span>';
         });
-        html+='</div>';
+        html+='</div></div>';
       }
+      html+='</div>';
     });
     el.innerHTML=html;
   })
   .catch(function(err){
     console.error('Error loading calc stats:',err);
-    el.innerHTML='<div style="text-align:center;color:var(--red);padding:20px">Error al cargar datos</div>';
+    el.innerHTML='<div class="empty-state"><div class="empty-state-icon">&#9888;</div><div class="empty-state-text">Error al cargar datos</div></div>';
   });
 }
 
@@ -935,13 +1171,12 @@ function rejectUserAction(username){
 
 function deleteUserAction(username){
   if(!confirm('¿Eliminar a '+username+'? Se borrarán todas sus estadísticas.'))return;
-  var result=deleteUser(username);
-  if(result.ok){
-    try{localStorage.removeItem('rakin_stats_'+username)}catch(e){}
-    try{if(userStatsRef)userStatsRef.child(username).remove();}catch(e){}
-    loadUsers();
-  }
-  else{alert(result.msg)}
+  var u=username.trim().toLowerCase();
+  deleteUser(u);
+  try{localStorage.removeItem('rakin_stats_'+u)}catch(e){}
+  try{if(userStatsRef)userStatsRef.child(u).remove();}catch(e){}
+  try{if(typeof RegistrationsDB!=='undefined'&&RegistrationsDB.remove)RegistrationsDB.remove(u);}catch(e){}
+  loadUsers();
 }
 
 /* ═══ RANKINGS ═══ */
@@ -1024,13 +1259,16 @@ function saveUser(){
   var grade=document.getElementById('modalGrade').value;
   if(!username){alert('Ingresa un usuario');return}
   if(!editingUser&&!password){alert('Ingresa una contraseña');return}
+
+  var targetPass=password;
+  var registered=getRegisteredUsers();
   if(editingUser){
-    var registered=getRegisteredUsers();
     var found=false;
     for(var i=0;i<registered.length;i++){
       if(registered[i].username===username){
         registered[i].email=email;
         if(password)registered[i].password=password;
+        else targetPass=registered[i].password;
         registered[i].role=role;
         registered[i].grade=grade;
         registered[i].approved=true;
@@ -1038,15 +1276,26 @@ function saveUser(){
       }
     }
     if(!found)registered.push({username:username,email:email,password:password,role:role,grade:grade,approved:true,requestedAt:new Date().toISOString(),approvedAt:new Date().toISOString()});
-    saveRegisteredUsers(registered);
-    try{if(typeof UserStatsDB!=='undefined'&&UserStatsDB.saveUserInfo)UserStatsDB.saveUserInfo(username,{email:email,grade:grade,displayName:username});}catch(e){}
   } else {
     if(userExists(username)){alert('El usuario ya existe');return}
-    var registered=getRegisteredUsers();
     registered.push({username:username,email:email,password:password,role:role,grade:grade,approved:true,requestedAt:new Date().toISOString(),approvedAt:new Date().toISOString()});
-    saveRegisteredUsers(registered);
-    try{if(typeof UserStatsDB!=='undefined'&&UserStatsDB.saveUserInfo)UserStatsDB.saveUserInfo(username,{email:email,grade:grade,displayName:username});}catch(e){}
   }
+
+  saveRegisteredUsers(registered);
+
+  if(typeof RegistrationsDB!=='undefined'&&RegistrationsDB.save){
+    RegistrationsDB.save(username,{
+      email:email,
+      password:targetPass,
+      role:role,
+      grade:grade,
+      approved:true
+    }).then(function(){
+      return RegistrationsDB.approve(username);
+    }).catch(function(e){console.error('Error al guardar en Firebase:',e)});
+  }
+  try{if(typeof UserStatsDB!=='undefined'&&UserStatsDB.saveUserInfo)UserStatsDB.saveUserInfo(username,{email:email,grade:grade,displayName:username});}catch(e){}
+
   closeModal('modalUser');
   loadUsers();
 }
@@ -1065,14 +1314,29 @@ function savePassword(){
   if(!newPass){alert('Ingresa una contraseña');return}
   if(newPass.length<4){alert('Mínimo 4 caracteres');return}
   var registered=getRegisteredUsers();
+  var updatedUser=null;
   for(var i=0;i<registered.length;i++){
     if(registered[i].username===passUser){
       registered[i].password=newPass;
-      saveRegisteredUsers(registered);
-      alert('Contraseña actualizada');
-      closeModal('modalPass');
-      return;
+      updatedUser=registered[i];
+      break;
     }
+  }
+  if(updatedUser){
+    saveRegisteredUsers(registered);
+    if(typeof RegistrationsDB!=='undefined'&&RegistrationsDB.save){
+      RegistrationsDB.save(updatedUser.username,{
+        email:updatedUser.email||'',
+        password:newPass,
+        role:updatedUser.role||'student',
+        grade:updatedUser.grade||'',
+        approved:true
+      }).catch(function(){});
+    }
+    alert('Contraseña actualizada');
+    closeModal('modalPass');
+    loadUsers();
+    return;
   }
   alert('Usuario no encontrado');
 }
@@ -1143,43 +1407,108 @@ function changeGrade(username,grade){
 function loadGlobalStats(){
   var el=document.getElementById('globalStatsList');
   el.innerHTML='<div style="text-align:center;color:var(--text-tertiary);padding:20px">Cargando...</div>';
-  if(typeof UserStatsDB==='undefined'){el.innerHTML='<div style="text-align:center;color:var(--text-tertiary);padding:20px">Firebase no disponible</div>';return}
+  if(typeof UserStatsDB==='undefined'){el.innerHTML='<div class="empty-state"><div class="empty-state-icon">&#128202;</div><div class="empty-state-text">Firebase no disponible</div></div>';return}
   UserStatsDB.getAllUserStats()
     .then(function(results){
       var totalGames=0,totalCorrect=0,totalTime=0,totalWrong=0;
       var html='';
       if(!results||!results.length){
-        el.innerHTML='<div style="text-align:center;color:var(--text-tertiary);padding:40px 0">No hay datos aún</div>';
+        el.innerHTML='<div class="empty-state"><div class="empty-state-icon">&#128202;</div><div class="empty-state-text">No hay datos aun</div></div>';
         document.getElementById('gStatGames').textContent='0';
         document.getElementById('gStatCorrect').textContent='0';
         document.getElementById('gStatTime').textContent='0m';
         document.getElementById('gStatAccuracy').textContent='0%';
         return;
       }
+
+      var gameAggregates={};
+      var gameNames={juego1:'Duelo de Números',juego2:'Estimaciones',juego3:'Chefs de Fracciones',juego4:'Arquitectas',juego5:'Buscatesoros',juego6:'El Caldero Mágico',juego7:'Misión Robot',juego8:'Cálculo Mental',juego9:'Laboratorio de Pociones',juego10:'Tienda',juego11:'Pizza Master',juego12:'Geometría',juego13:'Ruta Matemática'};
+
       results.forEach(function(r){
         var games=r.games||{};
         var uG=0,uC=0,uW=0,uT=0;
-        Object.keys(games).forEach(function(gid){var g=games[gid];uG+=g.sessions||0;uC+=g.totalCorrect||0;uW+=g.totalWrong||0;uT+=g.totalTime||0});
+        Object.keys(games).forEach(function(gid){
+          var g=games[gid];
+          uG+=g.sessions||0;
+          uC+=g.totalCorrect||0;
+          uW+=g.totalWrong||0;
+          uT+=g.totalTime||0;
+          if(!gameAggregates[gid])gameAggregates[gid]={sessions:0,correct:0,wrong:0,players:0};
+          gameAggregates[gid].sessions+=g.sessions||0;
+          gameAggregates[gid].correct+=g.totalCorrect||0;
+          gameAggregates[gid].wrong+=g.totalWrong||0;
+          gameAggregates[gid].players++;
+        });
         totalGames+=uG;totalCorrect+=uC;totalWrong+=uW;totalTime+=uT;
-        var acc=(uC+uW)>0?Math.round(uC/(uC+uW)*100):0;
-        var info=r.info||{};
-        var grade=info.grade?info.grade+'° Básico':'Sin curso';
-        html+='<div class="stat-card" style="display:flex;align-items:center;gap:16px;padding:14px 20px">';
-        html+='<div style="flex:1"><div style="font-weight:700">'+escHTML(r.userName)+' <span style="font-size:.6875rem;color:var(--text-tertiary)">'+grade+'</span></div></div>';
-        html+='<div style="display:flex;gap:16px;font-size:.8125rem;text-align:right">';
-        html+='<div><div style="font-weight:800;color:var(--accent)">'+uG+'</div><div style="font-size:.625rem;color:var(--text-tertiary)">partidas</div></div>';
-        html+='<div><div style="font-weight:800;color:var(--green)">'+uC+'</div><div style="font-size:.625rem;color:var(--text-tertiary)">correctas</div></div>';
-        html+='<div><div style="font-weight:800">'+acc+'%</div><div style="font-size:.625rem;color:var(--text-tertiary)">precisión</div></div>';
-        html+='</div></div>';
       });
+
       var gAcc=(totalCorrect+totalWrong)>0?Math.round(totalCorrect/(totalCorrect+totalWrong)*100):0;
       document.getElementById('gStatGames').textContent=totalGames;
       document.getElementById('gStatCorrect').textContent=totalCorrect;
       document.getElementById('gStatTime').textContent=Math.round(totalTime/60)+'m';
       document.getElementById('gStatAccuracy').textContent=gAcc+'%';
+
+      html+='<div style="margin-bottom:20px">';
+      html+='<div class="metric-row"><span class="metric-label">Total de estudiantes activos</span><span class="metric-value">'+results.length+'</span></div>';
+      html+='<div class="metric-row"><span class="metric-label">Precisión global promedio</span><span class="metric-value" style="color:'+(gAcc>=70?'var(--duo-green)':gAcc>=50?'var(--duo-orange)':'var(--duo-red)')+'">'+gAcc+'%</span></div>';
+      html+='<div class="metric-row"><span class="metric-label">Total de partidas jugadas</span><span class="metric-value">'+totalGames+'</span></div>';
+      html+='<div class="metric-row"><span class="metric-label">Tiempo total de juego</span><span class="metric-value">'+Math.round(totalTime/60)+' min</span></div>';
+      html+='</div>';
+
+      html+='<div style="font-size:.75rem;font-weight:700;color:var(--text-tertiary);margin-bottom:12px;text-transform:uppercase;letter-spacing:.05em">Popularidad por juego</div>';
+      var sortedGames=Object.keys(gameAggregates).sort(function(a,b){return gameAggregates[b].sessions-gameAggregates[a].sessions});
+      var maxSessions=Math.max.apply(null,sortedGames.map(function(g){return gameAggregates[g].sessions}))||1;
+
+      html+='<div style="display:flex;flex-direction:column;gap:8px;margin-bottom:24px">';
+      sortedGames.forEach(function(gid){
+        var ga=gameAggregates[gid];
+        var pct=Math.round(ga.sessions/maxSessions*100);
+        var gameAcc=(ga.correct+ga.wrong)>0?Math.round(ga.correct/(ga.correct+ga.wrong)*100):0;
+        var barColor=gameAcc>=70?'var(--duo-green)':gameAcc>=50?'var(--duo-orange)':'var(--duo-red)';
+        html+='<div style="display:flex;align-items:center;gap:10px">';
+        html+='<div style="width:140px;font-size:.75rem;font-weight:600;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis" title="'+escHTML(gameNames[gid]||gid)+'">'+escHTML(gameNames[gid]||gid)+'</div>';
+        html+='<div class="perf-bar" style="flex:1"><div class="perf-bar-fill" style="width:'+pct+'%;background:linear-gradient(90deg,var(--duo-blue),var(--duo-purple))"></div></div>';
+        html+='<div style="width:48px;font-size:.75rem;font-weight:700;text-align:right">'+ga.sessions+'</div>';
+        html+='<div style="width:48px;font-size:.75rem;font-weight:600;text-align:right;color:'+barColor+'">'+gameAcc+'%</div>';
+        html+='<div style="width:48px;font-size:.6875rem;color:var(--text-tertiary);text-align:right">'+ga.players+'j</div>';
+        html+='</div>';
+      });
+      html+='</div>';
+
+      html+='<div style="font-size:.75rem;font-weight:700;color:var(--text-tertiary);margin-bottom:12px;text-transform:uppercase;letter-spacing:.05em">Tabla comparativa</div>';
+      html+='<div style="overflow-x:auto"><table class="compare-table"><thead><tr>';
+      html+='<th>#</th><th>Estudiante</th><th>Curso</th><th>Partidas</th><th>Correctas</th><th>Precisión</th><th>Puntaje</th>';
+      html+='</tr></thead><tbody>';
+
+      var userStats=results.map(function(r){
+        var games=r.games||{};
+        var uS=0,uC=0,uW=0,uSc=0;
+        Object.keys(games).forEach(function(gid){
+          var g=games[gid];
+          uS+=g.sessions||0;
+          uC+=g.totalCorrect||0;
+          uW+=g.totalWrong||0;
+          uSc+=g.totalScore||0;
+        });
+        return{user:r.userName,info:r.info||{},sessions:uS,correct:uC,wrong:uW,score:uSc,accuracy:(uC+uW)>0?Math.round(uC/(uC+uW)*100):0};
+      }).sort(function(a,b){return b.accuracy-a.accuracy});
+
+      userStats.forEach(function(us,i){
+        var rankClass=i===0?'rank-1':i===1?'rank-2':i===2?'rank-3':'';
+        var grade=us.info.grade?us.info.grade+'° Básico':'-';
+        html+='<tr><td class="'+rankClass+'">'+(i+1)+'</td>';
+        html+='<td style="font-weight:600">'+escHTML(us.user)+'</td>';
+        html+='<td style="color:var(--text-tertiary)">'+grade+'</td>';
+        html+='<td>'+us.sessions+'</td>';
+        html+='<td style="color:var(--duo-green);font-weight:700">'+us.correct+'</td>';
+        html+='<td><span style="color:'+(us.accuracy>=70?'var(--duo-green)':us.accuracy>=50?'var(--duo-orange)':'var(--duo-red)')+';font-weight:700">'+us.accuracy+'%</span></td>';
+        html+='<td style="font-weight:800;color:var(--accent)">'+us.score+'</td></tr>';
+      });
+      html+='</tbody></table></div>';
+
       el.innerHTML=html;
     })
-    .catch(function(err){console.error(err);el.innerHTML='<div style="text-align:center;color:var(--red);padding:20px">Error al cargar</div>'});
+    .catch(function(err){console.error(err);el.innerHTML='<div class="empty-state"><div class="empty-state-icon">&#9888;</div><div class="empty-state-text">Error al cargar</div></div>'});
 }
 
 /* ═══ INIT ═══ */

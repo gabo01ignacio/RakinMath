@@ -1,0 +1,947 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="description" content="RakinMath - Aprende matemáticas jugando. Plataforma interactiva para estudiantes.">
+  <title>RakinMath · Matemáticas que se sienten como un juego</title>
+  <style>
+    /* ══════════════════════════════════════════════════════════════
+       RAKINMATH V3 — MODERN REDESIGN
+       ══════════════════════════════════════════════════════════════ */
+
+    /* ─── RESET ─── */
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      /* Typography */
+      --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+      --font-display: 'Inter', system-ui, sans-serif;
+
+      /* Spacing */
+      --space-xs: 4px;
+      --space-sm: 8px;
+      --space-md: 16px;
+      --space-lg: 24px;
+      --space-xl: 40px;
+      --space-2xl: 64px;
+      --space-3xl: 96px;
+
+      /* Radii */
+      --radius-sm: 10px;
+      --radius-md: 16px;
+      --radius-lg: 24px;
+      --radius-xl: 32px;
+      --radius-full: 9999px;
+
+      /* Layout */
+      --max-width: 1120px;
+      --nav-height: 64px;
+
+      /* Motion */
+      --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+      --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+      --duration-fast: 150ms;
+      --duration-normal: 300ms;
+      --duration-slow: 500ms;
+    }
+
+    /* ─── LIGHT THEME ─── */
+    [data-theme="light"] {
+      --bg: #fafafa;
+      --bg-elevated: #ffffff;
+      --bg-subtle: #f2f2f7;
+      --bg-muted: #e5e5ea;
+      --text-primary: #1c1c1e;
+      --text-secondary: #636366;
+      --text-tertiary: #8e8e93;
+      --accent: #007aff;
+      --accent-hover: #0056b3;
+      --accent-light: rgba(0, 122, 255, 0.08);
+      --green: #34c759;
+      --orange: #ff9500;
+      --purple: #af52de;
+      --border: rgba(0, 0, 0, 0.06);
+      --border-strong: rgba(0, 0, 0, 0.12);
+      --shadow-xs: 0 1px 2px rgba(0, 0, 0, 0.04);
+      --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.04);
+      --shadow-md: 0 8px 24px rgba(0, 0, 0, 0.06);
+      --shadow-lg: 0 16px 48px rgba(0, 0, 0, 0.08);
+      --shadow-xl: 0 24px 64px rgba(0, 0, 0, 0.10);
+      --glass-bg: rgba(255, 255, 255, 0.72);
+      --glass-border: rgba(0, 0, 0, 0.08);
+      --hero-gradient: linear-gradient(180deg, #f5f5f7 0%, #fafafa 100%);
+    }
+
+    /* ─── DARK THEME ─── */
+    [data-theme="dark"] {
+      --bg: #000000;
+      --bg-elevated: #1c1c1e;
+      --bg-subtle: #2c2c2e;
+      --bg-muted: #3a3a3c;
+      --text-primary: #f5f5f7;
+      --text-secondary: #a1a1a6;
+      --text-tertiary: #636366;
+      --accent: #0a84ff;
+      --accent-hover: #409cff;
+      --accent-light: rgba(10, 132, 255, 0.12);
+      --green: #30d158;
+      --orange: #ff9f0a;
+      --purple: #bf5af2;
+      --border: rgba(255, 255, 255, 0.08);
+      --border-strong: rgba(255, 255, 255, 0.14);
+      --shadow-xs: 0 1px 2px rgba(0, 0, 0, 0.2);
+      --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.24);
+      --shadow-md: 0 8px 24px rgba(0, 0, 0, 0.32);
+      --shadow-lg: 0 16px 48px rgba(0, 0, 0, 0.4);
+      --shadow-xl: 0 24px 64px rgba(0, 0, 0, 0.5);
+      --glass-bg: rgba(28, 28, 30, 0.72);
+      --glass-border: rgba(255, 255, 255, 0.06);
+      --hero-gradient: linear-gradient(180deg, #0a0a0a 0%, #000000 100%);
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: var(--font-sans);
+      background: var(--bg);
+      color: var(--text-primary);
+      -webkit-font-smoothing: antialiased;
+      line-height: 1.5;
+      overflow-x: hidden;
+      transition: background var(--duration-slow) var(--ease-out),
+                  color var(--duration-slow) var(--ease-out);
+    }
+
+    /* ─── REDUCED MOTION ─── */
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+      }
+    }
+
+    /* ─── FOCUS ─── */
+    :focus-visible {
+      outline: 2px solid var(--accent);
+      outline-offset: 2px;
+    }
+
+    a { color: inherit; text-decoration: none; }
+    button { font: inherit; border: none; background: none; cursor: pointer; color: inherit; }
+
+    /* ─── NAVIGATION ─── */
+    .nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      height: var(--nav-height);
+      background: var(--glass-bg);
+      backdrop-filter: saturate(180%) blur(20px);
+      -webkit-backdrop-filter: saturate(180%) blur(20px);
+      border-bottom: 1px solid var(--glass-border);
+      transition: background var(--duration-slow) var(--ease-out),
+                  border-color var(--duration-slow) var(--ease-out);
+    }
+
+    .nav-inner {
+      width: 100%;
+      max-width: var(--max-width);
+      margin: 0 auto;
+      padding: 0 var(--space-lg);
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .nav-brand {
+      display: flex;
+      align-items: center;
+      gap: var(--space-sm);
+      font-weight: 700;
+      font-size: 1.1rem;
+      letter-spacing: -0.02em;
+      transition: transform var(--duration-fast) var(--ease-out);
+    }
+    .nav-brand:hover { transform: scale(1.02); }
+
+    .nav-brand-icon {
+      width: 32px; height: 32px;
+      border-radius: var(--radius-sm);
+      background: var(--accent);
+      display: grid;
+      place-items: center;
+      transition: transform var(--duration-normal) var(--ease-spring);
+    }
+    .nav-brand:hover .nav-brand-icon { transform: rotate(-8deg) scale(1.08); }
+
+    .nav-brand span { color: var(--accent); }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: var(--space-xs);
+    }
+
+    .nav-link {
+      padding: 8px 16px;
+      border-radius: var(--radius-full);
+      font-size: 0.875rem;
+      font-weight: 500;
+      color: var(--text-secondary);
+      transition: all var(--duration-fast) var(--ease-out);
+    }
+    .nav-link:hover {
+      background: var(--accent-light);
+      color: var(--accent);
+    }
+
+    .nav-actions {
+      display: flex;
+      align-items: center;
+      gap: var(--space-sm);
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: var(--space-sm);
+      padding: 10px 24px;
+      border-radius: var(--radius-full);
+      font-size: 0.9rem;
+      font-weight: 600;
+      letter-spacing: -0.01em;
+      transition: all var(--duration-fast) var(--ease-out);
+      position: relative;
+      overflow: hidden;
+    }
+    .btn::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, rgba(255,255,255,0.15) 0%, transparent 60%);
+      opacity: 0;
+      transition: opacity var(--duration-fast);
+      pointer-events: none;
+    }
+    .btn:hover::after { opacity: 1; }
+
+    .btn-primary {
+      background: var(--accent);
+      color: #fff;
+      box-shadow: 0 1px 3px rgba(0, 122, 255, 0.3),
+                  0 0 0 1px rgba(0, 122, 255, 0.1);
+    }
+    .btn-primary:hover {
+      background: var(--accent-hover);
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(0, 122, 255, 0.35),
+                  0 0 0 1px rgba(0, 122, 255, 0.15);
+    }
+    .btn-primary:active { transform: scale(0.97); }
+
+    .btn-ghost {
+      color: var(--text-secondary);
+    }
+    .btn-ghost:hover {
+      background: var(--bg-subtle);
+      color: var(--text-primary);
+    }
+
+    .theme-btn {
+      width: 40px; height: 40px;
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      font-size: 1.1rem;
+      transition: all var(--duration-fast) var(--ease-out);
+    }
+    .theme-btn:hover { background: var(--bg-subtle); transform: scale(1.08); }
+    .theme-btn:active { transform: scale(0.92); }
+
+    /* ─── MOBILE NAV ─── */
+    @media (max-width: 768px) {
+      .nav-links { display: none; }
+      .btn-ghost { display: none; }
+    }
+
+    /* ─── LAYOUT ─── */
+    .container {
+      width: 100%;
+      max-width: var(--max-width);
+      margin: 0 auto;
+      padding: 0 var(--space-lg);
+    }
+
+    .main { padding-top: var(--nav-height); }
+
+    /* ─── HERO ─── */
+    .hero {
+      min-height: min(85vh, 720px);
+      display: flex;
+      align-items: center;
+      background: var(--hero-gradient);
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* Subtle grid pattern */
+    .hero::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image:
+        linear-gradient(var(--border) 1px, transparent 1px),
+        linear-gradient(90deg, var(--border) 1px, transparent 1px);
+      background-size: 64px 64px;
+      mask-image: radial-gradient(ellipse 70% 60% at 50% 40%, black 20%, transparent 70%);
+      -webkit-mask-image: radial-gradient(ellipse 70% 60% at 50% 40%, black 20%, transparent 70%);
+      pointer-events: none;
+    }
+
+    .hero .container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      gap: var(--space-2xl);
+      padding-top: var(--space-3xl);
+      padding-bottom: var(--space-2xl);
+    }
+
+    .hero-content { max-width: 680px; }
+
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-sm);
+      padding: 6px 16px;
+      border-radius: var(--radius-full);
+      background: var(--bg-elevated);
+      border: 1px solid var(--border);
+      font-size: 0.8rem;
+      font-weight: 500;
+      color: var(--text-secondary);
+      margin-bottom: var(--space-lg);
+      animation: fadeInUp 0.6s var(--ease-out) both;
+    }
+    .hero-badge-dot {
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: var(--green);
+      animation: pulse 2s ease-in-out infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { box-shadow: 0 0 0 0 rgba(52, 199, 89, 0.4); }
+      50% { box-shadow: 0 0 0 6px rgba(52, 199, 89, 0); }
+    }
+
+    .hero-title {
+      font-size: clamp(3rem, 7vw, 5.5rem);
+      font-weight: 800;
+      line-height: 1;
+      letter-spacing: -0.04em;
+      margin-bottom: var(--space-lg);
+      animation: fadeInUp 0.7s var(--ease-out) 0.1s both;
+    }
+
+    .hero-title .highlight {
+      background: linear-gradient(135deg, var(--accent) 0%, var(--purple) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .hero-sub {
+      font-size: clamp(1.1rem, 2vw, 1.3rem);
+      color: var(--text-secondary);
+      max-width: 460px;
+      margin: 0 auto var(--space-xl);
+      line-height: 1.6;
+      letter-spacing: -0.01em;
+      animation: fadeInUp 0.7s var(--ease-out) 0.2s both;
+    }
+
+    .hero-actions {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: var(--space-md);
+      flex-wrap: wrap;
+      animation: fadeInUp 0.7s var(--ease-out) 0.3s both;
+    }
+
+    .hero-note {
+      font-size: 0.8rem;
+      color: var(--text-tertiary);
+      margin-top: var(--space-md);
+      animation: fadeInUp 0.7s var(--ease-out) 0.35s both;
+    }
+
+    .hero-visual {
+      width: 100%;
+      max-width: 520px;
+      animation: fadeInUp 0.8s var(--ease-out) 0.4s both;
+    }
+    .hero-visual img {
+      width: 100%;
+      height: auto;
+      border-radius: var(--radius-xl);
+      box-shadow: var(--shadow-xl);
+    }
+
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @media (min-width: 1024px) {
+      .hero .container {
+        flex-direction: row;
+        text-align: left;
+        padding-top: 0;
+      }
+      .hero-content { flex: 1.1; }
+      .hero-visual { flex: 0.9; justify-content: flex-end; display: flex; }
+      .hero-actions { justify-content: flex-start; }
+      .hero-sub { margin: 0 0 var(--space-xl) 0; }
+    }
+
+    /* ─── SECTION ─── */
+    .section {
+      padding: var(--space-3xl) 0;
+    }
+
+    .section-header {
+      text-align: center;
+      margin-bottom: var(--space-2xl);
+    }
+
+    .section-label {
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: var(--space-sm);
+    }
+
+    .section-title {
+      font-size: clamp(2rem, 4vw, 3rem);
+      font-weight: 700;
+      line-height: 1.1;
+      letter-spacing: -0.03em;
+    }
+
+    .section-sub {
+      font-size: 1.05rem;
+      color: var(--text-secondary);
+      max-width: 480px;
+      margin: var(--space-md) auto 0;
+      line-height: 1.6;
+    }
+
+    /* ─── FEATURES ─── */
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: var(--space-lg);
+    }
+
+    @media (max-width: 768px) {
+      .features-grid { grid-template-columns: 1fr; }
+    }
+
+    .feature-card {
+      background: var(--bg-elevated);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: var(--space-xl);
+      transition: all var(--duration-normal) var(--ease-out);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .feature-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, transparent, var(--accent), transparent);
+      opacity: 0;
+      transition: opacity var(--duration-normal) var(--ease-out);
+    }
+
+    .feature-card:hover {
+      transform: translateY(-4px);
+      box-shadow: var(--shadow-lg);
+      border-color: var(--border-strong);
+    }
+    .feature-card:hover::before { opacity: 1; }
+
+    .feature-icon {
+      width: 48px; height: 48px;
+      border-radius: var(--radius-md);
+      display: grid;
+      place-items: center;
+      margin-bottom: var(--space-lg);
+      transition: transform var(--duration-normal) var(--ease-spring);
+    }
+    .feature-card:hover .feature-icon { transform: scale(1.1) rotate(-4deg); }
+
+    .feature-icon.blue { background: var(--accent-light); color: var(--accent); }
+    .feature-icon.orange { background: rgba(255, 149, 0, 0.1); color: var(--orange); }
+    .feature-icon.green { background: rgba(52, 199, 89, 0.1); color: var(--green); }
+
+    .feature-title {
+      font-size: 1.15rem;
+      font-weight: 650;
+      letter-spacing: -0.02em;
+      margin-bottom: var(--space-sm);
+    }
+
+    .feature-desc {
+      font-size: 0.95rem;
+      color: var(--text-secondary);
+      line-height: 1.6;
+    }
+
+    /* ─── ABOUT ─── */
+    .about {
+      background: var(--bg-subtle);
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .about-grid {
+      display: grid;
+      grid-template-columns: 1fr 1.3fr;
+      gap: var(--space-2xl);
+      align-items: center;
+    }
+
+    @media (max-width: 768px) {
+      .about-grid { grid-template-columns: 1fr; }
+    }
+
+    .about-visual {
+      aspect-ratio: 4/3;
+      background: linear-gradient(135deg, var(--accent-light), rgba(175, 82, 222, 0.08));
+      border-radius: var(--radius-xl);
+      display: grid;
+      place-items: center;
+      border: 1px solid var(--border);
+      transition: transform var(--duration-slow) var(--ease-out);
+    }
+    .about-visual:hover { transform: scale(1.02); }
+
+    .about-visual svg {
+      width: 120px; height: 120px;
+      transition: transform var(--duration-slow) var(--ease-spring);
+    }
+    .about-visual:hover svg { transform: rotate(8deg) scale(1.08); }
+
+    .about-label {
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: var(--space-sm);
+    }
+
+    .about-title {
+      font-size: clamp(1.6rem, 3vw, 2.2rem);
+      font-weight: 700;
+      line-height: 1.15;
+      letter-spacing: -0.03em;
+      margin-bottom: var(--space-lg);
+    }
+
+    .about-text {
+      font-size: 1rem;
+      color: var(--text-secondary);
+      line-height: 1.7;
+      margin-bottom: var(--space-md);
+    }
+    .about-text:last-of-type { margin-bottom: 0; }
+
+    .about-divider {
+      height: 1px;
+      background: var(--border-strong);
+      margin: var(--space-lg) 0;
+    }
+
+    .about-highlight {
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: var(--accent);
+      line-height: 1.5;
+    }
+
+    /* ─── CTA ─── */
+    .cta-section {
+      background: var(--hero-gradient);
+    }
+
+    .cta-card {
+      background: var(--bg-elevated);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-xl);
+      padding: var(--space-2xl) var(--space-xl);
+      text-align: center;
+      max-width: 520px;
+      margin: 0 auto;
+      position: relative;
+      overflow: hidden;
+      box-shadow: var(--shadow-md);
+    }
+
+    /* Gradient glow behind CTA */
+    .cta-card::before {
+      content: '';
+      position: absolute;
+      top: -80px; left: 50%;
+      transform: translateX(-50%);
+      width: 200px; height: 200px;
+      background: radial-gradient(circle, var(--accent) 0%, transparent 70%);
+      opacity: 0.08;
+      pointer-events: none;
+    }
+
+    .cta-icon {
+      width: 56px; height: 56px;
+      margin: 0 auto var(--space-lg);
+      border-radius: var(--radius-md);
+      background: linear-gradient(135deg, var(--accent), var(--purple));
+      display: grid;
+      place-items: center;
+      color: #fff;
+      transition: transform var(--duration-normal) var(--ease-spring);
+    }
+    .cta-card:hover .cta-icon { transform: scale(1.1) rotate(6deg); }
+
+    .cta-title {
+      font-size: clamp(1.8rem, 3vw, 2.4rem);
+      font-weight: 700;
+      line-height: 1.1;
+      letter-spacing: -0.03em;
+      margin-bottom: var(--space-md);
+    }
+
+    .cta-desc {
+      font-size: 1rem;
+      color: var(--text-secondary);
+      max-width: 340px;
+      margin: 0 auto var(--space-xl);
+      line-height: 1.6;
+    }
+
+    .cta-note {
+      font-size: 0.8rem;
+      color: var(--text-tertiary);
+      margin-top: var(--space-md);
+    }
+
+    /* ─── FOOTER ─── */
+    .footer {
+      border-top: 1px solid var(--border);
+      padding: var(--space-xl) var(--space-lg);
+      background: var(--bg-elevated);
+    }
+
+    .footer-inner {
+      max-width: var(--max-width);
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: var(--space-lg);
+    }
+
+    .footer-brand {
+      font-weight: 700;
+      font-size: 1rem;
+      letter-spacing: -0.02em;
+    }
+    .footer-brand span { color: var(--accent); }
+
+    .footer-links {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: var(--space-lg);
+    }
+
+    .footer-link {
+      font-size: 0.85rem;
+      color: var(--text-tertiary);
+      transition: color var(--duration-fast);
+    }
+    .footer-link:hover { color: var(--text-primary); }
+
+    .footer-copy {
+      font-size: 0.8rem;
+      color: var(--text-tertiary);
+    }
+
+    /* ─── SCROLL REVEAL ─── */
+    .reveal {
+      opacity: 0;
+      transform: translateY(24px);
+      transition: opacity 0.7s var(--ease-out), transform 0.7s var(--ease-out);
+      will-change: opacity, transform;
+    }
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    .reveal-delay-1 { transition-delay: 0.08s; }
+    .reveal-delay-2 { transition-delay: 0.16s; }
+    .reveal-delay-3 { transition-delay: 0.24s; }
+
+    /* ─── SCROLLBAR ─── */
+    ::-webkit-scrollbar { width: 8px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: var(--bg-muted); border-radius: 4px; }
+    ::-webkit-scrollbar-thumb:hover { background: var(--text-tertiary); }
+  </style>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav class="nav" role="navigation" aria-label="Navegación principal">
+    <div class="nav-inner">
+      <a href="/" class="nav-brand" aria-label="RakinMath - Inicio">
+        <div class="nav-brand-icon">
+          <svg width="16" height="16" viewBox="0 0 14 14" fill="none">
+            <path d="M3 10V4h2l2.5 3.5L10 4h2v6h-1.5V6.5L8 10.5H7.5L5 6.5V10H3z" fill="white"/>
+          </svg>
+        </div>
+        Rakin<span>Math</span>
+      </a>
+
+      <div class="nav-links">
+        <a href="#features" class="nav-link">Qué es</a>
+        <a href="#about" class="nav-link">Quiénes Somos</a>
+        <a href="#cta" class="nav-link">Minijuegos</a>
+      </div>
+
+      <div class="nav-actions">
+        <a href="Juegos/menu.html" class="btn btn-ghost">Entrar</a>
+        <a href="Juegos/menu.html" class="btn btn-primary">Probar gratis</a>
+        <button class="theme-btn" id="themeToggle" aria-label="Cambiar tema">
+          <span class="icon-light">☀️</span>
+          <span class="icon-dark" style="display:none;">🌙</span>
+        </button>
+      </div>
+    </div>
+  </nav>
+
+  <main class="main">
+
+    <!-- HERO -->
+    <section class="hero">
+      <div class="container">
+        <div class="hero-content">
+          <div class="hero-badge">
+            <span class="hero-badge-dot"></span>
+            En desarrollo
+          </div>
+          <h1 class="hero-title">
+            Matemáticas que se sienten<br>
+            <span class="highlight">como un juego.</span>
+          </h1>
+          <p class="hero-sub">
+            Aprende resolviendo retos reales. Sin fórmulas de memoria, sin estrés. Solo tú y las matemáticas.
+          </p>
+          <div class="hero-actions">
+            <a href="Juegos/menu.html" class="btn btn-primary">
+              Empezar ahora
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M6 3l5 5-5 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </a>
+            <a href="#features" class="btn btn-ghost">Saber más</a>
+          </div>
+          <p class="hero-note">Sin registro · 100% gratis</p>
+        </div>
+        <div class="hero-visual">
+          <img src="Recursos/RakinMath.png" alt="RakinMath - Plataforma de aprendizaje de matemáticas" width="520" height="340" loading="eager">
+        </div>
+      </div>
+    </section>
+
+    <!-- FEATURES -->
+    <section class="section" id="features">
+      <div class="container">
+        <div class="section-header reveal">
+          <p class="section-label">Qué es RakinMath</p>
+          <h2 class="section-title">Una nueva forma de aprender</h2>
+          <p class="section-sub">No más fórmulas vacías. Transformamos el aprendizaje en una experiencia viva.</p>
+        </div>
+
+        <div class="features-grid">
+          <div class="feature-card reveal reveal-delay-1">
+            <div class="feature-icon blue">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="2" y="6" width="20" height="12" rx="2"/>
+                <path d="M12 12h.01"/><path d="M17 12h.01"/><path d="M7 12h.01"/>
+              </svg>
+            </div>
+            <h3 class="feature-title">Aprender jugando</h3>
+            <p class="feature-desc">Cada lección se convierte en una aventura interactiva. Fracciones, operaciones, geometría — todo se entiende mejor cuando lo vives.</p>
+          </div>
+
+          <div class="feature-card reveal reveal-delay-2">
+            <div class="feature-icon orange">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/>
+                <polyline points="14 2 14 8 20 8"/>
+                <path d="M10 12v6"/><path d="M14 12v6"/><path d="M8 15h8"/>
+              </svg>
+            </div>
+            <h3 class="feature-title">Retos que enganchan</h3>
+            <p class="feature-desc">Preguntas adaptativas, desbloqueo de niveles y límites de tiempo que mantienen la curiosidad activa. No es memorizar — es descubrir.</p>
+          </div>
+
+          <div class="feature-card reveal reveal-delay-3">
+            <div class="feature-icon green">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M7 20h10"/><path d="M10 20c5.5-2.5 8.7-5.8 9-10 .3-4.2-2.6-7.5-7-8-4.4-.5-8.5 2.7-9 8-.2 3 1.4 6.5 4 9"/>
+                <path d="M12 10c-2-2-5-1.5-5 2s3 4 5 2"/>
+                <path d="M12 10c2-2 5-1.5 5 2s-3 4-5 2"/>
+              </svg>
+            </div>
+            <h3 class="feature-title">El error te hace crecer</h3>
+            <p class="feature-desc">Sin frustración, sin penalización. Cada error trae una guía que te muestra el camino hacia la solución.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ABOUT -->
+    <section class="section about" id="about">
+      <div class="container">
+        <div class="about-grid">
+          <div class="about-visual reveal">
+            <svg viewBox="0 0 120 120" fill="none">
+              <circle cx="60" cy="60" r="56" stroke="var(--accent)" stroke-width="2" opacity="0.2"/>
+              <circle cx="60" cy="60" r="40" stroke="var(--accent)" stroke-width="2" opacity="0.1"/>
+              <path d="M40 65 L52 77 L80 49" stroke="var(--accent)" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </div>
+          <div class="reveal">
+            <p class="about-label">Quiénes Somos</p>
+            <h2 class="about-title">RakinMath nació para cambiar la forma en que se aprenden las matemáticas.</h2>
+            <p class="about-text">Las matemáticas no tienen por qué ser aburridas ni intimidantes. Creemos que el aprendizaje real nace cuando el estudiante se atreve, explora y se equivoca sin miedo.</p>
+            <p class="about-text">Cada ejercicio está pensado para que entender sea más natural que memorizar. Que los errores no sean el final, sino el principio de la solución.</p>
+            <div class="about-divider"></div>
+            <p class="about-highlight">Porque las matemáticas se aprenden mejor cuando se viven.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- CTA -->
+    <section class="section cta-section" id="cta">
+      <div class="container">
+        <div class="cta-card reveal">
+          <div class="cta-icon">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>
+            </svg>
+          </div>
+          <h2 class="cta-title">¿Listo para empezar?</h2>
+          <p class="cta-desc">Únete a miles de estudiantes que ya están aprendiendo de una forma diferente.</p>
+          <a href="Juegos/menu.html" class="btn btn-primary">
+            Comenzar gratis
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M6 3l5 5-5 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </a>
+          <p class="cta-note">Sin registro · Para siempre gratis</p>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    <div class="footer-inner">
+      <a href="/" class="footer-brand">Rakin<span>Math</span></a>
+      <div class="footer-links">
+        <a href="#features" class="footer-link">Qué es</a>
+        <a href="#about" class="footer-link">Quiénes Somos</a>
+        <a href="#cta" class="footer-link">Minijuegos</a>
+      </div>
+      <p class="footer-copy">© 2026 RakinMath. Todos los derechos reservados.</p>
+    </div>
+  </footer>
+
+  <script>
+    (function () {
+      'use strict';
+
+      // ─── THEME ───
+      const html = document.documentElement;
+      const toggle = document.getElementById('themeToggle');
+      const iconL = toggle.querySelector('.icon-light');
+      const iconD = toggle.querySelector('.icon-dark');
+
+      function setTheme(t) {
+        html.dataset.theme = t;
+        localStorage.setItem('rakin-theme', t);
+        iconL.style.display = t === 'dark' ? 'none' : 'inline';
+        iconD.style.display = t === 'dark' ? 'inline' : 'none';
+      }
+
+      setTheme(
+        localStorage.getItem('rakin-theme') ||
+        (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light')
+      );
+
+      toggle.addEventListener('click', () => {
+        setTheme(html.dataset.theme === 'dark' ? 'light' : 'dark');
+      });
+
+      // ─── SCROLL REVEAL ───
+      const reveals = document.querySelectorAll('.reveal');
+      if (reveals.length) {
+        const io = new IntersectionObserver(
+          entries => {
+            entries.forEach(e => {
+              if (e.isIntersecting) {
+                e.target.classList.add('visible');
+                io.unobserve(e.target);
+              }
+            });
+          },
+          { threshold: 0.12, rootMargin: '0px 0px -50px 0px' }
+        );
+        reveals.forEach(el => io.observe(el));
+      }
+
+      // ─── SMOOTH SCROLL ───
+      document.querySelectorAll('a[href^="#"]').forEach(a => {
+        a.addEventListener('click', function (e) {
+          const id = this.getAttribute('href');
+          if (id === '#') return;
+          const target = document.querySelector(id);
+          if (!target) return;
+          e.preventDefault();
+          const navH = document.querySelector('.nav').offsetHeight;
+          window.scrollTo({
+            top: target.getBoundingClientRect().top + window.pageYOffset - navH - 16,
+            behavior: 'smooth'
+          });
+        });
+      });
+    })();
+  </script>
+</body>
+</html>

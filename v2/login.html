@@ -2,7 +2,7 @@
 <html lang="es" data-theme="light">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, viewport-fit=cover">
 <title>RakinMath - Iniciar Sesión</title>
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="logos/launchericon-192x192.png">
@@ -171,9 +171,12 @@ body{
 .shake{animation:shake 0.4s ease}
 
 @media(max-width:480px){
-  body{padding:16px}
-  .login-card{padding:24px}
+  body{padding:12px 14px}
+  .login-card{padding:20px 16px;border-radius:var(--radius-lg)}
   .login-title{font-size:1.25rem}
+  .login-subtitle{font-size:0.875rem;margin-bottom:20px}
+  .form-input{font-size:16px;padding:12px 14px} /* 16px previene auto-zoom molesto en iOS */
+  .login-btn{min-height:46px;padding:12px 18px}
 }
 .dev-notice{text-align:center;padding:8px 0}
 .dev-notice-icon{font-size:2.5rem;margin-bottom:16px;animation:popIn 0.5s var(--spring-default) both}
@@ -200,9 +203,39 @@ body{
 .course-btn:active{transform:scale(0.97)}
 .course-emoji{font-size:1.5rem}
 .course-name{font-size:1rem;font-weight:600;color:var(--text);letter-spacing:-0.01em}
+.page-loader{position:fixed;top:0;left:0;right:0;height:3px;z-index:9999;background:linear-gradient(90deg,#58cc02,#1cb0f6,#ce82ff);transform-origin:left;animation:loaderFill 1.5s ease-out forwards}
+@keyframes loaderFill{0%{transform:scaleX(0)}60%{transform:scaleX(.7)}100%{transform:scaleX(1)}}
+.page-loader.done{opacity:0;transition:opacity .3s;pointer-events:none}
 </style>
+
+<!-- SUPER RESPONSIVE MOBILE OPTIMIZATIONS — RAKINMATH -->
+<style id="rakin-mobile-responsiveness">
+* {
+  -webkit-tap-highlight-color: transparent;
+}
+html, body {
+  max-width: 100%;
+  overflow-x: hidden;
+}
+img, svg, video, canvas {
+  max-width: 100%;
+}
+button, a, input, select, textarea, .btn, .choice-btn, .opt-btn, .game-btn, .nav-btn, .action-btn {
+  touch-action: manipulation;
+}
+@media (max-width: 600px) {
+  input, select, textarea {
+    font-size: 16px !important;
+  }
+  button, .btn, .choice-btn, .opt-btn, .game-btn, .nav-btn, .action-btn {
+    min-height: 44px;
+  }
+}
+</style>
+
 </head>
 <body>
+<div class="page-loader" id="pageLoader"></div>
 
 <button class="theme-toggle" id="themeToggle" aria-label="Cambiar tema">
   <span class="icon-light">☀️</span>
@@ -412,7 +445,7 @@ body{
       if(result.ok){
         pendingUser = result.user;
         var isSuper = (result.user === SUPER_ADMIN);
-        var isTch = (result.role === 'teacher' || result.role === 'superadmin');
+        var isTch = (result.role === 'teacher' || result.role === 'superadmin' || isSuper || TEACHER_USERS.indexOf(result.user) > -1);
 
         createSession(result.user, {
           isTeacher: isTch,
@@ -489,6 +522,15 @@ body{
 </script>
 <script>
 if('serviceWorker' in navigator){navigator.serviceWorker.register('sw.js').catch(function(){})}
+</script>
+<script>
+window.addEventListener('load', function() {
+  var loader = document.getElementById('pageLoader');
+  if (loader) {
+    loader.classList.add('done');
+    setTimeout(function() { loader.remove(); }, 300);
+  }
+});
 </script>
 </body>
 </html>

@@ -1,8 +1,8 @@
-<?<!DOCTYPE html>
-<html lang="es">
+<!DOCTYPE html>
+<html lang="es" data-theme="light">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, viewport-fit=cover">
 <title>RakinMath " Factores y Múltiplos</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -54,11 +54,37 @@ body{display:flex;flex-direction:column;min-height:100vh}
 @keyframes slideUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
 @media(max-width:640px){.content{padding:16px}.math-input{width:64px;font-size:1.1rem;padding:6px}.card{padding:20px 16px 16px}}
 </style>
+
+<!-- SUPER RESPONSIVE MOBILE OPTIMIZATIONS — RAKINMATH -->
+<style id="rakin-mobile-responsiveness">
+* {
+  -webkit-tap-highlight-color: transparent;
+}
+html, body {
+  max-width: 100%;
+  overflow-x: hidden;
+}
+img, svg, video, canvas {
+  max-width: 100%;
+}
+button, a, input, select, textarea, .btn, .choice-btn, .opt-btn, .game-btn, .nav-btn, .action-btn {
+  touch-action: manipulation;
+}
+@media (max-width: 600px) {
+  input, select, textarea {
+    font-size: 16px !important;
+  }
+  button, .btn, .choice-btn, .opt-btn, .game-btn, .nav-btn, .action-btn {
+    min-height: 44px;
+  }
+}
+</style>
+
 </head>
 <body>
 <nav class="nav"><a href="menu.html" class="nav-title"><img src="../../Recursos/LogoRakinMath.png" alt="RakinMath" style="height:24px;width:auto"></a><a href="menu.html" class="exit-btn">Volver</a></nav>
 <div class="content">
-<a href="menu.html" class="back-link">? Volver a Menú</a>
+<a href="menu.html" class="back-link">← Volver a Menú</a>
 
 <div class="section">
 <div class="section-title">🔍 Factores y Múltiplos</div>
@@ -235,7 +261,7 @@ var fb=document.getElementById('qFeedback');
 var correct=String(qAnswer).replace(/\s/g,'');
 if(ans===correct){
 fb.textContent='¡Correcto! La respuesta es: '+qAnswer;
-fb.className='feedback correct';
+fb.className='feedback correct';if(typeof RK!=='undefined'&&RK.Progress){RK.Progress.markPageComplete('factores-multiplos','5to','numeros')}fb.className='feedback correct';
 setTimeout(newQuiz,2000);
 }else if(!ans){
 fb.textContent='Escribe tu respuesta';
@@ -268,6 +294,14 @@ document.getElementById('videosContainer').innerHTML='<div class="video-placehol
 showMult();
 showFact();
 newQuiz();
+</script>
+<script src="../../stats/rk-progress.js"></script>
+<script src="../video-embed.js"></script>
+<script>
+(function(){
+  var t=localStorage.getItem('rakin-theme')||'light';
+  document.documentElement.setAttribute('data-theme',t);
+})();
 </script>
 </body>
 </html>

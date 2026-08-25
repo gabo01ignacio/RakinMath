@@ -1,9 +1,9 @@
-<?﻿<!DOCTYPE html>
-<html lang="es">
+<!DOCTYPE html>
+<html lang="es" data-theme="light">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>RakinMath " Perímetro y Área</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, viewport-fit=cover">
+<title>RakinMath " Per�metro y �rea</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="../apple-design.css">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
@@ -45,6 +45,32 @@ body{display:flex;flex-direction:column;min-height:100vh}
 @keyframes slideUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
 @media(max-width:640px){.content{padding:16px}.card{padding:20px 16px 16px}}
 </style>
+
+<!-- SUPER RESPONSIVE MOBILE OPTIMIZATIONS — RAKINMATH -->
+<style id="rakin-mobile-responsiveness">
+* {
+  -webkit-tap-highlight-color: transparent;
+}
+html, body {
+  max-width: 100%;
+  overflow-x: hidden;
+}
+img, svg, video, canvas {
+  max-width: 100%;
+}
+button, a, input, select, textarea, .btn, .choice-btn, .opt-btn, .game-btn, .nav-btn, .action-btn {
+  touch-action: manipulation;
+}
+@media (max-width: 600px) {
+  input, select, textarea {
+    font-size: 16px !important;
+  }
+  button, .btn, .choice-btn, .opt-btn, .game-btn, .nav-btn, .action-btn {
+    min-height: 44px;
+  }
+}
+</style>
+
 </head>
 <body>
 <nav style="display:flex;align-items:center;justify-content:space-between;padding:16px 24px;border-bottom:1px solid var(--border)">
@@ -52,48 +78,48 @@ body{display:flex;flex-direction:column;min-height:100vh}
 <a href="menu.html" class="btn btn-ghost">Volver</a>
 </nav>
 <div class="content">
-<a href="menu.html" class="back-link">? Volver al menú</a>
+<a href="menu.html" class="back-link">? Volver al men�</a>
 
 <div class="section">
-<h1 class="section-title">Perímetro y Área</h1>
-<p class="section-subtitle">El perímetro es la distancia alrededor de una figura. El área es la cantidad de superficie que cubre. Son conceptos diferentes pero relacionados.</p>
+<h1 class="section-title">Per�metro y �rea</h1>
+<p class="section-subtitle">El per�metro es la distancia alrededor de una figura. El �rea es la cantidad de superficie que cubre. Son conceptos diferentes pero relacionados.</p>
 </div>
 
 <div class="section">
 <div class="concept-box green">
-<h3>Perímetro</h3>
+<h3>Per�metro</h3>
 <p>Es la suma de todos los lados de una figura. Se mide en unidades de longitud (cm, m, km).</p>
 <div class="math-display">
 <strong>Cuadrado:</strong> $P = 4 \times L$<br><br>
-<strong>Rectángulo:</strong> $P = 2(l + a)$<br><br>
-<strong>Triángulo:</strong> $P = L_1 + L_2 + L_3$
+<strong>Rect�ngulo:</strong> $P = 2(l + a)$<br><br>
+<strong>Tri�ngulo:</strong> $P = L_1 + L_2 + L_3$
 </div>
 </div>
 <div class="concept-box green">
-<h3>Área</h3>
-<p>Es la superficie que cubre una figura. Se mide en unidades cuadradas (cm², m², km²).</p>
+<h3>�rea</h3>
+<p>Es la superficie que cubre una figura. Se mide en unidades cuadradas (cm�, m�, km�).</p>
 <div class="math-display">
 <strong>Cuadrado:</strong> $A = L^2$<br><br>
-<strong>Rectángulo:</strong> $A = l \times a$<br><br>
-<strong>Triángulo:</strong> $A = \frac{b \times h}{2}$<br><br>
+<strong>Rect�ngulo:</strong> $A = l \times a$<br><br>
+<strong>Tri�ngulo:</strong> $A = \frac{b \times h}{2}$<br><br>
 <strong>Trapecio:</strong> $A = \frac{(B + b) \times h}{2}$
 </div>
 </div>
 <div class="tip-box">
 <h4>Consejo</h4>
-<p>Piensa en el perímetro como el largo de una reja alrededor del jardín, y el área como la cantidad de césped que necesitas para cubrirlo.</p>
+<p>Piensa en el per�metro como el largo de una reja alrededor del jard�n, y el �rea como la cantidad de c�sped que necesitas para cubrirlo.</p>
 </div>
 </div>
 
 <div class="section">
 <div class="card">
-<h3>Calculadora de perímetro y área</h3>
+<h3>Calculadora de per�metro y �rea</h3>
 <p style="color:var(--text-secondary);margin-bottom:16px">Selecciona una figura e ingresa las dimensiones.</p>
 <div style="text-align:center">
 <select id="shape-select" class="quiz-input" style="width:auto;padding:8px 16px;margin-bottom:16px" onchange="updateShapeInputs()">
 <option value="square">Cuadrado</option>
-<option value="rect">Rectángulo</option>
-<option value="triangle">Triángulo</option>
+<option value="rect">Rect�ngulo</option>
+<option value="triangle">Tri�ngulo</option>
 </select>
 <div id="shape-inputs" style="display:flex;gap:10px;align-items:center;justify-content:center;flex-wrap:wrap;margin-bottom:16px">
 <input type="number" class="quiz-input" id="dim1" placeholder="Lado (cm)">
@@ -106,16 +132,16 @@ body{display:flex;flex-direction:column;min-height:100vh}
 
 <div class="section">
 <div class="quiz-box">
-<h4>Practica: Calcula perímetro y área</h4>
+<h4>Practica: Calcula per�metro y �rea</h4>
 <p class="quiz-problem" id="quiz-pa-problem"></p>
 <div style="display:flex;gap:20px;justify-content:center;flex-wrap:wrap;margin-top:12px">
 <div>
-<p style="font-size:.875rem;color:var(--text-secondary);margin-bottom:4px">Perímetro:</p>
+<p style="font-size:.875rem;color:var(--text-secondary);margin-bottom:4px">Per�metro:</p>
 <input type="number" class="quiz-input" id="quiz-pa-perim" placeholder="cm">
 </div>
 <div>
-<p style="font-size:.875rem;color:var(--text-secondary);margin-bottom:4px">Área:</p>
-<input type="number" class="quiz-input" id="quiz-pa-area" placeholder="cm²">
+<p style="font-size:.875rem;color:var(--text-secondary);margin-bottom:4px">�rea:</p>
+<input type="number" class="quiz-input" id="quiz-pa-area" placeholder="cm�">
 </div>
 </div>
 <div style="text-align:center;margin-top:12px">
@@ -127,7 +153,7 @@ body{display:flex;flex-direction:column;min-height:100vh}
 
 <div class="section">
 <div class="videos-box" style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-md);padding:24px;text-align:center">
-<p style="color:var(--text-tertiary);font-size:.875rem">Próximamente: Videos explicativos sobre perímetro y área</p>
+<p style="color:var(--text-tertiary);font-size:.875rem">Pr�ximamente: Videos explicativos sobre per�metro y �rea</p>
 </div>
 </div>
 </div>
@@ -148,8 +174,8 @@ const res=document.getElementById('calc-results');
 let perim,area;
 if(shape==='square'){perim=4*d1;area=d1*d1;}
 else if(shape==='rect'){perim=2*(d1+d2);area=d1*d2;}
-else{const d3=document.getElementById('dim3')?parseFloat(document.getElementById('dim3').value):0;perim=d1+d2+d3;area=(d1*d2)/2;}
-res.innerHTML='<p style="color:var(--green);font-weight:700">Perímetro: '+perim.toFixed(1)+' cm</p><p style="color:var(--accent);font-weight:700">Área: '+area.toFixed(1)+' cm²</p>';
+else{const d3=document.getElementById('dim3')?parseFloat(document.getElementById('dim3').value):0;perim=d1+d2+d3;const s=perim/2;area=Math.sqrt(s*(s-d1)*(s-d2)*(s-d3));}
+res.innerHTML='<p style="color:var(--green);font-weight:700">Per�metro: '+perim.toFixed(1)+' cm</p><p style="color:var(--accent);font-weight:700">�rea: '+area.toFixed(1)+' cm�</p>';
 }
 const quizShapes=['square','rect','rect'];
 let quizPAData={};
@@ -164,7 +190,7 @@ aPerim=4*l;aArea=l*l;
 }else{
 const b=Math.floor(Math.random()*10)+3;
 const h=Math.floor(Math.random()*8)+2;
-problem='Rectángulo de '+b+' cm × '+h+' cm';
+problem='Rect�ngulo de '+b+' cm � '+h+' cm';
 aPerim=2*(b+h);aArea=b*h;
 }
 quizPAData={perim:aPerim,area:aArea};
@@ -178,10 +204,18 @@ function checkQuizPA(){
 const p=parseFloat(document.getElementById('quiz-pa-perim').value);
 const a=parseFloat(document.getElementById('quiz-pa-area').value);
 const fb=document.getElementById('quiz-pa-feedback');
-if(p===quizPAData.perim&&a===quizPAData.area){fb.textContent='\u00a1Excelente! Ambas respuestas correctas.';fb.className='feedback correct';}
-else{fb.textContent='Incorrecto. Perímetro: '+quizPAData.perim+' cm, Área: '+quizPAData.area+' cm²';fb.className='feedback wrong';}
+if(p===quizPAData.perim&&a===quizPAData.area){fb.textContent='\u00a1Excelente! Ambas respuestas correctas.';fb.className='feedback correct';if(typeof RK!=='undefined'&&RK.Progress){RK.Progress.markPageComplete('perimetro-area','5to','geometria')}fb.className='feedback correct';}
+else{fb.textContent='Incorrecto. Per�metro: '+quizPAData.perim+' cm, �rea: '+quizPAData.area+' cm�';fb.className='feedback wrong';}
 }
 genQuizPA();
+</script>
+<script src="../../stats/rk-progress.js"></script>
+<script src="../video-embed.js"></script>
+<script>
+(function(){
+  var t=localStorage.getItem('rakin-theme')||'light';
+  document.documentElement.setAttribute('data-theme',t);
+})();
 </script>
 </body>
 </html>

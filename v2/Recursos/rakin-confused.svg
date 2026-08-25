@@ -1,0 +1,55 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" fill="none">
+  <!-- Rakín - Búho con lentes (Confused/404) -->
+  <!-- Cuerpo -->
+  <ellipse cx="60" cy="68" rx="38" ry="40" fill="#af52de"/>
+  <ellipse cx="60" cy="68" rx="38" ry="40" fill="url(#bodyGrad4)" opacity="0.3"/>
+  
+  <!-- Panza -->
+  <ellipse cx="60" cy="78" rx="24" ry="26" fill="#f5f0ff"/>
+  
+  <!-- Orejas/plumas -->
+  <path d="M30 38 L22 18 L40 32 Z" fill="#9333ea"/>
+  <path d="M90 38 L98 18 L80 32 Z" fill="#9333ea"/>
+  
+  <!-- Ojos (confundidos - uno arriba, uno abajo) -->
+  <circle cx="46" cy="49" r="10" fill="white"/>
+  <circle cx="74" cy="55" r="10" fill="white"/>
+  <circle cx="46" cy="49" r="5" fill="#1d1d1f"/>
+  <circle cx="74" cy="55" r="5" fill="#1d1d1f"/>
+  <circle cx="47.5" cy="47.5" r="2" fill="white"/>
+  <circle cx="75.5" cy="53.5" r="2" fill="white"/>
+  
+  <!-- Lentes (inclinados) -->
+  <circle cx="46" cy="51" r="13" fill="none" stroke="#007aff" stroke-width="3"/>
+  <circle cx="74" cy="51" r="13" fill="none" stroke="#007aff" stroke-width="3"/>
+  <path d="M59 51 L61 51" stroke="#007aff" stroke-width="3" stroke-linecap="round"/>
+  <path d="M33 49 L26 44" stroke="#007aff" stroke-width="2.5" stroke-linecap="round"/>
+  <path d="M87 53 L94 48" stroke="#007aff" stroke-width="2.5" stroke-linecap="round"/>
+  
+  <!-- Cejas (confundidas) -->
+  <path d="M36 40 L44 36" stroke="#1d1d1f" stroke-width="2.5" stroke-linecap="round"/>
+  <path d="M76 44 L84 40" stroke="#1d1d1f" stroke-width="2.5" stroke-linecap="round"/>
+  
+  <!-- Pico (abis abierto) -->
+  <ellipse cx="60" cy="66" rx="4" ry="3" fill="#ff9500"/>
+  
+  <!-- Alas (una levantada) -->
+  <ellipse cx="24" cy="72" rx="8" ry="18" fill="#9333ea" transform="rotate(-10 24 72)"/>
+  <ellipse cx="96" cy="62" rx="8" ry="18" fill="#9333ea" transform="rotate(30 96 62)"/>
+  
+  <!-- Patas -->
+  <path d="M46 104 L40 114 M46 104 L46 114 M46 104 L52 114" stroke="#ff9500" stroke-width="2.5" stroke-linecap="round"/>
+  <path d="M74 104 L68 114 M74 104 L74 114 M74 104 L80 114" stroke="#ff9500" stroke-width="2.5" stroke-linecap="round"/>
+  
+  <!-- Signos de interrogación flotando -->
+  <text x="10" y="30" font-size="16" font-weight="bold" fill="#ff4b4b" opacity="0.7">?</text>
+  <text x="102" y="22" font-size="12" font-weight="bold" fill="#ff9600" opacity="0.7">?</text>
+  <text x="8" y="56" font-size="10" font-weight="bold" fill="#1cb0f6" opacity="0.5">?</text>
+  
+  <defs>
+    <linearGradient id="bodyGrad4" x1="60" y1="28" x2="60" y2="108" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="white" stop-opacity="0.4"/>
+      <stop offset="1" stop-color="black" stop-opacity="0.1"/>
+    </linearGradient>
+  </defs>
+</svg>

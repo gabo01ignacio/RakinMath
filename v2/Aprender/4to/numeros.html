@@ -1,8 +1,8 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="es" data-theme="light">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, viewport-fit=cover">
     <title>RakinMath - Números</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -69,6 +69,32 @@
             backdrop-filter: blur(10px);
         }
     </style>
+
+<!-- SUPER RESPONSIVE MOBILE OPTIMIZATIONS — RAKINMATH -->
+<style id="rakin-mobile-responsiveness">
+* {
+  -webkit-tap-highlight-color: transparent;
+}
+html, body {
+  max-width: 100%;
+  overflow-x: hidden;
+}
+img, svg, video, canvas {
+  max-width: 100%;
+}
+button, a, input, select, textarea, .btn, .choice-btn, .opt-btn, .game-btn, .nav-btn, .action-btn {
+  touch-action: manipulation;
+}
+@media (max-width: 600px) {
+  input, select, textarea {
+    font-size: 16px !important;
+  }
+  button, .btn, .choice-btn, .opt-btn, .game-btn, .nav-btn, .action-btn {
+    min-height: 44px;
+  }
+}
+</style>
+
 </head>
 <body>
     <nav class="nav">
@@ -80,15 +106,22 @@
     </nav>
 
     <div class="hero">
-        <div class="hero-emoji">??</div>
+        <div style="margin-bottom:16px"><img src="../../Recursos/rakin-thinking.svg" alt="Rakín pensando" style="width:96px;height:96px;filter:drop-shadow(0 4px 16px rgba(175,82,222,0.3))"></div>
         <h1>Números</h1>
         <p>Operaciones con números enteros, decimales y porcentajes</p>
-        <p style="color: var(--text-tertiary); font-size: 0.9375rem;">Próximamente</p>
-        <a href="menu.html" class="back-btn">? Volver al menú</a>
+        <p style="color: var(--text-tertiary); font-size: 0.9375rem; margin-top: 16px">🚧 Próximamente — Rakín está trabajando en esta lección</p>
+        <a href="menu.html" class="back-btn">← Volver al menú</a>
     </div>
 
     <div class="footer">
         RakinMath – Aprende matemáticas jugando
     </div>
+<script src="../video-embed.js"></script>
+<script>
+(function(){
+  var t=localStorage.getItem('rakin-theme')||'light';
+  document.documentElement.setAttribute('data-theme',t);
+})();
+</script>
 </body>
 </html>

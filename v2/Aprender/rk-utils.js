@@ -323,8 +323,14 @@ function lcm(a, b) {
 
 /* --- INIT --- */
 document.addEventListener('DOMContentLoaded', function() {
-  window.location.href = '../Juegos/menu.html';
-  renderMath();
+  if (typeof renderMathInElement === 'function') {
+    renderMathInElement(document.body, {
+      delimiters: [
+        {left: '\\(', right: '\\)', display: false},
+        {left: '\\[', right: '\\]', display: true}
+      ]
+    });
+  }
 });
 
 window.RK = RK;

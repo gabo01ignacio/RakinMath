@@ -1,8 +1,8 @@
-<?<!DOCTYPE html>
-<html lang="es">
+<!DOCTYPE html>
+<html lang="es" data-theme="light">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, viewport-fit=cover">
 <title>RakinMath " Transformación de Unidades</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="../apple-design.css">
@@ -45,6 +45,32 @@ body{display:flex;flex-direction:column;min-height:100vh}
 @keyframes slideUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
 @media(max-width:640px){.content{padding:16px}.card{padding:20px 16px 16px}}
 </style>
+
+<!-- SUPER RESPONSIVE MOBILE OPTIMIZATIONS — RAKINMATH -->
+<style id="rakin-mobile-responsiveness">
+* {
+  -webkit-tap-highlight-color: transparent;
+}
+html, body {
+  max-width: 100%;
+  overflow-x: hidden;
+}
+img, svg, video, canvas {
+  max-width: 100%;
+}
+button, a, input, select, textarea, .btn, .choice-btn, .opt-btn, .game-btn, .nav-btn, .action-btn {
+  touch-action: manipulation;
+}
+@media (max-width: 600px) {
+  input, select, textarea {
+    font-size: 16px !important;
+  }
+  button, .btn, .choice-btn, .opt-btn, .game-btn, .nav-btn, .action-btn {
+    min-height: 44px;
+  }
+}
+</style>
+
 </head>
 <body>
 <nav style="display:flex;align-items:center;justify-content:space-between;padding:16px 24px;border-bottom:1px solid var(--border)">
@@ -52,7 +78,7 @@ body{display:flex;flex-direction:column;min-height:100vh}
 <a href="menu.html" class="btn btn-ghost">Volver</a>
 </nav>
 <div class="content">
-<a href="menu.html" class="back-link">? Volver al menú</a>
+<a href="menu.html" class="back-link">← Volver al menú</a>
 
 <div class="section">
 <h1 class="section-title">Transformación de Unidades</h1>
@@ -171,10 +197,18 @@ window._convAnswer=d.a;
 function checkQuizConv(){
 const ans=parseInt(document.getElementById('quiz-conv-answer').value);
 const fb=document.getElementById('quiz-conv-feedback');
-if(ans===window._convAnswer){fb.textContent='\u00a1Correcto!';fb.className='feedback correct';}
+if(ans===window._convAnswer){fb.textContent='\u00a1Correcto!';fb.className='feedback correct';if(typeof RK!=='undefined'&&RK.Progress){RK.Progress.markPageComplete('unidades','5to','medicion')}fb.className='feedback correct';}
 else{fb.textContent='Respuesta incorrecta. Intenta otra vez.';fb.className='feedback wrong';}
 }
 genQuizConv();
+</script>
+<script src="../../stats/rk-progress.js"></script>
+<script src="../video-embed.js"></script>
+<script>
+(function(){
+  var t=localStorage.getItem('rakin-theme')||'light';
+  document.documentElement.setAttribute('data-theme',t);
+})();
 </script>
 </body>
 </html>

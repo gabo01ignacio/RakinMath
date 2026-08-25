@@ -2,311 +2,303 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, viewport-fit=cover">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700;14..32,800;14..32,900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="apple-design.css">
     <script src="../auth.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
     <script src="firebase-config.js"></script>
     <script src="../stats/rk-stats.js"></script>
+    <script src="rk-feedback.js"></script>
     <title>Misión Robot | RakinMath</title>
     <style>
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
         body {
             display: flex;
             flex-direction: column;
-            height: 100vh;
+            height: 100dvh;
             overflow: hidden;
             background: var(--bg);
+            color: var(--text);
+            font-family: 'Inter', system-ui, sans-serif;
         }
 
-        .game-area {
+        .nav {
+            height: 52px;
+            padding: 0 16px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: var(--bg-card);
+            border-bottom: 1.5px solid var(--border);
+            flex-shrink: 0;
+        }
+
+        .nav-title {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 800;
+            font-size: 1rem;
+            color: var(--text);
+        }
+
+        .exit-btn {
+            padding: 6px 14px;
+            border-radius: 99px;
+            background: rgba(255,59,48,0.1);
+            color: #ff3b30;
+            font-weight: 700;
+            font-size: 0.8125rem;
+            border: none;
+            cursor: pointer;
+        }
+
+        .game-wrap {
             flex: 1;
             display: flex;
             flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            padding: var(--space-6);
-            gap: var(--space-6);
+            justify-content: space-between;
+            padding: 10px 16px env(safe-area-inset-bottom, 10px);
+            max-width: 480px;
+            margin: 0 auto;
+            width: 100%;
+            gap: 8px;
             min-height: 0;
         }
 
-        /* Start screen */
-        .start-panel {
-            text-align: center;
-            max-width: 380px;
+        .top-stats {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .stat-pill {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 5px 12px;
+            border-radius: 99px;
+            background: var(--bg-card);
+            border: 1.5px solid var(--border);
+            font-weight: 800;
+            font-size: 0.875rem;
+        }
+
+        /* TIMER BAR */
+        .timer-track {
             width: 100%;
-            animation: slideUp 500ms var(--ease-spring-out) both;
-        }
-
-        .start-icon {
-            font-size: 4rem;
-            margin-bottom: var(--space-4);
-            line-height: 1;
-        }
-
-        .start-panel h1 {
-            margin-bottom: var(--space-3);
-        }
-
-        .start-panel p {
-            margin-bottom: var(--space-6);
-            line-height: 1.6;
-        }
-
-        .start-btn {
-            font-family: var(--font-sans);
-            font-size: 1rem;
-            font-weight: 700;
-            padding: var(--space-3) var(--space-8);
-            border-radius: 980px;
-            border: none;
-            background: var(--accent);
-            color: white;
-            cursor: pointer;
-            box-shadow: 0 2px 10px rgba(0, 122, 255, 0.25);
-            transition: transform 0.1s ease, box-shadow 0.2s ease;
-            -webkit-tap-highlight-color: transparent;
-        }
-        .start-btn:active { transform: scale(0.96); }
-        .start-btn:hover { box-shadow: 0 4px 16px rgba(0, 122, 255, 0.35); }
-
-        /* Game screen */
-        .game-panel {
-            width: 100%;
-            max-width: 400px;
-            animation: scaleIn 400ms var(--ease-spring-out) both;
-        }
-
-        .round-label {
-            text-align: center;
-            font-size: 0.6875rem;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 0.06em;
-            color: var(--red);
-            margin-bottom: var(--space-3);
-        }
-
-        .timer-bar {
-            width: 100%;
-            height: 4px;
+            height: 6px;
             background: var(--border);
-            border-radius: 980px;
-            margin-bottom: var(--space-5);
+            border-radius: 99px;
             overflow: hidden;
         }
-
         .timer-fill {
             height: 100%;
-            background: var(--red);
-            border-radius: 980px;
-            transition: width 100ms linear;
+            background: linear-gradient(90deg, #34c759, #ff9500, #ff3b30);
+            transition: width 0.1s linear;
         }
 
+        /* ROBOT PATIENT CARD */
         .patient-card {
-            background: var(--bg-card);
-            backdrop-filter: blur(20px) saturate(150%);
-            -webkit-backdrop-filter: blur(20px) saturate(150%);
-            border: 1px solid var(--border);
-            border-radius: var(--radius-2xl);
-            padding: var(--space-8) var(--space-6);
+            background: linear-gradient(145deg, #f0f9ff 0%, #e0f2fe 100%);
+            border: 2px solid #38bdf8;
+            border-radius: 20px;
+            padding: 16px;
             text-align: center;
-            margin-bottom: var(--space-5);
-            box-shadow: var(--shadow-sm);
-            transition: background 0.2s ease;
-        }
-
-        .patient-card.flash-green {
-            background: rgba(52, 199, 89, 0.08);
-            border-color: rgba(52, 199, 89, 0.2);
+            box-shadow: 0 4px 16px rgba(56,189,248,0.15), 0 3px 0 #0284c7;
+            position: relative;
         }
 
         .animal-emoji {
-            font-size: 3rem;
+            font-size: 2.8rem;
             line-height: 1;
-            margin-bottom: var(--space-4);
+            display: inline-block;
+            filter: drop-shadow(0 2px 6px rgba(0,0,0,0.12));
+            animation: bounceMascot 1s ease infinite alternate;
+        }
+        @keyframes bounceMascot {
+            from { transform: translateY(0); }
+            to { transform: translateY(-4px); }
         }
 
-        .prescription {
-            font-size: 2.25rem;
-            font-weight: 800;
+        .op-text {
+            font-size: clamp(2rem, 8vw, 2.75rem);
+            font-weight: 900;
             color: var(--text);
             letter-spacing: -0.02em;
-            font-variant-numeric: tabular-nums;
+            margin-top: 4px;
+            line-height: 1.1;
         }
 
-        .answer-wrap {
+        .answer-display {
+            background: #ffffff;
+            border: 2px solid #0284c7;
+            border-radius: 14px;
+            padding: 8px 16px;
+            font-size: 1.75rem;
+            font-weight: 900;
+            color: #0284c7;
+            min-height: 48px;
             display: flex;
+            align-items: center;
             justify-content: center;
-            margin-bottom: var(--space-5);
+            letter-spacing: 2px;
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.04);
         }
 
-        .answer-field {
-            width: 200px;
-            font-size: 2.5rem;
-            font-weight: 700;
-            padding: var(--space-3);
-            text-align: center;
-            border: 2px solid var(--border-strong);
-            border-radius: var(--radius-xl);
+        /* ON-SCREEN KEYPAD */
+        .keypad {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 8px;
+        }
+
+        .key-btn {
+            font-family: var(--font-sans);
+            padding: 12px 0;
+            min-height: 48px;
+            font-size: 1.4rem;
+            font-weight: 900;
+            border-radius: 14px;
+            border: 1.5px solid var(--border-strong, #cbd5e1);
             background: var(--bg-card);
             color: var(--text);
-            outline: none;
-            font-family: var(--font-sans);
-            font-variant-numeric: tabular-nums;
-            transition: border-color 0.15s ease, box-shadow 0.15s ease;
-            -webkit-appearance: none;
+            cursor: pointer;
+            box-shadow: 0 3px 0 #cbd5e1;
+            transition: transform 0.1s ease, background 0.1s ease;
+            touch-action: manipulation;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
-
-        .answer-field:focus {
-            border-color: var(--accent);
-            box-shadow: 0 0 0 4px rgba(0, 122, 255, 0.1);
+        .key-btn:active {
+            transform: translateY(2px);
+            box-shadow: 0 1px 0 #cbd5e1;
         }
-
-        .answer-field.correct {
-            border-color: var(--green);
-            box-shadow: 0 0 0 4px rgba(52, 199, 89, 0.12);
+        .key-btn.action-clear {
+            background: #fee2e2;
+            border-color: #fca5a5;
+            color: #dc2626;
+            box-shadow: 0 3px 0 #f87171;
         }
-
-        .answer-field.wrong {
-            border-color: var(--red);
-            box-shadow: 0 0 0 4px rgba(255, 59, 48, 0.1);
-            animation: shake 0.3s ease;
+        .key-btn.action-submit {
+            background: #dcfce7;
+            border-color: #86efac;
+            color: #16a34a;
+            box-shadow: 0 3px 0 #4ade80;
         }
-
-        .score-line {
-            text-align: center;
-            font-size: 0.875rem;
-            font-weight: 600;
-            color: var(--text-secondary);
-        }
-
-        .score-line b {
-            color: var(--text);
-        }
-
-        /* End screen */
-        .end-panel {
-            text-align: center;
-            max-width: 380px;
-            width: 100%;
-            animation: slideUp 500ms var(--ease-spring-out) both;
-        }
-
-        .end-emoji {
-            font-size: 3.5rem;
-            margin-bottom: var(--space-4);
-            line-height: 1;
-        }
-
-        .end-title {
-            font-size: 1.75rem;
-            font-weight: 800;
-            margin-bottom: var(--space-2);
-            letter-spacing: -0.02em;
-        }
-
-        .end-score {
-            font-size: 1rem;
-            color: var(--text-secondary);
-            margin-bottom: var(--space-6);
-        }
-
-        .hidden { display: none !important; }
 
         @media (max-width: 480px) {
-            .game-area { padding: var(--space-4); }
-            .patient-card { padding: var(--space-6) var(--space-4); }
-            .prescription { font-size: 1.75rem; }
-            .answer-field { width: 160px; font-size: 2rem; }
-            .animal-emoji { font-size: 2.25rem; }
-            .start-icon { font-size: 3rem; }
+            .game-wrap { padding: 6px 10px env(safe-area-inset-bottom, 6px); gap: 6px; }
+            .patient-card { padding: 12px; }
+            .animal-emoji { font-size: 2.2rem; }
+            .op-text { font-size: 1.75rem; }
+            .answer-display { min-height: 42px; font-size: 1.5rem; }
+            .key-btn { min-height: 44px; font-size: 1.25rem; padding: 10px 0; }
         }
     </style>
+<!-- SUPER RESPONSIVE MOBILE OPTIMIZATIONS — RAKINMATH -->
+<style id="rakin-mobile-responsiveness">
+* { -webkit-tap-highlight-color: transparent; }
+html, body { max-width: 100%; overflow-x: hidden; }
+img, svg, video, canvas { max-width: 100%; }
+button, a, input, select, textarea, .btn, .choice-btn, .opt-btn, .game-btn, .nav-btn, .action-btn {
+  touch-action: manipulation;
+}
+@media (max-width: 600px) {
+  input, select, textarea { font-size: 16px !important; }
+  button, .btn, .choice-btn, .opt-btn, .game-btn, .nav-btn, .action-btn { min-height: 44px; }
+}
+</style>
 </head>
-<body>
+<body class="game-bg game-robot">
 
 <nav class="nav">
-    <a href="menu.html" class="nav-title">
-        <img src="../Recursos/LogoRakinMath.png" alt="RakinMath" style="height: 24px; width: auto;">
-        <span>Misión Robot | Rakin<span class="brand">Math</span></span>
-    </a>
-    <a href="menu.html" class="exit-btn">Salir</a>
+    <div class="nav-title">
+        <img src="../Recursos/LogoRakinMath.png" alt="RakinMath" style="height:22px;width:auto">
+        <span>Misión Robot</span>
+    </div>
+    <button class="exit-btn" onclick="window.location.href='menu-v3.html'">Salir</button>
 </nav>
 
-<div class="game-area">
-
-    <div id="start-screen" class="start-panel">
-        <div class="start-icon">🏥 🤖</div>
-        <h1>Clínica de Rescate</h1>
-        <p>Calcula las dosis de medicina para los animalitos.<br>Doblamos, dividimos y sumamos.</p>
-        <button class="start-btn" onclick="startGame()">¡A trabajar!</button>
+<div class="game-wrap">
+    <div>
+        <div class="top-stats">
+            <div class="stat-pill">🤖 Rescatados: <b id="score">0</b></div>
+            <div class="stat-pill" id="combo-pill">🔥 Combo: <b id="combo">0</b></div>
+            <div class="stat-pill">⏱️ <b id="time-text">60s</b></div>
+        </div>
+        <div class="timer-track" style="margin-top:4px">
+            <div class="timer-fill" id="timer-bar" style="width: 100%"></div>
+        </div>
     </div>
 
-    <div id="game-screen" class="game-panel hidden">
-        <div class="round-label">¡Turno de emergencia!</div>
-
-        <div class="timer-bar">
-            <div id="timer-bar" class="timer-fill" style="width: 100%"></div>
-        </div>
-
-        <div class="patient-card" id="p-box">
-            <span id="patient-icon" class="animal-emoji">🐶</span>
-            <div class="prescription" id="op-text">--</div>
-        </div>
-
-        <div class="answer-wrap">
-            <input type="number" id="ans-input" class="answer-field" placeholder="?" autocomplete="off" inputmode="numeric">
-        </div>
-
-        <div class="score-line">🐾 Curados: <b id="score">0</b></div>
+    <div class="patient-card" id="patient-card">
+        <span id="patient-icon" class="animal-emoji">🐶</span>
+        <div class="op-text" id="op-text">12 × 2</div>
     </div>
 
-    <div id="end-screen" class="end-panel hidden">
-        <div class="end-emoji">🏆</div>
-        <div class="end-title">Fin del turno</div>
-        <div class="end-score" id="end-score-text">Curaste a 0 animalitos.</div>
-        <button class="start-btn" onclick="location.reload()">¿Otra vez?</button>
-    </div>
+    <div class="answer-display" id="ans-display">_</div>
 
+    <div class="keypad">
+        <button class="key-btn" onclick="pressKey('1')">1</button>
+        <button class="key-btn" onclick="pressKey('2')">2</button>
+        <button class="key-btn" onclick="pressKey('3')">3</button>
+        <button class="key-btn" onclick="pressKey('4')">4</button>
+        <button class="key-btn" onclick="pressKey('5')">5</button>
+        <button class="key-btn" onclick="pressKey('6')">6</button>
+        <button class="key-btn" onclick="pressKey('7')">7</button>
+        <button class="key-btn" onclick="pressKey('8')">8</button>
+        <button class="key-btn" onclick="pressKey('9')">9</button>
+        <button class="key-btn action-clear" onclick="pressKey('CLEAR')">⌫</button>
+        <button class="key-btn" onclick="pressKey('0')">0</button>
+        <button class="key-btn action-submit" onclick="submitAnswer()">✓</button>
+    </div>
 </div>
 
 <script>
-    let score = 0;
-    let timeLeft = 60;
-    let timerId;
-    let currentAns;
-    let sessionCorrect = 0, sessionWrong = 0, sessionTimer = 0;
-    const animals = ['🐶','🐱','🐰','🐹','🦊','🐼','🐨','🐷','🦁','🐸'];
+    let score = 0, combo = 0;
+    let timeLeft = 60, totalDuration = 60;
+    let timerId = null;
+    let currentAns = 0;
+    let currentInput = "";
+    let sessionCorrect = 0, sessionWrong = 0, sessionTimer = 0, sessionTotal = 0, sessionRound = 0;
+    const animals = ['🐶','🐱','🐰','🐹','🦊','🐼','🐨','🐷','🦁','🐸','🐵','🦄'];
 
     window.onload = function() {
         RK.Stats.showRoundModal('Misión Robot', '🤖', function(rounds) {
+            sessionTotal = rounds;
             startGame();
         });
     };
 
     function startGame() {
         score = 0;
+        combo = 0;
         timeLeft = 60;
         sessionTimer = Date.now();
-        document.getElementById('start-screen').classList.add('hidden');
-        document.getElementById('game-screen').classList.remove('hidden');
+        sessionRound = 0;
         document.getElementById('score').innerText = score;
+        document.getElementById('combo').innerText = combo;
 
         nextPatient();
-        setTimeout(() => document.getElementById('ans-input').focus(), 100);
 
         timerId = setInterval(() => {
             timeLeft -= 0.1;
-            document.getElementById('timer-bar').style.width = (timeLeft / 60 * 100) + "%";
+            document.getElementById('timer-bar').style.width = Math.max(0, (timeLeft / totalDuration * 100)) + "%";
+            document.getElementById('time-text').innerText = Math.ceil(Math.max(0, timeLeft)) + "s";
             if (timeLeft <= 0) endGame();
         }, 100);
     }
 
     function nextPatient() {
+        currentInput = "";
+        updateDisplay();
         document.getElementById('patient-icon').innerText = animals[Math.floor(Math.random() * animals.length)];
 
         const types = ['suma','resta','multi2','divi2','multi10','multi100'];
@@ -343,45 +335,85 @@
         }
 
         document.getElementById('op-text').innerText = text;
-        const input = document.getElementById('ans-input');
-        input.value = "";
-        input.className = 'answer-field';
-        document.getElementById('p-box').className = 'patient-card';
     }
 
-    document.getElementById('ans-input').addEventListener('input', function () {
-        const val = parseInt(this.value);
-        if (val === currentAns) {
-            score++;
-            sessionCorrect++;
-            document.getElementById('score').innerText = score;
+    function pressKey(k) {
+        if (k === 'CLEAR') {
+            currentInput = currentInput.slice(0, -1);
+        } else {
+            if (currentInput.length < 5) {
+                currentInput += k;
+            }
+        }
+        updateDisplay();
 
-            const box = document.getElementById('p-box');
-            box.classList.add('flash-green');
-            this.classList.add('correct');
+        // If input matches answer directly, auto-submit!
+        if (parseInt(currentInput) === currentAns) {
+            submitAnswer();
+        }
+    }
 
-            setTimeout(() => nextPatient(), 150);
-        } else if (this.value.length > 0 && val !== currentAns) {
-            sessionWrong++;
-            this.classList.add('wrong');
-            setTimeout(() => this.classList.remove('wrong'), 300);
+    function updateDisplay() {
+        document.getElementById('ans-display').innerText = currentInput.length > 0 ? currentInput : '_';
+    }
+
+    // Keyboard support for desktop
+    window.addEventListener('keydown', function(e) {
+        if (e.key >= '0' && e.key <= '9') {
+            pressKey(e.key);
+        } else if (e.key === 'Backspace') {
+            pressKey('CLEAR');
+        } else if (e.key === 'Enter') {
+            submitAnswer();
         }
     });
 
+    function submitAnswer() {
+        if (!currentInput) return;
+        const val = parseInt(currentInput);
+        sessionRound++;
+
+        if (val === currentAns) {
+            score++;
+            combo++;
+            sessionCorrect++;
+            document.getElementById('score').innerText = score;
+            document.getElementById('combo').innerText = combo;
+            RK.Feedback.show('success', '¡Dosis correcta! 🤖✨');
+
+            if (sessionTotal > 0 && sessionRound >= sessionTotal) {
+                setTimeout(endGame, 700);
+            } else {
+                setTimeout(nextPatient, 200);
+            }
+        } else {
+            combo = 0;
+            sessionWrong++;
+            document.getElementById('combo').innerText = combo;
+            RK.Feedback.show('error', `¡Ups! Era ${currentAns}`);
+            currentInput = "";
+            updateDisplay();
+        }
+    }
+
     function endGame() {
         clearInterval(timerId);
-        var totalTime = Math.round((Date.now() - sessionTimer) / 1000);
+        const totalTime = Math.round((Date.now() - sessionTimer) / 1000);
         RK.Stats.saveGameResult('juego7', {
             score: score,
-            rounds: sessionCorrect + sessionWrong,
+            rounds: sessionRound,
             totalTime: totalTime,
             correct: sessionCorrect,
             wrong: sessionWrong,
             errors: ['suma', 'resta', 'multiplicación', 'división']
         });
-        document.getElementById('game-screen').classList.add('hidden');
-        document.getElementById('end-screen').classList.remove('hidden');
-        document.getElementById('end-score-text').innerText = `Curaste a ${score} animalitos.`;
+        RK.Stats.showEndModal('Misión Robot', {
+            score: score,
+            rounds: sessionRound,
+            totalTime: totalTime,
+            correct: sessionCorrect,
+            wrong: sessionWrong
+        });
     }
 </script>
 </body>

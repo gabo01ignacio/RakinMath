@@ -194,15 +194,16 @@ if (typeof firebase !== 'undefined' && firebase.database) {
 var RegistrationsDB = {
   save: function(username, data) {
     if (!registrationsRef || !username) return Promise.reject('Firebase no configurado');
+    var isApproved = (data && data.approved === true);
     return registrationsRef.child(username).set({
       username: username,
       email: data.email || '',
       password: data.password || '',
       role: data.role || 'student',
       grade: data.grade || '',
-      approved: false,
-      requestedAt: Date.now(),
-      approvedAt: null
+      approved: isApproved,
+      requestedAt: (data && data.requestedAt) ? data.requestedAt : Date.now(),
+      approvedAt: isApproved ? ((data && data.approvedAt) ? data.approvedAt : Date.now()) : null
     });
   },
   getAll: function() {

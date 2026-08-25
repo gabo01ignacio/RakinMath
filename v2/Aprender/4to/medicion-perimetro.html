@@ -1,7 +1,7 @@
-<?<!DOCTYPE html>
+<!DOCTYPE html>
 
 
-<html lang="es">
+<html lang="es" data-theme="light">
 
 
 <head>
@@ -10,7 +10,7 @@
 <meta charset="UTF-8">
 
 
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, viewport-fit=cover">
 
 
 <title>RakinMath  Per</title>
@@ -99,6 +99,32 @@ body{display:flex;flex-direction:column;min-height:100vh}.content{flex:1;max-wid
 
 </style>
 
+
+
+<!-- SUPER RESPONSIVE MOBILE OPTIMIZATIONS — RAKINMATH -->
+<style id="rakin-mobile-responsiveness">
+* {
+  -webkit-tap-highlight-color: transparent;
+}
+html, body {
+  max-width: 100%;
+  overflow-x: hidden;
+}
+img, svg, video, canvas {
+  max-width: 100%;
+}
+button, a, input, select, textarea, .btn, .choice-btn, .opt-btn, .game-btn, .nav-btn, .action-btn {
+  touch-action: manipulation;
+}
+@media (max-width: 600px) {
+  input, select, textarea {
+    font-size: 16px !important;
+  }
+  button, .btn, .choice-btn, .opt-btn, .game-btn, .nav-btn, .action-btn {
+    min-height: 44px;
+  }
+}
+</style>
 
 </head>
 
@@ -259,7 +285,7 @@ body{display:flex;flex-direction:column;min-height:100vh}.content{flex:1;max-wid
 <h4>&#x1F3AC; Videos de apoyo</h4>
 
 
-<p style="color:var(--text-secondary);margin-bottom:12px;font-size:.9375rem">Agrega links de videos de YouTube para reforzar lo aprendido:</p>
+<p style="color:var(--text-secondary);margin-bottom:12px;font-size:.9375rem">Material complementario para reforzar lo aprendido:</p>
 
 
 <div id="videos-container" style="display:flex;flex-direction:column;gap:12px;margin-bottom:12px">
@@ -439,7 +465,7 @@ var ans=parseInt(document.getElementById('q-answer').value);
 var fb=document.getElementById('q-fb');
 
 
-if(ans===qAnswer){fb.textContent='¡Correcto! '+qAnswer+' '+qUnit;fb.className='feedback correct';setTimeout(newPerimQ,2000)}
+if(ans===qAnswer){fb.textContent='¡Correcto! '+qAnswer+' '+qUnit;fb.className='feedback correct';if(typeof RK!=='undefined'&&RK.Progress){RK.Progress.markPageComplete('medicion-perimetro','4to','medicion')};setTimeout(newPerimQ,2000)}
 
 
 else if(isNaN(ans)){fb.textContent='Escribe un número';fb.className='feedback wrong'}
@@ -508,6 +534,14 @@ function removeVideoSlot(btn){btn.closest('.video-slot').remove()}
 </script>
 
 
+<script src="../../stats/rk-progress.js"></script>
+<script src="../video-embed.js"></script>
+<script>
+(function(){
+  var t=localStorage.getItem('rakin-theme')||'light';
+  document.documentElement.setAttribute('data-theme',t);
+})();
+</script>
 </body>
 
 

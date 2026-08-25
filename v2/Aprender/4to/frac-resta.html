@@ -1,8 +1,8 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="es" data-theme="light">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, viewport-fit=cover">
 <title>RakinMath – Resta de Fracciones</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -24,6 +24,32 @@ body{display:flex;flex-direction:column;min-height:100vh}.content{flex:1;max-wid
 @keyframes slideUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
 @media(max-width:640px){.content{padding:16px}.frac-seg{width:28px;height:28px}}
 </style>
+
+<!-- SUPER RESPONSIVE MOBILE OPTIMIZATIONS — RAKINMATH -->
+<style id="rakin-mobile-responsiveness">
+* {
+  -webkit-tap-highlight-color: transparent;
+}
+html, body {
+  max-width: 100%;
+  overflow-x: hidden;
+}
+img, svg, video, canvas {
+  max-width: 100%;
+}
+button, a, input, select, textarea, .btn, .choice-btn, .opt-btn, .game-btn, .nav-btn, .action-btn {
+  touch-action: manipulation;
+}
+@media (max-width: 600px) {
+  input, select, textarea {
+    font-size: 16px !important;
+  }
+  button, .btn, .choice-btn, .opt-btn, .game-btn, .nav-btn, .action-btn {
+    min-height: 44px;
+  }
+}
+</style>
+
 </head>
 <body>
 <nav class="nav"><a href="menu.html" class="nav-title"><img src="../../Recursos/LogoRakinMath.png" alt="RakinMath" style="height: 24px; width: auto;"></a><a href="menu.html" class="exit-btn">Volver</a></nav>
@@ -70,7 +96,7 @@ body{display:flex;flex-direction:column;min-height:100vh}.content{flex:1;max-wid
 <div class="section" style="animation-delay:320ms">
 <div class="question-box" style="background:linear-gradient(135deg,rgba(0,122,255,.06),rgba(0,122,255,.02));border:1px solid rgba(0,122,255,.15)">
 <h4>&#x1F3AC; Videos de apoyo</h4>
-<p style="color:var(--text-secondary);margin-bottom:12px;font-size:.9375rem">Agrega links de videos de YouTube para reforzar lo aprendido:</p>
+<p style="color:var(--text-secondary);margin-bottom:12px;font-size:.9375rem">Material complementario para reforzar lo aprendido:</p>
 <div id="videos-container" style="display:flex;flex-direction:column;gap:12px;margin-bottom:12px">
 <div class="video-placeholder" style="border:2px dashed rgba(0,122,255,.25);border-radius:16px;padding:24px;text-align:center;color:var(--text-tertiary);font-size:.875rem;cursor:pointer;transition:border-color .2s,background .2s" onclick="addVideoSlot(this.parentElement)">
 <span style="font-size:1.5rem;display:block;margin-bottom:6px">&#x1F4F1;</span>
@@ -89,7 +115,7 @@ function showRest(){var total=sNa-sNb;document.getElementById('s-nr').textConten
 function newRest(){sDen=[3,4,5,6,8][Math.floor(Math.random()*5)];sNa=Math.floor(Math.random()*(sDen-2))+2;sNb=Math.floor(Math.random()*(sNa-1))+1;document.getElementById('s-na').textContent=sNa;document.getElementById('s-da').textContent=sDen;document.getElementById('s-nb').textContent=sNb;document.getElementById('s-db').textContent=sDen;document.getElementById('s-nr').textContent='?';document.getElementById('s-dr').textContent=sDen;renderBar('s-bar-a',sDen,sNa,'filled-a');renderBar('s-bar-b',sDen,sNb,'filled-r');renderBar('s-bar-r',sDen,0,'')}
 var qDen,qNa,qNb;
 function newQ(){qDen=[3,4,5,6,8][Math.floor(Math.random()*5)];qNa=Math.floor(Math.random()*(qDen-2))+2;qNb=Math.floor(Math.random()*(qNa-1))+1;document.getElementById('q-text').textContent='Calcula: '+qNa+'/'+qDen+' - '+qNb+'/'+qDen+' = ?';document.getElementById('q-num').value='';document.getElementById('q-den').value='';document.getElementById('q-fb').textContent='';document.getElementById('q-fb').className='feedback'}
-function checkQ(){var n=parseInt(document.getElementById('q-num').value);var d=parseInt(document.getElementById('q-den').value);var fb=document.getElementById('q-fb');var total=qNa-qNb;if(n===total&&d===qDen){fb.textContent='¿Correcto! '+total+'/'+qDen;fb.className='feedback correct';setTimeout(newQ,2000)}else if(isNaN(n)||isNaN(d)){fb.textContent='Escribe ambos números';fb.className='feedback wrong'}else{fb.textContent='Recuerda: solo resta numeradores, denominador se queda igual';fb.className='feedback wrong'}}
+function checkQ(){var n=parseInt(document.getElementById('q-num').value);var d=parseInt(document.getElementById('q-den').value);var fb=document.getElementById('q-fb');var total=qNa-qNb;if(n===total&&d===qDen){fb.textContent='¿Correcto! '+total+'/'+qDen;fb.className='feedback correct';if(typeof RK!=='undefined'&&RK.Progress){RK.Progress.markPageComplete('frac-resta','4to','fracciones')};setTimeout(newQ,2000)}else if(isNaN(n)||isNaN(d)){fb.textContent='Escribe ambos números';fb.className='feedback wrong'}else{fb.textContent='Recuerda: solo resta numeradores, denominador se queda igual';fb.className='feedback wrong'}}
 newRest();newQ();
 
 function addVideoSlot(container){
@@ -108,6 +134,14 @@ addBtn.onclick=function(){addVideoSlot(container)};
 container.appendChild(addBtn);
 }
 function removeVideoSlot(btn){btn.closest('.video-slot').remove()}
+</script>
+<script src="../../stats/rk-progress.js"></script>
+<script src="../video-embed.js"></script>
+<script>
+(function(){
+  var t=localStorage.getItem('rakin-theme')||'light';
+  document.documentElement.setAttribute('data-theme',t);
+})();
 </script>
 </body>
 </html>

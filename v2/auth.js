@@ -7,7 +7,8 @@ var AUTH_USERS = [
   { u: 'admin',   p: btoa('admin'),     role: 'teacher', approved: true },
   { u: 'cabros',  p: btoa('cabros'),    role: 'teacher', approved: true },
   { u: 'gabo01ignacio', p: btoa('miga0306'), role: 'superadmin', approved: true },
-  { u: 'dani',    p: btoa('danielacabezas'), role: 'student', approved: true }
+  { u: 'dani',    p: btoa('danielacabezas'), role: 'student', approved: true },
+  { u: 'alumnas', p: btoa('alumnas2026'), role: 'student', approved: true }
 ];
 
 var TEACHER_USERS = ['profe', 'admin', 'cabros'];
@@ -61,6 +62,25 @@ function isLoggedIn() {
 function getCurrentUser() {
   var s = getSession();
   return s ? s.user : null;
+}
+
+function formatUserName(user) {
+  if (!user) return 'Estudiante';
+  var clean = String(user).trim();
+  if (clean.toLowerCase() === 'gabo01ignacio') return 'Gabo01Ignacio';
+  if (clean.toLowerCase() === 'profe') return 'Profesor/a';
+  if (clean.toLowerCase() === 'admin') return 'Administrador';
+  return clean.split(/[\s_-]+/)
+              .map(function(w) {
+                if (!w) return '';
+                return w.charAt(0).toUpperCase() + w.slice(1);
+              })
+              .join(' ');
+}
+
+function getFormattedUser() {
+  var u = getCurrentUser();
+  return formatUserName(u);
 }
 
 // ─── USUARIOS REGISTRADOS ───
@@ -167,7 +187,10 @@ function isTeacher() {
   var s = getSession();
   if (!s || !s.user) return false;
   if (s.user === SUPER_ADMIN) return true;
-  return TEACHER_USERS.indexOf(s.user) > -1;
+  if (s.isTeacher || s.isSuperAdmin) return true;
+  if (TEACHER_USERS.indexOf(s.user) > -1) return true;
+  var role = getUserRole(s.user);
+  return role === 'teacher' || role === 'superadmin';
 }
 
 function isAdmin() {

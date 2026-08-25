@@ -1,8 +1,8 @@
-<?﻿<!DOCTYPE html>
-<html lang="es">
+<!DOCTYPE html>
+<html lang="es" data-theme="light">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, viewport-fit=cover">
 <title>RakinMath " Congruencia</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="../apple-design.css">
@@ -41,6 +41,32 @@ body{display:flex;flex-direction:column;min-height:100vh}
 @keyframes slideUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
 @media(max-width:640px){.content{padding:16px}.card{padding:20px 16px 16px}}
 </style>
+
+<!-- SUPER RESPONSIVE MOBILE OPTIMIZATIONS — RAKINMATH -->
+<style id="rakin-mobile-responsiveness">
+* {
+  -webkit-tap-highlight-color: transparent;
+}
+html, body {
+  max-width: 100%;
+  overflow-x: hidden;
+}
+img, svg, video, canvas {
+  max-width: 100%;
+}
+button, a, input, select, textarea, .btn, .choice-btn, .opt-btn, .game-btn, .nav-btn, .action-btn {
+  touch-action: manipulation;
+}
+@media (max-width: 600px) {
+  input, select, textarea {
+    font-size: 16px !important;
+  }
+  button, .btn, .choice-btn, .opt-btn, .game-btn, .nav-btn, .action-btn {
+    min-height: 44px;
+  }
+}
+</style>
+
 </head>
 <body>
 <nav style="display:flex;align-items:center;justify-content:space-between;padding:16px 24px;border-bottom:1px solid var(--border)">
@@ -48,29 +74,29 @@ body{display:flex;flex-direction:column;min-height:100vh}
 <a href="menu.html" class="btn btn-ghost">Volver</a>
 </nav>
 <div class="content">
-<a href="menu.html" class="back-link">? Volver al menú</a>
+<a href="menu.html" class="back-link">? Volver al men�</a>
 
 <div class="section">
 <h1 class="section-title">Congruencia</h1>
-<p class="section-subtitle">Dos figuras son congruentes cuando tienen la misma forma Y el mismo tamaño. Puedes comprobarlo superponiéndolas o midiendo sus lados.</p>
+<p class="section-subtitle">Dos figuras son congruentes cuando tienen la misma forma Y el mismo tama�o. Puedes comprobarlo superponi�ndolas o midiendo sus lados.</p>
 </div>
 
 <div class="section">
 <div class="concept-box green">
-<h3>¿Qué significa congruente?</h3>
+<h3>�Qu� significa congruente?</h3>
 <p>Dos figuras son <strong>congruentes</strong> si:</p>
-<p>$1.$ Tienen la misma forma (mismos ángulos)<br>
-$2.$ Tienen el mismo tamaño (mismas medidas de lados)</p>
-<p>Si una figura es más pequeña o más grande que otra, aunque tengan la misma forma, NO son congruentes.</p>
+<p>$1.$ Tienen la misma forma (mismos �ngulos)<br>
+$2.$ Tienen el mismo tama�o (mismas medidas de lados)</p>
+<p>Si una figura es m�s peque�a o m�s grande que otra, aunque tengan la misma forma, NO son congruentes.</p>
 </div>
 <div class="concept-box green">
-<h3>Ejemplos del día a día</h3>
-<p><strong>Losas del piso:</strong> Todas las losas cuadradas del salón de clase son congruentes entre sí.<br>
+<h3>Ejemplos del d�a a d�a</h3>
+<p><strong>Losas del piso:</strong> Todas las losas cuadradas del sal�n de clase son congruentes entre s�.<br>
 <strong>Lados de un cuadrado:</strong> Los $4$ lados de un cuadrado son congruentes porque miden lo mismo: $l_1 = l_2 = l_3 = l_4$.</p>
 </div>
 <div class="tip-box">
 <h4>Consejo</h4>
-<p>Para verificar si dos figuras son congruentes, puedes medir todos sus lados. Si todos son iguales y los ángulos también, son congruentes.</p>
+<p>Para verificar si dos figuras son congruentes, puedes medir todos sus lados. Si todos son iguales y los �ngulos tambi�n, son congruentes.</p>
 </div>
 </div>
 
@@ -97,10 +123,10 @@ $2.$ Tienen el mismo tamaño (mismas medidas de lados)</p>
 
 <div class="section">
 <div class="quiz-box">
-<h4>Practica: ¿Son congruentes?</h4>
+<h4>Practica: �Son congruentes?</h4>
 <p style="color:var(--text-secondary);margin-bottom:16px;text-align:center" id="quiz-cong-problem"></p>
 <div class="quiz-row">
-<button class="btn btn-primary" onclick="checkQuizCongruent(true)">Sí, son congruentes</button>
+<button class="btn btn-primary" onclick="checkQuizCongruent(true)">S�, son congruentes</button>
 <button class="btn btn-ghost" onclick="checkQuizCongruent(false)">No, no son congruentes</button>
 </div>
 <p class="feedback" id="quiz-cong-feedback"></p>
@@ -109,7 +135,7 @@ $2.$ Tienen el mismo tamaño (mismas medidas de lados)</p>
 
 <div class="section">
 <div class="videos-box" style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-md);padding:24px;text-align:center">
-<p style="color:var(--text-tertiary);font-size:.875rem">Próximamente: Videos explicativos sobre congruencia</p>
+<p style="color:var(--text-tertiary);font-size:.875rem">Pr�ximamente: Videos explicativos sobre congruencia</p>
 </div>
 </div>
 </div>
@@ -155,7 +181,7 @@ document.getElementById('shape-feedback').className='feedback';
 }
 function answerCongruent(ans){
 const fb=document.getElementById('shape-feedback');
-if(ans===currentShapes.congruent){fb.textContent='\u00a1Correcto!';fb.className='feedback correct';}
+if(ans===currentShapes.congruent){fb.textContent='\u00a1Correcto!';fb.className='feedback correct';if(typeof RK!=='undefined'&&RK.Progress){RK.Progress.markPageComplete('congruencia','5to','geometria')}fb.className='feedback correct';}
 else{fb.textContent='Incorrecto. '+(currentShapes.congruent?'Son congruentes':'No son congruentes');fb.className='feedback wrong';}
 }
 let quizCongData={congruent:false};
@@ -169,10 +195,18 @@ document.getElementById('quiz-cong-feedback').className='feedback';
 }
 function checkQuizCongruent(ans){
 const fb=document.getElementById('quiz-cong-feedback');
-if(ans===quizCongData.congruent){fb.textContent='\u00a1Excelente!';fb.className='feedback correct';}
+if(ans===quizCongData.congruent){fb.textContent='\u00a1Excelente!';fb.className='feedback correct';if(typeof RK!=='undefined'&&RK.Progress){RK.Progress.markPageComplete('congruencia','5to','geometria')}fb.className='feedback correct';}
 else{fb.textContent='Respuesta incorrecta.';fb.className='feedback wrong';}
 }
 newShapePair();genQuizCong();
+</script>
+<script src="../../stats/rk-progress.js"></script>
+<script src="../video-embed.js"></script>
+<script>
+(function(){
+  var t=localStorage.getItem('rakin-theme')||'light';
+  document.documentElement.setAttribute('data-theme',t);
+})();
 </script>
 </body>
 </html>

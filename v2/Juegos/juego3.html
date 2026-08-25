@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, viewport-fit=cover">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet">
@@ -107,9 +107,9 @@
             .ticket{padding:10px 14px;gap:4px}
             .ticket-emoji{font-size:1.25rem;margin-bottom:0}
             .ticket-food{font-size:.75rem;letter-spacing:.03em}
-            .frac{padding:6px 12px;border-radius:12px;margin:4px 0 2px}
-            .frac-num,.frac-den{font-size:1.25rem}
-            .frac-line{width:3px;height:20px;margin:0 2px;border-radius:2px}
+            .frac{padding:8px 16px;border-radius:14px;margin:6px 0;display:flex;flex-direction:column;align-items:center;justify-content:center}
+            .frac-num,.frac-den{font-size:1.75rem;line-height:1;font-weight:800}
+            .frac-line{width:48px;height:3px;margin:4px 0;border-radius:2px;background:var(--text)}
             .ticket-hint{display:none}
             .ticket-diff{font-size:.625rem;padding:3px 8px;margin-top:2px}
             .kitchen{justify-self:center}
@@ -129,21 +129,76 @@
             .deliver-btn .lbl{font-size:.875rem}
         }
         @media(max-width:380px){
-            .frac-num,.frac-den{font-size:1.25rem}
-            .frac-line{height:20px}
+            .frac-num,.frac-den{font-size:1.5rem}
+            .frac-line{width:40px;height:3px;margin:3px 0}
             .food-svg{width:min(65vw,200px);height:min(65vw,200px)}
             .cuts-btn{width:40px;height:40px;font-size:1.125rem}
         }
     </style>
+<style>
+/* MOBILE OPTIMIZATIONS (TOUCH TARGETS & AUTO-ZOOM PREVENTION) */
+@media (max-width: 600px) {
+  input, select, textarea {
+    font-size: 16px !important;
+  }
+  button, .btn, .choice-btn, .opt-btn, .game-btn, .nav-btn, .action-btn {
+    min-height: 44px;
+    touch-action: manipulation;
+  }
+}
+</style>
+<style>
+/* GLOBAL PERFORMANCE & UX OPTIMIZATIONS FOR ALL DEVICES */
+* {
+  -webkit-tap-highlight-color: transparent;
+}
+button, a, input, select, .opt-btn, .choice-btn, .game-card {
+  touch-action: manipulation;
+}
+@media (max-width: 600px) {
+  input, select, textarea {
+    font-size: 16px !important;
+  }
+  button, .btn, .choice-btn, .opt-btn, .game-btn, .nav-btn, .action-btn {
+    min-height: 44px;
+  }
+}
+</style>
+
+<!-- SUPER RESPONSIVE MOBILE OPTIMIZATIONS — RAKINMATH -->
+<style id="rakin-mobile-responsiveness">
+* {
+  -webkit-tap-highlight-color: transparent;
+}
+html, body {
+  max-width: 100%;
+  overflow-x: hidden;
+}
+img, svg, video, canvas {
+  max-width: 100%;
+}
+button, a, input, select, textarea, .btn, .choice-btn, .opt-btn, .game-btn, .nav-btn, .action-btn {
+  touch-action: manipulation;
+}
+@media (max-width: 600px) {
+  input, select, textarea {
+    font-size: 16px !important;
+  }
+  button, .btn, .choice-btn, .opt-btn, .game-btn, .nav-btn, .action-btn {
+    min-height: 44px;
+  }
+}
+</style>
+
 </head>
-<body>
+<body class="game-bg game-chefs">
 
 <nav class="nav">
-    <a href="menu.html" class="nav-title">
-        <img src="../Recursos/LogoRakinMath.png" alt="RakinMath" style="height:24px;width:auto">
-        <span>Chefs de Fracciones | Rakin<span class="brand">Math</span></span>
+    <a href="menu-v3.html" class="nav-title">
+        <img src="../Recursos/LogoRakinMath.png" alt="RakinMath" style="height:22px;width:auto">
+        <span>Chefs de Fracciones</span>
     </a>
-    <a href="menu.html" class="exit-btn">Salir</a>
+    <button class="exit-btn" onclick="window.location.href='menu-v3.html'">Salir</button>
 </nav>
 
 <div class="top-bar">

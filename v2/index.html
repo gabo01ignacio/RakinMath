@@ -2,7 +2,7 @@
 <html lang="es" data-theme="light">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, viewport-fit=cover">
   <meta name="theme-color" content="#007aff">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -88,6 +88,7 @@
     html {
       scroll-behavior: smooth;
       font-size: 100%;
+      overflow-x: hidden;
     }
 
     body {
@@ -103,6 +104,11 @@
       min-height: 100vh;
     }
 
+    img {
+      max-width: 100%;
+      height: auto;
+    }
+
     /* ─── REDUCED MOTION ─── */
     @media (prefers-reduced-motion: reduce) {
       *,
@@ -112,6 +118,29 @@
         transition-duration: 0.01ms !important;
         scroll-behavior: auto !important;
       }
+    }
+
+    /* ─── PAGE LOADER ─── */
+    .page-loader {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      z-index: 9999;
+      background: linear-gradient(90deg, #58cc02, #1cb0f6, #ce82ff);
+      transform-origin: left;
+      animation: loaderFill 1.5s ease-out forwards;
+    }
+    @keyframes loaderFill {
+      0% { transform: scaleX(0); }
+      60% { transform: scaleX(0.7); }
+      100% { transform: scaleX(1); }
+    }
+    .page-loader.done {
+      opacity: 0;
+      transition: opacity 0.3s ease;
+      pointer-events: none;
     }
 
     :focus-visible {
@@ -250,17 +279,18 @@
     }
 
     @media (max-width: 768px) {
-      .nav-links-desktop {
-        display: none;
-      }
-      .nav-inner {
-        padding: 0 16px;
-      }
+      .nav-links-desktop { display: none; }
+      .nav-inner { padding: 0 16px; }
+    }
+    @media (max-width: 480px) {
+      .nav-inner { padding: 0 12px; gap: 4px; }
+      .nav-logo { font-size: 0.9375rem; gap: 6px; }
+      .nav-logo-icon { width: 24px; height: 24px; border-radius: 6px; }
+      .nav-cta { padding: 7px 14px; font-size: 0.75rem; }
+      .theme-toggle { width: 30px; height: 30px; font-size: 0.8125rem; margin-left: 4px; }
     }
     @media (min-width: 769px) {
-      .nav-links-desktop {
-        display: flex;
-      }
+      .nav-links-desktop { display: flex; }
     }
 
     /* ─── MAIN CONTENT ─── */
@@ -772,25 +802,63 @@
 
     /* ─── RESPONSIVE ─── */
     @media (max-width: 480px) {
+      .container { padding: 0 16px; }
       .hero {
-        min-height: 80vh;
-        padding: 60px 0 40px;
+        min-height: auto;
+        padding: 80px 0 32px;
       }
-      .hero-img-wrap {
-        margin-top: 32px;
-      }
-      .section {
-        padding: 60px 0;
-      }
-      .features-grid {
-        grid-template-columns: 1fr;
-      }
-      .about-text-card {
-        padding: 24px 20px;
-      }
-      .cta-card {
-        padding: 32px 18px;
-      }
+      .hero .container { padding: 0 16px; }
+      .hero-chip { font-size: 0.75rem; padding: 6px 14px; margin-bottom: 20px; }
+      .hero-title { font-size: 1.75rem; margin-bottom: 14px; }
+      .hero-sub { font-size: 0.875rem; margin-bottom: 20px; max-width: 100%; }
+      .hero-btn { padding: 12px 24px; font-size: 0.9375rem; width: 100%; justify-content: center; }
+      .hero-caption { font-size: 0.75rem; margin-top: 10px; }
+      .hero-visual img { max-width: 100%; height: auto; margin-top: 24px; }
+      .section { padding: 40px 0; }
+      .section-label { font-size: 0.6875rem; margin-bottom: 8px; }
+      .section-title { font-size: 1.375rem; margin-bottom: 10px; }
+      .section-sub { font-size: 0.875rem; margin-bottom: 32px; }
+      .features-grid { grid-template-columns: 1fr; gap: 12px; }
+      .feature-card { padding: 20px; border-radius: var(--radius-md); }
+      .feature-icon { width: 44px; height: 44px; margin-bottom: 14px; }
+      .feature-title { font-size: 1rem; margin-bottom: 6px; }
+      .feature-desc { font-size: 0.8125rem; }
+      .about-wrapper { gap: 20px; }
+      .about-visual { padding: 24px 16px; }
+      .about-illustration { width: 100px; height: 100px; }
+      .about-illustration svg { width: 60px; height: 60px; }
+      .about-text-card { padding: 20px 16px; border-radius: var(--radius-lg); }
+      .about-text { font-size: 0.875rem; margin-bottom: 12px; }
+      .about-highlight { font-size: 1rem; }
+      .about-divider { margin: 20px 0; }
+      .cta-card { padding: 28px 16px; border-radius: var(--radius-lg); }
+      .cta-icon { width: 52px; height: 52px; margin-bottom: 16px; }
+      .cta-icon svg { width: 28px; height: 28px; }
+      .cta-title { font-size: 1.375rem; margin-bottom: 10px; }
+      .cta-desc { font-size: 0.875rem; margin-bottom: 20px; }
+      .cta-btn { padding: 12px 24px; font-size: 0.9375rem; width: 100%; justify-content: center; }
+      .cta-caption { font-size: 0.75rem; margin-top: 10px; }
+      .footer { padding: 24px 16px; }
+      .footer-logo { font-size: 0.875rem; margin-bottom: 14px; }
+      .footer-links { gap: 10px; margin-bottom: 14px; }
+      .footer-link { font-size: 0.75rem; }
+      .footer-copy { font-size: 0.6875rem; }
+    }
+    @media (min-width: 481px) and (max-width: 768px) {
+      .container { padding: 0 20px; }
+      .hero { min-height: auto; padding: 80px 0 40px; }
+      .hero-title { font-size: 2.25rem; }
+      .hero-sub { font-size: 1rem; }
+      .section { padding: 56px 0; }
+      .section-title { font-size: 1.625rem; }
+      .features-grid { gap: 16px; }
+      .about-text-card { padding: 28px 24px; }
+      .cta-card { padding: 36px 24px; }
+    }
+    @media (min-width: 769px) and (max-width: 1023px) {
+      .container { padding: 0 24px; }
+      .hero { padding: 80px 0 48px; }
+      .hero-title { font-size: 3rem; }
     }
     @media (min-width: 1024px) {
       .hero .container {
@@ -799,28 +867,45 @@
         gap: 60px;
         align-items: center;
       }
-      .hero-content-wrapper {
-        flex: 1;
-      }
-      .hero-visual {
-        flex: 1;
-        display: flex;
-        justify-content: center;
-      }
-      .hero-title {
-        font-size: 4.5rem;
-      }
-      .hero-sub {
-        margin: 0 0 36px 0;
-        max-width: 420px;
-      }
+      .hero-content-wrapper { flex: 1; }
+      .hero-visual { flex: 1; display: flex; justify-content: center; }
+      .hero-title { font-size: 4.5rem; }
+      .hero-sub { margin: 0 0 36px 0; max-width: 420px; }
     }
   </style>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+
+<!-- SUPER RESPONSIVE MOBILE OPTIMIZATIONS — RAKINMATH -->
+<style id="rakin-mobile-responsiveness">
+* {
+  -webkit-tap-highlight-color: transparent;
+}
+html, body {
+  max-width: 100%;
+  overflow-x: hidden;
+}
+img, svg, video, canvas {
+  max-width: 100%;
+}
+button, a, input, select, textarea, .btn, .choice-btn, .opt-btn, .game-btn, .nav-btn, .action-btn {
+  touch-action: manipulation;
+}
+@media (max-width: 600px) {
+  input, select, textarea {
+    font-size: 16px !important;
+  }
+  button, .btn, .choice-btn, .opt-btn, .game-btn, .nav-btn, .action-btn {
+    min-height: 44px;
+  }
+}
+</style>
+
 </head>
 <body>
+  <!-- PAGE LOADER -->
+  <div class="page-loader" id="pageLoader"></div>
 
   <!-- NAV -->
   <nav class="nav">
@@ -932,7 +1017,7 @@
           </div>
           <div class="about-text-card">
             <p class="section-label">PARA QUÉ SIRVE</p>
-            <h2 class="section-title" style="font-size:1.8rem;">Matemáticas para quienes quieren entender, no solo repetir.</h2>
+            <h2 class="section-title">Matemáticas para quienes quieren entender, no solo repetir.</h2>
             <p class="about-text"><b>Estudiantes</b> que odian memorizar fórmulas. RakinMath los hace pensar de verdad, con retos que se sienten como juegos.</p>
             <p class="about-text"><b>Profesores</b> que buscan algo diferente. Una herramienta para motivar a sus alumnos fuera del aula.</p>
             <p class="about-text"><b>Padres</b> que quieren ver a sus hijos disfrutar las matemáticas, sin lágrimas ni frustración.</p>
@@ -1077,6 +1162,15 @@
     if ('serviceWorker' in navigator) {
       navigator.serviceWorker.register('sw.js').catch(function(){});
     }
+  </script>
+  <script>
+    window.addEventListener('load', function() {
+      var loader = document.getElementById('pageLoader');
+      if (loader) {
+        loader.classList.add('done');
+        setTimeout(function() { loader.remove(); }, 300);
+      }
+    });
   </script>
 </body>
 </html>

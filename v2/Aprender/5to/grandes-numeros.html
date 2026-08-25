@@ -1,8 +1,8 @@
-<?<!DOCTYPE html>
-<html lang="es">
+<!DOCTYPE html>
+<html lang="es" data-theme="light">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, viewport-fit=cover">
 <title>RakinMath " Grandes Números</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -64,11 +64,37 @@ body{display:flex;flex-direction:column;min-height:100vh}
 @keyframes slideUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
 @media(max-width:640px){.content{padding:16px}.math-input{width:64px;font-size:1.1rem;padding:6px}.card{padding:20px 16px 16px}.place-value-table{font-size:.75rem}.place-value-table th,.place-value-table td{padding:6px 4px}}
 </style>
+
+<!-- SUPER RESPONSIVE MOBILE OPTIMIZATIONS — RAKINMATH -->
+<style id="rakin-mobile-responsiveness">
+* {
+  -webkit-tap-highlight-color: transparent;
+}
+html, body {
+  max-width: 100%;
+  overflow-x: hidden;
+}
+img, svg, video, canvas {
+  max-width: 100%;
+}
+button, a, input, select, textarea, .btn, .choice-btn, .opt-btn, .game-btn, .nav-btn, .action-btn {
+  touch-action: manipulation;
+}
+@media (max-width: 600px) {
+  input, select, textarea {
+    font-size: 16px !important;
+  }
+  button, .btn, .choice-btn, .opt-btn, .game-btn, .nav-btn, .action-btn {
+    min-height: 44px;
+  }
+}
+</style>
+
 </head>
 <body>
 <nav class="nav"><a href="menu.html" class="nav-title"><img src="../../Recursos/LogoRakinMath.png" alt="RakinMath" style="height:24px;width:auto"></a><a href="menu.html" class="exit-btn">Volver</a></nav>
 <div class="content">
-<a href="menu.html" class="back-link">? Volver a Menú</a>
+<a href="menu.html" class="back-link">← Volver a Menú</a>
 
 <div class="section">
 <div class="section-title">🌍 Grandes Números hasta 1.000.000.000</div>
@@ -181,13 +207,21 @@ var quizNumbers=[{n:2450000,w:'dos millones cuatrocientos cincuenta mil'},{n:190
 
 function newQuiz(){var idx=Math.floor(Math.random()*quizNumbers.length);qNumber=quizNumbers[idx].n;qAnswer=quizNumbers[idx].w;document.getElementById('qProblem').textContent=qNumber.toLocaleString('es-CL');document.getElementById('qAnswer').value='';document.getElementById('qFeedback').textContent='';document.getElementById('qFeedback').className='feedback'}
 
-function checkQuiz(){var ans=document.getElementById('qAnswer').value.trim().toLowerCase();var fb=document.getElementById('qFeedback');var correct=qAnswer.toLowerCase();if(ans===correct){fb.textContent='¡Correcto! '+qNumber.toLocaleString('es-CL')+' se lee: '+qAnswer;fb.className='feedback correct';setTimeout(newQuiz,2000)}else if(!ans){fb.textContent='Escribe cómo se lee el número';fb.className='feedback wrong'}else{fb.textContent='No es correcto. Intenta leer cada grupo de 3 dígitos por separado.';fb.className='feedback wrong'}}
+function checkQuiz(){var ans=document.getElementById('qAnswer').value.trim().toLowerCase();var fb=document.getElementById('qFeedback');var correct=qAnswer.toLowerCase();if(ans===correct){fb.textContent='¡Correcto! '+qNumber.toLocaleString('es-CL')+' se lee: '+qAnswer;fb.className='feedback correct';if(typeof RK!=='undefined'&&RK.Progress){RK.Progress.markPageComplete('grandes-numeros','5to','numeros')};setTimeout(newQuiz,2000)}else if(!ans){fb.textContent='Escribe cómo se lee el número';fb.className='feedback wrong'}else{fb.textContent='No es correcto. Intenta leer cada grupo de 3 dígitos por separado.';fb.className='feedback wrong'}}
 
 function addVideoSlot(){var c=document.getElementById('videosContainer');var ph=c.querySelector('.video-placeholder');if(ph)ph.remove();var slot=document.createElement('div');slot.className='video-slot';slot.innerHTML='<input type="text" placeholder="Pega el link de YouTube aquí..." style="flex:1;font-family:var(--font-sans);font-size:.875rem;padding:8px 12px;border-radius:8px;border:1px solid var(--border-strong);background:var(--bg-card-solid);color:var(--text);outline:none"><button class="remove-btn" onclick="this.parentElement.remove();if(!document.querySelector(\'#videosContainer .video-slot\'))resetVideos()" style="font-size:1.1rem;background:none;border:none;cursor:pointer;color:var(--red);padding:4px 6px;border-radius:6px">✕</button>';slot.style.cssText='display:flex;gap:8px;align-items:center;background:rgba(0,122,255,.04);border:1px solid rgba(0,122,255,.12);border-radius:12px;padding:10px 12px';c.appendChild(slot);var addBtn=document.createElement('div');addBtn.className='add-video-btn';addBtn.textContent='+ Agregar otro video';addBtn.onclick=addVideoSlot;addBtn.style.cssText='border:2px dashed rgba(0,122,255,.2);border-radius:12px;padding:12px;text-align:center;color:var(--accent);font-size:.8125rem;font-weight:600;cursor:pointer;transition:background .2s';c.appendChild(addBtn)}
 
 function resetVideos(){document.getElementById('videosContainer').innerHTML='<div class="video-placeholder" onclick="addVideoSlot()" style="border:2px dashed rgba(0,122,255,.25);border-radius:16px;padding:28px;text-align:center;color:var(--text-tertiary);font-size:.875rem;cursor:pointer"><span style="font-size:1.5rem;display:block;margin-bottom:6px">▶️</span>Haz clic aquí para agregar un video de YouTube</div>'}
 
 formatNumber();newQuiz();
+</script>
+<script src="../../stats/rk-progress.js"></script>
+<script src="../video-embed.js"></script>
+<script>
+(function(){
+  var t=localStorage.getItem('rakin-theme')||'light';
+  document.documentElement.setAttribute('data-theme',t);
+})();
 </script>
 </body>
 </html>

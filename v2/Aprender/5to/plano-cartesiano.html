@@ -1,8 +1,8 @@
-<?﻿<!DOCTYPE html>
-<html lang="es">
+<!DOCTYPE html>
+<html lang="es" data-theme="light">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, viewport-fit=cover">
 <title>RakinMath " Plano Cartesiano</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="../apple-design.css">
@@ -44,6 +44,32 @@ body{display:flex;flex-direction:column;min-height:100vh}
 @keyframes slideUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
 @media(max-width:640px){.content{padding:16px}.card{padding:20px 16px 16px}}
 </style>
+
+<!-- SUPER RESPONSIVE MOBILE OPTIMIZATIONS — RAKINMATH -->
+<style id="rakin-mobile-responsiveness">
+* {
+  -webkit-tap-highlight-color: transparent;
+}
+html, body {
+  max-width: 100%;
+  overflow-x: hidden;
+}
+img, svg, video, canvas {
+  max-width: 100%;
+}
+button, a, input, select, textarea, .btn, .choice-btn, .opt-btn, .game-btn, .nav-btn, .action-btn {
+  touch-action: manipulation;
+}
+@media (max-width: 600px) {
+  input, select, textarea {
+    font-size: 16px !important;
+  }
+  button, .btn, .choice-btn, .opt-btn, .game-btn, .nav-btn, .action-btn {
+    min-height: 44px;
+  }
+}
+</style>
+
 </head>
 <body>
 <nav style="display:flex;align-items:center;justify-content:space-between;padding:16px 24px;border-bottom:1px solid var(--border)">
@@ -51,7 +77,7 @@ body{display:flex;flex-direction:column;min-height:100vh}
 <a href="menu.html" class="btn btn-ghost">Volver</a>
 </nav>
 <div class="content">
-<a href="menu.html" class="back-link">? Volver al menú</a>
+<a href="menu.html" class="back-link">? Volver al men�</a>
 
 <div class="section">
 <h1 class="section-title">Plano Cartesiano</h1>
@@ -61,8 +87,8 @@ body{display:flex;flex-direction:column;min-height:100vh}
 <div class="section">
 <div class="concept-box green">
 <h3>Ejes y coordenadas</h3>
-<p><strong>Eje $X$:</strong> línea horizontal (izquierda-derecha)<br>
-<strong>Eje $Y$:</strong> línea vertical (arriba-abajo)<br>
+<p><strong>Eje $X$:</strong> l�nea horizontal (izquierda-derecha)<br>
+<strong>Eje $Y$:</strong> l�nea vertical (arriba-abajo)<br>
 <strong>Origen:</strong> punto $O(0, 0)$ donde se cruzan los ejes<br>
 <strong>Par ordenado:</strong> siempre se escribe $(x, y)$</p>
 </div>
@@ -72,14 +98,14 @@ body{display:flex;flex-direction:column;min-height:100vh}
 </div>
 <div class="tip-box">
 <h4>Consejo</h4>
-<p>Para llegar a un punto, primero muévete en el eje $X$ (horizontal) y luego en el eje $Y$ (vertical). Primero la columna (eje X), luego la fila (eje Y).</p>
+<p>Para llegar a un punto, primero mu�vete en el eje $X$ (horizontal) y luego en el eje $Y$ (vertical). Primero la columna (eje X), luego la fila (eje Y).</p>
 </div>
 </div>
 
 <div class="section">
 <div class="card">
 <h3>Ubica los puntos</h3>
-<p style="color:var(--text-secondary);margin-bottom:16px">Haz clic en el plano para colocar puntos. Las coordenadas aparecerán abajo.</p>
+<p style="color:var(--text-secondary);margin-bottom:16px">Haz clic en el plano para colocar puntos. Las coordenadas aparecer�n abajo.</p>
 <canvas id="grid-canvas" width="400" height="400" style="border:1px solid var(--border);border-radius:var(--radius-md);cursor:crosshair;max-width:100%"></canvas>
 <p style="text-align:center;margin-top:12px;font-size:1.125rem;font-weight:700" id="coord-display">$(x, y)$</p>
 <div style="text-align:center;margin-top:12px">
@@ -90,7 +116,7 @@ body{display:flex;flex-direction:column;min-height:100vh}
 
 <div class="section">
 <div class="quiz-box">
-<h4>Practica: ¿Cuáles son las coordenadas?</h4>
+<h4>Practica: �Cu�les son las coordenadas?</h4>
 <p class="quiz-problem" id="quiz-coord-problem"></p>
 <div class="quiz-row">
 <input type="number" class="quiz-input" id="quiz-coord-x" placeholder="x">
@@ -104,7 +130,7 @@ body{display:flex;flex-direction:column;min-height:100vh}
 
 <div class="section">
 <div class="videos-box" style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-md);padding:24px;text-align:center">
-<p style="color:var(--text-tertiary);font-size:.875rem">Próximamente: Videos explicativos sobre el plano cartesiano</p>
+<p style="color:var(--text-tertiary);font-size:.875rem">Pr�ximamente: Videos explicativos sobre el plano cartesiano</p>
 </div>
 </div>
 </div>
@@ -168,10 +194,18 @@ function checkQuizCoord(){
 const x=parseInt(document.getElementById('quiz-coord-x').value);
 const y=parseInt(document.getElementById('quiz-coord-y').value);
 const fb=document.getElementById('quiz-coord-feedback');
-if(x===quizCoord.x&&y===quizCoord.y){fb.textContent='\u00a1Correcto!';fb.className='feedback correct';}
+if(x===quizCoord.x&&y===quizCoord.y){fb.textContent='\u00a1Correcto!';fb.className='feedback correct';if(typeof RK!=='undefined'&&RK.Progress){RK.Progress.markPageComplete('plano-cartesiano','5to','geometria')}fb.className='feedback correct';}
 else{fb.textContent='Incorrecto. Las coordenadas son ('+quizCoord.x+', '+quizCoord.y+')';fb.className='feedback wrong';}
 }
 drawGrid();genQuizCoord();
+</script>
+<script src="../../stats/rk-progress.js"></script>
+<script src="../video-embed.js"></script>
+<script>
+(function(){
+  var t=localStorage.getItem('rakin-theme')||'light';
+  document.documentElement.setAttribute('data-theme',t);
+})();
 </script>
 </body>
 </html>

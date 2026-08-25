@@ -1,0 +1,2504 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, viewport-fit=cover">
+<title>RakinMath - Juegos</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+/* ══════════════════════════════════════════════════════════════
+   RAKINMATH MENU V3 — DUOLINGO-INSPIRED GAME HUB
+   Playful, colorful, animated
+   ══════════════════════════════════════════════════════════════ */
+
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+  --font: 'Inter', -apple-system, system-ui, sans-serif;
+  --max-w: 1200px;
+  --nav-h: 64px;
+  --ease: cubic-bezier(0.16, 1, 0.3, 1);
+  --spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --spring-bounce: cubic-bezier(0.68, -0.55, 0.265, 1.55);
+  --r-sm: 14px;
+  --r-md: 20px;
+  --r-lg: 28px;
+  --r-xl: 36px;
+  --r-full: 9999px;
+
+  /* Duolingo palette */
+  --duo-green: #58cc02;
+  --duo-green-dark: #46a302;
+  --duo-green-light: #d7ffb8;
+  --duo-yellow: #ffc800;
+  --duo-yellow-dark: #e5b300;
+  --duo-orange: #ff9600;
+  --duo-blue: #1cb0f6;
+  --duo-blue-dark: #1899d6;
+  --duo-purple: #ce82ff;
+  --duo-pink: #ff86d0;
+  --duo-red: #ff4b4b;
+  --duo-red-dark: #ea2b2b;
+  --duo-teal: #2ee5c9;
+  --duo-brown: #c49000;
+}
+
+/* ─── LIGHT ─── */
+[data-theme="light"] {
+  --bg: #f0f4f8;
+  --bg-card: #ffffff;
+  --bg-nav: rgba(255,255,255,0.88);
+  --bg-subtle: #e8edf2;
+  --text: #2d3748;
+  --text-sec: #5a6577;
+  --text-dim: #a0aec0;
+  --accent: #1cb0f6;
+  --accent-hover: #1899d6;
+  --accent-glow: rgba(28,176,246,0.12);
+  --border: rgba(0,0,0,0.06);
+  --border-strong: rgba(0,0,0,0.12);
+  --shadow-sm: 0 2px 0 rgba(0,0,0,0.03);
+  --shadow-md: 0 4px 0 rgba(0,0,0,0.05);
+  --shadow-lg: 0 6px 0 rgba(0,0,0,0.07);
+  --hero-bg: linear-gradient(180deg, #fff8e1 0%, #e8f5e9 40%, #e3f2fd 70%, #f0f4f8 100%);
+  --card-hover-shadow: 0 10px 30px rgba(0,0,0,0.08);
+  --glow-green: 0 4px 20px rgba(88,204,2,0.3);
+  --glow-blue: 0 4px 20px rgba(28,176,246,0.3);
+  --glow-yellow: 0 4px 20px rgba(255,200,0,0.3);
+  --glow-purple: 0 4px 20px rgba(206,130,255,0.3);
+}
+
+/* ─── DARK ─── */
+[data-theme="dark"] {
+  --bg: #0d1117;
+  --bg-card: #161b22;
+  --bg-nav: rgba(13,17,23,0.88);
+  --bg-subtle: #1c2333;
+  --text: #e6edf3;
+  --text-sec: #8b949e;
+  --text-dim: #484f58;
+  --accent: #1cb0f6;
+  --accent-hover: #40c4ff;
+  --accent-glow: rgba(28,176,246,0.15);
+  --border: rgba(255,255,255,0.06);
+  --border-strong: rgba(255,255,255,0.12);
+  --shadow-sm: 0 2px 0 rgba(0,0,0,0.2);
+  --shadow-md: 0 4px 0 rgba(0,0,0,0.3);
+  --shadow-lg: 0 6px 0 rgba(0,0,0,0.4);
+  --hero-bg: linear-gradient(180deg, #1a2332 0%, #0d1117 50%, #161b22 100%);
+  --card-hover-shadow: 0 10px 30px rgba(0,0,0,0.3);
+  --glow-green: 0 4px 20px rgba(88,204,2,0.2);
+  --glow-blue: 0 4px 20px rgba(28,176,246,0.2);
+  --glow-yellow: 0 4px 20px rgba(255,200,0,0.2);
+  --glow-purple: 0 4px 20px rgba(206,130,255,0.2);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+body {
+  font-family: var(--font);
+  background: var(--bg);
+  color: var(--text);
+  -webkit-font-smoothing: antialiased;
+  line-height: 1.5;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  transition: background 0.4s var(--ease), color 0.4s var(--ease);
+  background-image:
+    radial-gradient(circle at 20% 30%, rgba(88,204,2,0.03) 0%, transparent 50%),
+    radial-gradient(circle at 80% 70%, rgba(28,176,246,0.03) 0%, transparent 50%),
+    radial-gradient(circle at 50% 90%, rgba(206,130,255,0.02) 0%, transparent 50%);
+  background-attachment: fixed;
+}
+
+a { color: inherit; text-decoration: none; }
+button { font: inherit; border: none; background: none; cursor: pointer; color: inherit; }
+
+/* ═══════════════════════════════════════
+   NAV — Duo-style: solid, playful
+   ═══════════════════════════════════════ */
+.nav {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 100;
+  height: var(--nav-h);
+  background: var(--bg-nav);
+  backdrop-filter: saturate(180%) blur(20px);
+  -webkit-backdrop-filter: saturate(180%) blur(20px);
+  border-bottom: 2px solid var(--border);
+  transition: background 0.4s, border-color 0.4s;
+}
+
+.nav-inner {
+  max-width: var(--max-w);
+  margin: 0 auto;
+  padding: 0 24px;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.nav-logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-weight: 800;
+  font-size: 1.1rem;
+  letter-spacing: -0.03em;
+  transition: transform 0.3s var(--spring);
+}
+.nav-logo:hover { transform: scale(1.05) rotate(-1deg); }
+
+.nav-logo img {
+  height: 30px;
+  width: auto;
+  transition: transform 0.3s var(--spring);
+}
+.nav-logo:hover img { transform: rotate(5deg); }
+
+.nav-logo span { color: var(--duo-green); }
+
+.nav-right {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+/* ─── MODE BUTTON ─── */
+.mode-wrap { position: relative; }
+
+.mode-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 18px;
+  border-radius: var(--r-full);
+  font-size: 0.875rem;
+  font-weight: 700;
+  background: var(--bg-subtle);
+  border: 2px solid var(--border);
+  transition: all 0.25s var(--spring);
+  letter-spacing: -0.01em;
+}
+.mode-btn:hover {
+  background: var(--duo-green);
+  border-color: var(--duo-green);
+  color: white;
+  transform: translateY(-2px);
+  box-shadow: var(--glow-green);
+}
+.mode-btn:active { transform: scale(0.95) translateY(0); }
+
+.mode-btn svg {
+  width: 12px; height: 12px;
+  transition: transform 0.3s var(--spring-bounce);
+}
+.mode-wrap.open .mode-btn svg { transform: rotate(180deg); }
+
+/* ─── MODE DROPDOWN ─── */
+.mode-dropdown {
+  position: absolute;
+  top: calc(100% + 12px);
+  right: 0;
+  width: 280px;
+  background: var(--bg-card);
+  border: 2px solid var(--border);
+  border-radius: var(--r-lg);
+  padding: 16px;
+  box-shadow: var(--shadow-lg);
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(-10px) scale(0.95);
+  transition: all 0.3s var(--spring);
+  z-index: 110;
+}
+.mode-wrap.open .mode-dropdown {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translateY(0) scale(1);
+}
+
+.mode-dropdown-label {
+  font-size: 0.7rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--text-dim);
+  margin-bottom: 10px;
+}
+
+/* ─── MODE TOGGLE (pill) ─── */
+.mode-toggle {
+  position: relative;
+  display: flex;
+  background: var(--bg-subtle);
+  border: 2px solid var(--border);
+  border-radius: var(--r-full);
+  padding: 4px;
+  margin-bottom: 12px;
+}
+.mode-toggle input[type="radio"] {
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+  pointer-events: none;
+}
+.mode-toggle label {
+  flex: 1;
+  text-align: center;
+  padding: 10px 12px;
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--text-sec);
+  cursor: pointer;
+  border-radius: var(--r-full);
+  transition: color 0.25s, transform 0.2s var(--spring);
+  position: relative;
+  z-index: 1;
+  user-select: none;
+}
+.mode-toggle label:hover { transform: scale(1.02); }
+.mode-toggle label:active { transform: scale(0.97); }
+.mode-toggle label .icon { display: block; font-size: 1.1rem; margin-bottom: 2px; }
+.mode-toggle label.active { color: white; }
+.mode-toggle .slider {
+  position: absolute;
+  top: 4px; left: 4px;
+  width: calc(50% - 4px);
+  height: calc(100% - 8px);
+  background: var(--duo-green);
+  border-radius: var(--r-full);
+  box-shadow: 0 3px 0 var(--duo-green-dark), var(--glow-green);
+  transition: transform 0.4s var(--spring-bounce);
+  z-index: 0;
+}
+.mode-toggle.right .slider { transform: translateX(100%); }
+
+.stats-link {
+  display: block;
+  width: 100%;
+  padding: 10px 16px;
+  border-radius: var(--r-full);
+  font-size: 0.85rem;
+  font-weight: 700;
+  text-align: center;
+  border: 2px solid var(--accent-glow);
+  background: var(--accent-glow);
+  color: var(--accent);
+  transition: all 0.25s var(--spring);
+  margin-bottom: 8px;
+}
+.stats-link:hover {
+  background: var(--duo-blue);
+  color: white;
+  border-color: var(--duo-blue);
+  transform: translateY(-2px);
+  box-shadow: var(--glow-blue);
+}
+
+.logout-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  width: 100%;
+  padding: 10px 16px;
+  border-radius: var(--r-full);
+  font-size: 0.85rem;
+  font-weight: 700;
+  border: 2px solid rgba(255,75,75,0.25);
+  background: rgba(255,75,75,0.08);
+  color: var(--duo-red);
+  transition: all 0.25s var(--spring);
+}
+.logout-btn:hover {
+  background: var(--duo-red);
+  color: white;
+  border-color: var(--duo-red);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 20px rgba(255,75,75,0.3);
+}
+.logout-btn:active { transform: scale(0.95) translateY(0); }
+
+[data-theme="dark"] .logout-btn {
+  border-color: rgba(255,75,75,0.3);
+  background: rgba(255,75,75,0.1);
+}
+
+/* ═══════════════════════════════════════
+   HERO — Playful, animated, Duo vibes
+   ═══════════════════════════════════════ */
+.hero {
+  text-align: center;
+  padding: calc(var(--nav-h) + 56px) 24px 44px;
+  background: var(--hero-bg);
+  position: relative;
+  overflow: hidden;
+}
+
+/* Floating colorful shapes */
+.hero::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(circle at 10% 20%, rgba(88,204,2,0.15) 0%, transparent 40%),
+    radial-gradient(circle at 90% 25%, rgba(28,176,246,0.12) 0%, transparent 40%),
+    radial-gradient(circle at 20% 80%, rgba(206,130,255,0.1) 0%, transparent 40%),
+    radial-gradient(circle at 80% 75%, rgba(255,200,0,0.1) 0%, transparent 40%),
+    radial-gradient(circle at 50% 50%, rgba(255,134,208,0.08) 0%, transparent 50%);
+  pointer-events: none;
+  animation: heroGlow 8s ease-in-out infinite alternate;
+}
+
+@keyframes heroGlow {
+  0% { opacity: 0.8; transform: scale(1); }
+  100% { opacity: 1; transform: scale(1.05); }
+}
+
+/* Large floating circle */
+.hero::after {
+  content: '';
+  position: absolute;
+  width: 300px;
+  height: 300px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(88,204,2,0.06) 0%, transparent 70%);
+  top: -80px;
+  right: -60px;
+  animation: floatShape 8s ease-in-out infinite;
+}
+
+@keyframes floatShape {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  33% { transform: translate(-25px, 20px) scale(1.08); }
+  66% { transform: translate(15px, -10px) scale(0.95); }
+}
+
+.hero-emoji {
+  font-size: 4rem;
+  margin-bottom: 16px;
+  display: inline-block;
+  animation: heroBounce 0.8s var(--spring-bounce) both;
+  filter: drop-shadow(0 4px 8px rgba(0,0,0,0.1));
+}
+
+@keyframes heroBounce {
+  0% { opacity: 0; transform: scale(0.3) translateY(30px) rotate(-10deg); }
+  60% { transform: scale(1.15) translateY(-5px) rotate(3deg); }
+  100% { opacity: 1; transform: scale(1) translateY(0) rotate(0deg); }
+}
+
+/* Floating badges around emoji */
+.hero-badge {
+  position: absolute;
+  font-size: 1.5rem;
+  animation: float 3s ease-in-out infinite;
+  pointer-events: none;
+}
+.hero-badge:nth-child(1) { top: 15%; left: 12%; animation-delay: 0s; }
+.hero-badge:nth-child(2) { top: 20%; right: 10%; animation-delay: 1s; }
+.hero-badge:nth-child(3) { bottom: 25%; left: 8%; animation-delay: 2s; }
+.hero-badge:nth-child(4) { bottom: 20%; right: 12%; animation-delay: 0.5s; }
+
+@keyframes float {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  33% { transform: translateY(-8px) rotate(5deg); }
+  66% { transform: translateY(4px) rotate(-3deg); }
+}
+
+.hero h1 {
+  font-size: clamp(2rem, 5vw, 3rem);
+  font-weight: 900;
+  letter-spacing: -0.04em;
+  line-height: 1.05;
+  margin-bottom: 12px;
+  animation: fadeInUp 0.6s var(--ease) 0.15s both;
+}
+
+.hero h1 .brand {
+  background: linear-gradient(135deg, var(--duo-green), var(--duo-teal));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  position: relative;
+}
+
+.hero h1 .brand::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, var(--duo-green), var(--duo-teal));
+  border-radius: 2px;
+  animation: underlineGrow 0.8s var(--spring) 0.6s both;
+}
+
+@keyframes underlineGrow {
+  from { transform: scaleX(0); }
+  to { transform: scaleX(1); }
+}
+
+.hero-sub {
+  font-size: 1.1rem;
+  color: var(--text-sec);
+  max-width: 400px;
+  margin: 0 auto;
+  animation: fadeInUp 0.6s var(--ease) 0.25s both;
+  font-weight: 500;
+}
+
+/* Stats bar under hero */
+.hero-stats {
+  display: flex;
+  justify-content: center;
+  gap: 16px;
+  margin-top: 24px;
+  animation: fadeInUp 0.6s var(--ease) 0.35s both;
+  flex-wrap: wrap;
+}
+
+.hero-stat {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 18px;
+  border-radius: var(--r-full);
+  background: rgba(255,255,255,0.7);
+  border: 2px solid rgba(255,255,255,0.5);
+  font-size: 0.85rem;
+  font-weight: 700;
+  box-shadow: 0 3px 0 rgba(0,0,0,0.04);
+  transition: all 0.3s var(--spring);
+  backdrop-filter: blur(8px);
+}
+[data-theme="dark"] .hero-stat {
+  background: rgba(255,255,255,0.06);
+  border-color: rgba(255,255,255,0.08);
+}
+.hero-stat:hover {
+  transform: translateY(-3px) scale(1.05);
+  box-shadow: 0 6px 0 rgba(0,0,0,0.06);
+  background: rgba(255,255,255,0.9);
+}
+.hero-stat-icon {
+  font-size: 1.2rem;
+  animation: wiggle 2s ease-in-out infinite;
+}
+.hero-stat:nth-child(1) .hero-stat-icon { animation-delay: 0s; }
+.hero-stat:nth-child(2) .hero-stat-icon { animation-delay: 0.3s; }
+.hero-stat:nth-child(3) .hero-stat-icon { animation-delay: 0.6s; }
+
+@keyframes wiggle {
+  0%, 100% { transform: rotate(0deg); }
+  25% { transform: rotate(8deg); }
+  75% { transform: rotate(-8deg); }
+}
+
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* ═══════════════════════════════════════
+   FILTERS — Colorful, bouncy Duo buttons
+   ═══════════════════════════════════════ */
+.filters {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  padding: 28px 24px 0;
+  flex-wrap: wrap;
+  animation: fadeInUp 0.6s var(--ease) 0.4s both;
+}
+
+.filter-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 22px;
+  border-radius: var(--r-full);
+  font-size: 0.9rem;
+  font-weight: 700;
+  background: var(--bg-card);
+  border: 2px solid var(--border);
+  box-shadow: 0 3px 0 rgba(0,0,0,0.06);
+  transition: all 0.25s var(--spring);
+  letter-spacing: -0.01em;
+  position: relative;
+  overflow: hidden;
+}
+.filter-btn:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 6px 0 rgba(0,0,0,0.08);
+}
+.filter-btn:active {
+  transform: translateY(1px);
+  box-shadow: 0 1px 0 rgba(0,0,0,0.06);
+  transition-duration: 0.1s;
+}
+
+.filter-btn.active {
+  color: white;
+  border-color: transparent;
+  transform: translateY(-2px);
+}
+
+/* All button - green (Duo default) */
+.filter-btn[data-g="all"].active {
+  background: var(--duo-green);
+  box-shadow: 0 4px 0 var(--duo-green-dark), var(--glow-green);
+}
+.filter-btn[data-g="all"]:not(.active):hover {
+  border-color: var(--duo-green);
+  color: var(--duo-green);
+  background: rgba(88,204,2,0.06);
+}
+
+/* 4th grade - blue */
+.filter-btn[data-g="4to"].active {
+  background: var(--duo-blue);
+  box-shadow: 0 4px 0 var(--duo-blue-dark), var(--glow-blue);
+}
+.filter-btn[data-g="4to"]:not(.active):hover {
+  border-color: var(--duo-blue);
+  color: var(--duo-blue);
+  background: rgba(28,176,246,0.06);
+}
+
+/* 5th grade - orange */
+.filter-btn[data-g="5to"].active {
+  background: var(--duo-orange);
+  box-shadow: 0 4px 0 #e58700, var(--glow-yellow);
+}
+.filter-btn[data-g="5to"]:not(.active):hover {
+  border-color: var(--duo-orange);
+  color: var(--duo-orange);
+  background: rgba(255,150,0,0.06);
+}
+
+/* 6th grade - purple */
+.filter-btn[data-g="6to"].active {
+  background: var(--duo-purple);
+  box-shadow: 0 4px 0 #b366e0, var(--glow-purple);
+}
+.filter-btn[data-g="6to"]:not(.active):hover {
+  border-color: var(--duo-purple);
+  color: var(--duo-purple);
+  background: rgba(206,130,255,0.06);
+}
+
+/* ═══════════════════════════════════════
+   GAME GRID — Colorful cards
+   ═══════════════════════════════════════ */
+.games-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 20px;
+  padding: 28px 24px 48px;
+  max-width: var(--max-w);
+  width: 100%;
+  margin: 0 auto;
+}
+
+@media (max-width: 640px) {
+  .games-grid { grid-template-columns: 1fr; gap: 16px; padding: 20px 16px 32px; }
+}
+
+/* ═══════════════════════════════════════
+   GAME CARD — Full colored backgrounds
+   ═══════════════════════════════════════ */
+.game-card {
+  border: 2.5px solid transparent;
+  border-radius: var(--r-xl);
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  position: relative;
+  overflow: hidden;
+  transition: all 0.35s var(--spring);
+  box-shadow: var(--shadow-sm);
+  animation: cardIn 0.5s var(--spring-bounce) both;
+  text-decoration: none;
+  color: var(--text);
+}
+
+/* Full colored backgrounds per accent */
+.game-card[data-accent="cyan"] {
+  background: linear-gradient(145deg, #e3f2fd 0%, #bbdefb 50%, #e3f2fd 100%);
+  border-color: rgba(28,176,246,0.25);
+}
+.game-card[data-accent="cyan"]:hover {
+  background: linear-gradient(145deg, #bbdefb 0%, #90caf9 50%, #bbdefb 100%);
+  box-shadow: 0 8px 30px rgba(28,176,246,0.25), 0 0 0 1px rgba(28,176,246,0.15);
+}
+
+.game-card[data-accent="yellow"] {
+  background: linear-gradient(145deg, #fff8e1 0%, #ffecb3 50%, #fff8e1 100%);
+  border-color: rgba(255,200,0,0.25);
+}
+.game-card[data-accent="yellow"]:hover {
+  background: linear-gradient(145deg, #ffecb3 0%, #ffe082 50%, #ffecb3 100%);
+  box-shadow: 0 8px 30px rgba(255,200,0,0.25), 0 0 0 1px rgba(255,200,0,0.15);
+}
+
+.game-card[data-accent="purple"] {
+  background: linear-gradient(145deg, #f3e5f5 0%, #e1bee7 50%, #f3e5f5 100%);
+  border-color: rgba(206,130,255,0.25);
+}
+.game-card[data-accent="purple"]:hover {
+  background: linear-gradient(145deg, #e1bee7 0%, #ce93d8 50%, #e1bee7 100%);
+  box-shadow: 0 8px 30px rgba(206,130,255,0.25), 0 0 0 1px rgba(206,130,255,0.15);
+}
+
+.game-card[data-accent="green"] {
+  background: linear-gradient(145deg, #e8f5e9 0%, #c8e6c9 50%, #e8f5e9 100%);
+  border-color: rgba(88,204,2,0.25);
+}
+.game-card[data-accent="green"]:hover {
+  background: linear-gradient(145deg, #c8e6c9 0%, #a5d6a7 50%, #c8e6c9 100%);
+  box-shadow: 0 8px 30px rgba(88,204,2,0.25), 0 0 0 1px rgba(88,204,2,0.15);
+}
+
+.game-card[data-accent="orange"] {
+  background: linear-gradient(145deg, #fff3e0 0%, #ffe0b2 50%, #fff3e0 100%);
+  border-color: rgba(255,150,0,0.25);
+}
+.game-card[data-accent="orange"]:hover {
+  background: linear-gradient(145deg, #ffe0b2 0%, #ffcc80 50%, #ffe0b2 100%);
+  box-shadow: 0 8px 30px rgba(255,150,0,0.25), 0 0 0 1px rgba(255,150,0,0.15);
+}
+
+.game-card[data-accent="pink"] {
+  background: linear-gradient(145deg, #fce4ec 0%, #f8bbd0 50%, #fce4ec 100%);
+  border-color: rgba(255,134,208,0.25);
+}
+.game-card[data-accent="pink"]:hover {
+  background: linear-gradient(145deg, #f8bbd0 0%, #f48fb1 50%, #f8bbd0 100%);
+  box-shadow: 0 8px 30px rgba(255,134,208,0.25), 0 0 0 1px rgba(255,134,208,0.15);
+}
+
+.game-card[data-accent="indigo"] {
+  background: linear-gradient(145deg, #e0f7fa 0%, #b2ebf2 50%, #e0f7fa 100%);
+  border-color: rgba(46,229,201,0.25);
+}
+.game-card[data-accent="indigo"]:hover {
+  background: linear-gradient(145deg, #b2ebf2 0%, #80deea 50%, #b2ebf2 100%);
+  box-shadow: 0 8px 30px rgba(46,229,201,0.25), 0 0 0 1px rgba(46,229,201,0.15);
+}
+
+/* Dark theme card backgrounds */
+[data-theme="dark"] .game-card[data-accent="cyan"] {
+  background: linear-gradient(145deg, #0d2a3a 0%, #0a2030 50%, #0d2a3a 100%);
+  border-color: rgba(28,176,246,0.3);
+}
+[data-theme="dark"] .game-card[data-accent="cyan"]:hover {
+  background: linear-gradient(145deg, #0f3548 0%, #0d2a3a 50%, #0f3548 100%);
+  box-shadow: 0 8px 30px rgba(28,176,246,0.2);
+}
+
+[data-theme="dark"] .game-card[data-accent="yellow"] {
+  background: linear-gradient(145deg, #2a2010 0%, #1f1a0a 50%, #2a2010 100%);
+  border-color: rgba(255,200,0,0.3);
+}
+[data-theme="dark"] .game-card[data-accent="yellow"]:hover {
+  background: linear-gradient(145deg, #332a15 0%, #2a2010 50%, #332a15 100%);
+  box-shadow: 0 8px 30px rgba(255,200,0,0.2);
+}
+
+[data-theme="dark"] .game-card[data-accent="purple"] {
+  background: linear-gradient(145deg, #2a1530 0%, #1f1025 50%, #2a1530 100%);
+  border-color: rgba(206,130,255,0.3);
+}
+[data-theme="dark"] .game-card[data-accent="purple"]:hover {
+  background: linear-gradient(145deg, #331a3a 0%, #2a1530 50%, #331a3a 100%);
+  box-shadow: 0 8px 30px rgba(206,130,255,0.2);
+}
+
+[data-theme="dark"] .game-card[data-accent="green"] {
+  background: linear-gradient(145deg, #0f251a 0%, #0a1f14 50%, #0f251a 100%);
+  border-color: rgba(88,204,2,0.3);
+}
+[data-theme="dark"] .game-card[data-accent="green"]:hover {
+  background: linear-gradient(145deg, #143020 0%, #0f251a 50%, #143020 100%);
+  box-shadow: 0 8px 30px rgba(88,204,2,0.2);
+}
+
+[data-theme="dark"] .game-card[data-accent="orange"] {
+  background: linear-gradient(145deg, #2a1f10 0%, #1f1a0a 50%, #2a1f10 100%);
+  border-color: rgba(255,150,0,0.3);
+}
+[data-theme="dark"] .game-card[data-accent="orange"]:hover {
+  background: linear-gradient(145deg, #332515 0%, #2a1f10 50%, #332515 100%);
+  box-shadow: 0 8px 30px rgba(255,150,0,0.2);
+}
+
+[data-theme="dark"] .game-card[data-accent="pink"] {
+  background: linear-gradient(145deg, #2a101a 0%, #1f0a14 50%, #2a101a 100%);
+  border-color: rgba(255,134,208,0.3);
+}
+[data-theme="dark"] .game-card[data-accent="pink"]:hover {
+  background: linear-gradient(145deg, #331520 0%, #2a101a 50%, #331520 100%);
+  box-shadow: 0 8px 30px rgba(255,134,208,0.2);
+}
+
+[data-theme="dark"] .game-card[data-accent="indigo"] {
+  background: linear-gradient(145deg, #0f2a2a 0%, #0a2525 50%, #0f2a2a 100%);
+  border-color: rgba(46,229,201,0.3);
+}
+[data-theme="dark"] .game-card[data-accent="indigo"]:hover {
+  background: linear-gradient(145deg, #143535 0%, #0f2a2a 50%, #143535 100%);
+  box-shadow: 0 8px 30px rgba(46,229,201,0.2);
+}
+
+@keyframes cardIn {
+  0% { opacity: 0; transform: translateY(24px) scale(0.95); }
+  100% { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+.game-card:hover {
+  transform: translateY(-8px) scale(1.02);
+}
+.game-card:active {
+  transform: scale(0.97) translateY(-4px);
+  transition-duration: 0.1s;
+}
+
+.game-card.hidden { display: none; }
+
+.game-card-top {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+}
+
+/* Game icon — bouncy on hover */
+.game-icon {
+  width: 60px;
+  height: 60px;
+  border-radius: var(--r-md);
+  display: grid;
+  place-items: center;
+  font-size: 1.8rem;
+  flex-shrink: 0;
+  transition: all 0.4s var(--spring-bounce);
+  position: relative;
+  background: rgba(255,255,255,0.6);
+  border: 2px solid rgba(255,255,255,0.5);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+}
+[data-theme="dark"] .game-icon {
+  background: rgba(255,255,255,0.08);
+  border-color: rgba(255,255,255,0.1);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+}
+.game-card:hover .game-icon {
+  transform: scale(1.15) rotate(-6deg);
+  box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+}
+
+.game-info { flex: 1; min-width: 0; }
+
+.game-title {
+  font-size: 1.1rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  margin-bottom: 4px;
+  color: #1a202c;
+}
+[data-theme="dark"] .game-title { color: #f0f4f8; }
+
+.game-desc {
+  font-size: 0.875rem;
+  color: #4a5568;
+  line-height: 1.5;
+  letter-spacing: -0.01em;
+}
+[data-theme="dark"] .game-desc { color: #a0aec0; }
+
+.game-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: auto;
+  padding-top: 10px;
+}
+
+/* Duo-style tag */
+.game-tag {
+  font-size: 0.72rem;
+  font-weight: 800;
+  padding: 6px 12px;
+  border-radius: var(--r-sm);
+  background: rgba(255,255,255,0.5);
+  color: var(--text-sec);
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  transition: all 0.2s var(--spring);
+  backdrop-filter: blur(4px);
+}
+[data-theme="dark"] .game-tag {
+  background: rgba(255,255,255,0.08);
+}
+.game-card:hover .game-tag {
+  transform: scale(1.05);
+  background: rgba(255,255,255,0.7);
+}
+[data-theme="dark"] .game-card:hover .game-tag {
+  background: rgba(255,255,255,0.12);
+}
+
+/* Duo-style arrow button */
+.game-arrow {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: var(--duo-green);
+  color: white;
+  display: grid;
+  place-items: center;
+  box-shadow: 0 4px 0 var(--duo-green-dark);
+  transition: all 0.3s var(--spring-bounce);
+}
+.game-card:hover .game-arrow {
+  transform: translateX(4px) scale(1.1);
+  box-shadow: 0 6px 0 var(--duo-green-dark), var(--glow-green);
+}
+.game-card:active .game-arrow {
+  transform: scale(0.9);
+  box-shadow: 0 2px 0 var(--duo-green-dark);
+}
+
+/* ═══════════════════════════════════════
+   FOOTER
+   ═══════════════════════════════════════ */
+.footer {
+  margin-top: auto;
+  border-top: none;
+  text-align: center;
+  padding: 32px 24px;
+  color: var(--text-dim);
+  font-size: 0.85rem;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  background: linear-gradient(180deg, transparent 0%, rgba(88,204,2,0.03) 100%);
+  position: relative;
+}
+.footer::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 60px;
+  height: 3px;
+  background: linear-gradient(90deg, var(--duo-green), var(--duo-blue), var(--duo-purple));
+  border-radius: 2px;
+}
+
+/* ═══════════════════════════════════════
+   MODAL — Duo-style
+   ═══════════════════════════════════════ */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.5);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 200;
+  padding: 16px;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.25s ease;
+  overflow-y: auto;
+}
+.modal-overlay.visible {
+  opacity: 1;
+  pointer-events: auto;
+}
+.modal {
+  background: var(--bg-card);
+  border: 2px solid var(--border);
+  border-radius: var(--r-xl);
+  padding: 32px 28px;
+  max-width: 400px;
+  width: 100%;
+  box-shadow: 0 25px 80px rgba(0,0,0,0.3);
+  text-align: center;
+  position: relative;
+  margin: auto;
+}
+.welcome-modal{max-width:440px}
+.modal-emoji{font-size:3.5rem;margin-bottom:16px}
+.modal h2{font-size:1.5rem;font-weight:800;letter-spacing:-.03em;margin-bottom:8px}
+.modal p{font-size:.95rem;color:var(--text-sec);margin-bottom:24px;line-height:1.6}
+.modal-btn{width:100%;padding:16px 28px;border:none;border-radius:var(--r-full);font-family:var(--font);font-size:1rem;font-weight:800;color:#fff;background:var(--duo-green);box-shadow:0 5px 0 var(--duo-green-dark);cursor:pointer;transition:all .15s;position:relative;top:0}
+.modal-btn:hover{filter:brightness(1.1);top:-2px;box-shadow:0 7px 0 var(--duo-green-dark)}
+.modal-btn:active{top:3px;box-shadow:0 2px 0 var(--duo-green-dark);transition-duration:.08s}
+.welcome-mascot{margin-bottom:16px}
+.welcome-features{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:20px}
+.welcome-feature{text-align:center;padding:14px 6px;border-radius:var(--r-lg);background:var(--bg-subtle);border:1px solid var(--border)}
+.welcome-feature-icon{width:44px;height:44px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:1.3rem;margin:0 auto 8px;box-shadow:0 2px 8px rgba(0,0,0,.1)}
+.welcome-feature-name{font-size:.8125rem;font-weight:700;color:var(--text);margin-bottom:2px}
+.welcome-feature-desc{font-size:.6875rem;color:var(--text-sec);line-height:1.3}
+.welcome-beta{display:inline-flex;align-items:center;gap:6px;padding:8px 16px;border-radius:var(--r-full);background:rgba(255,149,0,.1);border:1px solid rgba(255,149,0,.2);font-size:.75rem;font-weight:600;color:#ff9500;margin-bottom:20px}
+.welcome-dontshow{display:block;width:100%;margin-top:10px;padding:10px;border:none;background:transparent;color:var(--text-dim);font-family:var(--font);font-size:.8125rem;font-weight:600;cursor:pointer;border-radius:var(--r-full);transition:color .2s}
+.welcome-dontshow:hover{color:var(--text-sec)}
+
+@media(max-width:480px){
+  .modal-overlay{padding:0;align-items:flex-end}
+  .modal,.welcome-modal{border-radius:var(--r-xl) var(--r-xl) 0 0;max-width:100%;padding:28px 20px 32px}
+  .modal h2{font-size:1.25rem}
+  .modal p{font-size:.875rem;margin-bottom:16px}
+  .welcome-mascot img{width:64px!important;height:64px!important}
+  .welcome-features{grid-template-columns:1fr;gap:8px;margin-bottom:16px}
+  .welcome-feature{padding:12px;display:flex;align-items:center;gap:12px;text-align:left}
+  .welcome-feature-icon{margin:0;flex-shrink:0}
+  .welcome-feature-name{font-size:.875rem}
+  .welcome-feature-desc{font-size:.75rem}
+  .welcome-beta{font-size:.6875rem;padding:6px 12px}
+  .modal-btn{padding:14px 24px;font-size:.9375rem}
+}
+
+/* ═══════════════════════════════════════
+   STAGGER ANIMATION DELAYS
+   ═══════════════════════════════════════ */
+.game-card:nth-child(1) { animation-delay: 0ms; }
+.game-card:nth-child(2) { animation-delay: 60ms; }
+.game-card:nth-child(3) { animation-delay: 120ms; }
+.game-card:nth-child(4) { animation-delay: 180ms; }
+.game-card:nth-child(5) { animation-delay: 240ms; }
+.game-card:nth-child(6) { animation-delay: 300ms; }
+.game-card:nth-child(7) { animation-delay: 360ms; }
+.game-card:nth-child(8) { animation-delay: 420ms; }
+.game-card:nth-child(9) { animation-delay: 480ms; }
+.game-card:nth-child(10) { animation-delay: 540ms; }
+.game-card:nth-child(11) { animation-delay: 600ms; }
+.game-card:nth-child(12) { animation-delay: 660ms; }
+.game-card:nth-child(13) { animation-delay: 720ms; }
+
+/* ═══════════════════════════════════════
+   SPARKLE EFFECT ON HOVER
+   ═══════════════════════════════════════ */
+.game-card .sparkle {
+  position: absolute;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  pointer-events: none;
+  opacity: 0;
+  animation: sparkle 0.7s ease forwards;
+}
+
+@keyframes sparkle {
+  0% { opacity: 1; transform: scale(0) translate(0, 0); }
+  30% { opacity: 1; transform: scale(1.2); }
+  100% { opacity: 0; transform: scale(0.3) translate(var(--tx), var(--ty)); }
+}
+
+/* Card shimmer effect on hover */
+.game-card::after {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: linear-gradient(
+    45deg,
+    transparent 40%,
+    rgba(255,255,255,0.15) 50%,
+    transparent 60%
+  );
+  transform: rotate(45deg) translateX(-100%);
+  transition: transform 0.6s ease;
+  pointer-events: none;
+  z-index: 1;
+}
+.game-card:hover::after {
+  transform: rotate(45deg) translateX(100%);
+}
+
+/* ═══════════════════════════════════════
+   RESPONSIVE
+   ═══════════════════════════════════════ */
+@media (max-width: 480px) {
+  .hero { padding: calc(var(--nav-h) + 32px) 16px 28px; }
+  .hero-emoji { font-size: 3rem; }
+  .hero h1 { font-size: 1.7rem; }
+  .hero-sub { font-size: 0.95rem; }
+  .hero-stats { gap: 12px; flex-wrap: wrap; }
+  .hero-stat { padding: 6px 12px; font-size: 0.75rem; }
+  .hero-badge { display: none; }
+  .filters { gap: 8px; padding: 20px 16px 0; }
+  .filter-btn { padding: 10px 16px; font-size: 0.8rem; }
+  .mode-dropdown { width: 250px; right: -8px; }
+  .modal { padding: 28px 24px; }
+}
+
+/* ═══════════════════════════════════════
+   SCROLLBAR
+   ═══════════════════════════════════════ */
+::-webkit-scrollbar { width: 10px; }
+::-webkit-scrollbar-track { background: var(--bg); }
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, var(--duo-green), var(--duo-blue));
+  border-radius: 5px;
+  border: 2px solid var(--bg);
+}
+::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(180deg, var(--duo-green-dark), var(--duo-blue-dark));
+}
+
+/* ═══════════════════════════════════════
+   SELECTION COLOR
+   ═══════════════════════════════════════ */
+::selection {
+  background: var(--duo-green);
+  color: white;
+}
+
+/* ═══════════════════════════════════════
+   WAVE SEPARATOR
+   ═══════════════════════════════════════ */
+.hero-wave {
+  position: relative;
+  margin-top: -2px;
+}
+.hero-wave svg {
+  display: block;
+  width: 100%;
+  height: 40px;
+}
+
+/* ─── HERO PROGRESS ─── */
+.hero-progress {
+  max-width: 300px;
+  margin: 20px auto 0;
+  animation: fadeInUp 0.6s var(--ease) 0.45s both;
+}
+.hero-progress-label {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--text-sec);
+  margin-bottom: 8px;
+}
+.hero-progress-bar {
+  height: 8px;
+  background: var(--bg-subtle);
+  border-radius: 999px;
+  overflow: hidden;
+  border: 1px solid var(--border);
+}
+.hero-progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--duo-green), var(--duo-blue));
+  border-radius: 999px;
+  transition: width 0.8s var(--spring);
+}
+
+/* ─── PAGE TRANSITIONS ─── */
+body { animation: pageIn 0.4s var(--ease) both; }
+@keyframes pageIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+
+/* ─── SMOOTH SCROLLBAR ─── */
+::-webkit-scrollbar { width: 8px; }
+::-webkit-scrollbar-track { background: var(--bg-subtle); }
+::-webkit-scrollbar-thumb { background: var(--border); border-radius: 999px; }
+::-webkit-scrollbar-thumb:hover { background: var(--text-dim); }
+
+/* ─── MEDALS NAV BUTTON ─── */
+.medals-nav-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 14px;
+  border-radius: var(--r-full);
+  background: var(--bg-subtle);
+  border: 2px solid var(--border);
+  font-size: 0.85rem;
+  font-weight: 700;
+  transition: all 0.25s var(--spring);
+}
+.medals-nav-btn:hover {
+  background: var(--duo-yellow);
+  border-color: var(--duo-yellow);
+  color: white;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(255,200,0,0.3);
+}
+.medals-nav-btn:active { transform: scale(0.95); }
+.medals-count {
+  background: rgba(255,255,255,0.3);
+  padding: 2px 8px;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-weight: 800;
+}
+.medals-nav-btn:hover .medals-count { background: rgba(255,255,255,0.25); }
+
+/* ─── MEDALS MODAL ─── */
+.medals-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.6);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 200;
+  padding: 24px;
+  opacity: 1;
+  transition: opacity 0.25s ease;
+}
+.medals-modal-overlay.hidden {
+  opacity: 0;
+  pointer-events: none;
+}
+.medals-modal {
+  background: var(--bg-card);
+  border: 2px solid var(--border);
+  border-radius: var(--r-xl);
+  max-width: 520px;
+  width: 100%;
+  max-height: 85vh;
+  overflow: hidden;
+  box-shadow: 0 25px 80px rgba(0,0,0,0.3), 0 0 0 1px var(--border);
+  transform: scale(1) translateY(0);
+  transition: transform 0.3s var(--spring-bounce), opacity 0.25s ease;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+}
+.medals-modal-overlay.hidden .medals-modal {
+  transform: scale(0.9) translateY(20px);
+  opacity: 0;
+}
+
+/* Hero header with gradient */
+.medals-modal-hero {
+  background: linear-gradient(135deg, #fff8e1 0%, #fff3e0 50%, #fce4ec 100%);
+  padding: 32px 32px 24px;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+[data-theme="dark"] .medals-modal-hero {
+  background: linear-gradient(135deg, #2a2010 0%, #2a1f10 50%, #2a101a 100%);
+}
+.medals-modal-hero::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(circle, rgba(255,200,0,0.15) 0%, transparent 50%);
+  animation: heroGlow 4s ease-in-out infinite alternate;
+}
+.medals-hero-emoji {
+  font-size: 4rem;
+  display: block;
+  margin-bottom: 8px;
+  animation: modalBounce 0.6s var(--spring-bounce) 0.2s both;
+  filter: drop-shadow(0 4px 12px rgba(0,0,0,0.15));
+  position: relative;
+  z-index: 1;
+}
+.medals-hero-title {
+  font-size: 1.5rem;
+  font-weight: 900;
+  letter-spacing: -0.04em;
+  margin-bottom: 4px;
+  position: relative;
+  z-index: 1;
+}
+.medals-hero-sub {
+  font-size: 0.9rem;
+  color: var(--text-sec);
+  font-weight: 500;
+  position: relative;
+  z-index: 1;
+}
+
+/* Stats row */
+.medals-stats {
+  display: flex;
+  justify-content: center;
+  gap: 24px;
+  padding: 16px 32px;
+  border-bottom: 1px solid var(--border);
+  background: var(--bg-card);
+}
+.medals-stat {
+  text-align: center;
+}
+.medals-stat-value {
+  font-size: 1.5rem;
+  font-weight: 900;
+  letter-spacing: -0.03em;
+  color: var(--duo-green);
+}
+.medals-stat-label {
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text-dim);
+  margin-top: 2px;
+}
+
+/* Close button */
+.medals-modal-close {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.8);
+  border: none;
+  display: grid;
+  place-items: center;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.2s var(--spring);
+  z-index: 10;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+[data-theme="dark"] .medals-modal-close {
+  background: rgba(0,0,0,0.3);
+}
+.medals-modal-close:hover {
+  background: var(--duo-red);
+  color: white;
+  transform: rotate(90deg) scale(1.1);
+}
+
+/* Scrollable medals grid */
+.medals-modal-body {
+  padding: 20px 24px 24px;
+  overflow-y: auto;
+  flex: 1;
+}
+.medals-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+  gap: 12px;
+}
+.medal-card {
+  background: var(--bg-subtle);
+  border: 2px solid var(--border);
+  border-radius: var(--r-lg);
+  padding: 16px 12px;
+  text-align: center;
+  transition: all 0.3s var(--spring);
+  opacity: 0.45;
+  filter: grayscale(0.8);
+  position: relative;
+  overflow: hidden;
+}
+.medal-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, transparent 60%, rgba(255,200,0,0.1) 100%);
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+.medal-card.earned {
+  opacity: 1;
+  filter: none;
+  border-color: var(--duo-green);
+  background: linear-gradient(135deg, rgba(88,204,2,0.06) 0%, rgba(88,204,2,0.02) 100%);
+  box-shadow: 0 4px 0 rgba(88,204,2,0.12), inset 0 1px 0 rgba(255,255,255,0.5);
+}
+.medal-card.earned::before {
+  opacity: 1;
+}
+.medal-card.earned:hover {
+  transform: translateY(-6px) scale(1.05);
+  box-shadow: 0 12px 24px rgba(88,204,2,0.25), 0 4px 0 rgba(88,204,2,0.15);
+  border-color: var(--duo-green-dark);
+}
+.medal-card.earned:active {
+  transform: translateY(-2px) scale(1.02);
+}
+
+/* Medal icon with glow */
+.medal-icon-wrap {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: var(--bg-card);
+  border: 2px solid var(--border);
+  display: grid;
+  place-items: center;
+  margin: 0 auto 10px;
+  transition: all 0.3s var(--spring);
+  position: relative;
+}
+.medal-card.earned .medal-icon-wrap {
+  border-color: var(--duo-green);
+  background: linear-gradient(135deg, #e8f5e9, #c8e6c9);
+  box-shadow: 0 4px 12px rgba(88,204,2,0.2);
+}
+.medal-card.earned:hover .medal-icon-wrap {
+  transform: scale(1.1) rotate(-5deg);
+  box-shadow: 0 6px 16px rgba(88,204,2,0.3);
+}
+.medal-icon {
+  font-size: 1.8rem;
+  line-height: 1;
+}
+.medal-name {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--text);
+  letter-spacing: -0.01em;
+  line-height: 1.3;
+}
+.medal-card:not(.earned) .medal-name {
+  color: var(--text-dim);
+}
+.medal-date {
+  font-size: 0.65rem;
+  color: var(--duo-green);
+  font-weight: 600;
+  margin-top: 4px;
+}
+.medal-card:not(.earned) .medal-date {
+  display: none;
+}
+
+/* Locked medal overlay */
+.medal-lock {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  font-size: 0.7rem;
+  opacity: 0.5;
+}
+
+/* Empty state */
+.medals-empty {
+  text-align: center;
+  padding: 40px 20px;
+  color: var(--text-dim);
+}
+.medals-empty-emoji {
+  font-size: 3rem;
+  margin-bottom: 12px;
+  opacity: 0.6;
+}
+.medals-empty-text {
+  font-size: 0.95rem;
+  font-weight: 600;
+}
+.medals-empty-sub {
+  font-size: 0.85rem;
+  margin-top: 4px;
+}
+
+/* Next medals section */
+.medals-next-wrap {
+  text-align: center;
+  margin-top: 16px;
+}
+.medals-next-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 10px 20px;
+  border-radius: var(--r-full);
+  border: 2px solid var(--border);
+  background: var(--bg-subtle);
+  color: var(--text-sec);
+  font-family: Inter, sans-serif;
+  font-size: 0.8125rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s var(--spring);
+}
+.medals-next-btn:hover {
+  border-color: var(--duo-purple);
+  color: var(--duo-purple);
+  background: rgba(175,82,222,0.06);
+  transform: translateY(-1px);
+}
+.medals-next-btn:active {
+  transform: translateY(1px);
+}
+
+/* Censored/preview locked medals */
+.medal-card.locked-preview {
+  opacity: 0.3;
+  filter: blur(4px) grayscale(0.8);
+  pointer-events: none;
+  position: relative;
+}
+.medal-card.locked-preview::after {
+  content: '🔒';
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  font-size: 1.5rem;
+  filter: none;
+  opacity: 0.7;
+  background: rgba(0,0,0,0.08);
+  border-radius: var(--r-lg);
+}
+.medal-card.locked-preview .medal-lock {
+  display: none;
+}
+
+/* Revealed locked medals */
+.medal-card.locked-reveal {
+  animation: medalReveal 0.4s cubic-bezier(.34,1.56,.64,1) both;
+}
+@keyframes medalReveal {
+  from { opacity: 0.3; filter: blur(4px) grayscale(0.8); transform: scale(0.9); }
+  to { opacity: 0.45; filter: grayscale(0.8); transform: scale(1); }
+}
+
+/* Progress bar in modal */
+.medals-progress {
+  margin: 0 24px 16px;
+  padding: 12px 16px;
+  background: var(--bg-subtle);
+  border-radius: var(--r-md);
+  border: 1px solid var(--border);
+}
+.medals-progress-label {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--text-sec);
+  margin-bottom: 8px;
+}
+.medals-progress-bar {
+  height: 6px;
+  background: var(--border);
+  border-radius: 999px;
+  overflow: hidden;
+}
+.medals-progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--duo-green), var(--duo-teal));
+  border-radius: 999px;
+  transition: width 0.8s var(--spring);
+}
+
+@media (max-width: 480px) {
+  .medals-modal { max-height: 90vh; border-radius: var(--r-lg); }
+  .medals-modal-hero { padding: 24px 20px 20px; }
+  .medals-hero-emoji { font-size: 3rem; }
+  .medals-hero-title { font-size: 1.25rem; }
+  .medals-stats { gap: 16px; padding: 12px 20px; }
+  .medals-modal-body { padding: 16px; }
+  .medals-grid { grid-template-columns: repeat(3, 1fr); gap: 8px; }
+  .medal-card { padding: 12px 8px; }
+  .medal-icon-wrap { width: 44px; height: 44px; }
+  .medal-icon { font-size: 1.4rem; }
+  .medal-name { font-size: 0.7rem; }
+}
+
+/* ─── SCROLL TO TOP ─── */
+.scroll-top-btn {
+  position: fixed;
+  bottom: 32px;
+  right: 32px;
+  width: 48px;
+  height: 48px;
+  border-radius: 999px;
+  background: var(--duo-blue);
+  color: white;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 16px rgba(28,176,246,0.3);
+  opacity: 0;
+  transform: translateY(20px) scale(0.8);
+  transition: all 0.3s var(--spring);
+  pointer-events: none;
+  z-index: 100;
+}
+.scroll-top-btn.visible {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+  pointer-events: all;
+}
+.scroll-top-btn:hover {
+  transform: translateY(-2px) scale(1.05);
+  box-shadow: 0 6px 24px rgba(28,176,246,0.4);
+  background: #0aa5ef;
+}
+.scroll-top-btn:active {
+  transform: scale(0.95);
+}
+@media (max-width: 480px) {
+  .scroll-top-btn { bottom: 20px; right: 20px; width: 44px; height: 44px; }
+}
+
+/* ─── PAGE LOADER ─── */
+.page-loader {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  z-index: 9999;
+  background: linear-gradient(90deg, var(--duo-green), var(--duo-blue), var(--duo-purple));
+  transform-origin: left;
+  animation: loaderFill 1.5s ease-out forwards;
+}
+@keyframes loaderFill {
+  0% { transform: scaleX(0); }
+  60% { transform: scaleX(0.7); }
+  100% { transform: scaleX(1); }
+}
+.page-loader.done {
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  pointer-events: none;
+}
+
+/* ═══════════════════════════════════════
+   ANNOUNCEMENT / WELCOME BANNER CARD
+   ═══════════════════════════════════════ */
+.announcement-box {
+  max-width: var(--max-w);
+  margin: 20px auto 0;
+  padding: 0 24px;
+}
+
+.announcement-card {
+  background: linear-gradient(135deg, #ffffff 0%, #f0f7ff 100%);
+  border: 2.5px solid var(--duo-blue, #1cb0f6);
+  border-radius: 28px;
+  padding: 24px 28px;
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  position: relative;
+  box-shadow: 0 8px 24px rgba(28,176,246,0.15), 0 4px 0 #1899d6;
+  transition: all 0.3s ease;
+}
+
+[data-theme="dark"] .announcement-card {
+  background: linear-gradient(135deg, #161b22 0%, #0d2235 100%);
+  border-color: var(--duo-blue, #1cb0f6);
+}
+
+.announcement-close {
+  position: absolute;
+  top: 16px; right: 16px;
+  width: 32px; height: 32px;
+  border-radius: 50%;
+  background: rgba(0,0,0,0.05);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1rem; font-weight: 800; color: var(--text-sec, #5a6577);
+  transition: all 0.2s ease;
+  border: none; cursor: pointer;
+}
+.announcement-close:hover { background: rgba(255,75,75,0.15); color: #ff4b4b; }
+
+.announcement-mascot-wrap {
+  flex-shrink: 0;
+  width: 90px; height: 90px;
+  display: flex; align-items: center; justify-content: center;
+}
+.announcement-mascot {
+  width: 100%; height: 100%; object-fit: contain;
+  filter: drop-shadow(0 4px 8px rgba(0,0,0,0.12));
+}
+
+.announcement-content { flex: 1; }
+
+.announcement-badge {
+  display: inline-block;
+  padding: 4px 12px; border-radius: 12px;
+  background: rgba(28,176,246,0.12); color: #1899d6;
+  font-size: 0.775rem; font-weight: 800; text-transform: uppercase; margin-bottom: 6px;
+}
+
+.announcement-title {
+  font-size: 1.25rem; font-weight: 900; color: var(--text, #2d3748); margin-bottom: 4px;
+}
+
+.announcement-text {
+  font-size: 0.875rem; color: var(--text-sec, #5a6577); line-height: 1.45; margin-bottom: 10px;
+}
+
+.announcement-tags { display: flex; gap: 8px; flex-wrap: wrap; }
+
+.announcement-tag {
+  padding: 4px 10px; border-radius: 10px; background: var(--bg-card, #ffffff);
+  border: 1px solid var(--border, rgba(0,0,0,0.06)); font-size: 0.75rem; font-weight: 700; color: var(--text, #2d3748);
+}
+
+.announcement-actions { flex-shrink: 0; }
+
+.announcement-btn {
+  padding: 12px 24px; border-radius: 99px; background: var(--duo-green, #58cc02);
+  color: white; font-weight: 800; font-size: 0.9rem;
+  box-shadow: 0 4px 0 #46a302; transition: all 0.2s ease;
+  border: none; cursor: pointer;
+}
+.announcement-btn:hover { transform: scale(1.05); }
+
+@media (max-width: 768px) {
+  .announcement-card { flex-direction: column; text-align: center; padding: 20px; gap: 14px; }
+  .announcement-mascot-wrap { width: 75px; height: 75px; }
+  .announcement-tags { justify-content: center; }
+}
+
+</style>
+
+<!-- SUPER RESPONSIVE MOBILE OPTIMIZATIONS — RAKINMATH -->
+<style id="rakin-mobile-responsiveness">
+* {
+  -webkit-tap-highlight-color: transparent;
+}
+html, body {
+  max-width: 100%;
+  overflow-x: hidden;
+}
+img, svg, video, canvas {
+  max-width: 100%;
+}
+button, a, input, select, textarea, .btn, .choice-btn, .opt-btn, .game-btn, .nav-btn, .action-btn {
+  touch-action: manipulation;
+}
+@media (max-width: 600px) {
+  input, select, textarea {
+    font-size: 16px !important;
+  }
+  button, .btn, .choice-btn, .opt-btn, .game-btn, .nav-btn, .action-btn {
+    min-height: 44px;
+  }
+}
+</style>
+
+</head>
+<body>
+<!-- PAGE LOADER -->
+<div class="page-loader" id="pageLoader"></div>
+
+<!-- WELCOME MODAL -->
+<div class="modal-overlay" id="welcomeModal">
+  <div class="modal welcome-modal">
+    <div class="welcome-mascot">
+      <img src="../Recursos/rakin-waving.svg" alt="Rakín" style="width:80px;height:80px;filter:drop-shadow(0 4px 16px rgba(175,82,222,0.3))">
+    </div>
+    <h2 id="welcomeTitle">¡Bienvenido/a!</h2>
+    <p style="color:var(--text-sec);margin-bottom:20px;line-height:1.6">RakinMath es una plataforma para aprender y practicar matemáticas del 4° y 5° básico, alineada al currículum chileno.</p>
+    <div class="welcome-features">
+      <div class="welcome-feature">
+        <div class="welcome-feature-icon" style="background:linear-gradient(135deg,var(--duo-green),#46a302)">🎮</div>
+        <div class="welcome-feature-name">Practicar</div>
+        <div class="welcome-feature-desc">Juegos interactivos para reforzar lo aprendido</div>
+      </div>
+      <div class="welcome-feature">
+        <div class="welcome-feature-icon" style="background:linear-gradient(135deg,var(--duo-blue),#1899d6)">📚</div>
+        <div class="welcome-feature-name">Aprender</div>
+        <div class="welcome-feature-desc">Lecciones por eje del Ministerio de Educación</div>
+      </div>
+      <div class="welcome-feature">
+        <div class="welcome-feature-icon" style="background:linear-gradient(135deg,var(--duo-yellow),#e5b300)">🏆</div>
+        <div class="welcome-feature-name">Logros</div>
+        <div class="welcome-feature-desc">Gana medallas y sigue motivado</div>
+      </div>
+    </div>
+    <div class="welcome-beta">
+      <span>🔧</span> Estamos en beta — algunos contenidos están en desarrollo
+    </div>
+    <button class="modal-btn" id="welcomeBtn">¡Entendido!</button>
+    <button class="welcome-dontshow" id="welcomeDontShow">No mostrar más</button>
+  </div>
+</div>
+
+<!-- MODAL: MODO APRENDER -->
+<div class="modal-overlay" id="modal-soon" style="opacity:0;pointer-events:none">
+  <div class="modal">
+    <div class="modal-emoji">📚</div>
+    <h2>Modo Aprender</h2>
+    <p>Este modo está en fase de producción. Algunos contenidos pueden estar incompletos.</p>
+    <button class="modal-btn" onclick="document.getElementById('modal-soon').classList.remove('visible')">Entendido</button>
+  </div>
+</div>
+
+<!-- NAV -->
+<nav class="nav">
+  <div class="nav-inner">
+    <a href="menu.html" class="nav-logo">
+      <img src="../Recursos/LogoRakinMath.png" alt="RakinMath">
+    </a>
+
+    <div class="nav-right">
+      <button class="medals-nav-btn" id="medalsBtn" aria-label="Tus medallas">
+        🏅 <span class="medals-count" id="medalsCountNav">0</span>
+      </button>
+      <div class="mode-wrap" id="modeWrap">
+        <button class="mode-btn" id="modeBtn">
+          <span id="modeIcon">🎮</span>
+          <span id="modeLabel">Practicar</span>
+          <svg viewBox="0 0 12 12" fill="none"><path d="M3 4.5L6 7.5L9 4.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+
+        <div class="mode-dropdown">
+          <div class="mode-dropdown-label">Cambiar modo</div>
+          <div class="mode-toggle" id="modeToggle">
+            <input type="radio" name="mode" id="m-learn" value="aprender">
+            <label for="m-learn"><span class="icon">📚</span>Aprender</label>
+            <input type="radio" name="mode" id="m-play" value="practicar" checked>
+            <label for="m-play" class="active"><span class="icon">🎮</span>Practicar</label>
+            <div class="slider"></div>
+          </div>
+          <a href="../dashboard.html" class="stats-link">📊 Mis Estadísticas</a>
+          <button class="logout-btn" id="logoutBtn">🚪 Cerrar Sesión</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <span class="hero-badge">⭐</span>
+  <span class="hero-badge">🎯</span>
+  <span class="hero-badge">🔥</span>
+  <span class="hero-badge">💡</span>
+  <div class="hero-emoji">🎮</div>
+  <h1 id="heroTitle">Bienvenido/a <span class="brand"></span></h1>
+  <p class="hero-sub">Aprende jugando con retos interactivos</p>
+  <div class="hero-stats">
+    <div class="hero-stat" id="statMedals">
+      <span class="hero-stat-icon">🏅</span>
+      <span id="statMedalsText">0 Medallas</span>
+    </div>
+    <div class="hero-stat" id="statStreak">
+      <span class="hero-stat-icon">🔥</span>
+      <span id="statStreakText">Racha: 0</span>
+    </div>
+  </div>
+  <!-- Progress bar -->
+  <div class="hero-progress" id="heroProgress" style="display:none">
+    <div class="hero-progress-label">
+      <span>Progreso total</span>
+      <span id="heroProgressPct">0%</span>
+    </div>
+    <div class="hero-progress-bar">
+      <div class="hero-progress-fill" id="heroProgressFill" style="width:0%"></div>
+    </div>
+  </div>
+</section>
+
+<!-- WAVE SEPARATOR -->
+<div class="hero-wave">
+  <svg viewBox="0 0 1440 40" fill="none" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none">
+    <path d="M0 20C240 35 480 0 720 20C960 40 1200 5 1440 20V40H0V20Z" fill="var(--bg)"/>
+  </svg>
+</div>
+
+<!-- ANNOUNCEMENT / WELCOME BANNER CARD -->
+<div class="announcement-box" id="announcementBox">
+  <div class="announcement-card" id="announcementCard">
+    <button class="announcement-close" id="announcementClose" aria-label="Cerrar notificación" title="Cerrar">✕</button>
+    <div class="announcement-mascot-wrap">
+      <img src="../Recursos/rakin-waving.svg" alt="Mascota Rakín" class="announcement-mascot">
+    </div>
+    <div class="announcement-content">
+      <div class="announcement-badge">🎉 ¡Bienvenido/a a RakinMath!</div>
+      <div class="announcement-title" id="announcementTitle">¡Hola! Nos alegra tenerte aquí</div>
+      <p class="announcement-text">Explora lecciones del Ministerio de Educación, juega en 13 retos interactivos y acumula medallas en tu camino de aprendizaje.</p>
+      <div class="announcement-tags">
+        <span class="announcement-tag">🎮 13 Minijuegos</span>
+        <span class="announcement-tag">📚 Contenido 4° y 5°</span>
+        <span class="announcement-tag">🏆 Desbloquea Logros</span>
+      </div>
+    </div>
+    <div class="announcement-actions">
+      <button class="announcement-btn" id="announcementBtn">¡A jugar! 🚀</button>
+    </div>
+  </div>
+</div>
+
+
+<!-- FILTERS -->
+<div class="filters">
+  <button class="filter-btn active" data-g="all" onclick="filterGames('all',this)">✨ Todos</button>
+<button class="filter-btn" data-g="4to" onclick="filterGames('4to',this)">🎒 4° Básico</button>
+<button class="filter-btn" data-g="5to" onclick="filterGames('5to',this)">🧠 5° Básico</button>
+<button class="filter-btn" data-g="6to" onclick="filterGames('6to',this)">🚀 6° Básico</button>
+</div>
+
+<!-- GAMES GRID -->
+<div class="games-grid" id="gamesGrid">
+
+  <a href="juego1.html" class="game-card" data-g="5to" data-accent="cyan">
+    <div class="game-card-top">
+      <div class="game-icon cyan">✖️</div>
+      <div class="game-info">
+        <div class="game-title">Duelo de Numeros</div>
+        <div class="game-desc">Rapidez multiplicando y dividiendo en equipo</div>
+      </div>
+    </div>
+    <div class="game-footer">
+      <span class="game-tag">5° Básico</span>
+      <div class="game-arrow">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M6 3l5 5-5 5" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </div>
+    </div>
+  </a>
+
+  <a href="juego2.html" class="game-card" data-g="5to" data-accent="yellow">
+    <div class="game-card-top">
+      <div class="game-icon yellow">📐</div>
+      <div class="game-info">
+        <div class="game-title">Estimaciones</div>
+        <div class="game-desc">Redondea y calcula aproximaciones rapidas</div>
+      </div>
+    </div>
+    <div class="game-footer">
+      <span class="game-tag">5° Básico</span>
+      <div class="game-arrow">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M6 3l5 5-5 5" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </div>
+    </div>
+  </a>
+
+  <a href="juego3.html" class="game-card" data-g="4to,5to" data-accent="purple">
+    <div class="game-card-top">
+      <div class="game-icon purple">🍕</div>
+      <div class="game-info">
+        <div class="game-title">Chefs de Fracciones</div>
+        <div class="game-desc">Fracciones deliciosas en la cocina</div>
+      </div>
+    </div>
+    <div class="game-footer">
+      <span class="game-tag">4° · 5°</span>
+      <div class="game-arrow">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M6 3l5 5-5 5" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </div>
+    </div>
+  </a>
+
+  <a href="juego4.html" class="game-card" data-g="4to,5to" data-accent="green">
+    <div class="game-card-top">
+      <div class="game-icon green">🏗️</div>
+      <div class="game-info">
+        <div class="game-title">Arquitectas</div>
+        <div class="game-desc">Calcula perímetro y área para ayudar a los animales</div>
+      </div>
+    </div>
+    <div class="game-footer">
+      <span class="game-tag">4° · 5°</span>
+      <div class="game-arrow">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M6 3l5 5-5 5" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </div>
+    </div>
+  </a>
+
+  <a href="juego5.html" class="game-card" data-g="5to" data-accent="orange">
+    <div class="game-card-top">
+      <div class="game-icon orange">🗺️</div>
+      <div class="game-info">
+        <div class="game-title">Buscatesoros</div>
+        <div class="game-desc">Navega por el plano cartesiano con coordenadas (X, Y)</div>
+      </div>
+    </div>
+    <div class="game-footer">
+      <span class="game-tag">5° Básico</span>
+      <div class="game-arrow">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M6 3l5 5-5 5" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </div>
+    </div>
+  </a>
+
+  <a href="juego6.html" class="game-card" data-g="5to,6to" data-accent="pink">
+    <div class="game-card-top">
+      <div class="game-icon pink">🧪</div>
+      <div class="game-info">
+        <div class="game-title">El Caldero Magico</div>
+        <div class="game-desc">Usa el orden de las operaciones para crear pociones</div>
+      </div>
+    </div>
+    <div class="game-footer">
+      <span class="game-tag">5° · 6°</span>
+      <div class="game-arrow">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M6 3l5 5-5 5" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </div>
+    </div>
+  </a>
+
+  <a href="juego7.html" class="game-card" data-g="4to" data-accent="cyan">
+    <div class="game-card-top">
+      <div class="game-icon cyan">🤖</div>
+      <div class="game-info">
+        <div class="game-title">Mision Robot</div>
+        <div class="game-desc">Repara al robot: doble, mitad y trucos de ceros</div>
+      </div>
+    </div>
+    <div class="game-footer">
+      <span class="game-tag">4° Básico</span>
+      <div class="game-arrow">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M6 3l5 5-5 5" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </div>
+    </div>
+  </a>
+
+  <a href="juego8.html" class="game-card" data-g="4to,5to" data-accent="indigo">
+    <div class="game-card-top">
+      <div class="game-icon indigo">🧮</div>
+      <div class="game-info">
+        <div class="game-title">Cálculo Mental</div>
+        <div class="game-desc">7 operaciones, 3 modos, preguntas tipo enunciado y estadisticas</div>
+      </div>
+    </div>
+    <div class="game-footer">
+      <span class="game-tag">4° · 5°</span>
+      <div class="game-arrow">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M6 3l5 5-5 5" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </div>
+    </div>
+  </a>
+
+  <a href="juego9.html" class="game-card" data-g="4to,5to" data-accent="purple">
+    <div class="game-card-top">
+      <div class="game-icon purple">🧪</div>
+      <div class="game-info">
+        <div class="game-title">Laboratorio de Pociones</div>
+        <div class="game-desc">Mezcla ingredientes magicos sumando y restando fracciones</div>
+      </div>
+    </div>
+    <div class="game-footer">
+      <span class="game-tag">4° · 5°</span>
+      <div class="game-arrow">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M6 3l5 5-5 5" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </div>
+    </div>
+  </a>
+
+  <a href="juego10.html" class="game-card" data-g="4to,5to" data-accent="green">
+    <div class="game-card-top">
+      <div class="game-icon green">🛒</div>
+      <div class="game-info">
+        <div class="game-title">El Mercado Chileno</div>
+        <div class="game-desc">Compra productos, paga y recibe el vuelto. Maneja dinero chileno!</div>
+      </div>
+    </div>
+    <div class="game-footer">
+      <span class="game-tag">4° · 5°</span>
+      <div class="game-arrow">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M6 3l5 5-5 5" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </div>
+    </div>
+  </a>
+
+  <a href="juego11.html" class="game-card" data-g="4to,5to" data-accent="orange">
+    <div class="game-card-top">
+      <div class="game-icon orange">🍕</div>
+      <div class="game-info">
+        <div class="game-title">Pizza Master</div>
+        <div class="game-desc">Corta, suma y compara fracciones con pizza. Aprende fracciones jugando!</div>
+      </div>
+    </div>
+    <div class="game-footer">
+      <span class="game-tag">4° · 5°</span>
+      <div class="game-arrow">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M6 3l5 5-5 5" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </div>
+    </div>
+  </a>
+
+  <a href="juego12.html" class="game-card" data-g="4to,5to" data-accent="indigo">
+    <div class="game-card-top">
+      <div class="game-icon indigo">📐</div>
+      <div class="game-info">
+        <div class="game-title">Geometrix Builder</div>
+        <div class="game-desc">Construye figuras en grilla y calcula perímetro y área. ¡Arquitecto!</div>
+      </div>
+    </div>
+    <div class="game-footer">
+      <span class="game-tag">4° · 5°</span>
+      <div class="game-arrow">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M6 3l5 5-5 5" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </div>
+    </div>
+  </a>
+
+  <a href="juego13.html" class="game-card" data-g="4to,5to,6to" data-accent="green">
+    <div class="game-card-top">
+      <div class="game-icon green">🦉</div>
+      <div class="game-info">
+        <div class="game-title">Ruta Matemática</div>
+        <div class="game-desc">Aprende matemáticas con amigos animales. ¡Racha diaria incluida!</div>
+      </div>
+    </div>
+    <div class="game-footer">
+      <span class="game-tag">4° · 5° · 6°</span>
+      <div class="game-arrow">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M6 3l5 5-5 5" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </div>
+    </div>
+  </a>
+
+</div>
+
+<!-- MEDALS MODAL -->
+<div class="medals-modal-overlay hidden" id="medalsModal">
+  <div class="medals-modal">
+    <div class="medals-modal-hero">
+      <button class="medals-modal-close" id="medalsModalClose">✕</button>
+      <span class="medals-hero-emoji">🏆</span>
+      <h2 class="medals-hero-title">Tus Logros</h2>
+      <p class="medals-hero-sub">Sigue aprendiendo para desbloquear más</p>
+    </div>
+    <div class="medals-stats">
+      <div class="medals-stat">
+        <div class="medals-stat-value" id="medalsEarnedCount">0</div>
+        <div class="medals-stat-label">Obtenidas</div>
+      </div>
+      <div class="medals-stat">
+        <div class="medals-stat-value" id="medalsTotalCount">0</div>
+        <div class="medals-stat-label">Total</div>
+      </div>
+      <div class="medals-stat">
+        <div class="medals-stat-value" id="medalsPercent">0%</div>
+        <div class="medals-stat-label">Completado</div>
+      </div>
+    </div>
+    <div class="medals-progress">
+      <div class="medals-progress-label">
+        <span>Progreso de logros</span>
+        <span id="medalsProgressPct">0%</span>
+      </div>
+      <div class="medals-progress-bar">
+        <div class="medals-progress-fill" id="medalsProgressFill" style="width:0%"></div>
+      </div>
+    </div>
+    <div class="medals-modal-body">
+      <div class="medals-grid" id="medalsGrid"></div>
+      <div class="medals-next-wrap" id="medalsNextWrap" style="display:none">
+        <button class="medals-next-btn" id="medalsNextBtn">
+          <span id="medalsNextText">Ver siguientes logros ↓</span>
+        </button>
+      </div>
+      <div class="medals-empty" id="medalsEmpty" style="display:none">
+        <div class="medals-empty-emoji">🎯</div>
+        <div class="medals-empty-text">Aún no tienes medallas</div>
+        <div class="medals-empty-sub">Juega y completa lecciones para ganar logros</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SCROLL TO TOP -->
+<button id="scrollTopBtn" class="scroll-top-btn" aria-label="Volver arriba">
+  <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M10 16V4M10 4L5 9M10 4L15 9" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+</button>
+
+<!-- FOOTER -->
+<footer class="footer">RakinMath · Aprende matemáticas jugando 🧮</footer>
+
+<script src="../auth.js"></script>
+<script src="../stats/rk-progress.js"></script>
+<script src="../stats/rk-medals.js"></script>
+<script>
+(function(){
+  'use strict';
+
+  // ─── AUTH ───
+  var session = getSession();
+  if (!session || !session.user) { window.location.href = '../login.html'; return; }
+  if (isTeacher()) { window.location.href = '../Profesor/index.html'; return; }
+
+  var uN = session.user;
+  var uM = session.mode || 'practicar';
+  var uT = session.isTeacher || false;
+
+  var $ = function(id) { return document.getElementById(id); };
+
+  function esc(s) {
+    var d = document.createElement('div');
+    d.appendChild(document.createTextNode(s));
+    return d.innerHTML;
+  }
+
+  // ─── MODE TOGGLE LOGIC ───
+  function setModeUI(mode) {
+    var r = $('modeToggle').querySelector('input[value="' + mode + '"]');
+    if (r) r.checked = true;
+    $('modeToggle').classList.toggle('right', mode === 'practicar');
+    $('modeToggle').querySelectorAll('label').forEach(function(l) { l.classList.remove('active'); });
+    var checked = $('modeToggle').querySelector('input:checked + label');
+    if (checked) checked.classList.add('active');
+    $('modeIcon').textContent = mode === 'aprender' ? '📚' : '🎮';
+    $('modeLabel').textContent = mode === 'aprender' ? 'Aprender' : 'Practicar';
+  }
+
+  // ─── MODE RADIO CHANGE ───
+  $('modeToggle').querySelectorAll('input').forEach(function(r) {
+    r.addEventListener('change', function() {
+      var v = $('modeToggle').querySelector('input:checked').value;
+      setModeUI(v);
+      if (v === 'aprender') { window.location.href = '../Aprender/menu.html'; return; }
+      if (v !== uM) { uM = v; updateSession({ mode: uM }); }
+    });
+  });
+
+  // ─── DROPDOWN TOGGLE ───
+  var modeWrap = $('modeWrap');
+  $('modeBtn').addEventListener('click', function(e) {
+    e.stopPropagation();
+    modeWrap.classList.toggle('open');
+  });
+  document.addEventListener('click', function(e) {
+    if (!modeWrap.contains(e.target)) modeWrap.classList.remove('open');
+  });
+
+  // ─── LOGOUT ───
+  $('logoutBtn').addEventListener('click', function() {
+    destroySession();
+    window.location.href = '../login.html';
+  });
+
+  // ─── HERO TITLE ───
+  $('heroTitle').innerHTML = 'Bienvenido/a <span class="brand">' + esc(uN) + '</span>';
+  setModeUI(uM);
+
+  // ─── SPARKLE EFFECT ON CARD HOVER ───
+  function createSparkle(card, e) {
+    var rect = card.getBoundingClientRect();
+    var colors = ['#58cc02','#1cb0f6','#ffc800','#ce82ff','#ff86d0','#ff9600'];
+    for (var i = 0; i < 5; i++) {
+      var spark = document.createElement('div');
+      spark.className = 'sparkle';
+      spark.style.left = (e.clientX - rect.left) + 'px';
+      spark.style.top = (e.clientY - rect.top) + 'px';
+      spark.style.background = colors[Math.floor(Math.random() * colors.length)];
+      spark.style.setProperty('--tx', (Math.random() * 60 - 30) + 'px');
+      spark.style.setProperty('--ty', (Math.random() * 60 - 30) + 'px');
+      spark.style.animationDelay = (i * 50) + 'ms';
+      card.appendChild(spark);
+      setTimeout(function(el) { el.remove(); }, 700);
+    }
+  }
+
+  document.querySelectorAll('.game-card').forEach(function(card) {
+    card.addEventListener('mouseenter', function(e) {
+      createSparkle(card, e);
+    });
+  });
+
+  // ─── FILTER GAMES ───
+  window.filterGames = function(group, btn) {
+    document.querySelectorAll('.filter-btn').forEach(function(b) { b.classList.remove('active'); });
+    btn.classList.add('active');
+
+    document.querySelectorAll('.game-card').forEach(function(card, i) {
+      var show = uT || group === 'all' || card.dataset.g.split(',').indexOf(group) !== -1;
+      if (show) {
+        card.classList.remove('hidden');
+        card.style.animation = 'none';
+        card.offsetHeight;
+        card.style.animation = 'cardIn 0.5s var(--spring-bounce) ' + (i * 60) + 'ms both';
+      } else {
+        card.classList.add('hidden');
+      }
+    });
+  };
+
+  // ─── UPDATE HERO STATS ───
+  function updateHeroStats() {
+    if (typeof RK === 'undefined' || !RK.Progress) return;
+
+    // Medals
+    var medalCount = RK.Medals ? RK.Medals.getCount() : 0;
+    $('statMedalsText').textContent = medalCount + ' Medalla' + (medalCount !== 1 ? 's' : '');
+
+    // Streak
+    var streak = 0;
+    try {
+      var statsRaw = localStorage.getItem('rakin_stats_' + uN);
+      if (statsRaw) {
+        var stats = JSON.parse(statsRaw);
+        streak = (stats.dailyStreak && stats.dailyStreak.current) || 0;
+      }
+    } catch(e) {}
+    $('statStreakText').textContent = 'Racha: ' + streak + ' día' + (streak !== 1 ? 's' : '');
+
+    // Overall progress (4to + 5to combined)
+    var p4 = RK.Progress.getGradoProgress('4to');
+    var p5 = RK.Progress.getGradoProgress('5to');
+    var totalProgress = Math.round((p4 + p5) / 2);
+    if (totalProgress > 0) {
+      $('heroProgress').style.display = 'block';
+      $('heroProgressPct').textContent = totalProgress + '%';
+      $('heroProgressFill').style.width = totalProgress + '%';
+    }
+
+    // Mark games as played on cards
+    document.querySelectorAll('.game-card').forEach(function(card) {
+      var href = card.getAttribute('href');
+      if (href && RK.Progress.isGamePlayed(href.replace('.html', ''))) {
+        if (!card.querySelector('.game-played-badge')) {
+          var badge = document.createElement('span');
+          badge.className = 'game-played-badge';
+          badge.textContent = '✓ Jugado';
+          badge.style.cssText = 'position:absolute;top:12px;right:12px;font-size:0.7rem;font-weight:800;padding:4px 10px;border-radius:999px;background:rgba(88,204,2,0.15);color:#58cc02;z-index:2;';
+          card.style.position = 'relative';
+          card.appendChild(badge);
+        }
+      }
+    });
+  }
+
+  // ─── POPULATE MEDALS ───
+  var medalsExpanded = false;
+  var INITIAL_SHOWN = 8;
+
+  function populateMedals() {
+    if (typeof RK === 'undefined' || !RK.Medals) return;
+    var defs = RK.Medals.getAllDefinitions();
+    var grid = $('medalsGrid');
+    if (!grid) return;
+
+    if (defs.length === 0) {
+      $('medalsEmpty').style.display = 'block';
+      grid.style.display = 'none';
+      $('medalsNextWrap').style.display = 'none';
+      return;
+    }
+
+    var earnedList = defs.filter(function(m) { return m.earned; });
+    var lockedList = defs.filter(function(m) { return !m.earned; });
+
+    // Always show all earned + up to 2 locked as preview
+    var shown = earnedList.slice();
+    var previewLocked = lockedList.slice(0, 2);
+    var remainingLocked = lockedList.slice(2);
+
+    var html = '';
+    var idx = 0;
+
+    // Earned medals
+    shown.forEach(function(m) {
+      var dateStr = '';
+      var medals = RK.Medals.getAll();
+      var earned = medals.find(function(em) { return em.id === m.id; });
+      if (earned && earned.earnedAt) {
+        var d = new Date(earned.earnedAt);
+        dateStr = d.toLocaleDateString('es-CL', { day: 'numeric', month: 'short' });
+      }
+      html += '<div class="medal-card earned" style="animation-delay:' + (idx * 40) + 'ms">';
+      html += '<div class="medal-icon-wrap"><span class="medal-icon">' + m.icon + '</span></div>';
+      html += '<div class="medal-name">' + m.name + '</div>';
+      if (dateStr) html += '<div class="medal-date">' + dateStr + '</div>';
+      html += '</div>';
+      idx++;
+    });
+
+    // Preview locked (blurred)
+    previewLocked.forEach(function(m) {
+      html += '<div class="medal-card locked-preview" style="animation-delay:' + (idx * 40) + 'ms">';
+      html += '<div class="medal-icon-wrap"><span class="medal-icon">' + m.icon + '</span></div>';
+      html += '<div class="medal-name">' + m.name + '</div>';
+      html += '</div>';
+      idx++;
+    });
+
+    // Remaining locked (hidden initially)
+    remainingLocked.forEach(function(m) {
+      html += '<div class="medal-card locked-hidden" style="animation-delay:' + (idx * 40) + 'ms;display:none">';
+      html += '<div class="medal-icon-wrap"><span class="medal-icon">' + m.icon + '</span></div>';
+      html += '<div class="medal-name">' + m.name + '</div>';
+      html += '<span class="medal-lock">🔒</span>';
+      html += '</div>';
+      idx++;
+    });
+
+    grid.innerHTML = html;
+
+    // Update stats
+    var medalCount = RK.Medals.getCount();
+    var total = defs.length;
+    var pct = total > 0 ? Math.round((medalCount / total) * 100) : 0;
+
+    $('medalsEarnedCount').textContent = medalCount;
+    $('medalsTotalCount').textContent = total;
+    $('medalsPercent').textContent = pct + '%';
+    $('medalsProgressPct').textContent = pct + '%';
+    $('medalsProgressFill').style.width = pct + '%';
+
+    // Update nav count
+    $('medalsCountNav').textContent = medalCount;
+
+    // Show/hide "Ver siguientes" button
+    if (remainingLocked.length > 0) {
+      $('medalsNextWrap').style.display = 'block';
+      medalsExpanded = false;
+      $('medalsNextText').textContent = 'Ver siguientes logros ↓';
+    } else {
+      $('medalsNextWrap').style.display = 'none';
+    }
+
+    // Show empty state if no medals
+    if (medalCount === 0) {
+      $('medalsEmpty').style.display = 'block';
+      grid.style.display = 'none';
+    } else {
+      $('medalsEmpty').style.display = 'none';
+      grid.style.display = 'grid';
+    }
+  }
+
+  // Toggle next medals
+  if ($('medalsNextBtn')) {
+    $('medalsNextBtn').addEventListener('click', function() {
+      var grid = $('medalsGrid');
+      var hidden = grid.querySelectorAll('.locked-hidden');
+      if (!medalsExpanded) {
+        hidden.forEach(function(c, i) {
+          c.style.display = '';
+          c.classList.add('locked-reveal');
+          c.style.animationDelay = (i * 80) + 'ms';
+        });
+        medalsExpanded = true;
+        $('medalsNextText').textContent = 'Mostrar menos ↑';
+      } else {
+        hidden.forEach(function(c) {
+          c.style.display = 'none';
+          c.classList.remove('locked-reveal');
+        });
+        medalsExpanded = false;
+        $('medalsNextText').textContent = 'Ver siguientes logros ↓';
+      }
+    });
+  }
+
+  // ─── MEDALS MODAL TOGGLE ───
+  function openMedalsModal() {
+    $('medalsModal').classList.remove('hidden');
+    document.body.style.overflow = 'hidden';
+  }
+  function closeMedalsModal() {
+    $('medalsModal').classList.add('hidden');
+    document.body.style.overflow = '';
+  }
+
+  $('medalsBtn').addEventListener('click', function(e) {
+    e.stopPropagation();
+    openMedalsModal();
+  });
+  $('medalsModalClose').addEventListener('click', function(e) {
+    e.stopPropagation();
+    closeMedalsModal();
+  });
+  $('medalsModal').addEventListener('click', function(e) {
+    if (e.target === $('medalsModal')) closeMedalsModal();
+  });
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape' && !$('medalsModal').classList.contains('hidden')) {
+      closeMedalsModal();
+    }
+  });
+
+  // ─── WELCOME MODAL & CAPITALIZATION ───
+  var welcomeKey = 'rakin_welcomed_skip_' + uN;
+  var formattedUser = typeof formatUserName !== 'undefined' ? formatUserName(uN) : (uN.charAt(0).toUpperCase() + uN.slice(1));
+
+  if ($('heroTitle')) {
+    $('heroTitle').innerHTML = 'Bienvenido/a <span class="brand">' + esc(formattedUser) + '</span>';
+  }
+
+  if (!localStorage.getItem(welcomeKey)) {
+    if ($('welcomeTitle')) $('welcomeTitle').textContent = '¡Bienvenido/a ' + formattedUser + '!';
+    if ($('welcomeModal')) {
+      $('welcomeModal').classList.add('visible');
+      document.body.style.overflow = 'hidden';
+    }
+    if ($('announcementTitle')) $('announcementTitle').textContent = '¡Hola ' + formattedUser + '! Nos alegra tenerte aquí';
+    if ($('announcementBox')) $('announcementBox').style.display = 'block';
+  } else {
+    if ($('welcomeModal')) $('welcomeModal').classList.remove('visible');
+    if ($('announcementBox')) $('announcementBox').style.display = 'none';
+  }
+
+  function closeWelcome() {
+    if ($('welcomeModal')) $('welcomeModal').classList.remove('visible');
+    if ($('announcementBox')) $('announcementBox').style.display = 'none';
+    document.body.style.overflow = '';
+  }
+
+  if ($('welcomeBtn')) $('welcomeBtn').addEventListener('click', closeWelcome);
+  if ($('welcomeDontShow')) $('welcomeDontShow').addEventListener('click', function() {
+    localStorage.setItem(welcomeKey, '1');
+    closeWelcome();
+  });
+  if ($('announcementClose')) $('announcementClose').addEventListener('click', function() {
+    localStorage.setItem(welcomeKey, '1');
+    closeWelcome();
+  });
+  if ($('announcementBtn')) $('announcementBtn').addEventListener('click', function() {
+    localStorage.setItem(welcomeKey, '1');
+    closeWelcome();
+  });
+
+  // ─── INIT ───
+  updateHeroStats();
+  populateMedals();
+  filterGames('all', document.querySelector('.filter-btn[data-g="all"]'));
+})();
+</script>
+<script>
+window.addEventListener('load', function() {
+  var loader = document.getElementById('pageLoader');
+  if (loader) {
+    loader.classList.add('done');
+    setTimeout(function() { loader.remove(); }, 300);
+  }
+});
+</script>
+<script>
+(function(){
+  var btn = document.getElementById('scrollTopBtn');
+  if (!btn) return;
+  window.addEventListener('scroll', function() {
+    if (window.scrollY > 400) {
+      btn.classList.add('visible');
+    } else {
+      btn.classList.remove('visible');
+    }
+  }, { passive: true });
+  btn.addEventListener('click', function() {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  });
+})();
+</script>
+</body>
+</html>

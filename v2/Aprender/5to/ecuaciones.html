@@ -1,9 +1,9 @@
-<?﻿<!DOCTYPE html>
-<html lang="es">
+<!DOCTYPE html>
+<html lang="es" data-theme="light">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>RakinMath " Ecuaciones con las 4 Operaciones</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, viewport-fit=cover">
+<title>RakinMath – Ecuaciones con las 4 Operaciones</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="../apple-design.css">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
@@ -49,6 +49,32 @@ body{display:flex;flex-direction:column;min-height:100vh}
 @keyframes slideUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
 @media(max-width:640px){.content{padding:16px}.math-input{width:64px;font-size:1.1rem;padding:6px}.card{padding:20px 16px 16px}}
 </style>
+
+<!-- SUPER RESPONSIVE MOBILE OPTIMIZATIONS — RAKINMATH -->
+<style id="rakin-mobile-responsiveness">
+* {
+  -webkit-tap-highlight-color: transparent;
+}
+html, body {
+  max-width: 100%;
+  overflow-x: hidden;
+}
+img, svg, video, canvas {
+  max-width: 100%;
+}
+button, a, input, select, textarea, .btn, .choice-btn, .opt-btn, .game-btn, .nav-btn, .action-btn {
+  touch-action: manipulation;
+}
+@media (max-width: 600px) {
+  input, select, textarea {
+    font-size: 16px !important;
+  }
+  button, .btn, .choice-btn, .opt-btn, .game-btn, .nav-btn, .action-btn {
+    min-height: 44px;
+  }
+}
+</style>
+
 </head>
 <body>
 <nav style="display:flex;align-items:center;justify-content:space-between;padding:16px 24px;border-bottom:1px solid var(--border)">
@@ -56,55 +82,55 @@ body{display:flex;flex-direction:column;min-height:100vh}
 <a href="menu.html" class="btn btn-ghost">Volver</a>
 </nav>
 <div class="content">
-<a href="menu.html" class="back-link">? Volver al menú</a>
+<a href="menu.html" class="back-link">? Volver al men�</a>
 
 <div class="section">
 <h1 class="section-title">Ecuaciones con las 4 Operaciones</h1>
-<p class="section-subtitle">Una ecuación es como una balanza: lo que hay de un lado debe ser igual al otro. Para encontrar el valor de $x$, usamos operaciones inversas.</p>
+<p class="section-subtitle">Una ecuaci�n es como una balanza: lo que hay de un lado debe ser igual al otro. Para encontrar el valor de $x$, usamos operaciones inversas.</p>
 </div>
 
 <div class="section">
 <div class="concept-box green">
-<h3>¿Qué es una ecuación?</h3>
-<p>Una ecuación es una igualdad matemática que contiene una incógnita ($x$). El objetivo es encontrar el valor de $x$ que hace que la ecuación sea verdadera.</p>
+<h3>�Qu� es una ecuaci�n?</h3>
+<p>Una ecuaci�n es una igualdad matem�tica que contiene una inc�gnita ($x$). El objetivo es encontrar el valor de $x$ que hace que la ecuaci�n sea verdadera.</p>
 </div>
 <div class="concept-box green">
 <h3>Operaciones inversas</h3>
 <p>Para resolver ecuaciones, usamos operaciones inversas:</p>
 <div class="math-display">
-<strong>Suma ↔ Resta:</strong> Si $x + 5 = 12$, entonces $x = 12 - 5 = 7$
+<strong>Suma ? Resta:</strong> Si $x + 5 = 12$, entonces $x = 12 - 5 = 7$
 </div>
 <div class="math-display">
-<strong>Multiplicación ↔ División:</strong> Si $4x = 20$, entonces $x = 20 \div 4 = 5$
+<strong>Multiplicaci�n ? Divisi�n:</strong> Si $4x = 20$, entonces $x = 20 \div 4 = 5$
 </div>
 </div>
 <div class="tip-box">
 <h4>Consejo</h4>
-<p>Piensa en la ecuación como una balanza. Si sumas algo a un lado, debes restar lo mismo del otro lado para mantener el equilibrio.</p>
+<p>Piensa en la ecuaci�n como una balanza. Si sumas algo a un lado, debes restar lo mismo del otro lado para mantener el equilibrio.</p>
 </div>
 </div>
 
 <div class="section">
 <div class="card">
-<h3>Ejemplos del día a día</h3>
-<p style="color:var(--text-secondary);line-height:1.7">María tiene una bolsa de dulces. Si le doy 5 dulces más, tendría 12. ¿Cuántos dulces tenía María originalmente?</p>
+<h3>Ejemplos del d�a a d�a</h3>
+<p style="color:var(--text-secondary);line-height:1.7">Mar�a tiene una bolsa de dulces. Si le doy 5 dulces m�s, tendr�a 12. �Cu�ntos dulces ten�a Mar�a originalmente?</p>
 <div class="math-display">
-Ecuación: $x + 5 = 12$<br>
-Solución: $x = 12 - 5 = 7$ dulces
+Ecuaci�n: $x + 5 = 12$<br>
+Soluci�n: $x = 12 - 5 = 7$ dulces
 </div>
 </div>
 </div>
 
 <div class="section">
 <div class="card">
-<h3>Genera tu propia ecuación</h3>
-<p style="color:var(--text-secondary);margin-bottom:16px">Haz clic en el botón para generar una ecuación aleatoria y resuélvela.</p>
+<h3>Genera tu propia ecuaci�n</h3>
+<p style="color:var(--text-secondary);margin-bottom:16px">Haz clic en el bot�n para generar una ecuaci�n aleatoria y resu�lvela.</p>
 <div id="interactive-equation" style="text-align:center">
 <p class="quiz-problem" id="eq-problem"></p>
 <div class="quiz-row">
 <input type="number" class="quiz-input" id="eq-answer" placeholder="x = ?">
 <button class="btn btn-primary" onclick="checkEquation()">Verificar</button>
-<button class="btn btn-ghost" onclick="newEquation()">Nueva ecuación</button>
+<button class="btn btn-ghost" onclick="newEquation()">Nueva ecuaci�n</button>
 </div>
 <p class="feedback" id="eq-feedback"></p>
 </div>
@@ -125,7 +151,7 @@ Solución: $x = 12 - 5 = 7$ dulces
 
 <div class="section">
 <div class="videos-box" style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-md);padding:24px;text-align:center">
-<p style="color:var(--text-tertiary);font-size:.875rem">Próximamente: Videos explicativos sobre ecuaciones</p>
+<p style="color:var(--text-tertiary);font-size:.875rem">Pr�ximamente: Videos explicativos sobre ecuaciones</p>
 </div>
 </div>
 </div>
@@ -156,7 +182,7 @@ else if(currentEq.op==='-')correct=currentEq.a;
 else if(currentEq.op==='*')correct=currentEq.a;
 else correct=currentEq.a*currentEq.b;
 const fb=document.getElementById('eq-feedback');
-if(ans===correct){fb.textContent='\u00a1Correcto!';fb.className='feedback correct';}
+if(ans===correct){fb.textContent='\u00a1Correcto!';fb.className='feedback correct';if(typeof RK!=='undefined'&&RK.Progress){RK.Progress.markPageComplete('ecuaciones','5to','algebra')}fb.className='feedback correct';}
 else{fb.textContent='Intenta de nuevo';fb.className='feedback wrong';}
 }
 let quizData={};
@@ -177,11 +203,19 @@ document.getElementById('quiz-feedback').className='feedback';
 function checkQuiz(){
 const ans=parseInt(document.getElementById('quiz-answer-1').value);
 const fb=document.getElementById('quiz-feedback');
-if(ans===quizData.answer){fb.textContent='\u00a1Excelente!';fb.className='feedback correct';}
+if(ans===quizData.answer){fb.textContent='\u00a1Excelente!';fb.className='feedback correct';if(typeof RK!=='undefined'&&RK.Progress){RK.Progress.markPageComplete('ecuaciones','5to','algebra')}fb.className='feedback correct';}
 else{fb.textContent='Respuesta incorrecta. Intenta otra vez.';fb.className='feedback wrong';}
 }
 newEquation();
 genQuiz();
+</script>
+<script src="../../stats/rk-progress.js"></script>
+<script src="../video-embed.js"></script>
+<script>
+(function(){
+  var t=localStorage.getItem('rakin-theme')||'light';
+  document.documentElement.setAttribute('data-theme',t);
+})();
 </script>
 </body>
 </html>

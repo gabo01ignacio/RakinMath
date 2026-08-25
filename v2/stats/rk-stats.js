@@ -53,8 +53,129 @@ RK.Stats = (function() {
         streak: 0,
         bestStreak: 0,
         lastActivity: null
+      },
+      dailyStreak: {
+        current: 0,
+        best: 0,
+        lastPlayed: null,
+        freezes: 1,
+        history: []
       }
     };
+  }
+
+  // --- Date Helpers ---
+  function todayStr() {
+    var d = new Date();
+    return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
+  }
+
+  function daysBetween(d1, d2) {
+    var a = new Date(d1 + 'T00:00:00');
+    var b = new Date(d2 + 'T00:00:00');
+    return Math.round((b - a) / 86400000);
+  }
+
+  // --- Daily Streak ---
+  function updateDailyStreak() {
+    var data = load();
+    if (!data) return { current: 0, best: 0, changed: false };
+
+    if (!data.dailyStreak) {
+      data.dailyStreak = { current: 0, best: 0, lastPlayed: null, freezes: 1, history: [] };
+    }
+
+    var ds = data.dailyStreak;
+    var today = todayStr();
+    var changed = false;
+
+    if (ds.lastPlayed === today) {
+      return { current: ds.current, best: ds.best, changed: false, milestone: null };
+    }
+
+    var milestone = null;
+    if (!ds.lastPlayed) {
+      ds.current = 1;
+      changed = true;
+    } else {
+      var gap = daysBetween(ds.lastPlayed, today);
+      if (gap === 1) {
+        ds.current++;
+        changed = true;
+      } else if (gap > 1) {
+        if (ds.freezes > 0 && gap === 2) {
+          ds.freezes--;
+          ds.current++;
+          changed = true;
+        } else {
+          ds.current = 1;
+          changed = true;
+        }
+      }
+    }
+
+    ds.lastPlayed = today;
+    if (ds.current > ds.best) ds.best = ds.current;
+
+    if (ds.current === 7) milestone = 'week';
+    else if (ds.current === 30) milestone = 'month';
+    else if (ds.current === 100) milestone = 'legend';
+    else if (ds.current === 365) milestone = 'year';
+
+    if (ds.history.indexOf(today) === -1) {
+      ds.history.push(today);
+      if (ds.history.length > 30) ds.history = ds.history.slice(-30);
+    }
+
+    save(data);
+
+    try {
+      var user = getUser();
+      if (user && typeof UserStatsDB !== 'undefined' && UserStatsDB.saveUserInfo) {
+        UserStatsDB.saveUserInfo(user, { dailyStreak: ds.current, bestStreak: ds.best });
+      }
+    } catch(e) {}
+
+    return { current: ds.current, best: ds.best, changed: changed, milestone: milestone };
+  }
+
+  function getDailyStreak() {
+    var data = load();
+    if (!data || !data.dailyStreak) return { current: 0, best: 0, freezes: 1, history: [] };
+    return data.dailyStreak;
+  }
+
+  function useStreakFreeze() {
+    var data = load();
+    if (!data) return false;
+    if (!data.dailyStreak) data.dailyStreak = { current: 0, best: 0, lastPlayed: null, freezes: 1, history: [] };
+    if (data.dailyStreak.freezes > 0) {
+      data.dailyStreak.freezes--;
+      save(data);
+      return true;
+    }
+    return false;
+  }
+
+  function getStreakEmoji(count) {
+    if (count >= 365) return '🌟';
+    if (count >= 100) return '👑';
+    if (count >= 30) return '🏆';
+    if (count >= 7) return '🎉';
+    if (count >= 3) return '🔥';
+    if (count >= 1) return '✨';
+    return '💤';
+  }
+
+  function getStreakMessage(count) {
+    if (count >= 365) return '¡Un año completo! Eres legendario';
+    if (count >= 100) return '¡100 días! Eres imparable';
+    if (count >= 30) return '¡Un mes entero! Increíble';
+    if (count >= 14) return '¡Dos semanas! Sigue así';
+    if (count >= 7) return '¡Una semana! Gran logro';
+    if (count >= 3) return '¡Buen comienzo! No pares';
+    if (count >= 1) return '¡Día uno! El primer paso';
+    return '¡Comienza tu racha hoy!';
   }
 
   // --- Round Config Modal ---
@@ -82,21 +203,22 @@ RK.Stats = (function() {
 
     var style = document.createElement('style');
     style.textContent =
-      '.rk-modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.45);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);display:flex;align-items:center;justify-content:center;z-index:9999;padding:24px;opacity:0;animation:fadeIn .3s ease both}' +
-      '.rk-modal{background:#fff;border-radius:32px;padding:36px 32px;max-width:400px;width:100%;box-shadow:0 25px 80px rgba(0,0,0,.15);transform:scale(.92);animation:scaleIn .4s cubic-bezier(.2,.9,.3,1.2) .05s both}' +
-      '.rk-modal-header{text-align:center;margin-bottom:28px}' +
-      '.rk-modal-emoji{font-size:2.5rem;margin-bottom:10px}' +
-      '.rk-modal-header h2{font-size:1.4rem;font-weight:700;letter-spacing:-.03em;margin-bottom:4px}' +
-      '.rk-modal-header p{font-size:.9rem;color:#6e6e73}' +
-      '.rk-rounds-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:20px}' +
-      '.rk-round-btn{display:flex;flex-direction:column;align-items:center;gap:2px;padding:16px 8px;border-radius:20px;border:2px solid rgba(0,0,0,.08);background:rgba(245,245,247,.6);cursor:pointer;transition:all .2s;font-family:Inter,sans-serif}' +
+      '.rk-modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);display:flex;align-items:center;justify-content:center;z-index:99999;padding:16px;overflow-y:auto;opacity:0;animation:fadeIn .3s ease both}' +
+      '.rk-modal{background:#fff;border-radius:28px;padding:28px 24px;max-width:min(400px,92vw);width:100%;max-height:calc(100dvh - 24px);overflow-y:auto;box-shadow:0 25px 80px rgba(0,0,0,.15);transform:scale(.92);animation:scaleIn .4s cubic-bezier(.2,.9,.3,1.2) .05s both}' +
+      '.rk-modal-header{text-align:center;margin-bottom:20px}' +
+      '.rk-modal-emoji{font-size:2.2rem;margin-bottom:8px}' +
+      '.rk-modal-header h2{font-size:1.25rem;font-weight:700;letter-spacing:-.03em;margin-bottom:4px}' +
+      '.rk-modal-header p{font-size:.85rem;color:#6e6e73}' +
+      '.rk-rounds-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:16px}' +
+      '.rk-round-btn{display:flex;flex-direction:column;align-items:center;gap:2px;padding:12px 6px;border-radius:16px;border:2px solid rgba(0,0,0,.08);background:rgba(245,245,247,.6);cursor:pointer;transition:all .2s;font-family:Inter,sans-serif}' +
       '.rk-round-btn:hover{border-color:#007aff;background:rgba(0,122,255,.06);transform:scale(1.04)}' +
       '.rk-round-btn:active{transform:scale(.96)}' +
-      '.rk-round-num{font-size:1.5rem;font-weight:800;color:#1d1d1f}' +
-      '.rk-round-label{font-size:.7rem;font-weight:600;color:#86868b;text-transform:uppercase;letter-spacing:.04em}' +
+      '.rk-round-num{font-size:1.3rem;font-weight:800;color:#1d1d1f}' +
+      '.rk-round-label{font-size:.65rem;font-weight:600;color:#86868b;text-transform:uppercase;letter-spacing:.04em}' +
       '.rk-round-infinite .rk-round-num{color:#007aff}' +
       '.rk-modal-skip{width:100%;padding:12px;border:none;border-radius:980px;background:transparent;color:#86868b;font-family:Inter,sans-serif;font-size:.85rem;font-weight:600;cursor:pointer;transition:color .15s}' +
       '.rk-modal-skip:hover{color:#1d1d1f}' +
+      '@media(max-width:480px){.rk-modal{padding:20px 16px;max-height:calc(100dvh - 16px)}.rk-modal-header{margin-bottom:14px}.rk-rounds-grid{grid-template-columns:repeat(3,1fr);gap:6px}.rk-round-btn{padding:10px 4px}}' +
       '@keyframes fadeIn{from{opacity:0}to{opacity:1}}' +
       '@keyframes scaleIn{from{opacity:0;transform:scale(.9)}to{opacity:1;transform:scale(1)}}';
 
@@ -388,6 +510,12 @@ RK.Stats = (function() {
     getSummary: getSummary,
     getAllStats: getAllStats,
     startTimer: startTimer,
-    elapsed: elapsed
+    elapsed: elapsed,
+    updateDailyStreak: updateDailyStreak,
+    getDailyStreak: getDailyStreak,
+    useStreakFreeze: useStreakFreeze,
+    getStreakEmoji: getStreakEmoji,
+    getStreakMessage: getStreakMessage,
+    todayStr: todayStr
   };
 })();
