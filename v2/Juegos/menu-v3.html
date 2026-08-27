@@ -1759,6 +1759,9 @@ button, a, input, select, textarea, .btn, .choice-btn, .opt-btn, .game-btn, .nav
     </a>
 
     <div class="nav-right">
+      <a href="../recompensas.html" class="medals-nav-btn" style="background:#fffbeb;border-color:#f59e0b;color:#b45309;text-decoration:none" aria-label="Tienda y Misiones">
+        🪙 <span class="rk-coin-badge" id="navCoinsCount">100</span>
+      </a>
       <button class="medals-nav-btn" id="medalsBtn" aria-label="Tus medallas">
         🏅 <span class="medals-count" id="medalsCountNav">0</span>
       </button>
@@ -1778,6 +1781,7 @@ button, a, input, select, textarea, .btn, .choice-btn, .opt-btn, .game-btn, .nav
             <label for="m-play" class="active"><span class="icon">🎮</span>Practicar</label>
             <div class="slider"></div>
           </div>
+          <a href="../recompensas.html" class="stats-link">🎁 Tienda y Misiones</a>
           <a href="../dashboard.html" class="stats-link">📊 Mis Estadísticas</a>
           <button class="logout-btn" id="logoutBtn">🚪 Cerrar Sesión</button>
         </div>
@@ -1796,6 +1800,10 @@ button, a, input, select, textarea, .btn, .choice-btn, .opt-btn, .game-btn, .nav
   <h1 id="heroTitle">Bienvenido/a <span class="brand"></span></h1>
   <p class="hero-sub">Aprende jugando con retos interactivos</p>
   <div class="hero-stats">
+    <a href="../recompensas.html" class="hero-stat" style="text-decoration:none;color:inherit" id="statCoins">
+      <span class="hero-stat-icon">🪙</span>
+      <span id="statCoinsText">100 Monedas</span>
+    </a>
     <div class="hero-stat" id="statMedals">
       <span class="hero-stat-icon">🏅</span>
       <span id="statMedalsText">0 Medallas</span>
@@ -2128,6 +2136,8 @@ button, a, input, select, textarea, .btn, .choice-btn, .opt-btn, .game-btn, .nav
 <script src="../auth.js"></script>
 <script src="../stats/rk-progress.js"></script>
 <script src="../stats/rk-medals.js"></script>
+<script src="../stats/rk-stats.js"></script>
+<script src="../stats/rk-rewards.js"></script>
 <script>
 (function(){
   'use strict';
@@ -2235,6 +2245,13 @@ button, a, input, select, textarea, .btn, .choice-btn, .opt-btn, .game-btn, .nav
 
   // ─── UPDATE HERO STATS ───
   function updateHeroStats() {
+    // Coins & Level
+    if (typeof RK !== 'undefined' && RK.Rewards) {
+      var rew = RK.Rewards.load();
+      if ($('statCoinsText')) $('statCoinsText').textContent = rew.coins.toLocaleString() + ' Monedas';
+      if ($('navCoinsCount')) $('navCoinsCount').textContent = rew.coins.toLocaleString();
+    }
+
     if (typeof RK === 'undefined' || !RK.Progress) return;
 
     // Medals

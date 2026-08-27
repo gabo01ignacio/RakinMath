@@ -1,0 +1,605 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, viewport-fit=cover">
+<title>Tienda de Rakin y Recompensas | RakinMath</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@600;700;800;900&family=Nunito:wght@600;700;800;900&family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="Juegos/apple-design.css">
+<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+
+:root {
+  --font-main: 'Nunito', system-ui, sans-serif;
+  --font-title: 'Outfit', sans-serif;
+  --font-num: 'Inter', sans-serif;
+  --duo-green: #58cc02;
+  --duo-green-dark: #46a302;
+  --duo-blue: #1cb0f6;
+  --duo-yellow: #ffc800;
+  --duo-orange: #ff9600;
+  --duo-purple: #ce82ff;
+}
+
+[data-theme="light"] {
+  --bg: #f8fafc;
+  --bg-card: #ffffff;
+  --bg-subtle: #f1f5f9;
+  --text: #0f172a;
+  --text-sec: #475569;
+  --border: #cbd5e1;
+}
+
+[data-theme="dark"] {
+  --bg: #0b0f19;
+  --bg-card: #151c2c;
+  --bg-subtle: #1e293b;
+  --text: #f8fafc;
+  --text-sec: #94a3b8;
+  --border: #334155;
+}
+
+body {
+  font-family: var(--font-main);
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Nav */
+.nav {
+  position: sticky;
+  top: 0;
+  height: 56px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 18px;
+  background: rgba(255,255,255,.9);
+  backdrop-filter: blur(16px);
+  border-bottom: 2px solid var(--border);
+  z-index: 100;
+}
+[data-theme="dark"] .nav { background: rgba(21,28,44,.9); }
+
+.nav-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--font-title);
+  font-weight: 900;
+  font-size: 1.15rem;
+  color: var(--text);
+  text-decoration: none;
+}
+
+.coin-chip {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: #fffbeb;
+  border: 1.5px solid #f59e0b;
+  border-radius: 99px;
+  padding: 4px 12px;
+  font-family: var(--font-num);
+  font-weight: 900;
+  font-size: 0.95rem;
+  color: #b45309;
+  box-shadow: 0 2px 0 #f59e0b;
+}
+
+/* Main Container */
+.main {
+  max-width: 860px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 16px;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+/* Hero Avatar Showcase */
+.avatar-showcase {
+  background: linear-gradient(135deg, #fef3c7 0%, #fde68a 50%, #e0f2fe 100%);
+  border: 2.5px solid #f59e0b;
+  border-radius: 24px;
+  padding: 20px;
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  box-shadow: 0 6px 16px rgba(245,158,11,0.18), 0 4px 0 #d97706;
+}
+[data-theme="dark"] .avatar-showcase {
+  background: linear-gradient(135deg, #2e1065 0%, #1e1b4b 50%, #0f172a 100%);
+  border-color: #c084fc;
+}
+
+.avatar-preview-box {
+  position: relative;
+  width: 90px;
+  height: 90px;
+  background: #ffffff;
+  border: 2.5px solid #cbd5e1;
+  border-radius: 22px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 0 #cbd5e1;
+  flex-shrink: 0;
+}
+.pet-avatar { font-size: 3.5rem; line-height: 1; }
+.hat-overlay {
+  position: absolute;
+  top: -12px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 1.8rem;
+}
+
+.avatar-info { flex: 1; }
+.avatar-name {
+  font-family: var(--font-title);
+  font-size: 1.4rem;
+  font-weight: 900;
+  color: #0f172a;
+}
+[data-theme="dark"] .avatar-name { color: #f8fafc; }
+.avatar-title-badge {
+  display: inline-block;
+  font-size: 0.8rem;
+  font-weight: 800;
+  color: #0369a1;
+  background: #e0f2fe;
+  padding: 2px 10px;
+  border-radius: 99px;
+  border: 1px solid #bae6fd;
+  margin-top: 3px;
+}
+
+.level-bar-box {
+  margin-top: 8px;
+}
+.level-bar-label {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.75rem;
+  font-weight: 800;
+  color: #475569;
+  margin-bottom: 3px;
+}
+.level-bar-track {
+  height: 8px;
+  background: rgba(0,0,0,0.08);
+  border-radius: 99px;
+  overflow: hidden;
+}
+.level-bar-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #16a34a, #0284c7);
+  border-radius: 99px;
+  transition: width 0.4s ease;
+}
+
+/* Tabs */
+.tab-bar {
+  display: flex;
+  gap: 6px;
+  background: var(--bg-subtle);
+  border: 1.5px solid var(--border);
+  border-radius: 16px;
+  padding: 4px;
+  overflow-x: auto;
+}
+.tab-btn {
+  flex: 1;
+  font-family: var(--font-title);
+  font-size: 0.85rem;
+  font-weight: 800;
+  padding: 8px 12px;
+  border-radius: 12px;
+  border: none;
+  background: transparent;
+  color: var(--text-sec);
+  cursor: pointer;
+  white-space: nowrap;
+  text-align: center;
+  transition: all 0.12s ease;
+}
+.tab-btn.active {
+  background: #0284c7;
+  color: #ffffff;
+  box-shadow: 0 2px 6px rgba(2,132,199,0.3);
+}
+
+/* Cards & Store Grid */
+.store-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 12px;
+}
+.item-card {
+  background: var(--bg-card);
+  border: 2px solid var(--border);
+  border-radius: 20px;
+  padding: 14px;
+  text-align: center;
+  box-shadow: 0 3px 0 var(--border);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  position: relative;
+}
+.item-card.equipped {
+  border-color: #16a34a;
+  background: #f0fdf4;
+  box-shadow: 0 3px 0 #16a34a;
+}
+[data-theme="dark"] .item-card.equipped { background: #064e3b; }
+
+.item-icon { font-size: 2.8rem; line-height: 1; margin: 4px 0; }
+.item-name { font-family: var(--font-title); font-size: 0.95rem; font-weight: 800; }
+.item-desc { font-size: 0.75rem; color: var(--text-sec); font-weight: 700; line-height: 1.25; min-height: 30px; }
+
+.btn-buy {
+  width: 100%;
+  font-family: var(--font-title);
+  font-size: 0.85rem;
+  font-weight: 800;
+  padding: 8px 12px;
+  border-radius: 99px;
+  border: none;
+  background: #f59e0b;
+  color: #ffffff;
+  cursor: pointer;
+  box-shadow: 0 3px 0 #d97706;
+  margin-top: 4px;
+}
+.btn-buy:active { transform: translateY(1.5px); box-shadow: 0 1px 0 #d97706; }
+.btn-buy.equipped-btn {
+  background: #16a34a;
+  box-shadow: 0 3px 0 #14532d;
+}
+.btn-buy.equip-btn {
+  background: #0284c7;
+  box-shadow: 0 3px 0 #0369a1;
+}
+
+/* Daily Missions List */
+.mission-card {
+  background: var(--bg-card);
+  border: 2px solid var(--border);
+  border-radius: 18px;
+  padding: 14px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  box-shadow: 0 3px 0 var(--border);
+  margin-bottom: 8px;
+}
+.mission-info { flex: 1; }
+.mission-title { font-family: var(--font-title); font-size: 0.95rem; font-weight: 800; margin-bottom: 3px; }
+.mission-reward-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-family: var(--font-num);
+  font-size: 0.75rem;
+  font-weight: 900;
+  color: #b45309;
+  background: #fef3c7;
+  padding: 1px 8px;
+  border-radius: 99px;
+  border: 1px solid #fde68a;
+}
+.mission-btn {
+  font-family: var(--font-title);
+  font-weight: 800;
+  font-size: 0.85rem;
+  padding: 8px 16px;
+  border-radius: 99px;
+  border: none;
+  cursor: pointer;
+}
+.mission-btn.claim {
+  background: linear-gradient(135deg, #16a34a, #15803d);
+  color: #ffffff;
+  box-shadow: 0 3px 0 #14532d;
+  animation: bounceClaim 1s infinite alternate;
+}
+@keyframes bounceClaim { from { transform: scale(1); } to { transform: scale(1.05); } }
+.mission-btn.claimed {
+  background: #e2e8f0;
+  color: #94a3b8;
+  cursor: default;
+}
+
+@media (max-width: 480px) {
+  .main { padding: 10px; }
+  .avatar-showcase { padding: 14px; gap: 12px; }
+  .avatar-preview-box { width: 75px; height: 75px; }
+  .pet-avatar { font-size: 2.8rem; }
+  .avatar-name { font-size: 1.15rem; }
+  .store-grid { grid-template-columns: 1fr 1fr; gap: 8px; }
+}
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <a href="Juegos/menu-v3.html" class="nav-title">
+    <img src="Recursos/LogoRakinMath.png" alt="RakinMath" style="height:22px;width:auto">
+    <span>Tienda & Recompensas</span>
+  </a>
+  <div style="display:flex;align-items:center;gap:10px">
+    <div class="coin-chip">🪙 <span id="rk-user-coins">100</span></div>
+    <a href="Juegos/menu-v3.html" class="nav-btn" style="padding:6px 12px;border-radius:99px;border:1.5px solid var(--border);text-decoration:none;font-weight:800;font-size:0.8rem;color:var(--text);background:var(--bg-subtle)">← Volver</a>
+  </div>
+</nav>
+
+<div class="main">
+  <!-- SHOWCASE HEADER -->
+  <div class="avatar-showcase">
+    <div class="avatar-preview-box">
+      <div class="pet-avatar" id="avatar-pet-preview">🦊</div>
+      <div class="hat-overlay" id="avatar-hat-preview"></div>
+    </div>
+    <div class="avatar-info">
+      <div class="avatar-name" id="avatar-username">Estudiante Rakin</div>
+      <div class="avatar-title-badge" id="avatar-title-badge">Aventurero Matemático</div>
+      <div class="level-bar-box">
+        <div class="level-bar-label">
+          <span id="rk-user-level">Nivel 1</span>
+          <span id="level-xp-label">0 / 150 XP</span>
+        </div>
+        <div class="level-bar-track">
+          <div class="level-bar-fill" id="level-xp-fill" style="width: 0%"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TABS -->
+  <div class="tab-bar">
+    <button class="tab-btn active" onclick="switchTab('tab-missions', this)">🎯 Misiones Diarias</button>
+    <button class="tab-btn" onclick="switchTab('tab-pets', this)">🐾 Fauna Chilena</button>
+    <button class="tab-btn" onclick="switchTab('tab-hats', this)">🎩 Accesorios</button>
+    <button class="tab-btn" onclick="switchTab('tab-titles', this)">🏆 Títulos</button>
+  </div>
+
+  <!-- TAB 1: MISIONES -->
+  <div id="tab-missions">
+    <div id="missions-container"></div>
+  </div>
+
+  <!-- TAB 2: MASCOTAS CHILENAS -->
+  <div id="tab-pets" style="display:none">
+    <div class="store-grid" id="pets-store-container"></div>
+  </div>
+
+  <!-- TAB 3: ACCESORIOS -->
+  <div id="tab-hats" style="display:none">
+    <div class="store-grid" id="hats-store-container"></div>
+  </div>
+
+  <!-- TAB 4: TITULOS -->
+  <div id="tab-titles" style="display:none">
+    <div class="store-grid" id="titles-store-container"></div>
+  </div>
+</div>
+
+<script src="auth.js"></script>
+<script src="stats/rk-stats.js"></script>
+<script src="stats/rk-rewards.js"></script>
+<script>
+const PETS_CATALOG = [
+  { id: 'zorro', name: 'Zorro Culpeo Rakin', icon: '🦊', desc: 'Curioso y astuto, el guardián de las matemáticas.', cost: 0, levelReq: 1 },
+  { id: 'pudu', name: 'Pudú Saltarín', icon: '🦌', desc: 'El ciervo nativo más pequeño y veloz del sur de Chile.', cost: 150, levelReq: 2 },
+  { id: 'huemul', name: 'Huemul Andino', icon: '🦙', desc: 'Noble y valiente emblema cordillerano.', cost: 300, levelReq: 4 },
+  { id: 'chinchilla', name: 'Chinchilla Veloz', icon: '🐭', desc: 'Ágil y precisa para resolver sumas relámpago.', cost: 450, levelReq: 6 },
+  { id: 'condor', name: 'Cóndor Real', icon: '🦅', desc: 'El rey de las alturas y las operaciones complejas.', cost: 600, levelReq: 8 },
+  { id: 'monito', name: 'Monito del Monte', icon: '🐒', desc: 'Fósil viviente de los bosques australes chilenos.', cost: 800, levelReq: 10 }
+];
+
+const HATS_CATALOG = [
+  { id: 'none', name: 'Sin Sombrero', icon: '✨', desc: 'Estilo natural y libre.', cost: 0 },
+  { id: 'crown', name: 'Corona Dorada', icon: '👑', desc: 'Para reyes y reinas de la multiplicación.', cost: 200 },
+  { id: 'grad', name: 'Birrete Académico', icon: '🎓', desc: 'Símbolo de maestría y estudio constante.', cost: 250 },
+  { id: 'tophat', name: 'Sombrero de Copa', icon: '🎩', desc: 'Elegancia pura para calcular fracciones.', cost: 300 },
+  { id: 'cap', name: 'Gorra Deportiva', icon: '🧢', desc: 'Lista para speedruns matemáticos.', cost: 150 },
+  { id: 'sunglasses', name: 'Lentes Cool', icon: '🕶️', desc: 'Estilo implacable en el campo de juego.', cost: 180 },
+  { id: 'wizard', name: 'Gorro de Mago', icon: '🧙', desc: 'Para alquimistas de pociones numéricas.', cost: 350 }
+];
+
+const TITLES_CATALOG = [
+  { id: 'Aventurero Matemático', name: 'Aventurero Matemático', icon: '🧭', desc: 'Comenzando la gran expedición de RakinMath.', cost: 0 },
+  { id: 'Maestro del Cálculo', name: 'Maestro del Cálculo', icon: '🧠', desc: 'Velocidad de relámpago mental.', cost: 180 },
+  { id: 'Sabio de Fracciones', name: 'Sabio de Fracciones', icon: '🍕', desc: 'Experto en dividir enteros sin dudar.', cost: 220 },
+  { id: 'Héroe Geométrico', name: 'Héroe Geométrico', icon: '📐', desc: 'Dominio total de áreas y perímetros.', cost: 260 },
+  { id: 'Leyenda de RakinMath', name: 'Leyenda de RakinMath', icon: '👑', desc: 'Máximo prestigio en la academia.', cost: 500 }
+];
+
+window.onload = function() {
+  const session = getSession();
+  const uN = session && session.user ? session.user : 'Estudiante';
+  document.getElementById('avatar-username').textContent = uN.toUpperCase();
+  renderAll();
+};
+
+function switchTab(tabId, btn) {
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  ['tab-missions', 'tab-pets', 'tab-hats', 'tab-titles'].forEach(id => {
+    document.getElementById(id).style.display = (id === tabId) ? 'block' : 'none';
+  });
+}
+
+function renderAll() {
+  const data = RK.Rewards.load();
+  RK.Rewards.updateDOMBadges();
+
+  // Avatar Header
+  const petObj = PETS_CATALOG.find(p => p.id === data.selectedPet) || PETS_CATALOG[0];
+  const hatObj = HATS_CATALOG.find(h => h.id === data.selectedHat);
+  document.getElementById('avatar-pet-preview').textContent = petObj.icon;
+  document.getElementById('avatar-hat-preview').textContent = (hatObj && hatObj.id !== 'none') ? hatObj.icon : '';
+  document.getElementById('avatar-title-badge').textContent = data.selectedTitle || 'Aventurero Matemático';
+
+  // XP & Level
+  const currentLevelXp = (data.xp || 0) % 150;
+  const xpPct = Math.min(100, Math.round((currentLevelXp / 150) * 100));
+  document.getElementById('rk-user-level').textContent = `Nivel ${data.level || 1}`;
+  document.getElementById('level-xp-label').textContent = `${currentLevelXp} / 150 XP`;
+  document.getElementById('level-xp-fill').style.width = `${xpPct}%`;
+
+  renderMissions(data);
+  renderPets(data);
+  renderHats(data);
+  renderTitles(data);
+}
+
+function renderMissions(data) {
+  const container = document.getElementById('missions-container');
+  container.innerHTML = '';
+
+  data.missions.forEach(m => {
+    const isDone = m.current >= m.goal;
+    const card = document.createElement('div');
+    card.className = 'mission-card';
+    card.innerHTML = `
+      <div class="mission-info">
+        <div class="mission-title">${m.desc}</div>
+        <div style="display:flex;align-items:center;gap:8px;margin-top:4px">
+          <span class="mission-reward-chip">🪙 +${m.reward}</span>
+          <span style="font-size:0.75rem;font-weight:800;color:var(--text-sec)">${m.current} / ${m.goal}</span>
+        </div>
+      </div>
+      <div>
+        ${m.claimed 
+          ? `<button class="mission-btn claimed">✓ Reclamada</button>`
+          : isDone 
+            ? `<button class="mission-btn claim" onclick="claimMissionReward('${m.id}')">🎁 ¡Reclamar!</button>`
+            : `<button class="mission-btn claimed" style="background:#f1f5f9;color:#64748b">${m.current}/${m.goal}</button>`
+        }
+      </div>
+    `;
+    container.appendChild(card);
+  });
+}
+
+function claimMissionReward(mId) {
+  const reward = RK.Rewards.claimMission(mId);
+  if (reward > 0) {
+    if (typeof confetti === 'function') {
+      confetti({ particleCount: 80, spread: 70, origin: { y: 0.6 } });
+    }
+    renderAll();
+  }
+}
+
+function renderPets(data) {
+  const container = document.getElementById('pets-store-container');
+  container.innerHTML = '';
+
+  PETS_CATALOG.forEach(pet => {
+    const isUnlocked = data.inventory.pets.indexOf(pet.id) !== -1;
+    const isEquipped = data.selectedPet === pet.id;
+    const canAfford = data.coins >= pet.cost;
+
+    const card = document.createElement('div');
+    card.className = `item-card ${isEquipped ? 'equipped' : ''}`;
+    card.innerHTML = `
+      <div class="item-icon">${pet.icon}</div>
+      <div class="item-name">${pet.name}</div>
+      <div class="item-desc">${pet.desc}</div>
+      ${isEquipped 
+        ? `<button class="btn-buy equipped-btn">✓ Equipado</button>`
+        : isUnlocked
+          ? `<button class="btn-buy equip-btn" onclick="equipItemAction('pets', '${pet.id}')">Equipar</button>`
+          : `<button class="btn-buy" ${canAfford ? '' : 'style="opacity:0.5;cursor:not-allowed"'} onclick="unlockItemAction('pets', '${pet.id}', ${pet.cost})">🪙 Desbloquear ${pet.cost}</button>`
+      }
+    `;
+    container.appendChild(card);
+  });
+}
+
+function renderHats(data) {
+  const container = document.getElementById('hats-store-container');
+  container.innerHTML = '';
+
+  HATS_CATALOG.forEach(hat => {
+    const isUnlocked = data.inventory.hats.indexOf(hat.id) !== -1;
+    const isEquipped = data.selectedHat === hat.id;
+    const canAfford = data.coins >= hat.cost;
+
+    const card = document.createElement('div');
+    card.className = `item-card ${isEquipped ? 'equipped' : ''}`;
+    card.innerHTML = `
+      <div class="item-icon">${hat.icon}</div>
+      <div class="item-name">${hat.name}</div>
+      <div class="item-desc">${hat.desc}</div>
+      ${isEquipped 
+        ? `<button class="btn-buy equipped-btn">✓ Equipado</button>`
+        : isUnlocked
+          ? `<button class="btn-buy equip-btn" onclick="equipItemAction('hats', '${hat.id}')">Equipar</button>`
+          : `<button class="btn-buy" ${canAfford ? '' : 'style="opacity:0.5;cursor:not-allowed"'} onclick="unlockItemAction('hats', '${hat.id}', ${hat.cost})">🪙 Desbloquear ${hat.cost}</button>`
+      }
+    `;
+    container.appendChild(card);
+  });
+}
+
+function renderTitles(data) {
+  const container = document.getElementById('titles-store-container');
+  container.innerHTML = '';
+
+  TITLES_CATALOG.forEach(title => {
+    const isUnlocked = data.inventory.titles.indexOf(title.id) !== -1;
+    const isEquipped = data.selectedTitle === title.id;
+    const canAfford = data.coins >= title.cost;
+
+    const card = document.createElement('div');
+    card.className = `item-card ${isEquipped ? 'equipped' : ''}`;
+    card.innerHTML = `
+      <div class="item-icon">${title.icon}</div>
+      <div class="item-name">${title.name}</div>
+      <div class="item-desc">${title.desc}</div>
+      ${isEquipped 
+        ? `<button class="btn-buy equipped-btn">✓ Equipado</button>`
+        : isUnlocked
+          ? `<button class="btn-buy equip-btn" onclick="equipItemAction('titles', '${title.id}')">Equipar</button>`
+          : `<button class="btn-buy" ${canAfford ? '' : 'style="opacity:0.5;cursor:not-allowed"'} onclick="unlockItemAction('titles', '${title.id}', ${title.cost})">🪙 Desbloquear ${title.cost}</button>`
+      }
+    `;
+    container.appendChild(card);
+  });
+}
+
+function unlockItemAction(type, id, cost) {
+  const ok = RK.Rewards.unlockItem(type, id, cost);
+  if (ok) {
+    RK.Rewards.equipItem(type, id);
+    if (typeof confetti === 'function') {
+      confetti({ particleCount: 70, spread: 60, origin: { y: 0.6 } });
+    }
+    renderAll();
+  } else {
+    alert('No tienes suficientes monedas Rakin 🪙');
+  }
+}
+
+function equipItemAction(type, id) {
+  RK.Rewards.equipItem(type, id);
+  renderAll();
+}
+</script>
+</body>
+</html>

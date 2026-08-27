@@ -1,309 +1,251 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="es" data-theme="light">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, viewport-fit=cover">
+<title>Buscatesoros | RakinMath</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700;14..32,800;14..32,900&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@600;700;800;900&family=Nunito:wght@600;700;800;900&family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="apple-design.css">
 <script src="../auth.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
 <script src="firebase-config.js"></script>
 <script src="../stats/rk-stats.js"></script>
+<script src="../stats/rk-rewards.js"></script>
 <script src="rk-feedback.js"></script>
-<title>Buscatesoros | RakinMath</title>
 <style>
-* { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-body {
-  display: flex;
-  flex-direction: column;
-  height: 100dvh;
-  overflow: hidden;
-  background: var(--bg);
-  color: var(--text);
-  font-family: 'Inter', system-ui, sans-serif;
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+
+:root {
+  --font-main: 'Nunito', system-ui, sans-serif;
+  --font-title: 'Outfit', sans-serif;
+  --font-num: 'Inter', sans-serif;
+  --sand: #fef08a;
+  --ocean: #0284c7;
+  --island: #15803d;
 }
 
+body {
+  font-family: var(--font-main);
+  height: 100dvh;
+  overflow: hidden;
+  background: #f8fafc;
+  color: #0f172a;
+  user-select: none;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Nav */
 .nav {
-  height: 52px;
-  padding: 0 16px;
+  height: 48px;
+  padding: 0 14px;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  background: var(--bg-card);
-  border-bottom: 1.5px solid var(--border);
+  background: #ffffff;
+  border-bottom: 2px solid #cbd5e1;
   flex-shrink: 0;
+  z-index: 20;
 }
-
 .nav-title {
   display: flex;
   align-items: center;
   gap: 8px;
+  font-family: var(--font-title);
   font-weight: 800;
-  font-size: 1rem;
-  color: var(--text);
+  font-size: 1.15rem;
+  color: #0f172a;
+  text-decoration: none;
 }
-
 .exit-btn {
-  padding: 6px 14px;
+  padding: 5px 12px;
   border-radius: 99px;
-  background: rgba(255,59,48,0.1);
-  color: #ff3b30;
+  background: #fee2e2;
+  color: #dc2626;
+  font-family: var(--font-title);
   font-weight: 700;
-  font-size: 0.8125rem;
-  border: none;
+  font-size: 0.8rem;
+  border: 1.5px solid #fca5a5;
   cursor: pointer;
 }
 
-.game-layout {
+/* Game Layout */
+.game-wrap {
   flex: 1;
-  display: grid;
-  grid-template-columns: 280px 1fr;
-  gap: 12px;
-  padding: 10px 16px env(safe-area-inset-bottom, 10px);
-  align-items: stretch;
+  display: flex;
+  flex-direction: column;
+  padding: 8px 12px;
+  max-width: 480px;
+  margin: 0 auto;
+  width: 100%;
+  gap: 8px;
   min-height: 0;
 }
 
-/* SIDEBAR */
-.sidebar {
-  background: var(--bg-card-solid);
-  border: 1.5px solid var(--border);
-  border-radius: 20px;
-  padding: 14px;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  justify-content: space-between;
-  overflow-y: auto;
-  box-shadow: 0 4px 16px rgba(0,0,0,0.03);
-}
-
-.top-stats {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.stat-pill {
-  display: flex;
-  align-items: center;
+/* Top Bar */
+.top-bar {
+  display: grid;
+  grid-template-columns: auto 1fr auto auto;
   gap: 6px;
-  padding: 5px 12px;
-  border-radius: 99px;
-  background: var(--bg-card);
-  border: 1.5px solid var(--border);
-  font-weight: 800;
-  font-size: 0.85rem;
+  align-items: center;
 }
+.stat-badge {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 10px;
+  border-radius: 99px;
+  background: #ffffff;
+  border: 1.5px solid #cbd5e1;
+  font-size: 0.8rem;
+  font-weight: 800;
+  color: #0f172a;
+  box-shadow: 0 2px 0 #cbd5e1;
+}
+.stat-badge b { font-family: var(--font-num); font-weight: 900; }
 
+/* Mission Card */
 .mission-card {
-  background: linear-gradient(135deg, rgba(28,176,246,0.12) 0%, rgba(28,176,246,0.04) 100%);
-  border: 2px solid rgba(28,176,246,0.3);
-  border-radius: 18px;
-  padding: 12px;
-  text-align: center;
+  background: linear-gradient(135deg, #fef9c3 0%, #fef08a 100%);
+  border: 2px solid #ca8a04;
+  border-radius: 16px;
+  padding: 8px 12px;
+  box-shadow: 0 3px 0 #a16207;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 }
-
-.mission-tag {
-  font-size: 0.725rem;
-  font-weight: 800;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  color: #0284c7;
-  margin-bottom: 4px;
-}
-
-.mission-text {
-  font-size: 0.875rem;
-  font-weight: 700;
-  color: var(--text);
-  line-height: 1.35;
-}
-
-.target-badge {
-  display: inline-block;
-  margin-top: 6px;
-  padding: 4px 14px;
-  border-radius: 99px;
-  background: #0284c7;
-  color: white;
+.mission-text { font-size: 0.875rem; font-weight: 800; color: #713f12; }
+.target-coord {
+  font-family: var(--font-num);
   font-size: 1.25rem;
   font-weight: 900;
-  letter-spacing: 1px;
+  color: #ffffff;
+  background: #0284c7;
+  padding: 3px 12px;
+  border-radius: 99px;
+  border: 1.5px solid #0369a1;
+  box-shadow: 0 2px 0 #0369a1;
 }
 
-/* STEPPER CONTROLS */
-.coord-steppers {
+/* Grid Board (Plano Cartesiano) */
+.board-container {
+  flex: 1;
+  background: #ffffff;
+  border: 2.5px solid #0284c7;
+  border-radius: 18px;
+  padding: 8px;
   display: flex;
   flex-direction: column;
-  gap: 8px;
-  background: var(--bg-subtle, #f8fafc);
-  border: 1px solid var(--border);
-  padding: 10px;
-  border-radius: 16px;
+  box-shadow: 0 4px 0 #0284c7;
+  min-height: 240px;
+}
+.grid-table {
+  flex: 1;
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  grid-template-rows: repeat(7, 1fr);
+  gap: 3px;
 }
 
-.stepper-row {
+.cell {
+  background: #fef08a;
+  border: 1.5px solid #eab308;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.25rem;
+  cursor: pointer;
+  box-shadow: 0 2px 0 #ca8a04;
+  transition: all 0.1s ease;
+  touch-action: manipulation;
+  position: relative;
+}
+.cell:active { transform: translateY(1.5px); box-shadow: none; }
+.cell.dug {
+  background: #e2e8f0;
+  border-color: #94a3b8;
+  box-shadow: inset 0 2px 4px rgba(0,0,0,0.1);
+}
+.cell.found {
+  background: #dcfce7;
+  border-color: #16a34a;
+  box-shadow: 0 2px 0 #15803d;
+}
+.cell.selected {
+  border-color: #0284c7;
+  background: #bae6fd;
+  box-shadow: 0 0 0 2px #0284c7;
+}
+
+/* Radar Clue Box */
+.radar-box {
+  background: #ffffff;
+  border: 1.5px solid #cbd5e1;
+  border-radius: 12px;
+  padding: 6px 10px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.825rem;
+  font-weight: 800;
+  color: #0f172a;
+  box-shadow: 0 2px 0 #cbd5e1;
+}
+.radar-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: #16a34a;
+  animation: radarPulse 1s infinite alternate;
+}
+@keyframes radarPulse { from { transform: scale(1); opacity: 0.8; } to { transform: scale(1.3); opacity: 1; } }
+
+/* Controls */
+.controls-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr 2fr;
+  gap: 6px;
+}
+.coord-stepper {
+  background: #ffffff;
+  border: 1.5px solid #cbd5e1;
+  border-radius: 12px;
+  padding: 4px;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  background: var(--bg-card);
-  border: 1.5px solid var(--border);
-  border-radius: 12px;
-  padding: 3px 8px;
+  box-shadow: 0 2px 0 #cbd5e1;
 }
-
-.stepper-label {
-  font-size: 0.8125rem;
-  font-weight: 800;
-  color: var(--text-sec);
-  min-width: 65px;
-}
-
 .stepper-btn {
-  width: 36px;
-  height: 36px;
-  border-radius: 10px;
-  background: #1cb0f6;
-  color: white;
-  font-size: 1.2rem;
+  width: 28px;
+  height: 28px;
+  border-radius: 8px;
+  border: 1px solid #cbd5e1;
+  background: #f1f5f9;
   font-weight: 900;
-  border: none;
   cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  touch-action: manipulation;
 }
-.stepper-btn:active { transform: scale(0.92); }
+.stepper-val { font-family: var(--font-num); font-size: 1.05rem; font-weight: 900; }
 
-.stepper-val {
-  font-size: 1.1rem;
-  font-weight: 900;
-  min-width: 32px;
-  text-align: center;
-}
-
-.sail-btn {
-  width: 100%;
-  padding: 12px;
-  min-height: 48px;
-  border-radius: 16px;
-  border: none;
-  background: linear-gradient(135deg, #34c759, #28a745);
-  color: #fff;
+.dig-btn {
+  font-family: var(--font-title);
   font-size: 1rem;
   font-weight: 800;
+  padding: 10px;
+  border-radius: 14px;
+  border: none;
+  background: linear-gradient(135deg, #16a34a, #15803d);
+  color: #ffffff;
   cursor: pointer;
-  box-shadow: 0 4px 0 #1e7e34;
-  transition: transform 0.1s ease;
+  box-shadow: 0 3px 0 #14532d;
   touch-action: manipulation;
 }
-.sail-btn:active { transform: translateY(2px); box-shadow: 0 2px 0 #1e7e34; }
-
-/* GRID WORLD CONTAINER */
-.grid-container {
-  background: #e0f2fe;
-  border-radius: 20px;
-  border: 2px solid #7dd3fc;
-  position: relative;
-  overflow: hidden;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 24px;
-  touch-action: none;
-}
-
-.grid-board {
-  position: relative;
-  width: 100%;
-  height: 100%;
-  max-width: 500px;
-  max-height: 500px;
-  aspect-ratio: 1 / 1;
-  background: linear-gradient(180deg, #bae6fd 0%, #7dd3fc 100%);
-  border-left: 3px solid #0284c7;
-  border-bottom: 3px solid #0284c7;
-  border-radius: 12px;
-  box-shadow: inset 0 0 20px rgba(2,132,199,0.15);
-  cursor: crosshair;
-}
-
-.grid-cell-line-x, .grid-cell-line-y {
-  position: absolute;
-  background: rgba(2,132,199,0.2);
-}
-
-.axis-label {
-  position: absolute;
-  font-size: 0.75rem;
-  font-weight: 800;
-  color: #0369a1;
-}
-.axis-label.x-axis { bottom: -22px; transform: translateX(-50%); }
-.axis-label.y-axis { left: -22px; transform: translateY(50%); }
-
-.axis-title {
-  position: absolute;
-  font-size: 0.7rem;
-  font-weight: 900;
-  color: #0284c7;
-  text-transform: uppercase;
-}
-.axis-title.x { bottom: -28px; right: 0; }
-.axis-title.y { top: -16px; left: -20px; }
-
-/* ENTITIES ON MAP */
-.map-entity {
-  position: absolute;
-  font-size: 1.75rem;
-  transform: translate(-50%, 50%);
-  transition: left 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), bottom 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
-  filter: drop-shadow(0 2px 6px rgba(0,0,0,0.2));
-  pointer-events: none;
-  z-index: 10;
-}
-
-.treasure-item {
-  animation: floatTreasure 1.8s ease-in-out infinite alternate;
-}
-@keyframes floatTreasure {
-  from { transform: translate(-50%, 50%) translateY(0); }
-  to { transform: translate(-50%, 50%) translateY(-6px); }
-}
-
-.target-marker {
-  position: absolute;
-  width: 24px;
-  height: 24px;
-  border: 2.5px dashed #ff9500;
-  border-radius: 50%;
-  transform: translate(-50%, 50%);
-  animation: pulseMarker 1s infinite alternate;
-  pointer-events: none;
-}
-@keyframes pulseMarker {
-  from { transform: translate(-50%, 50%) scale(0.9); opacity: 0.6; }
-  to { transform: translate(-50%, 50%) scale(1.3); opacity: 1; }
-}
-
-@media (max-width: 768px) {
-  .game-layout {
-    grid-template-columns: 1fr;
-    grid-template-rows: auto 1fr;
-    padding: 8px 10px env(safe-area-inset-bottom, 8px);
-    gap: 8px;
-  }
-  .sidebar { padding: 10px; gap: 8px; border-radius: 16px; }
-  .grid-container { padding: 16px 20px 20px 24px; }
-  .mission-card { padding: 8px 10px; }
-  .mission-text { font-size: 0.8rem; }
-  .target-badge { font-size: 1.1rem; padding: 2px 10px; }
-}
+.dig-btn:active { transform: translateY(2px); box-shadow: 0 1px 0 #14532d; }
 </style>
 <!-- SUPER RESPONSIVE MOBILE OPTIMIZATIONS — RAKINMATH -->
 <style id="rakin-mobile-responsiveness">
@@ -319,193 +261,193 @@ button, a, input, select, textarea, .btn, .choice-btn, .opt-btn, .game-btn, .nav
 }
 </style>
 </head>
-<body class="game-bg game-buscatesoros">
+<body class="game-bg">
 
 <nav class="nav">
-  <div class="nav-title">
+  <a href="menu-v3.html" class="nav-title">
     <img src="../Recursos/LogoRakinMath.png" alt="RakinMath" style="height:22px;width:auto">
-    <span>Buscatesoros</span>
-  </div>
+    <span>Buscatesoros (X, Y)</span>
+  </a>
   <button class="exit-btn" onclick="window.location.href='menu-v3.html'">Salir</button>
 </nav>
 
-<div class="game-layout">
-  <div class="sidebar">
-    <div class="top-stats">
-      <div class="stat-pill">💎 <span id="score">0</span></div>
-      <div class="stat-pill" id="lives-pill">❤️❤️❤️</div>
-    </div>
-
-    <div class="mission-card">
-      <div class="mission-tag">🎯 Misión de Navegación</div>
-      <div class="mission-text" id="mission-text">Navega hacia las coordenadas del tesoro o toca el mapa:</div>
-      <div class="target-badge" id="target-coords">(3, 4)</div>
-    </div>
-
-    <div class="coord-steppers">
-      <div class="stepper-row">
-        <span class="stepper-label">➡️ Eje X</span>
-        <button class="stepper-btn" onclick="adjustX(-1)">-</button>
-        <span class="stepper-val" id="val-x">0</span>
-        <button class="stepper-btn" onclick="adjustX(1)">+</button>
-      </div>
-      <div class="stepper-row">
-        <span class="stepper-label">⬆️ Eje Y</span>
-        <button class="stepper-btn" onclick="adjustY(-1)">-</button>
-        <span class="stepper-val" id="val-y">0</span>
-        <button class="stepper-btn" onclick="adjustY(1)">+</button>
-      </div>
-    </div>
-
-    <button class="sail-btn" onclick="sailToCoords()">¡Zarpar a la Posición! ⛵</button>
+<div class="game-wrap">
+  <!-- TOP STATUS -->
+  <div class="top-bar">
+    <div class="stat-badge">⭐ <b id="score-txt">0</b></div>
+    <div class="stat-badge" style="justify-content:center">Nivel <b id="level-txt">1</b></div>
+    <div class="stat-badge">🔥 <b id="streak-txt">0</b></div>
+    <div class="stat-badge" id="lives-badge">❤️❤️❤️</div>
   </div>
 
-  <div class="grid-container">
-    <div class="grid-board" id="grid-board" onclick="onGridClick(event)">
-      <!-- Axis lines and numbers built via JS -->
-      <div class="map-entity treasure-item" id="treasure-el">💎</div>
-      <div class="map-entity" id="ship-el">⛵</div>
-      <div class="target-marker" id="marker-el"></div>
+  <!-- MISSION CARD -->
+  <div class="mission-card">
+    <div class="mission-text">🏴‍☠️ Coordenadas del Tesoro:</div>
+    <div class="target-coord" id="target-coord">(3, 4)</div>
+  </div>
+
+  <!-- RADAR CLUE -->
+  <div class="radar-box">
+    <div class="radar-dot"></div>
+    <span id="radar-clue">📡 Radar: Selecciona una celda o usa las coordenadas.</span>
+  </div>
+
+  <!-- BOARD -->
+  <div class="board-container">
+    <div class="grid-table" id="grid-board"></div>
+  </div>
+
+  <!-- CONTROLS -->
+  <div class="controls-row">
+    <div class="coord-stepper">
+      <button class="stepper-btn" onclick="adjustCoord('x', -1)">−</button>
+      <span class="stepper-val" id="val-x">X: 0</span>
+      <button class="stepper-btn" onclick="adjustCoord('x', 1)">+</button>
     </div>
+    <div class="coord-stepper">
+      <button class="stepper-btn" onclick="adjustCoord('y', -1)">−</button>
+      <span class="stepper-val" id="val-y">Y: 0</span>
+      <button class="stepper-btn" onclick="adjustCoord('y', 1)">+</button>
+    </div>
+    <button class="dig-btn" onclick="digAtSelected()">⛏️ ¡Cavar Aquí!</button>
   </div>
 </div>
 
 <script>
-const GRID_SIZE = 6; // 0 to 6 on X and Y
-let currX = 0, currY = 0;
+const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+function playBeep(freq, type) {
+  if (!audioCtx) return;
+  const now = audioCtx.currentTime;
+  const osc = audioCtx.createOscillator();
+  const gain = audioCtx.createGain();
+  osc.connect(gain);
+  gain.connect(audioCtx.destination);
+  osc.type = type || 'sine';
+  osc.frequency.setValueAtTime(freq || 600, now);
+  gain.gain.setValueAtTime(0.25, now);
+  gain.gain.exponentialRampToValueAtTime(0.01, now + 0.15);
+  osc.start(now);
+  osc.stop(now + 0.15);
+}
+
+const GRID_SIZE = 7;
 let targetX = 3, targetY = 4;
-let score = 0, lives = 3;
-let sessionTotal = 0, sessionCorrect = 0, sessionWrong = 0, sessionTimer = 0, sessionRound = 0;
+let selectedX = 0, selectedY = 0;
+let score = 0, lives = 3, streak = 0, level = 1;
+let sessionRound = 0, sessionTotal = 5, sessionTimer = 0;
+let dugCells = {};
 
 window.onload = function() {
-  buildGridLines();
-  RK.Stats.showRoundModal('Buscatesoros', '🏴‍☠️', function(rounds) {
-    sessionTotal = rounds;
+  RK.Stats.showRoundModal('Buscatesoros', '💎', function(rounds) {
+    sessionTotal = rounds || 5;
     sessionTimer = Date.now();
-    newRound();
+    startNewTreasureRound();
   });
 };
 
-function buildGridLines() {
-  const board = document.getElementById('grid-board');
-  // clear old lines & labels
-  board.querySelectorAll('.grid-cell-line-x, .grid-cell-line-y, .axis-label').forEach(e => e.remove());
+function startNewTreasureRound() {
+  targetX = Math.floor(Math.random() * GRID_SIZE);
+  targetY = Math.floor(Math.random() * GRID_SIZE);
+  selectedX = Math.floor(Math.random() * GRID_SIZE);
+  selectedY = Math.floor(Math.random() * GRID_SIZE);
+  dugCells = {};
 
-  for (let i = 0; i <= GRID_SIZE; i++) {
-    const pct = (i / GRID_SIZE) * 100;
-    
-    // Vertical line
-    const vx = document.createElement('div');
-    vx.className = 'grid-cell-line-x';
-    vx.style.left = pct + '%';
-    vx.style.top = '0';
-    vx.style.bottom = '0';
-    vx.style.width = '1px';
-    board.appendChild(vx);
+  document.getElementById('target-coord').textContent = `(${targetX}, ${targetY})`;
+  document.getElementById('radar-clue').textContent = '📡 Radar: Encuentra el punto exacto en el plano cartesiano.';
+  updateControlsDOM();
+  renderBoard();
+}
 
-    // Horizontal line
-    const hy = document.createElement('div');
-    hy.className = 'grid-cell-line-y';
-    hy.style.bottom = pct + '%';
-    hy.style.left = '0';
-    hy.style.right = '0';
-    hy.style.height = '1px';
-    board.appendChild(hy);
+function renderBoard() {
+  const container = document.getElementById('grid-board');
+  container.innerHTML = '';
 
-    // X axis label
-    const lx = document.createElement('div');
-    lx.className = 'axis-label x-axis';
-    lx.textContent = i;
-    lx.style.left = pct + '%';
-    board.appendChild(lx);
+  // Render from Y = 6 down to 0 (Cartesian orientation)
+  for (let y = GRID_SIZE - 1; y >= 0; y--) {
+    for (let x = 0; x < GRID_SIZE; x++) {
+      const key = `${x},${y}`;
+      const cell = document.createElement('div');
+      cell.className = 'cell';
 
-    // Y axis label
-    const ly = document.createElement('div');
-    ly.className = 'axis-label y-axis';
-    ly.textContent = i;
-    ly.style.bottom = pct + '%';
-    board.appendChild(ly);
+      if (x === selectedX && y === selectedY) cell.classList.add('selected');
+      if (dugCells[key]) {
+        cell.classList.add(dugCells[key] === 'treasure' ? 'found' : 'dug');
+        cell.textContent = dugCells[key] === 'treasure' ? '💎' : '❌';
+      }
+
+      cell.onclick = () => {
+        selectedX = x;
+        selectedY = y;
+        updateControlsDOM();
+        renderBoard();
+      };
+      container.appendChild(cell);
+    }
   }
 }
 
-function updateEntitiesDOM() {
-  const ship = document.getElementById('ship-el');
-  const treasure = document.getElementById('treasure-el');
-  const marker = document.getElementById('marker-el');
-
-  ship.style.left = ((currX / GRID_SIZE) * 100) + '%';
-  ship.style.bottom = ((currY / GRID_SIZE) * 100) + '%';
-
-  treasure.style.left = ((targetX / GRID_SIZE) * 100) + '%';
-  treasure.style.bottom = ((targetY / GRID_SIZE) * 100) + '%';
-
-  marker.style.left = ((currX / GRID_SIZE) * 100) + '%';
-  marker.style.bottom = ((currY / GRID_SIZE) * 100) + '%';
-
-  document.getElementById('val-x').textContent = currX;
-  document.getElementById('val-y').textContent = currY;
+function adjustCoord(axis, delta) {
+  if (axis === 'x') {
+    selectedX = Math.max(0, Math.min(GRID_SIZE - 1, selectedX + delta));
+  } else {
+    selectedY = Math.max(0, Math.min(GRID_SIZE - 1, selectedY + delta));
+  }
+  updateControlsDOM();
+  renderBoard();
 }
 
-function adjustX(delta) {
-  currX = Math.max(0, Math.min(GRID_SIZE, currX + delta));
-  updateEntitiesDOM();
+function updateControlsDOM() {
+  document.getElementById('val-x').textContent = `X: ${selectedX}`;
+  document.getElementById('val-y').textContent = `Y: ${selectedY}`;
+  document.getElementById('score-txt').textContent = score;
+  document.getElementById('streak-txt').textContent = streak;
+  document.getElementById('level-txt').textContent = level;
+  document.getElementById('lives-badge').textContent = '❤️'.repeat(Math.max(0, lives));
 }
 
-function adjustY(delta) {
-  currY = Math.max(0, Math.min(GRID_SIZE, currY + delta));
-  updateEntitiesDOM();
-}
+function digAtSelected() {
+  const key = `${selectedX},${selectedY}`;
+  if (dugCells[key]) return;
 
-function onGridClick(e) {
-  const board = document.getElementById('grid-board');
-  const rect = board.getBoundingClientRect();
-  const clickX = e.clientX - rect.left;
-  const clickY = e.clientY - rect.top;
+  if (selectedX === targetX && selectedY === targetY) {
+    // Found Treasure!
+    playBeep(987.77, 'triangle');
+    dugCells[key] = 'treasure';
+    score += 15 + (streak * 2);
+    streak++;
+    sessionRound++;
+    RK.Feedback.show('success', `¡Cofre del Tesoro encontrado en (${targetX}, ${targetY})! 💎✨`);
+    renderBoard();
+    updateControlsDOM();
 
-  // X goes left (0) to right (GRID_SIZE)
-  // Y goes bottom (0) to top (GRID_SIZE)
-  const gx = Math.max(0, Math.min(GRID_SIZE, Math.round((clickX / rect.width) * GRID_SIZE)));
-  const gy = Math.max(0, Math.min(GRID_SIZE, Math.round(((rect.height - clickY) / rect.height) * GRID_SIZE)));
-
-  currX = gx;
-  currY = gy;
-  updateEntitiesDOM();
-  sailToCoords();
-}
-
-function newRound() {
-  targetX = Math.floor(Math.random() * GRID_SIZE) + 1;
-  targetY = Math.floor(Math.random() * GRID_SIZE) + 1;
-  
-  // reset ship to 0,0
-  currX = 0;
-  currY = 0;
-
-  document.getElementById('target-coords').textContent = `(${targetX}, ${targetY})`;
-  updateEntitiesDOM();
-}
-
-function sailToCoords() {
-  sessionRound++;
-  if (currX === targetX && currY === targetY) {
-    score++;
-    sessionCorrect++;
-    document.getElementById('score').textContent = score;
-    RK.Feedback.show('success', `¡Tesoro alcanzado en (${targetX}, ${targetY})! 💎✨`);
-    
-    if (sessionTotal > 0 && sessionRound >= sessionTotal) {
-      setTimeout(endGame, 900);
+    if (sessionRound >= sessionTotal) {
+      setTimeout(endGame, 1000);
     } else {
-      setTimeout(newRound, 1200);
+      setTimeout(startNewTreasureRound, 1200);
     }
   } else {
+    // Missed
+    playBeep(220, 'sawtooth');
+    dugCells[key] = 'miss';
+    streak = 0;
     lives--;
-    sessionWrong++;
-    document.getElementById('lives-pill').textContent = '❤️'.repeat(Math.max(0, lives));
-    RK.Feedback.show('error', `Estás en (${currX}, ${currY}). El tesoro está en (${targetX}, ${targetY}) 🌊`);
 
-    if (lives <= 0 || (sessionTotal > 0 && sessionRound >= sessionTotal)) {
-      setTimeout(endGame, 900);
+    // Clue distance
+    const dx = targetX - selectedX;
+    const dy = targetY - selectedY;
+    let hint = '';
+    if (dy > 0) hint += `${dy} hacia el Norte ⬆️ `;
+    else if (dy < 0) hint += `${Math.abs(dy)} hacia el Sur ⬇️ `;
+    if (dx > 0) hint += `${dx} hacia el Este ➡️`;
+    else if (dx < 0) hint += `${Math.abs(dx)} hacia el Oeste ⬅️`;
+
+    document.getElementById('radar-clue').textContent = `🧭 Clave: El tesoro está a ${hint}`;
+    RK.Feedback.show('error', `¡Aquí no hay nada! ${hint}`);
+    renderBoard();
+    updateControlsDOM();
+
+    if (lives <= 0) {
+      setTimeout(endGame, 1000);
     }
   }
 }
@@ -516,16 +458,16 @@ function endGame() {
     score: score,
     rounds: sessionRound,
     totalTime: totalTime,
-    correct: sessionCorrect,
-    wrong: sessionWrong,
-    errors: ['plano cartesiano', 'coordenadas']
+    correct: score / 15,
+    wrong: 3 - lives,
+    errors: ['plano cartesiano', 'coordenadas x e y']
   });
   RK.Stats.showEndModal('Buscatesoros', {
     score: score,
     rounds: sessionRound,
     totalTime: totalTime,
-    correct: sessionCorrect,
-    wrong: sessionWrong
+    correct: score / 15,
+    wrong: 3 - lives
   });
 }
 </script>

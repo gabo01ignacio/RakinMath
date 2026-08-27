@@ -392,6 +392,28 @@ RK.Stats = (function() {
 
     save(data);
 
+    // --- Rewards & Missions System Integration ---
+    try {
+      if (typeof RK !== 'undefined' && RK.Rewards) {
+        var baseCoins = 15 + ((result.correct || 0) * 3);
+        if (result.correct && result.wrong !== undefined && (result.correct + result.wrong > 0)) {
+          var acc = Math.round(result.correct / (result.correct + result.wrong) * 100);
+          if (acc >= 80) baseCoins += 20;
+        }
+        RK.Rewards.addCoins(baseCoins);
+        RK.Rewards.updateMissionProgress('m-play2', 1);
+        if (gameId === 'juego8' && result.correct) {
+          RK.Rewards.updateMissionProgress('m-calc', result.correct);
+        }
+        if (result.streak && result.streak >= 5) {
+          RK.Rewards.updateMissionProgress('m-streak', result.streak);
+        }
+        if (gameId === 'juego10' && result.correct) {
+          RK.Rewards.updateMissionProgress('m-market', 1);
+        }
+      }
+    } catch(e) {}
+
     // --- Firebase sync ---
     try {
       if (typeof UserStatsDB !== 'undefined' && UserStatsDB.saveGame && user) {
